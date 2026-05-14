@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@parselradar/api": "file:../.."
+  }
+}

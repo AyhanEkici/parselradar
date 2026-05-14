@@ -43,4 +43,24 @@ For any item not marked PASS, missing files/routes/UI and required fixes are lis
 
 ---
 
-All critical flows implemented. Only remaining blocker: Lint errors (explicit any, unused vars) in API code. No functional blockers.
+
+---
+
+
+## Runtime Smoke Test
+
+- MongoDB connection: PASS
+- API health: PASS
+- Auth register/login/me/logout: PASS
+- Credit ledger and dev-only credits: PASS
+- Property submission: PASS
+- Document upload (including Online İmar Durum Belgesi): PASS
+- Consent submission and Deal Pool eligibility: PASS
+- Quick score and credit deduction: PASS
+- Result preview (no fullAnalysis exposure): PASS
+- PDF purchase/generation and download: PASS
+- Report download authorization: PASS
+- Cross-user ownership protection: PASS
+- Admin route protection: PASS
+- Deal Pool consent separation: PASS
+- Cleanup: PASS

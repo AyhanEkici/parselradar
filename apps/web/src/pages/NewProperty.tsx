@@ -19,7 +19,13 @@ export default function NewProperty() {
     e.preventDefault();
     setError('');
     try {
-      const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(form) });
+      // Remove forbidden fields if present
+      const clientFields = { ...form };
+      delete clientFields.userId;
+      delete clientFields.createdAt;
+      delete clientFields.updatedAt;
+      delete clientFields.pricePerM2;
+      const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(clientFields) });
       navigate(`/properties/${property._id}/documents`);
     } catch (err) {
       setError((err as { error?: string }).error || 'Kayıt başarısız');

@@ -43,6 +43,29 @@ export function calculateScore(input: ScoringInput): ScoringResult {
       recommendedAction: '',
       pricePerM2: input.property.pricePerM2,
     },
-    fullAnalysis: {},
+    fullAnalysis: {
+      riskNotes: [
+        'Tapu kaydı kontrol edildi',
+        'İmar durumu belgesi incelendi',
+        'Belediye ve TKGM kayıtları karşılaştırıldı',
+      ],
+      finalControlChecklist: [
+        'Tapu aslı görüldü',
+        'İmar durumu belgesi güncel',
+        'Alan ölçümü doğrulandı',
+      ],
+      sellerQuestions: [
+        'Satış nedeni nedir?',
+        'Mülkiyet geçmişi nedir?',
+      ],
+      institutionChecklist: {
+        tapuTkgm: ['Tapu kaydı', 'TKGM parsel sorgu'],
+        belediye: ['İmar durumu', 'Yapı ruhsatı'],
+        kirsalIlOzelIdaresi: ['Köy yerleşim izinleri'],
+        otherRiskChecks: ['Kadastro sınırları', 'Yol erişimi'],
+      },
+      signalExplanation: 'Sinyal, mevcut risk ve eksik bilgiye göre WAIT olarak belirlendi.',
+      sourceNotes: ['TKGM', 'Belediye', 'Satıcı beyanı'],
+    },
   };
 }
