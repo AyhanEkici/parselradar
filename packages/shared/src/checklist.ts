@@ -1,0 +1,41 @@
+// Institution checklist items for ParselRadar
+export const CHECKLIST = {
+  tapu: [
+    'Tapu senedi',
+    'Tapu kayıt örneği',
+    'Takyidat kontrolü',
+    'Hisse oranı',
+    'Şerh / haciz / ipotek / tedbir',
+    'Ada/parsel doğrulama',
+    'TKGM Parsel Sorgu görüntüsü',
+  ],
+  belediye: [
+    'İmar durum belgesi',
+    'Online imar durum belgesi',
+    'Plan notları',
+    'TAKS',
+    'KAKS / emsal',
+    'Gabari / Hmax',
+    'Kat adedi',
+    'Çekme mesafeleri',
+    'Yol terk / ihdas / ifraz / tevhit notları',
+    'Yapı ruhsatı if building/project',
+    'İskan if completed building',
+  ],
+  kirsal: [
+    'Köy yerleşik alan sınırı',
+    'Plansız alan durumu',
+    'Tarımsal yapılaşma koşulları',
+    'Yol ve altyapı durumu',
+  ],
+  other: [
+    'Mera',
+    'Orman',
+    'Sit alanı',
+    'Dere yatağı',
+    'DSİ',
+    'enerji nakil hattı',
+    'kamulaştırma riski',
+    'deprem / zemin / heyelan note if user provides data',
+  ],
+};

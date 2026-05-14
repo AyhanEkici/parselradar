@@ -1,0 +1,16 @@
+{
+  "name": "parselradar-monorepo",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix packages/shared && npm install --prefix apps/api && npm install --prefix apps/web",
+    "dev": "concurrently \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/web\"",
+    "typecheck": "npm run typecheck --prefix packages/shared && npm run typecheck --prefix apps/api && npm run typecheck --prefix apps/web",
+    "lint": "npm run lint --prefix packages/shared && npm run lint --prefix apps/api && npm run lint --prefix apps/web",
+    "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
+    "seed": "npm run seed --prefix apps/api",
+    "test": "npm run test --prefix packages/shared && npm run test --prefix apps/api && npm run test --prefix apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
