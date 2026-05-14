@@ -11,6 +11,10 @@
     "seed": "ts-node scripts/seedAdmin.ts",
     "test": "jest --passWithNoTests",
     "smoke": "ts-node scripts/smokeTest.ts"
+    ,
+    "pilot:env": "ts-node scripts/verifyPilotEnv.ts",
+    "pilot:checklist": "ts-node scripts/pilotChecklist.ts",
+    "pilot:flow": "ts-node scripts/pilotFlow.ts"
   },
   "dependencies": {
     "@parselradar/shared": "file:../../packages/shared",
