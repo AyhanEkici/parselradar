@@ -6,7 +6,14 @@
 - Terminal C: `stripe listen --forward-to http://localhost:4000/stripe/webhook` (must be run manually)
 
 ## 2. Browser URL
-- http://localhost:3000
+- http://localhost:3001
+
+## API URL
+- http://localhost:4000
+
+## Notes
+- Root URL "/" redirects to /login
+- React Router future flag warnings are non-blocking warnings only
 
 ## 3. Controlled Pilot Test User
 - Use a unique test email manually in browser.

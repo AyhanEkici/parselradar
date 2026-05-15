@@ -33,7 +33,10 @@ Yüklenen dosyalar `/uploads` klasöründe saklanır. Bu klasör herkese açık 
 - Stripe CLI gereklidir. [Stripe CLI Kurulumu](https://stripe.com/docs/stripe-cli)
 
 ### Browser URL
-- http://localhost:3000
+- http://localhost:3001
+
+### API URL
+- http://localhost:4000
 
 ### Stripe Test Card
 - 4242 4242 4242 4242 (herhangi bir geçerli tarih, CVC, posta kodu)
@@ -63,3 +66,5 @@ Yüklenen dosyalar `/uploads` klasöründe saklanır. Bu klasör herkese açık 
 ### Not
 - U1-C tamamlanması için manuel browser demo ve Stripe CLI gereklidir.
 - .env dosyasını asla commit etmeyin.
+- Root URL "/" artık /login'e yönlendirir.
+- React Router future flag uyarıları non-blocking'dir.
