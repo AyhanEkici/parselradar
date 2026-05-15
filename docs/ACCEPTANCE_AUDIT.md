@@ -43,9 +43,13 @@ For any item not marked PASS, missing files/routes/UI and required fixes are lis
 
 ---
 
+## U1-C — Controlled Browser Demo (Stripe Test Checkout)
+
+- Automated precheck: PASS (all gates and pilot scripts pass)
+- Browser checklist doc: PASS (docs/U1C_BROWSER_DEMO.md exists and is complete)
+- Real browser demo: MANUAL_BROWSER_CHECK_REQUIRED (operator must perform browser flow and provide evidence)
 
 ---
-
 
 ## Runtime Smoke Test
 
