@@ -31,7 +31,7 @@ export default function PropertyDocuments() {
     setSuccess('');
     const formData = new FormData(e.currentTarget);
     try {
-      await fetch(`/properties/${id}/documents`, {
+      await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
         method: 'POST',
         body: formData,
         credentials: 'include',

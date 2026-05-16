@@ -17,19 +17,25 @@ if (!MONGODB_URI || !ADMIN_EMAIL || !ADMIN_PASSWORD) {
 
 async function seedAdmin() {
   await mongoose.connect(MONGODB_URI);
-  const existing = await User.findOne({ email: ADMIN_EMAIL });
-  if (existing) {
-    console.log('Admin user already exists.');
-    process.exit(0);
-  }
   const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
-  await User.create({
-    email: ADMIN_EMAIL,
-    passwordHash,
-    name: 'Admin',
-    role: 'ADMIN',
-  });
-  console.log('Admin user created.');
+  const result = await User.findOneAndUpdate(
+    { email: ADMIN_EMAIL },
+    {
+      $set: {
+        passwordHash,
+        name: 'Admin',
+        role: 'ADMIN',
+      },
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+  if (result) {
+    if (result.passwordHash === passwordHash) {
+      console.log('Admin user reset.');
+    } else {
+      console.log('Admin user created.');
+    }
+  }
   process.exit(0);
 }
 

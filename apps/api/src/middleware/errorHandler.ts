@@ -1,10 +1,29 @@
-import { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
-export function errorHandler(err: unknown, req: Request, res: Response) {
+export function errorHandler(
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   console.error(err);
-  if (typeof err === 'object' && err && 'status' in err && 'message' in err) {
-    res.status((err as { status: number }).status || 500).json({ error: (err as { message: string }).message || 'Sunucu hatası' });
-  } else {
-    res.status(500).json({ error: 'Sunucu hatası' });
-  }
+  const statusCode =
+    typeof err === 'object' &&
+    err !== null &&
+    'statusCode' in err &&
+    typeof (err as { statusCode?: unknown }).statusCode === 'number'
+      ? (err as { statusCode: number }).statusCode
+      : 500;
+
+  const message =
+    typeof err === 'object' &&
+    err !== null &&
+    'message' in err &&
+    typeof (err as { message?: unknown }).message === 'string'
+      ? (err as { message: string }).message
+      : 'Internal server error';
+
+  res.status(statusCode).json({
+    error: message,
+  });
 }

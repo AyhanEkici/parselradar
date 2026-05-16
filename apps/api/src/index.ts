@@ -12,10 +12,24 @@ import consentRoutes from './routes/consentRoutes';
 import analysisRoutes from './routes/analysisRoutes';
 import reportRoutes from './routes/reportRoutes';
 import adminRoutes from './routes/adminRoutes';
+import cors from 'cors';
 
 dotenv.config({ path: '../../.env' });
 
 const app = express();
+
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:3001';
+app.use(cors({
+  origin: clientUrl,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('*', cors({
+  origin: clientUrl,
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
