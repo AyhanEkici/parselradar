@@ -1,12 +1,15 @@
-// apps/api/src/middleware/requestId.ts
-import { v4 as uuidv4 } from 'uuid';
 import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 
-export function requestIdMiddleware(req: Request, res: Response, next: NextFunction) {
-  let requestId = req.headers['x-request-id'];
-  if (Array.isArray(requestId)) requestId = requestId[0];
-  if (!requestId) requestId = uuidv4();
-  req.requestId = String(requestId);
-  res.setHeader('X-Request-Id', requestId);
+export const requestIdMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = crypto.randomUUID();
+
+  req.requestId = id;
+  res.setHeader('X-Request-Id', id);
+
   next();
-}
+};
