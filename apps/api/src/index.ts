@@ -25,9 +25,11 @@ const app = express();
 
 // Hardened CORS
 const isProd = ENV.NODE_ENV === 'production';
+const vercelProd = 'https://parselradar.vercel.app';
+const vercelPreviewPattern = /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/;
 const allowedOrigins = isProd
-  ? [ENV.CLIENT_URL]
-  : [ENV.CLIENT_URL, 'http://localhost:3001', 'http://127.0.0.1:3001'];
+  ? [ENV.CLIENT_URL, vercelProd]
+  : [ENV.CLIENT_URL, vercelProd, 'http://localhost:3001', 'http://127.0.0.1:3001'];
 
 // Trust proxy for production (needed for secure cookies behind proxy/load balancer)
 if (isProd) {
@@ -45,6 +47,7 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (vercelPreviewPattern.test(origin)) return callback(null, true);
       return callback(new Error('Not allowed by CORS: ' + origin));
     },
     credentials: true,
@@ -59,6 +62,7 @@ app.options(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (vercelPreviewPattern.test(origin)) return callback(null, true);
       return callback(new Error('Not allowed by CORS: ' + origin));
     },
     credentials: true,
