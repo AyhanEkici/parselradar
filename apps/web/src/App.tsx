@@ -8,6 +8,10 @@ import Reports from './pages/Reports';
 import AdminProperties from './pages/AdminProperties';
 import AdminDealPool from './pages/AdminDealPool';
 import AdminAuditTimeline from './pages/AdminAuditTimeline';
+import AdminUsers from './pages/AdminUsers';
+import AdminAnalyses from './pages/AdminAnalyses';
+import AdminCreditLedger from './pages/AdminCreditLedger';
+import AdminStripeSessions from './pages/AdminStripeSessions';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -18,6 +22,16 @@ import NotFound from './pages/NotFound';
 export default function App() {
   return (
     <BrowserRouter>
+      <div className="w-full bg-gray-100 border-b mb-4">
+        <nav className="max-w-5xl mx-auto flex flex-wrap gap-2 py-2 px-4 text-xs">
+          <a href="/admin/audit-timeline" className="hover:underline">Audit</a>
+          <a href="/admin/users" className="hover:underline">Users</a>
+          <a href="/admin/analyses" className="hover:underline">Analyses</a>
+          <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a>
+          <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a>
+          <a href="/admin/properties" className="hover:underline">Properties</a>
+        </nav>
+      </div>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
@@ -28,6 +42,10 @@ export default function App() {
         <Route path="/admin/properties" element={<AdminProperties />} />
         <Route path="/admin/deal-pool" element={<AdminDealPool />} />
         <Route path="/admin/audit-timeline" element={<AdminAuditTimeline />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/analyses" element={<AdminAnalyses />} />
+        <Route path="/admin/credit-ledger" element={<AdminCreditLedger />} />
+        <Route path="/admin/stripe-sessions" element={<AdminStripeSessions />} />
         <Route path="/properties/new" element={<NewProperty />} />
         <Route path="/properties/:id" element={<PropertyDetail />} />
         <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
