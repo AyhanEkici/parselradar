@@ -14,7 +14,13 @@ export const register = async (req: Request, res: Response) => {
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await User.create({ email, passwordHash, name, role: 'USER' });
   const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-  res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  });
   res.json({ id: user._id, email: user.email, name: user.name, role: user.role });
   await logAuditEvent({
     type: 'auth_register',
@@ -37,7 +43,13 @@ export const login = async (req: Request, res: Response) => {
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) return res.status(401).json({ error: 'Şifre hatalı' });
   const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-  res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24 * 7
+  });
   res.json({ id: user._id, email: user.email, name: user.name, role: user.role });
   await logAuditEvent({
     type: 'auth_login',
@@ -54,7 +66,12 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('token');
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/'
+  });
   res.json({ ok: true });
   logAuditEvent({
     type: 'auth_logout',
