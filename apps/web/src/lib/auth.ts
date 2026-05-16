@@ -1,3 +1,4 @@
+
 import { apiFetch } from './api';
 
 export async function getMe() {
@@ -5,13 +6,18 @@ export async function getMe() {
 }
 
 export async function login(email: string, password: string) {
-  return apiFetch('auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  const res = await apiFetch('auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  if (res.token) localStorage.setItem('parselradar_token', res.token);
+  return res;
 }
 
 export async function register(email: string, password: string, name: string) {
-  return apiFetch('auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }) });
+  const res = await apiFetch('auth/register', { method: 'POST', body: JSON.stringify({ email, password, name }) });
+  if (res.token) localStorage.setItem('parselradar_token', res.token);
+  return res;
 }
 
 export async function logout() {
+  localStorage.removeItem('parselradar_token');
   return apiFetch('auth/logout', { method: 'POST' });
 }

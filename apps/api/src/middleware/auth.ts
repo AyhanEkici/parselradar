@@ -14,7 +14,13 @@ export interface AuthRequest extends Request {
 }
 
 export const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.cookies?.token;
+  let token: string | undefined;
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.slice(7);
+  } else if (req.cookies?.token) {
+    token = req.cookies.token;
+  }
   if (!token) return res.status(401).json({ error: 'Yetkisiz' });
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string };

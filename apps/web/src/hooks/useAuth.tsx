@@ -11,6 +11,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		getMe().then(u => setUser(u)).catch(() => setUser(null));
 	}, []);
+	// Listen for login/logout in other tabs
+	useEffect(() => {
+		const handler = () => {
+			getMe().then(u => setUser(u)).catch(() => setUser(null));
+		};
+		window.addEventListener('storage', handler);
+		return () => window.removeEventListener('storage', handler);
+	}, []);
 	return (
 		<AuthContext.Provider value={{ user }}>
 			{children}
