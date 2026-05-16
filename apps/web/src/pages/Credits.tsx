@@ -44,7 +44,7 @@ export default function Credits() {
       <h2 className="text-xl font-bold mb-4">Kredi Yükle</h2>
       <div className="mb-2">Kredi bakiyesi: <b>{credits}</b></div>
       <div className="space-x-2 mt-4">
-        {[5, 10, 25, 50].map(amount => (
+        {[25, 50].map(amount => (
           <button key={amount} className="bg-blue-600 text-white px-4 py-2 rounded" disabled={loading} onClick={() => handleCheckout(amount)}>{amount} Kredi</button>
         ))}
       </div>
