@@ -1,10 +1,40 @@
 import dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' });
 
-export const NODE_ENV = process.env.NODE_ENV || 'development';
-export const JWT_SECRET = process.env.JWT_SECRET || 'changeme';
-export const MONGODB_URI = process.env.MONGODB_URI || '';
-export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
-export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || '';
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || '';
-export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const required = [
+    'MONGODB_URI',
+    'JWT_SECRET',
+    'CLIENT_URL',
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET',
+];
+const missing = required.filter((k) => !process.env[k]);
+if (missing.length) {
+    throw new Error(
+        `Missing required environment variables: ${missing.join(', ')}.\nCheck your .env file and deployment configuration.`
+    );
+}
+
+export const ENV = {
+    NODE_ENV: process.env.NODE_ENV || 'development',
+    JWT_SECRET: process.env.JWT_SECRET!,
+    MONGODB_URI: process.env.MONGODB_URI!,
+    CLIENT_URL: process.env.CLIENT_URL!,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY!,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET!,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || '',
+    PORT: process.env.PORT || '4000',
+};
+
+export const {
+    NODE_ENV,
+    JWT_SECRET,
+    MONGODB_URI,
+    CLIENT_URL,
+    STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET,
+    ADMIN_EMAIL,
+    ADMIN_PASSWORD,
+    PORT
+} = ENV;

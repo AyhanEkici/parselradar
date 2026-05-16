@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@parselradar/api": "file:../.."
+    "@parselradar/api": "file:../..",
+    "helmet": "^8.1.0",
+    "uuid": "^14.0.0"
   }
 }

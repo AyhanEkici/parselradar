@@ -1,4 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
+import { ENV } from '../config/env';
+import { logError } from '../utils/logger';
 
 export function errorHandler(
   err: unknown,
@@ -6,7 +8,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  console.error(err);
   const statusCode =
     typeof err === 'object' &&
     err !== null &&
@@ -23,7 +24,20 @@ export function errorHandler(
       ? (err as { message: string }).message
       : 'Internal server error';
 
-  res.status(statusCode).json({
+  const requestId = req.requestId || '';
+
+  // Log error with requestId
+  logError('API error', { requestId, err });
+
+  // Safe error response
+  const errorResponse: any = {
     error: message,
-  });
+    requestId,
+  };
+  if (ENV.NODE_ENV !== 'production' && err instanceof Error) {
+    errorResponse.stack = err.stack;
+  }
+
+  res.setHeader('X-Request-Id', requestId);
+  res.status(statusCode).json(errorResponse);
 }
