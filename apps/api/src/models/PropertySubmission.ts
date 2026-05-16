@@ -8,14 +8,14 @@ export interface IPropertySubmission extends Document {
   il: string;
   ilce: string;
   mahalleOrKoy: string;
-  addressText: string;
+  addressText?: string;
   latitude?: number;
   longitude?: number;
-  askingPriceTRY: number;
-  areaM2: number;
-  pricePerM2: number;
-  ada: string;
-  parsel: string;
+  askingPriceTRY?: number;
+  areaM2?: number;
+  pricePerM2?: number;
+  ada?: string;
+  parsel?: string;
   pafta?: string;
   nitelik?: string;
   tapuType: string;
@@ -32,7 +32,7 @@ export interface IPropertySubmission extends Document {
   electricity: string;
   water: string;
   villageDistanceText?: string;
-  status: string;
+  status?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,14 +45,14 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   il: { type: String, required: true },
   ilce: { type: String, required: true },
   mahalleOrKoy: { type: String, required: true },
-  addressText: { type: String, required: true },
+  addressText: { type: String },
   latitude: { type: Number },
   longitude: { type: Number },
-  askingPriceTRY: { type: Number, required: true },
-  areaM2: { type: Number, required: true },
-  pricePerM2: { type: Number, required: true },
-  ada: { type: String, required: true },
-  parsel: { type: String, required: true },
+  askingPriceTRY: { type: Number },
+  areaM2: { type: Number },
+  pricePerM2: { type: Number },
+  ada: { type: String },
+  parsel: { type: String },
   pafta: { type: String },
   nitelik: { type: String },
   tapuType: { type: String, required: true },
@@ -69,7 +69,7 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   electricity: { type: String, required: true },
   water: { type: String, required: true },
   villageDistanceText: { type: String },
-  status: { type: String, required: true },
+  status: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model<IPropertySubmission>('PropertySubmission', PropertySubmissionSchema);
