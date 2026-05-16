@@ -26,7 +26,8 @@ const app = express();
 // Hardened CORS
 const isProd = ENV.NODE_ENV === 'production';
 const vercelProd = 'https://parselradar.vercel.app';
-const vercelPreviewPattern = /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/;
+// Old regex: /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/
+const vercelPreviewPattern = /^https:\/\/parselradar.*\.vercel\.app$/;
 const allowedOrigins = isProd
   ? [ENV.CLIENT_URL, vercelProd]
   : [ENV.CLIENT_URL, vercelProd, 'http://localhost:3001', 'http://127.0.0.1:3001'];
