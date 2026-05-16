@@ -12,6 +12,7 @@ import consentRoutes from './routes/consentRoutes';
 import analysisRoutes from './routes/analysisRoutes';
 import reportRoutes from './routes/reportRoutes';
 import adminRoutes from './routes/adminRoutes';
+import auditRoutes from './routes/auditRoutes';
 import cors from 'cors';
 
 dotenv.config({ path: '../../.env' });
@@ -48,7 +49,9 @@ app.use('/properties', documentRoutes);
 app.use('/properties', consentRoutes);
 app.use('/analysis', analysisRoutes);
 app.use('/reports', reportRoutes);
+
 app.use('/admin', adminRoutes);
+app.use('/', auditRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 

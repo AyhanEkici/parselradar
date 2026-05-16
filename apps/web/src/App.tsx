@@ -7,6 +7,7 @@ import Credits from './pages/Credits';
 import Reports from './pages/Reports';
 import AdminProperties from './pages/AdminProperties';
 import AdminDealPool from './pages/AdminDealPool';
+import AdminAuditTimeline from './pages/AdminAuditTimeline';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/reports" element={<Reports />} />
         <Route path="/admin/properties" element={<AdminProperties />} />
         <Route path="/admin/deal-pool" element={<AdminDealPool />} />
+        <Route path="/admin/audit-timeline" element={<AdminAuditTimeline />} />
         <Route path="/properties/new" element={<NewProperty />} />
         <Route path="/properties/:id" element={<PropertyDetail />} />
         <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
