@@ -3,5 +3,6 @@ builder = "NIXPACKS"
 buildCommand = "npm install --prefix packages/shared && npm run build --prefix packages/shared && npm install --prefix apps/api && npm run build --prefix apps/api"
 
 [deploy]
-startCommand = "npm start --prefix apps/api"
+startCommand = "cd apps/api && npm start"
 healthcheckPath = "/health"
+healthcheckTimeout = 300
