@@ -1,0 +1,7 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm install --prefix packages/shared && npm run build --prefix packages/shared && npm install --prefix apps/api && npm run build --prefix apps/api"
+
+[deploy]
+startCommand = "npm start --prefix apps/api"
+healthcheckPath = "/health"

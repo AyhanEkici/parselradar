@@ -26,8 +26,14 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
     }
     const input = parsed.data;
     const doc: Record<string, unknown> = { ...input, userId: user._id };
-    if (input.askingPriceTRY && input.areaM2 && input.areaM2 > 0) {
-      doc.pricePerM2 = input.askingPriceTRY / input.areaM2;
+    const askingPrice = Number(input.askingPriceTRY);
+    const area = Number(input.areaM2);
+    if (
+      Number.isFinite(askingPrice) &&
+      Number.isFinite(area) &&
+      area > 0
+    ) {
+      doc.pricePerM2 = askingPrice / area;
     }
     // createdAt/updatedAt handled by Mongoose timestamps
     const property = await PropertySubmission.create(doc);
