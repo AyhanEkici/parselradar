@@ -5,6 +5,77 @@ import PropertySubmission from '../models/PropertySubmission';
 import DealPoolEntry from '../models/DealPoolEntry';
 import DealShareAudit from '../models/DealShareAudit';
 import ConsentRecord from '../models/ConsentRecord';
+import User from '../models/User';
+import AnalysisRun from '../models/AnalysisRun';
+import CreditLedger from '../models/CreditLedger';
+import StripeCheckoutSession from '../models/StripeCheckoutSession';
+// GET /admin/users
+export const getAdminUsers = async (req: AuthRequest, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(100, parseInt(req.query.limit as string) || 25);
+  const filter: any = {};
+  if (req.query.role) filter.role = req.query.role;
+  if (req.query.search) {
+    const search = req.query.search as string;
+    filter.$or = [
+      { email: { $regex: search, $options: 'i' } },
+      { name: { $regex: search, $options: 'i' } }
+    ];
+  }
+  const total = await User.countDocuments(filter);
+  const users = await User.find(filter)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .select('-passwordHash');
+  res.json({ users, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// GET /admin/analyses
+export const getAdminAnalyses = async (req: AuthRequest, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(100, parseInt(req.query.limit as string) || 25);
+  const filter: any = {};
+  if (req.query.userId) filter.userId = req.query.userId;
+  if (req.query.propertyId) filter.propertySubmissionId = req.query.propertyId;
+  if (req.query.type) filter.productType = req.query.type;
+  const total = await AnalysisRun.countDocuments(filter);
+  const analyses = await AnalysisRun.find(filter)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+  res.json({ analyses, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// GET /admin/credit-ledger
+export const getAdminCreditLedger = async (req: AuthRequest, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(100, parseInt(req.query.limit as string) || 25);
+  const filter: any = {};
+  if (req.query.userId) filter.userId = req.query.userId;
+  if (req.query.type) filter.type = req.query.type;
+  const total = await CreditLedger.countDocuments(filter);
+  const ledger = await CreditLedger.find(filter)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+  res.json({ ledger, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// GET /admin/stripe-sessions
+export const getAdminStripeSessions = async (req: AuthRequest, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(100, parseInt(req.query.limit as string) || 25);
+  const filter: any = {};
+  if (req.query.userId) filter.userId = req.query.userId;
+  if (req.query.status) filter.status = req.query.status;
+  const total = await StripeCheckoutSession.countDocuments(filter);
+  const sessions = await StripeCheckoutSession.find(filter)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(limit);
+  res.json({ sessions, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
 
 export const getAllProperties = async (req: AuthRequest, res: Response) => {
   const properties = await PropertySubmission.find();

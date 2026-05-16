@@ -113,6 +113,18 @@ export const stripeWebhook = async (req: Request, res: Response) => {
         userAgent: req.get('user-agent'),
         success: true,
       });
+      await logAuditEvent({
+        type: 'credits_granted',
+        actorUserId: userId,
+        actorRole: undefined,
+        targetType: 'User',
+        targetId: userId,
+        message: 'Credits granted via Stripe',
+        metadata: { creditAmount, sessionId },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+      });
     }
   }
   res.json({ received: true });
