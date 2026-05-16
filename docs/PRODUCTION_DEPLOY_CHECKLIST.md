@@ -26,12 +26,14 @@
 - `VITE_API_URL` = backend API URL (e.g. https://api.parselradar.com)
 - `CLIENT_URL` = frontend URL (e.g. https://parselradar.com)
 
+
 ## Backend Hosting
 - Use HTTPS (TLS cert required for all endpoints)
 - Set all required envs in deployment config
 - Use a process manager (pm2, systemd, etc.)
 - Monitor logs and health endpoints
 - Restrict SSH and admin access
+- **Manual follow-up:** Ensure all authentication cookies are set with `secure: true` and `sameSite: 'strict'` in production. Review all cookie usage in auth/session flows for compliance.
 
 ## HTTPS Requirements
 - TLS certificate (Let's Encrypt or commercial CA)

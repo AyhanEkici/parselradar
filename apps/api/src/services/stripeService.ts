@@ -1,4 +1,8 @@
 import Stripe from 'stripe';
-import { STRIPE_SECRET_KEY } from '../config/env';
+import { ENV } from '../config/env';
 
-export const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
+const key = ENV.NODE_ENV === 'production'
+	? ENV.STRIPE_SECRET_KEY || ENV.STRIPE_LIVE_SECRET_KEY
+	: ENV.STRIPE_SECRET_KEY || ENV.STRIPE_TEST_SECRET_KEY;
+
+export const stripe = new Stripe(key, { apiVersion: '2023-10-16' });

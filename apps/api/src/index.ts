@@ -19,7 +19,20 @@ import auditRoutes from './routes/auditRoutes';
 import helmet from 'helmet';
 import { requestIdMiddleware } from './middleware/requestId';
 
+
+
 const app = express();
+
+// Hardened CORS
+const isProd = ENV.NODE_ENV === 'production';
+const allowedOrigins = isProd
+  ? [ENV.CLIENT_URL]
+  : [ENV.CLIENT_URL, 'http://localhost:3001', 'http://127.0.0.1:3001'];
+
+// Trust proxy for production (needed for secure cookies behind proxy/load balancer)
+if (isProd) {
+  app.set('trust proxy', 1);
+}
 
 // Helmet for security headers
 app.use(helmet());
@@ -27,11 +40,6 @@ app.use(helmet());
 // Request ID middleware
 app.use(requestIdMiddleware);
 
-// Hardened CORS
-const isProd = ENV.NODE_ENV === 'production';
-const allowedOrigins = isProd
-  ? [ENV.CLIENT_URL]
-  : [ENV.CLIENT_URL, 'http://localhost:3001', 'http://127.0.0.1:3001'];
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -60,6 +68,7 @@ app.options(
 );
 
 app.use(express.json());
+
 app.use(cookieParser());
 
 mongoose.connect(ENV.MONGODB_URI)
