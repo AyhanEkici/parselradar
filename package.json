@@ -9,11 +9,11 @@
     "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
     "seed": "npm run seed --prefix apps/api",
     "test": "npm run test --prefix packages/shared && npm run test --prefix apps/api && npm run test --prefix apps/web",
-    "smoke": "npm run smoke --prefix apps/api"
-    ,
+    "smoke": "npm run smoke --prefix apps/api",
     "pilot:env": "npm run pilot:env --prefix apps/api",
     "pilot:checklist": "npm run pilot:checklist --prefix apps/api",
-    "pilot:flow": "npm run pilot:flow --prefix apps/api"
+    "pilot:flow": "npm run pilot:flow --prefix apps/api",
+    "start": "npm start --prefix apps/api"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
