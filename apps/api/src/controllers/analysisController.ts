@@ -21,11 +21,23 @@ export const quickScore = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const property = await PropertySubmission.findOne({ _id: req.params.propertyId, userId: user._id });
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+
+  // Check for existing quick-score AnalysisRun for this user/property
+  const existingRun = await AnalysisRun.findOne({ propertySubmissionId: property._id, userId: user._id, productType: 'QUICK_SCORE' }).sort({ createdAt: -1 });
+  if (existingRun) {
+    return res.json({
+      id: existingRun._id,
+      reused: true,
+      message: 'Idempotent: existing quick-score result reused.',
+      ...existingRun.previewSummary
+    });
+  }
+
   await deductCredits(new mongoose.Types.ObjectId(user._id), COSTS.quick);
   const documents = await DocumentUpload.find({ propertySubmissionId: property._id });
   const result = calculateScore({ property, documents, productType: 'QUICK_SCORE' });
   const run = await AnalysisRun.create({ propertySubmissionId: property._id, userId: user._id, productType: 'QUICK_SCORE', score: result.score, signal: result.signal, riskFlags: result.riskFlags, missingInfo: result.missingInfo, assumptions: result.assumptions, unverifiableInfo: result.unverifiableInfo, previewSummary: result.previewSummary, fullAnalysis: result.fullAnalysis });
-  res.json({ id: run._id, ...result.previewSummary });
+  res.json({ id: run._id, reused: false, ...result.previewSummary });
 };
 
 export const parselInsight = async (req: AuthRequest, res: Response) => {
