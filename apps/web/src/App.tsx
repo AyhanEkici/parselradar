@@ -12,6 +12,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminAnalyses from './pages/AdminAnalyses';
 import AdminCreditLedger from './pages/AdminCreditLedger';
 import AdminStripeSessions from './pages/AdminStripeSessions';
+import AdminPropertyDocuments from './pages/AdminPropertyDocuments';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/reports" element={<Reports />} />
         <Route path="/admin/properties" element={<AdminProperties />} />
         <Route path="/admin/properties/:propertyId" element={<PropertyDetail />} />
+        <Route path="/admin/properties/:propertyId/documents" element={<AdminPropertyDocuments />} />
         <Route path="/admin/deal-pool" element={<AdminDealPool />} />
         <Route path="/admin/audit-timeline" element={<AdminAuditTimeline />} />
         <Route path="/admin/users" element={<AdminUsers />} />

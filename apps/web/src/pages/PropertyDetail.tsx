@@ -34,12 +34,22 @@ export default function PropertyDetail() {
   interface DetailResponse {
     property: Property;
     owner?: { email?: string; name?: string; role?: string };
+    creator?: { email?: string; name?: string; role?: string };
+    creationSource?: string;
+    generatedPropertyTitle?: string;
+    titleDerivation?: {
+      ownerName?: string;
+      address?: string;
+      city?: string;
+      district?: string;
+    };
     documents: Array<{
       _id: string;
       documentType: string;
       originalName: string;
       createdAt?: string;
       uploadedAt: string;
+      fileUrl?: string;
     }>;
     analyses: Array<{
       _id: string;
@@ -82,6 +92,10 @@ export default function PropertyDetail() {
       return {
         property: maybe.property as DetailResponse['property'],
         owner: maybe.owner,
+        creator: maybe.creator,
+        creationSource: (maybe.creationSource as string) || '-',
+        generatedPropertyTitle: (maybe.generatedPropertyTitle as string) || '-',
+        titleDerivation: maybe.titleDerivation as DetailResponse['titleDerivation'],
         documents: Array.isArray(maybe.documents) ? maybe.documents : [],
         analyses: Array.isArray(maybe.analyses) ? maybe.analyses : [],
         latestAnalysis: maybe.latestAnalysis as DetailResponse['latestAnalysis'],
@@ -93,6 +107,10 @@ export default function PropertyDetail() {
     return {
       property: maybe as DetailResponse['property'],
       owner: undefined,
+      creator: undefined,
+      creationSource: '-',
+      generatedPropertyTitle: '-',
+      titleDerivation: undefined,
       documents: [],
       analyses: [],
       latestAnalysis: undefined,
@@ -135,7 +153,7 @@ export default function PropertyDetail() {
   if (error) return <div className="text-center mt-20 text-red-600">{error}</div>;
   if (!detail) return <div className="text-center mt-20">Yükleniyor...</div>;
 
-  const { property, owner, documents, analysisSummary, analyses, auditReferences, latestAnalysis } = detail;
+  const { property, owner, creator, creationSource, generatedPropertyTitle, titleDerivation, documents, analysisSummary, analyses, auditReferences, latestAnalysis } = detail;
 
   const formatMoney = (value?: number) =>
     typeof value === 'number' ? `${value.toLocaleString('tr-TR')} TL` : '-';
@@ -186,6 +204,20 @@ export default function PropertyDetail() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-sm">
+        <section className="border rounded p-4">
+          <h3 className="font-semibold mb-2">Generated Property Title</h3>
+          <div className="font-medium break-words">{generatedPropertyTitle || '-'}</div>
+          <div className="mt-2 text-xs text-gray-700">Derived from:</div>
+          <ul className="text-xs text-gray-600 mt-1 space-y-1">
+            <li>ownerName: {titleDerivation?.ownerName || '-'}</li>
+            <li>address: {titleDerivation?.address || '-'}</li>
+            <li>city: {titleDerivation?.city || '-'}</li>
+            <li>district: {titleDerivation?.district || '-'}</li>
+          </ul>
+          <div className="mt-2 text-xs text-gray-700">Creation source: {creationSource || '-'}</div>
+          <div className="text-xs text-gray-700">Creator: {creator?.name || '-'} ({creator?.email || '-'})</div>
+        </section>
+
         <section className="border rounded p-4">
           <h3 className="font-semibold mb-2">Yüklenen Belgeler</h3>
           {documents.length === 0 ? (
@@ -267,7 +299,12 @@ export default function PropertyDetail() {
         >
           {rerunLoading ? 'Running...' : 'Re-run Analysis'}
         </button>
-        <Link to={`/properties/${resolvedId}/documents`} className="bg-gray-800 text-white px-3 py-2 rounded text-sm">View Documents</Link>
+        <Link
+          to={isAdminPath ? `/admin/properties/${resolvedId}/documents` : `/properties/${resolvedId}/documents`}
+          className="bg-gray-800 text-white px-3 py-2 rounded text-sm"
+        >
+          View Documents
+        </Link>
       </div>
       {rerunError && <div className="mt-2 text-sm text-red-600">{rerunError}</div>}
 

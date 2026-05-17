@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
 import { ENV } from './config/env';
 import { logInfo, logError, logStartup } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
@@ -82,6 +83,9 @@ app.options(
 app.use(express.json());
 
 app.use(cookieParser());
+
+// Serve uploaded files for document preview/download
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 mongoose.connect(ENV.MONGODB_URI)
   .then(() => {

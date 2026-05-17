@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import path from 'path';
 import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
 import PropertySubmission from '../models/PropertySubmission';
@@ -11,6 +12,21 @@ import CreditLedger from '../models/CreditLedger';
 import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import DocumentUpload from '../models/DocumentUpload';
 import AuditEvent from '../models/AuditEvent';
+
+const toPublicFileUrl = (storedPath: string) => {
+  const normalized = storedPath.replace(/\\/g, '/');
+  const index = normalized.lastIndexOf('/uploads/');
+  if (index >= 0) return normalized.substring(index);
+  return `/uploads/${path.basename(normalized)}`;
+};
+
+const mapCreationSource = (inputMethod?: string) => {
+  const value = String(inputMethod || '').toUpperCase();
+  if (value.includes('URL') || value.includes('IMPORT')) return 'IMPORT';
+  if (value.includes('API')) return 'API';
+  if (value.includes('SCRAP')) return 'SCRAPER';
+  return 'MANUAL_ENTRY';
+};
 // GET /admin/users
 export const getAdminUsers = async (req: AuthRequest, res: Response) => {
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
@@ -118,11 +134,23 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
   const visibleDocuments = documents.map((doc: any) => ({
     ...doc,
     createdAt: doc.uploadedAt,
+    fileUrl: toPublicFileUrl(doc.storedPath || ''),
   }));
+  const titleFields = {
+    ownerName: owner?.name || '-',
+    address: property.addressText || '-',
+    city: (property as any).il || '-',
+    district: (property as any).ilce || '-',
+  };
+  const generatedPropertyTitle = `${titleFields.ownerName}, ${titleFields.address}, ${titleFields.district}/${titleFields.city}`;
 
   res.json({
     property,
     owner,
+    creator: owner,
+    creationSource: mapCreationSource((property as any).inputMethod),
+    generatedPropertyTitle,
+    titleDerivation: titleFields,
     documents: visibleDocuments,
     analyses,
     latestAnalysis,
