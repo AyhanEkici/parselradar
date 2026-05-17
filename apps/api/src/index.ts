@@ -9,6 +9,8 @@ import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/authRoutes';
 import creditRoutes from './routes/creditRoutes';
 import stripeRoutes from './routes/stripeRoutes';
+import { stripeWebhook } from './controllers/stripeController';
+import expressRaw from 'express';
 import propertyRoutes from './routes/propertyRoutes';
 import documentRoutes from './routes/documentRoutes';
 import consentRoutes from './routes/consentRoutes';
@@ -40,9 +42,14 @@ if (isProd) {
 // Helmet for security headers
 app.use(helmet());
 
+
 // Request ID middleware
 app.use(requestIdMiddleware);
 
+// Mount Stripe webhook route BEFORE express.json()
+app.post('/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhook);
+
+// CORS and options
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -85,9 +92,14 @@ mongoose.connect(ENV.MONGODB_URI)
     process.exit(1);
   });
 
+
 app.use('/auth', authRoutes);
 app.use('/credits', creditRoutes);
-app.use('/stripe', stripeRoutes);
+// Mount remaining stripe routes (excluding webhook)
+app.use('/stripe', (req, res, next) => {
+  if (req.path === '/webhook') return next();
+  return stripeRoutes(req, res, next);
+});
 app.use('/properties', propertyRoutes);
 app.use('/properties', documentRoutes);
 app.use('/properties', consentRoutes);
