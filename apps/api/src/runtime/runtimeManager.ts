@@ -1,66 +1,47 @@
 import { RUNTIME_THRESHOLDS } from '../config/runtime/runtimeThresholds';
-import { WORKER_POLICIES } from '../config/runtime/workerPolicies';
+import { getRedisHealth } from '../redis/redisHealth';
 import { getAlertQueueState } from '../queues/alertQueue';
 import { getAnalysisQueueState } from '../queues/analysisQueue';
 import { getGeoQueueState } from '../queues/geoQueue';
 import { getIngestionQueueState } from '../queues/ingestionQueue';
 import { getMarketQueueState } from '../queues/marketQueue';
 import { getRuntimeConfig } from './runtimeConfig';
-import { QueueState, RuntimeStatus, WorkerState } from './runtimeState';
+import { RuntimeStatus } from './runtimeState';
+import { toWorkerState } from './workerFactory';
+import { ensureAnalysisWorker } from '../workers/analysisWorker';
+import { ensureMarketWorker } from '../workers/marketWorker';
+import { ensureGeoWorker } from '../workers/geoWorker';
+import { ensureAlertWorker } from '../workers/alertWorker';
+import { ensureIngestionWorker } from '../workers/ingestionWorker';
 
-function buildWorkerState(name: keyof typeof WORKER_POLICIES, queueState: QueueState): WorkerState {
+export async function buildRuntimeManagerSnapshot() {
   const config = getRuntimeConfig();
-  const policy = WORKER_POLICIES[name];
-  const envKey = `${name.replace(/([A-Z])/g, '_$1').toUpperCase()}_RUNNING`;
-  const runningFlag = process.env[envKey] === '1';
-  const failFlag = process.env[`${name.replace(/([A-Z])/g, '_$1').toUpperCase()}_FAIL`] === '1';
+  const redisHealth = await getRedisHealth();
 
-  let state: WorkerState['state'] = 'READY';
-  let reason = 'Worker initialized.';
-
-  if (!config.redisConfigured) {
-    state = 'NOT_CONFIGURED';
-    reason = 'REDIS_URL is missing, worker cannot run in distributed mode.';
-  } else if (!config.workersEnabled || !policy.enabledByDefault) {
-    state = 'DISABLED';
-    reason = 'Workers are disabled by configuration.';
-  } else if (failFlag || queueState.state === 'FAILED') {
-    state = 'FAILED';
-    reason = 'Worker or upstream queue is failed.';
-  } else if (queueState.state === 'DEGRADED') {
-    state = 'DEGRADED';
-    reason = 'Queue degraded, worker switched to degraded mode.';
-  } else if (runningFlag) {
-    state = 'RUNNING';
-    reason = 'Worker is marked running by runtime flag.';
+  if (config.workersEnabled && redisHealth.connected && redisHealth.state !== 'FAILED') {
+    await Promise.all([
+      ensureAnalysisWorker(),
+      ensureMarketWorker(),
+      ensureGeoWorker(),
+      ensureAlertWorker(),
+      ensureIngestionWorker(),
+    ]);
   }
 
-  return {
-    name,
-    queueName: queueState.name,
-    state,
-    reason,
-    concurrency: policy.concurrency,
-    checkedAt: new Date().toISOString(),
-  };
-}
-
-export function buildRuntimeManagerSnapshot() {
-  const config = getRuntimeConfig();
-  const queueStates: QueueState[] = [
+  const queueStates = await Promise.all([
     getAnalysisQueueState(),
     getMarketQueueState(),
     getGeoQueueState(),
     getAlertQueueState(),
     getIngestionQueueState(),
-  ];
+  ]);
 
-  const workerStates: WorkerState[] = [
-    buildWorkerState('analysisWorker', queueStates[0]),
-    buildWorkerState('marketWorker', queueStates[1]),
-    buildWorkerState('geoWorker', queueStates[2]),
-    buildWorkerState('alertWorker', queueStates[3]),
-    buildWorkerState('ingestionWorker', queueStates[4]),
+  const workerStates = [
+    toWorkerState('analysis', 'analysis'),
+    toWorkerState('market', 'market'),
+    toWorkerState('geo', 'geo'),
+    toWorkerState('alert', 'alert'),
+    toWorkerState('ingestion', 'ingestion'),
   ];
 
   const queueDegradedCount = queueStates.filter((q) => ['DEGRADED', 'FAILED'].includes(q.state)).length;
@@ -73,26 +54,33 @@ export function buildRuntimeManagerSnapshot() {
   let reason = 'Runtime is ready.';
   let mode: RuntimeStatus['mode'] = 'production-ready';
 
-  if (!config.redisConfigured) {
-    state = 'NOT_CONFIGURED';
-    reason = 'REDIS_URL is not configured for distributed queue runtime.';
-    mode = 'standby';
-  } else if (!config.queuesEnabled && !config.workersEnabled) {
+  if (!config.distributedRuntimeEnabled) {
     state = 'DISABLED';
-    reason = 'Queues and workers are disabled by runtime flags.';
+    reason = 'Distributed runtime is disabled by configuration.';
     mode = 'standby';
+  } else if (!config.redisConfigured) {
+    state = 'NOT_CONFIGURED';
+    reason = 'REDIS_URL is not configured for distributed runtime.';
+    mode = 'standby';
+  } else if (redisHealth.state === 'FAILED') {
+    state = 'FAILED';
+    reason = `Redis health failed: ${redisHealth.message}`;
+    mode = 'degraded';
   } else if (queueStates.some((q) => q.state === 'FAILED') || workerStates.some((w) => w.state === 'FAILED')) {
     state = 'FAILED';
     reason = 'At least one queue or worker is failed.';
     mode = 'degraded';
-  } else if (queueRatio >= RUNTIME_THRESHOLDS.degradedQueueRatio || workerRatio >= RUNTIME_THRESHOLDS.degradedWorkerRatio) {
+  } else if (
+    redisHealth.state === 'DEGRADED' ||
+    queueRatio >= RUNTIME_THRESHOLDS.degradedQueueRatio ||
+    workerRatio >= RUNTIME_THRESHOLDS.degradedWorkerRatio
+  ) {
     state = 'DEGRADED';
-    reason = 'Runtime degraded ratio threshold is exceeded.';
+    reason = 'Runtime entered degraded mode due to Redis or queue worker thresholds.';
     mode = 'degraded';
   } else if (queueStates.some((q) => q.state === 'RUNNING') || workerStates.some((w) => w.state === 'RUNNING')) {
     state = 'RUNNING';
-    reason = 'Runtime has active queue or worker execution.';
-    mode = 'production-ready';
+    reason = 'Runtime has active distributed execution.';
   }
 
   const runtimeStatus: RuntimeStatus = {
@@ -101,8 +89,14 @@ export function buildRuntimeManagerSnapshot() {
     mode,
     redisConfigured: config.redisConfigured,
     bullmqConfigured: config.bullmqEnabled,
+    distributedRuntimeEnabled: config.distributedRuntimeEnabled,
     checkedAt: new Date().toISOString(),
   };
 
-  return { runtimeStatus, queueStates, workerStates };
+  return {
+    runtimeStatus,
+    queueStates,
+    workerStates,
+    redisHealth,
+  };
 }

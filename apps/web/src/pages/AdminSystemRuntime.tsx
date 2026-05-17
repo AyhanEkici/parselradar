@@ -8,6 +8,11 @@ import { WorkerStatusCard } from '../components/runtime/WorkerStatusCard';
 import { RuntimeMetricsCard } from '../components/runtime/RuntimeMetricsCard';
 import { SecurityHealthCard } from '../components/runtime/SecurityHealthCard';
 import { OperationalSnapshotCard } from '../components/runtime/OperationalSnapshotCard';
+import { RedisHealthCard } from '../components/runtime/RedisHealthCard';
+import { QueueMetricsCard } from '../components/runtime/QueueMetricsCard';
+import { WorkerMetricsCard } from '../components/runtime/WorkerMetricsCard';
+import { RuntimeWarningsCard } from '../components/runtime/RuntimeWarningsCard';
+import { ThroughputCard } from '../components/runtime/ThroughputCard';
 
 type RuntimeResponse = {
   runtimeStatus?: {
@@ -27,6 +32,23 @@ type RuntimeResponse = {
     staleAnalysisCount?: number;
     staleRefreshCount?: number;
   };
+  redisStatus?: string;
+  redisLatency?: number | null;
+  queueMetrics?: Array<{
+    queue: string;
+    pending: number;
+    active: number;
+    completed: number;
+    failed: number;
+    delayed: number;
+    retrying: number;
+    backend: 'DISTRIBUTED' | 'LOCAL_FALLBACK' | string;
+  }>;
+  workerMetrics?: Array<{ worker: string; processed: number; failed: number; restarted: number; running: boolean }>;
+  throughput?: { analysisPerHour?: number; refreshPerHour?: number };
+  runtimeWarnings?: string[];
+  fallbackMode?: 'LOCAL_FALLBACK' | 'NONE';
+  distributedRuntimeEnabled?: boolean;
   operationalSnapshot?: {
     generatedAt?: string;
     degradedQueues?: number;
@@ -88,11 +110,37 @@ export default function AdminSystemRuntime() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-4">
+                  <RedisHealthCard
+                    redisStatus={data?.redisStatus}
+                    redisLatency={data?.redisLatency}
+                    distributedRuntimeEnabled={data?.distributedRuntimeEnabled}
+                    fallbackMode={data?.fallbackMode}
+                  />
+                </div>
+                <div className="xl:col-span-4">
+                  <ThroughputCard throughput={data?.throughput} />
+                </div>
+                <div className="xl:col-span-4">
+                  <RuntimeWarningsCard runtimeWarnings={data?.runtimeWarnings} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
                 <div className="xl:col-span-6">
                   <QueueHealthCard queueStates={data?.queueStates} />
                 </div>
                 <div className="xl:col-span-6">
                   <WorkerStatusCard workerStates={data?.workerStates} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-6">
+                  <QueueMetricsCard queueMetrics={data?.queueMetrics} />
+                </div>
+                <div className="xl:col-span-6">
+                  <WorkerMetricsCard workerMetrics={data?.workerMetrics} />
                 </div>
               </div>
 

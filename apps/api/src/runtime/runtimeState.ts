@@ -27,6 +27,7 @@ export interface RuntimeStatus {
   mode: 'production-ready' | 'degraded' | 'standby';
   redisConfigured: boolean;
   bullmqConfigured: boolean;
+  distributedRuntimeEnabled: boolean;
   checkedAt: string;
 }
 
@@ -58,6 +59,32 @@ export interface OperationalSnapshot {
   queueStates: QueueState[];
   workerStates: WorkerState[];
   runtimeMetrics: RuntimeMetrics;
+  redisStatus: RuntimeTruthState;
+  redisLatency: number | null;
+  queueMetrics: Array<{
+    queue: string;
+    pending: number;
+    active: number;
+    completed: number;
+    failed: number;
+    delayed: number;
+    retrying: number;
+    backend: 'DISTRIBUTED' | 'LOCAL_FALLBACK';
+  }>;
+  workerMetrics: Array<{
+    worker: string;
+    processed: number;
+    failed: number;
+    restarted: number;
+    running: boolean;
+  }>;
+  throughput: {
+    analysisPerHour: number;
+    refreshPerHour: number;
+  };
+  runtimeWarnings: string[];
+  fallbackMode: 'LOCAL_FALLBACK' | 'NONE';
+  distributedRuntimeEnabled: boolean;
   operationalSnapshot: {
     generatedAt: string;
     degradedQueues: number;
