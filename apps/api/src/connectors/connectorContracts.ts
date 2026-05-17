@@ -35,3 +35,28 @@ export type ConnectorTestResult = {
   checkedAt: string;
   details?: Record<string, unknown>;
 };
+
+// V19: Structured test outcome returned by each connector's test() method
+export type ConnectorTestOutcome = {
+  state: ConnectorState;
+  message: string;
+  samplePayloadSchema?: Record<string, unknown>;
+  checkedAt: string;
+};
+
+// V19: Result of a sample payload validation
+export type ConnectorSampleValidationResult = {
+  valid: boolean;
+  errors: string[];
+};
+
+// V19: Full execution contract that each connector module must implement
+export type ConnectorExecutionContract = {
+  key: ConnectorKey;
+  requiredEnv: string[];
+  legalRequirement: string;
+  status(): ConnectorState;
+  test(): Promise<ConnectorTestOutcome>;
+  validateSample(sample: unknown): ConnectorSampleValidationResult;
+  normalizeSample(sample: unknown): Record<string, unknown>;
+};

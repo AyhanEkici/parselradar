@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { CONNECTOR_REGISTRY, findConnectorByKey } from '../connectors/connectorRegistry';
+import { findConnectorExecution } from '../connectors/connectorExecutionRegistry';
 import { buildConnectorReadiness } from '../services/connectorActivation/buildConnectorReadiness';
 import { buildLegalSourceRegistry } from '../services/connectorActivation/buildLegalSourceRegistry';
 import { validateConnectorCredentials } from '../services/connectorActivation/validateConnectorCredentials';
@@ -9,6 +10,14 @@ import { buildConnectorActivationPlan } from '../services/connectorActivation/bu
 import { buildConnectorAuditTrail } from '../services/connectorActivation/buildConnectorAuditTrail';
 import { connectorStatus } from '../connectors/connectorStatus';
 import { SOURCE_LEGAL_REQUIREMENTS } from '../config/connectors/sourceLegalRequirements';
+import { storeConnectorCredentialProfile } from '../services/connectorActivation/storeConnectorCredentialProfile';
+import { getConnectorActivationState } from '../services/connectorActivation/getConnectorActivationState';
+import { executeConnectorTestRun } from '../services/connectorActivation/executeConnectorTestRun';
+import { activateConnectorIfEligible } from '../services/connectorActivation/activateConnectorIfEligible';
+import { deactivateConnector } from '../services/connectorActivation/deactivateConnector';
+import { buildConnectorActivationAudit } from '../services/connectorActivation/buildConnectorActivationAudit';
+import ConnectorSourceApproval from '../models/ConnectorSourceApproval';
+import { logAuditEvent } from '../utils/auditLog';
 
 export const getAdminConnectors = async (_req: AuthRequest, res: Response) => {
   const readiness = buildConnectorReadiness();
@@ -63,5 +72,154 @@ export const getAdminConnectorAuditTrail = async (_req: AuthRequest, res: Respon
   return res.json({
     connectorsTracked: CONNECTOR_REGISTRY.map((c) => c.key),
     ...audits,
+  });
+};
+
+// V19: POST /admin/connectors/:connectorKey/credentials
+// Stores credential presence mask — never raw secrets.
+// Body: { presentKeys: string[] } — list of env var names that ARE present
+export const postAdminConnectorCredentials = async (req: AuthRequest, res: Response) => {
+  const { connectorKey } = req.params;
+  const connector = findConnectorByKey(connectorKey);
+  const execution = findConnectorExecution(connectorKey);
+  if (!connector || !execution) return res.status(404).json({ error: 'Connector not found' });
+
+  const presentKeys: unknown = req.body?.presentKeys;
+  if (!Array.isArray(presentKeys) || presentKeys.some((k) => typeof k !== 'string')) {
+    return res.status(400).json({ error: 'presentKeys must be an array of strings' });
+  }
+
+  const result = await storeConnectorCredentialProfile({
+    connectorKey,
+    presentKeys: presentKeys as string[],
+    allRequiredKeys: execution.requiredEnv,
+    userId: req.user!._id.toString(),
+    ip: req.ip,
+  });
+
+  return res.json(result);
+};
+
+// V19: GET /admin/connectors/:connectorKey — enhanced with activation state
+export const getAdminConnectorActivationState = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const [activationState, credentials, activationPlan] = await Promise.all([
+    getConnectorActivationState(req.params.connectorKey),
+    validateConnectorCredentials(connector),
+    buildConnectorActivationPlan(connector),
+  ]);
+
+  return res.json({
+    connector: {
+      ...connector,
+      legalRequirement: SOURCE_LEGAL_REQUIREMENTS[connector.legalRequirementKey],
+    },
+    status: connectorStatus(connector),
+    activationState,
+    credentials,
+    activationPlan,
+  });
+};
+
+// V19: POST /admin/connectors/:connectorKey/test
+export const postAdminConnectorTestV19 = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const result = await executeConnectorTestRun({
+    connectorKey: req.params.connectorKey,
+    userId: req.user!._id.toString(),
+    ip: req.ip,
+  });
+
+  return res.json(result);
+};
+
+// V19: POST /admin/connectors/:connectorKey/activate
+export const postAdminConnectorActivate = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const result = await activateConnectorIfEligible({
+    connectorKey: req.params.connectorKey,
+    userId: req.user!._id.toString(),
+    ip: req.ip,
+  });
+
+  if (!result.activated) {
+    return res.status(422).json({ error: result.reason });
+  }
+
+  return res.json(result);
+};
+
+// V19: POST /admin/connectors/:connectorKey/deactivate
+export const postAdminConnectorDeactivate = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const result = await deactivateConnector({
+    connectorKey: req.params.connectorKey,
+    userId: req.user!._id.toString(),
+    ip: req.ip,
+  });
+
+  if (!result.deactivated) {
+    return res.status(422).json({ error: result.reason });
+  }
+
+  return res.json(result);
+};
+
+// V19: GET /admin/connectors/:connectorKey/audit
+export const getAdminConnectorAuditByKey = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const audit = await buildConnectorActivationAudit(req.params.connectorKey);
+  return res.json(audit);
+};
+
+// V19: PATCH /admin/connectors/:connectorKey/source-approval
+// Body: { approved: boolean, note?: string }
+export const patchAdminConnectorSourceApproval = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const { approved, note } = req.body ?? {};
+  if (typeof approved !== 'boolean') {
+    return res.status(400).json({ error: 'approved must be a boolean' });
+  }
+
+  const record = await ConnectorSourceApproval.findOneAndUpdate(
+    { connectorKey: req.params.connectorKey },
+    {
+      connectorKey: req.params.connectorKey,
+      approved,
+      approvedByUserId: req.user!._id.toString(),
+      approvedAt: approved ? new Date() : undefined,
+      note: typeof note === 'string' ? note : undefined,
+    },
+    { upsert: true, new: true },
+  );
+
+  await logAuditEvent({
+    type: 'connector_source_approval_updated',
+    actorUserId: req.user!._id.toString(),
+    targetType: 'Connector',
+    targetId: req.params.connectorKey,
+    message: `Source approval ${approved ? 'granted' : 'revoked'} for connector: ${req.params.connectorKey}`,
+    metadata: { connectorKey: req.params.connectorKey, approved },
+    ip: req.ip,
+    success: true,
+  });
+
+  return res.json({
+    connectorKey: record.connectorKey,
+    approved: record.approved,
+    approvedAt: record.approvedAt,
+    note: record.note,
   });
 };
