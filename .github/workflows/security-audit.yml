@@ -1,0 +1,24 @@
+name: Security Audit
+
+on:
+  push:
+    paths:
+      - 'apps/api/src/security/**'
+      - '.github/workflows/security-audit.yml'
+  pull_request:
+    paths:
+      - 'apps/api/src/security/**'
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --prefix apps/api
+      - name: npm audit (non-blocking)
+        run: npm audit --audit-level=high || true

@@ -14,6 +14,7 @@ import AdminCreditLedger from './pages/AdminCreditLedger';
 import AdminStripeSessions from './pages/AdminStripeSessions';
 import AdminPropertyDocuments from './pages/AdminPropertyDocuments';
 import AdminSystemRuntime from './pages/AdminSystemRuntime';
+import AdminDeploymentOverview from './pages/AdminDeploymentOverview';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -48,6 +49,7 @@ export default function App() {
             <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a>
             <a href="/admin/properties" className="hover:underline">Properties</a>
             <a href="/admin/runtime" className="hover:underline">Runtime</a>
+            <a href="/admin/deployment" className="hover:underline">Deployment</a>
             <a href="/investor" className="hover:underline">Investor</a>
             <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
             <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
@@ -73,6 +75,7 @@ export default function App() {
           <Route path="/admin/credit-ledger" element={<AdminCreditLedger />} />
           <Route path="/admin/stripe-sessions" element={<AdminStripeSessions />} />
           <Route path="/admin/runtime" element={<AdminSystemRuntime />} />
+          <Route path="/admin/deployment" element={<AdminDeploymentOverview />} />
           <Route path="/properties/new" element={<NewProperty />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/properties/:id/documents" element={<PropertyDocuments />} />

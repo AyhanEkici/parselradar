@@ -1,0 +1,31 @@
+name: Deploy Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docker/**'
+      - 'infra/**'
+      - '.github/workflows/deploy-check.yml'
+
+jobs:
+  deploy-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate docker templates exist
+        run: |
+          test -f docker/Dockerfile.api
+          test -f docker/Dockerfile.web
+          test -f docker/docker-compose.yml
+          test -f docker/docker-compose.prod.yml
+      - name: Validate infra templates exist
+        run: |
+          test -f infra/deployment.example.env
+          test -f infra/runtime.example.env
+          test -f infra/redis.example.env
+          test -f infra/mongodb.example.env
+          test -f infra/monitoring.example.env
+      - name: Deployment truth-state
+        run: echo "Templates validated. No active deployment is implied by this workflow."

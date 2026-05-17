@@ -21,6 +21,7 @@ const navItems: AdminNavItem[] = [
   { label: 'Stripe Sessions', to: '/admin/stripe-sessions', matchPrefixes: ['/admin/stripe-sessions'] },
   { label: 'Properties', to: '/admin/properties', matchPrefixes: ['/admin/properties'] },
   { label: 'Runtime', to: '/admin/runtime', matchPrefixes: ['/admin/runtime'] },
+  { label: 'Deployment', to: '/admin/deployment', matchPrefixes: ['/admin/deployment'] },
 ];
 
 export function AdminLayout({ title = 'Admin Area', children }: AdminLayoutProps) {
