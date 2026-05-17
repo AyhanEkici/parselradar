@@ -36,6 +36,9 @@ const CONNECTOR_SERVICES = [
   'activateConnectorIfEligible.ts',
   'buildConnectorActivationAudit.ts',
   'deactivateConnector.ts',
+  'connectorRateLimiter.ts',
+  'connectorRetryPolicy.ts',
+  'connectorFreshnessTracker.ts',
   'executeConnectorTestRun.ts',
   'getConnectorActivationState.ts',
   'storeConnectorCredentialProfile.ts',
@@ -58,6 +61,9 @@ export function verifyConnectors(): VerificationSection {
   const registryPath = apiPath('connectors', 'connectorExecutionRegistry.ts');
   const routePath = apiPath('routes', 'connectorActivationRoutes.ts');
   const policyPath = apiPath('config', 'connectors', 'connectorActivationPolicies.ts');
+  const v23TkgmProductionPath = apiPath('connectors', 'tkgmProductionConnector.ts');
+  const v23MunicipalityPlanningPath = apiPath('connectors', 'municipalityPlanningConnector.ts');
+  const planningNormalizerPath = apiPath('services', 'planning', 'planningPayloadNormalizer.ts');
 
   for (const requiredPath of [registryPath, routePath, policyPath, apiPath('controllers', 'connectorActivationController.ts')]) {
     checks.push(
@@ -66,6 +72,60 @@ export function verifyConnectors(): VerificationSection {
         `${requiredPath.split(/[/\\]/).slice(-1)[0]} exists`,
         fileExists(requiredPath) ? 'PASS' : 'FAIL',
         fileExists(requiredPath) ? 'Required connector surface file is present.' : 'Required connector surface file is missing.',
+      ),
+    );
+  }
+
+  for (const v23Path of [v23TkgmProductionPath, v23MunicipalityPlanningPath, planningNormalizerPath]) {
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        `${v23Path.split(/[/\\]/).slice(-1)[0]} exists`,
+        fileExists(v23Path) ? 'PASS' : 'FAIL',
+        fileExists(v23Path) ? 'V23 onboarding surface file is present.' : 'V23 onboarding surface file is missing.',
+      ),
+    );
+  }
+
+  if (fileExists(registryPath)) {
+    const registryContent = readText(registryPath);
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        'Execution registry uses V23 TKGM connector',
+        registryContent.includes('tkgmProductionConnectorExecution') ? 'PASS' : 'FAIL',
+        registryContent.includes('tkgmProductionConnectorExecution')
+          ? 'Connector execution registry references the V23 TKGM production connector.'
+          : 'Connector execution registry does not reference the V23 TKGM production connector.',
+      ),
+      makeCheck(
+        CATEGORY,
+        'Execution registry uses V23 municipality planning connector',
+        registryContent.includes('municipalityPlanningConnectorExecution') ? 'PASS' : 'FAIL',
+        registryContent.includes('municipalityPlanningConnectorExecution')
+          ? 'Connector execution registry references the V23 municipality planning connector.'
+          : 'Connector execution registry does not reference the V23 municipality planning connector.',
+      ),
+    );
+  }
+
+  if (fileExists(planningNormalizerPath)) {
+    const normalizerContent = readText(planningNormalizerPath);
+    const hasGovernanceTags =
+      normalizerContent.includes('VERIFIED_FACT') &&
+      normalizerContent.includes('DERIVED_ANALYTIC') &&
+      normalizerContent.includes('HEURISTIC_SIGNAL') &&
+      normalizerContent.includes('INCOMPLETE_DATA') &&
+      normalizerContent.includes('HUMAN_REVIEW_ADVISED');
+
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        'Planning governance classifications defined',
+        hasGovernanceTags ? 'PASS' : 'FAIL',
+        hasGovernanceTags
+          ? 'Planning payload normalizer defines governance classification labels.'
+          : 'Planning payload normalizer is missing one or more governance classification labels.',
       ),
     );
   }
