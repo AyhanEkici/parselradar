@@ -16,3 +16,7 @@ apps/api/uploads/
 coverage/
 .DS_Store
 *.log
+
+proof/*.json
+proof/*.md
+!proof/.gitkeep

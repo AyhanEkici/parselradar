@@ -7,6 +7,7 @@
     "typecheck": "npm run typecheck --prefix packages/shared && npm run typecheck --prefix apps/api && npm run typecheck --prefix apps/web",
     "lint": "npm run lint --prefix packages/shared && npm run lint --prefix apps/api && npm run lint --prefix apps/web",
     "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
+    "verify:platform": "ts-node scripts/verify-platform.ts",
     "seed": "npm run seed --prefix apps/api",
     "test": "npm run test --prefix packages/shared && npm run test --prefix apps/api && npm run test --prefix apps/web",
     "smoke": "npm run smoke --prefix apps/api",
@@ -16,7 +17,9 @@
     "start": "npm start --prefix apps/api"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "bullmq": "^5.76.10",
