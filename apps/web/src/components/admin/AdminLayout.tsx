@@ -24,6 +24,7 @@ const navItems: AdminNavItem[] = [
   { label: 'Deployment', to: '/admin/deployment', matchPrefixes: ['/admin/deployment'] },
   { label: 'Observability', to: '/admin/observability', matchPrefixes: ['/admin/observability'] },
   { label: 'Analytics', to: '/admin/analytics', matchPrefixes: ['/admin/analytics'] },
+  { label: 'Connectors', to: '/admin/connectors', matchPrefixes: ['/admin/connectors'] },
 ];
 
 export function AdminLayout({ title = 'Admin Area', children }: AdminLayoutProps) {

@@ -17,6 +17,8 @@ import AdminSystemRuntime from './pages/AdminSystemRuntime';
 import AdminDeploymentOverview from './pages/AdminDeploymentOverview';
 import AdminObservability from './pages/AdminObservability';
 import AdminAnalytics from './pages/AdminAnalytics';
+import AdminConnectors from './pages/AdminConnectors';
+import AdminConnectorDetail from './pages/AdminConnectorDetail';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -54,6 +56,7 @@ export default function App() {
             <a href="/admin/deployment" className="hover:underline">Deployment</a>
             <a href="/admin/observability" className="hover:underline">Observability</a>
             <a href="/admin/analytics" className="hover:underline">Analytics</a>
+            <a href="/admin/connectors" className="hover:underline">Connectors</a>
             <a href="/investor" className="hover:underline">Investor</a>
             <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
             <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
@@ -82,6 +85,8 @@ export default function App() {
           <Route path="/admin/deployment" element={<AdminDeploymentOverview />} />
           <Route path="/admin/observability" element={<AdminObservability />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/connectors" element={<AdminConnectors />} />
+          <Route path="/admin/connectors/:connectorKey" element={<AdminConnectorDetail />} />
           <Route path="/properties/new" element={<NewProperty />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
