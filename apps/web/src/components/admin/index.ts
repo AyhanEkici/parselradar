@@ -1,3 +1,5 @@
+export { AdminLayout } from './AdminLayout';
+
 export {
   AdminButton,
   AdminEmptyState,
