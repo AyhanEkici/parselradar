@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../lib/auth';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
@@ -7,13 +8,20 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const res = await login(email, password);
+      if (res && res.id && res.email && res.name && res.role) {
+        // set user state in AuthProvider by reloading getMe
+        window.dispatchEvent(new Event('storage'));
+        navigate('/dashboard');
+      } else {
+        setError('Giriş başarısız');
+      }
     } catch (err) {
       setError((err as { error?: string }).error || 'Giriş başarısız');
     }
