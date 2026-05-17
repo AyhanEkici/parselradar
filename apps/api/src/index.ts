@@ -19,8 +19,18 @@ import analysisRoutes from './routes/analysisRoutes';
 import reportRoutes from './routes/reportRoutes';
 import adminRoutes from './routes/adminRoutes';
 import auditRoutes from './routes/auditRoutes';
+import investorRoutes from './routes/investorRoutes';
+import portfolioRoutes from './routes/portfolioRoutes';
+import exportRoutes from './routes/exportRoutes';
 import helmet from 'helmet';
 import { requestIdMiddleware } from './middleware/requestId';
+import { healthController } from './health/healthController';
+import { readinessController } from './health/readinessController';
+import { livenessController } from './health/livenessController';
+import { shutdownWorkers } from './runtime/workerFactory';
+import { closeQueueEvents } from './runtime/queueEvents';
+import { closeQueues } from './runtime/queueFactory';
+import { closeRedisClient } from './redis/redisClient';
 
 
 
@@ -109,17 +119,42 @@ app.use('/properties', documentRoutes);
 app.use('/properties', consentRoutes);
 app.use('/analysis', analysisRoutes);
 app.use('/reports', reportRoutes);
+app.use('/investor', investorRoutes);
+app.use('/investor', portfolioRoutes);
+app.use('/exports', exportRoutes);
 
 app.use('/admin', adminRoutes);
 app.use('/', auditRoutes);
 
-app.get('/health', (req, res) => {
-  res.setHeader('X-Request-Id', req.requestId || '');
-  res.json({ status: 'ok', requestId: req.requestId });
-});
+app.get('/health', healthController);
+app.get('/health/live', livenessController);
+app.get('/health/ready', readinessController);
 
 app.use(errorHandler);
 
-app.listen(Number(ENV.PORT), () => {
+const server = app.listen(Number(ENV.PORT), () => {
   logStartup();
+});
+
+async function shutdownRuntime() {
+  await Promise.allSettled([
+    shutdownWorkers(),
+    closeQueueEvents(),
+    closeQueues(),
+    closeRedisClient(),
+  ]);
+}
+
+async function handleShutdown(signal: string) {
+  logInfo(`Received ${signal}, shutting down runtime.`);
+  await shutdownRuntime();
+  server.close(() => process.exit(0));
+}
+
+process.on('SIGINT', () => {
+  handleShutdown('SIGINT').catch(() => process.exit(1));
+});
+
+process.on('SIGTERM', () => {
+  handleShutdown('SIGTERM').catch(() => process.exit(1));
 });

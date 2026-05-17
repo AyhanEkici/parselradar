@@ -19,6 +19,11 @@ import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
 import PropertyResult from './pages/PropertyResult';
 import PropertyDetail from './pages/PropertyDetail';
+import InvestorDashboard from './pages/InvestorDashboard';
+import SavedAnalyses from './pages/SavedAnalyses';
+import Watchlist from './pages/Watchlist';
+import PortfolioDashboard from './pages/PortfolioDashboard';
+import PortfolioDetail from './pages/PortfolioDetail';
 import NotFound from './pages/NotFound';
 import { ToastProvider } from './components/ui';
 
@@ -35,6 +40,10 @@ export default function App() {
             <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a>
             <a href="/admin/properties" className="hover:underline">Properties</a>
             <a href="/admin/runtime" className="hover:underline">Runtime</a>
+            <a href="/investor" className="hover:underline">Investor</a>
+            <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
+            <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
+            <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
           </nav>
         </div>
         <Routes>
@@ -59,6 +68,11 @@ export default function App() {
           <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
           <Route path="/properties/:id/consent" element={<PropertyConsent />} />
           <Route path="/properties/:id/result" element={<PropertyResult />} />
+          <Route path="/investor" element={<InvestorDashboard />} />
+          <Route path="/investor/saved-analyses" element={<SavedAnalyses />} />
+          <Route path="/investor/watchlist" element={<Watchlist />} />
+          <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
+          <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -463,6 +463,7 @@ export default function PropertyDetail() {
   const [rerunLoading, setRerunLoading] = useState(false);
   const [statusValue, setStatusValue] = useState('NEW');
   const [statusUpdating, setStatusUpdating] = useState(false);
+  const [investorActionLoading, setInvestorActionLoading] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [expandedAuditId, setExpandedAuditId] = useState<string | null>(null);
@@ -555,6 +556,86 @@ export default function PropertyDetail() {
       toast.error(e.error || e.message || 'Status update failed');
     } finally {
       setStatusUpdating(false);
+    }
+  };
+
+  const saveAnalysis = async () => {
+    if (!resolvedId) return;
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Analysis saved...');
+    try {
+      await apiFetch('investor/saved-analyses', {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Analysis saved to investor library');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Save analysis failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
+  const addToWatchlist = async () => {
+    if (!resolvedId) return;
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Adding to watchlist...');
+    try {
+      await apiFetch('investor/watchlist', {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Added to watchlist');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Watchlist action failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
+  const addToPortfolio = async () => {
+    if (!resolvedId) return;
+    const portfolioId = window.prompt('Portfolio ID giriniz (Investor > Portfolio sayfasından alın):');
+    if (!portfolioId) return;
+
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Adding to portfolio...');
+    try {
+      await apiFetch(`investor/portfolio/${portfolioId}/items`, {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Added to portfolio');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Portfolio action failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
+  const exportAnalysis = async () => {
+    if (!resolvedId) return;
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Exporting analysis...');
+    try {
+      const data = await apiFetch(`exports/analysis/${resolvedId}`, { method: 'POST' });
+      toast.dismiss(loadingToastId);
+      toast.success(`Export ready: ${data?.exportId || 'ok'}`);
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Export failed');
+    } finally {
+      setInvestorActionLoading(false);
     }
   };
 
@@ -685,6 +766,44 @@ export default function PropertyDetail() {
                 className="px-4 py-2 rounded text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
               >
                 📊 Rerun Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Investor Actions */}
+      {!isAdminPath && (
+        <div className="sticky top-0 z-30 bg-white border-b shadow-sm">
+          <div className="max-w-7xl mx-auto px-6 py-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={saveAnalysis}
+                disabled={investorActionLoading || !latestAnalysis}
+                className="px-4 py-2 rounded text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50"
+              >
+                Save Analysis
+              </button>
+              <button
+                onClick={addToWatchlist}
+                disabled={investorActionLoading}
+                className="px-4 py-2 rounded text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              >
+                Add to Watchlist
+              </button>
+              <button
+                onClick={addToPortfolio}
+                disabled={investorActionLoading}
+                className="px-4 py-2 rounded text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
+              >
+                Add to Portfolio
+              </button>
+              <button
+                onClick={exportAnalysis}
+                disabled={investorActionLoading || !latestAnalysis}
+                className="px-4 py-2 rounded text-sm font-semibold bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50"
+              >
+                Export Analysis JSON
               </button>
             </div>
           </div>
