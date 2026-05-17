@@ -21,6 +21,22 @@ type AuditResponse = {
   totalPages?: number;
 };
 
+const shortenId = (value?: string) => {
+  if (!value) return '';
+  if (value.length <= 18) return value;
+  return `${value.slice(0, 8)}...${value.slice(-6)}`;
+};
+
+const metadataToText = (metadata?: Record<string, unknown>) => {
+  if (!metadata) return '';
+  return Object.keys(metadata)
+    .map((key) => {
+      const value = metadata[key];
+      return `${key}: ${typeof value === 'object' && value !== null ? '[obj]' : String(value)}`;
+    })
+    .join(', ');
+};
+
 export default function AdminAuditTimeline() {
   const { user } = useAuth();
   const [events, setEvents] = useState<AuditEvent[]>([]);
@@ -74,7 +90,7 @@ export default function AdminAuditTimeline() {
   }
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
+    <div className="p-4 max-w-6xl mx-auto overflow-x-hidden">
       <h1 className="text-2xl font-bold mb-4">Audit Timeline</h1>
 
       <div className="mb-2 flex gap-2 items-center">
@@ -110,17 +126,17 @@ export default function AdminAuditTimeline() {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border text-xs">
+      <div className="w-full overflow-hidden">
+        <table className="w-full table-fixed border text-[11px] sm:text-xs">
           <thead>
             <tr>
-              <th className="border px-2">Time</th>
-              <th className="border px-2">Type</th>
-              <th className="border px-2">Actor</th>
-              <th className="border px-2">Target</th>
-              <th className="border px-2">Message</th>
-              <th className="border px-2">Success</th>
-              <th className="border px-2">Metadata</th>
+              <th className="border px-2 w-[14%]">Time</th>
+              <th className="border px-2 w-[12%]">Type</th>
+              <th className="border px-2 w-[16%]">Actor</th>
+              <th className="border px-2 w-[16%]">Target</th>
+              <th className="border px-2 w-[18%]">Message</th>
+              <th className="border px-2 w-[8%]">Success</th>
+              <th className="border px-2 w-[16%]">Metadata</th>
             </tr>
           </thead>
 
@@ -143,40 +159,33 @@ export default function AdminAuditTimeline() {
 
             {events.map((ev) => (
               <tr key={ev._id} className={ev.success ? '' : 'bg-red-50'}>
-                <td className="border px-2 whitespace-nowrap">
+                <td className="border px-2 whitespace-nowrap align-top">
                   {new Date(ev.createdAt).toLocaleString()}
                 </td>
 
-                <td className="border px-2">{ev.type || ''}</td>
+                <td className="border px-2 break-words align-top">{ev.type || ''}</td>
 
-                <td className="border px-2">
-                  {ev.actorUserId || ''} {ev.actorRole || ''}
+                <td className="border px-2 break-words align-top">
+                  {ev.actorUserId ? (
+                    <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
+                  ) : null}{' '}
+                  {ev.actorRole || ''}
                 </td>
 
-                <td className="border px-2">
-                  {ev.targetType || ''} {ev.targetId || ''}
+                <td className="border px-2 break-words align-top">
+                  {ev.targetType || ''}{' '}
+                  {ev.targetId ? <span title={ev.targetId}>{shortenId(ev.targetId)}</span> : null}
                 </td>
 
-                <td className="border px-2">{ev.message || ''}</td>
+                <td className="border px-2 break-words whitespace-normal align-top">{ev.message || ''}</td>
 
-                <td className="border px-2">{ev.success ? '✓' : '✗'}</td>
+                <td className="border px-2 text-center align-top">{ev.success ? '✓' : '✗'}</td>
 
                 <td
-                  className="border px-2 max-w-xs truncate"
+                  className="border px-2 break-words whitespace-normal align-top"
                   title={JSON.stringify(ev.metadata || {})}
                 >
-                  {ev.metadata
-                    ? Object.keys(ev.metadata)
-                        .map((key) => {
-                          const value = ev.metadata?.[key];
-                          return `${key}: ${
-                            typeof value === 'object' && value !== null
-                              ? '[obj]'
-                              : String(value)
-                          }`;
-                        })
-                        .join(', ')
-                    : ''}
+                  {metadataToText(ev.metadata)}
                 </td>
               </tr>
             ))}
