@@ -44,6 +44,8 @@ export default function AdminPropertyDocuments() {
   const [deletingId, setDeletingId] = useState('');
   const [documentType, setDocumentType] = useState('OTHER');
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
+  const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
 
   const docTypes = [
     'ONLINE_IMAR_DURUM_BELGESI',
@@ -146,6 +148,56 @@ export default function AdminPropertyDocuments() {
     });
   }, [documents]);
 
+  useEffect(() => {
+    let disposed = false;
+    const nextUrls: Record<string, string> = {};
+    const currentObjectUrls: string[] = [];
+
+    const loadPreviews = async () => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+      const failed: Record<string, string> = {};
+
+      await Promise.all(
+        cards.map(async (doc) => {
+          if (!doc.isImage || !doc.hasFile || !doc.fileHref) return;
+          try {
+            const response = await fetch(doc.fileHref, {
+              method: 'GET',
+              credentials: 'include',
+              headers: {
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+            });
+            if (!response.ok) {
+              throw new Error(`Preview request failed (${response.status})`);
+            }
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            nextUrls[doc._id] = objectUrl;
+            currentObjectUrls.push(objectUrl);
+          } catch {
+            failed[doc._id] = 'Authenticated preview unavailable';
+          }
+        })
+      );
+
+      if (disposed) {
+        currentObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+        return;
+      }
+
+      setPreviewUrls(nextUrls);
+      setPreviewErrors(failed);
+    };
+
+    loadPreviews();
+
+    return () => {
+      disposed = true;
+      currentObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [cards]);
+
   if (!user || user.role !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
@@ -179,11 +231,17 @@ export default function AdminPropertyDocuments() {
               <div className="text-sm text-gray-700 break-words">{doc.originalName}</div>
               <div className="text-xs text-gray-500">{new Date(doc.createdAt || doc.uploadedAt || '').toLocaleString()}</div>
 
-              {doc.isImage && doc.fileHref ? (
-                <img src={doc.fileHref} alt={doc.originalName} className="w-full h-40 object-cover rounded border" loading="lazy" />
+              {doc.isImage && doc.hasFile && previewUrls[doc._id] ? (
+                <img src={previewUrls[doc._id]} alt={doc.originalName} className="w-full h-40 object-cover rounded border" loading="lazy" />
               ) : (
                 <div className="w-full h-40 rounded border bg-gray-50 flex items-center justify-center text-xs text-gray-500">
-                  {!doc.hasFile ? 'Legacy file missing — re-upload required' : doc.isPdf ? 'PDF document' : 'File preview not available'}
+                  {!doc.hasFile
+                    ? 'Legacy file missing — re-upload required'
+                    : doc.isImage
+                    ? previewErrors[doc._id] || 'Loading preview...'
+                    : doc.isPdf
+                    ? 'PDF document'
+                    : 'File preview not available'}
                 </div>
               )}
 
