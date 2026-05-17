@@ -40,6 +40,7 @@ export default function App() {
         <Route path="/credits" element={<Credits />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/admin/properties" element={<AdminProperties />} />
+        <Route path="/admin/properties/:propertyId" element={<PropertyDetail />} />
         <Route path="/admin/deal-pool" element={<AdminDealPool />} />
         <Route path="/admin/audit-timeline" element={<AdminAuditTimeline />} />
         <Route path="/admin/users" element={<AdminUsers />} />

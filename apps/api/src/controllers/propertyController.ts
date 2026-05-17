@@ -1,8 +1,13 @@
 import { Response } from 'express';
+import mongoose from 'mongoose';
 import { logAuditEvent } from '../utils/auditLog';
 import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
 import PropertySubmission from '../models/PropertySubmission';
+import DocumentUpload from '../models/DocumentUpload';
+import AnalysisRun from '../models/AnalysisRun';
+import AuditEvent from '../models/AuditEvent';
+import User from '../models/User';
 import { PropertySubmissionCreateInputSchema } from '../validation/propertySchemas';
 
 export const createProperty = async (req: AuthRequest, res: Response) => {
@@ -96,4 +101,63 @@ export const getMyProperties = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const properties = await PropertySubmission.find({ userId: user._id }).sort({ createdAt: -1 });
   res.json(properties);
+};
+
+export const getPropertyById = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const { propertyId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+    return res.status(400).json({ error: 'Geçersiz propertyId' });
+  }
+
+  const property = await PropertySubmission.findById(propertyId).lean();
+  if (!property) {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
+  }
+
+  const ownerId = String(property.userId);
+  const currentUserId = String(user._id);
+  const isOwner = ownerId === currentUserId;
+  const isAdmin = user.role === 'ADMIN';
+  if (!isOwner && !isAdmin) {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const [owner, documents, analyses, audits] = await Promise.all([
+    User.findById(property.userId).select('email name role').lean(),
+    DocumentUpload.find({ propertySubmissionId: property._id })
+      .sort({ uploadedAt: -1 })
+      .select('documentType originalName uploadedAt mimeType sizeBytes')
+      .lean(),
+    AnalysisRun.find({ propertySubmissionId: property._id })
+      .sort({ createdAt: -1 })
+      .select('productType score signal createdAt previewSummary')
+      .lean(),
+    AuditEvent.find({
+      $or: [
+        { targetId: String(property._id) },
+        { 'metadata.propertyId': String(property._id) },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .select('type message success createdAt')
+      .lean(),
+  ]);
+
+  const latestByType = (type: string) => analyses.find((a) => a.productType === type) || null;
+
+  return res.json({
+    property,
+    owner,
+    documents,
+    analyses,
+    analysisSummary: {
+      quickScore: latestByType('quick-score'),
+      parcelInsight: latestByType('parsel-insight'),
+      developerFit: latestByType('developer-fit'),
+    },
+    auditReferences: audits,
+  });
 };
