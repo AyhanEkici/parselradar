@@ -5,6 +5,7 @@ import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
 import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
+import { logAuditEvent } from '../utils/auditLog';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -32,7 +33,7 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Geçersiz propertyId', requestId });
     }
 
-    const property = await PropertySubmission.findOne({ _id: propertyId, userId: user._id });
+    const property = await canAccessProperty(user, propertyId);
     if (!property) return res.status(404).json({ error: 'Mülk bulunamadı', requestId });
     const file = req.file;
     if (!file) return res.status(400).json({ error: 'Dosya gerekli', requestId });
@@ -161,4 +162,50 @@ export const downloadDocument = async (req: AuthRequest, res: Response) => {
     if (!res.headersSent) res.status(404).json({ error: 'Dosya bulunamadı' });
   });
   stream.pipe(res);
+};
+
+export const deleteDocument = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const requestId = req.requestId || '';
+  const { propertyId, documentId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(propertyId) || !mongoose.Types.ObjectId.isValid(documentId)) {
+    return res.status(400).json({ error: 'Geçersiz parametre', requestId });
+  }
+
+  const property = await canAccessProperty(user, propertyId);
+  if (!property) return res.status(404).json({ error: 'Mülk bulunamadı', requestId });
+
+  const doc = await DocumentUpload.findOne({ _id: documentId, propertySubmissionId: property._id });
+  if (!doc) return res.status(404).json({ error: 'Belge bulunamadı', requestId });
+
+  if (doc.gridFsFileId) {
+    try {
+      const bucket = getBucket();
+      await bucket.delete(new ObjectId(String(doc.gridFsFileId)));
+    } catch {
+      // Ignore missing GridFS file and continue metadata cleanup.
+    }
+  }
+
+  await DocumentUpload.deleteOne({ _id: doc._id });
+
+  await logAuditEvent({
+    type: 'document_deleted',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'DocumentUpload',
+    targetId: doc._id.toString(),
+    message: 'Document deleted',
+    metadata: {
+      propertyId: String(property._id),
+      documentType: doc.documentType,
+      originalName: doc.originalName,
+      hadGridFs: Boolean(doc.gridFsFileId),
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
+  return res.json({ ok: true, requestId });
 };

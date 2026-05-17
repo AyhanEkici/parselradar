@@ -26,6 +26,9 @@ export default function PropertyDetail() {
     nitelik?: string;
     zoningStatus: string;
     tapuType: string;
+    roadAccess?: string;
+    electricity?: string;
+    water?: string;
     status?: string;
     createdAt: string;
     updatedAt: string;
@@ -165,6 +168,9 @@ export default function PropertyDetail() {
     String((latestSummary['summary'] as string) || (latestSummary['explanation'] as string) || '').trim() || '-';
   const latestReused =
     typeof latestSummary['reused'] === 'boolean' ? (latestSummary['reused'] ? 'Yes' : 'No') : '-';
+  const factorRoad = property.roadAccess || '-';
+  const factorUtilities = `E:${property.electricity || '-'} / W:${property.water || '-'}`;
+  const factorDocuments = String(documents.length);
 
   return (
     <div className="max-w-6xl mx-auto mt-8 p-6 bg-white rounded shadow overflow-hidden">
@@ -249,7 +255,10 @@ export default function PropertyDetail() {
         </section>
 
         <section className="border rounded p-4">
-          <h3 className="font-semibold mb-2">Analiz Özeti</h3>
+          <h3 className="font-semibold mb-2">Rule-based preliminary analysis</h3>
+          <div className="text-xs text-amber-700 mb-2">
+            This is not a certified valuation. It is based only on submitted fields and uploaded documents currently available to the system.
+          </div>
           <div className="border rounded p-2 mb-2 bg-gray-50">
             <div className="font-medium">Latest Analysis</div>
             <div>Score: {latestAnalysis?.score ?? '-'}</div>
@@ -257,6 +266,15 @@ export default function PropertyDetail() {
             <div>Reused: {latestReused}</div>
             <div className="break-words">Explanation: {latestExplanation}</div>
             <div className="text-xs text-gray-500">{latestAnalysis?.createdAt ? new Date(latestAnalysis.createdAt).toLocaleString() : '-'}</div>
+          </div>
+          <div className="border rounded p-2 mb-2 bg-white">
+            <div className="font-medium">Input factors used</div>
+            <div>price: {formatMoney(property.askingPriceTRY)}</div>
+            <div>area: {property.areaM2 || '-'} m²</div>
+            <div>zoning: {property.zoningStatus || '-'}</div>
+            <div>road: {factorRoad}</div>
+            <div>utilities: {factorUtilities}</div>
+            <div>documents count: {factorDocuments}</div>
           </div>
           <div className="space-y-2">
             <div className="border rounded p-2">
@@ -309,12 +327,8 @@ export default function PropertyDetail() {
         >
           {rerunLoading ? 'Running...' : 'Re-run Analysis'}
         </button>
-        <Link
-          to={isAdminPath ? `/admin/properties/${resolvedId}/documents` : `/properties/${resolvedId}/documents`}
-          className="bg-gray-800 text-white px-3 py-2 rounded text-sm"
-        >
-          View Documents
-        </Link>
+        <Link to={isAdminPath ? `/admin/properties/${resolvedId}/documents` : `/properties/${resolvedId}/documents`} className="bg-gray-800 text-white px-3 py-2 rounded text-sm">View Documents</Link>
+        <Link to={`/properties/${resolvedId}/documents`} className="bg-emerald-700 text-white px-3 py-2 rounded text-sm">Upload Documents</Link>
       </div>
       {rerunError && <div className="mt-2 text-sm text-red-600">{rerunError}</div>}
 
