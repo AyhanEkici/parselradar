@@ -1,44 +1,33 @@
-import { DENSITY_RULES, DENSITY_POTENTIAL_SCORES } from '../../config/development/densityRules';
+import { DEFAULT_DENSITY_RULE, DENSITY_RULES, DensityCategory } from '../../config/development/densityRules';
 
-export type DensityClassification = 'low_rise' | 'mid_rise' | 'high_rise' | 'mixed_use' | 'industrial' | 'tourism';
-
-function normalize(value?: string) {
-  return (value || '').trim().toLowerCase();
-}
+export type DensityPotentialResult = {
+  category: DensityCategory;
+  score: number;
+  supportingSignals: string[];
+};
 
 export function calculateDensityPotential(input: {
+  zoningStatus?: string;
   areaM2?: number;
-  zoning?: string;
-  city?: string;
-}): { classification: DensityClassification; score: number } {
-  const normalizedZoning = normalize(input.zoning);
-  const areaM2 = input.areaM2 || 0;
+}): DensityPotentialResult {
+  const zoning = (input.zoningStatus || '').toLowerCase();
+  const area = input.areaM2 || 0;
+  const rule = DENSITY_RULES.find((candidate) => candidate.zoningKeywords.some((keyword) => zoning.includes(keyword))) || DEFAULT_DENSITY_RULE;
+  const signals: string[] = [];
 
-  if (normalizedZoning.includes('sanayi') || normalizedZoning.includes('industrial')) {
-    return { classification: 'industrial', score: DENSITY_POTENTIAL_SCORES.industrial };
+  let score = rule.baseScore;
+  if (area >= rule.minimumAreaM2) {
+    const areaBonus = Math.min(rule.maxAreaBonus, Math.floor((area - rule.minimumAreaM2) / rule.areaScalingStepM2) * 4 + 4);
+    score += Math.max(0, areaBonus);
+    signals.push('site_area_supports_density');
+  } else {
+    score -= 8;
+    signals.push('site_area_limits_density');
   }
 
-  if (normalizedZoning.includes('tourism') || normalizedZoning.includes('turizm')) {
-    return { classification: 'tourism', score: DENSITY_POTENTIAL_SCORES.tourism };
-  }
-
-  if (normalizedZoning.includes('mixed') || normalizedZoning.includes('mixed_use') || normalizedZoning.includes('karışık')) {
-    return { classification: 'mixed_use', score: DENSITY_POTENTIAL_SCORES.mixed_use };
-  }
-
-  if (normalizedZoning.includes('ticari') || normalizedZoning.includes('commercial')) {
-    return { classification: 'high_rise', score: DENSITY_POTENTIAL_SCORES.high_rise };
-  }
-
-  if (normalizedZoning.includes('konut') || normalizedZoning.includes('residential')) {
-    if (areaM2 >= DENSITY_RULES.high_rise.minParcelM2) {
-      return { classification: 'high_rise', score: DENSITY_POTENTIAL_SCORES.high_rise };
-    }
-    if (areaM2 >= DENSITY_RULES.mid_rise.minParcelM2) {
-      return { classification: 'mid_rise', score: DENSITY_POTENTIAL_SCORES.mid_rise };
-    }
-    return { classification: 'low_rise', score: DENSITY_POTENTIAL_SCORES.low_rise };
-  }
-
-  return { classification: 'low_rise', score: DENSITY_POTENTIAL_SCORES.low_rise };
+  return {
+    category: rule.category,
+    score: Math.max(0, Math.min(100, Math.round(score))),
+    supportingSignals: signals,
+  };
 }

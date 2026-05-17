@@ -1,48 +1,49 @@
-export type SubdivisionPotential = 'low' | 'medium' | 'high';
+import { SUBDIVISION_THRESHOLDS } from '../../config/development/developerThresholds';
+
+export type SubdivisionPotentialResult = {
+  level: 'low' | 'medium' | 'high';
+  score: number;
+  splitabilitySignals: string[];
+};
 
 export function calculateSubdivisionPotential(input: {
   areaM2?: number;
-  zoning?: string;
-  district?: string;
-}): { potential: SubdivisionPotential; score: number; message: string } {
-  const areaM2 = input.areaM2 || 0;
-  const zoning = (input.zoning || '').toLowerCase();
+  zoningStatus?: string;
+  roadAccess?: string;
+}): SubdivisionPotentialResult {
+  const area = input.areaM2 || 0;
+  const zoning = (input.zoningStatus || '').toLowerCase();
+  const road = (input.roadAccess || '').toLowerCase();
 
-  if (zoning.includes('tarla') || zoning.includes('agricultural') || zoning.includes('agricultureal')) {
-    return {
-      potential: 'low',
-      score: 25,
-      message: 'Agricultural zoning typically prohibits subdivision.',
-    };
+  let score = 28;
+  const signals: string[] = [];
+
+  if (area >= SUBDIVISION_THRESHOLDS.high) {
+    score += 40;
+    signals.push('large_parcel_threshold');
+  } else if (area >= SUBDIVISION_THRESHOLDS.medium) {
+    score += 26;
+    signals.push('medium_parcel_threshold');
+  } else if (area >= SUBDIVISION_THRESHOLDS.low) {
+    score += 14;
+    signals.push('minimum_split_threshold');
   }
 
-  if (areaM2 < 1500) {
-    return {
-      potential: 'low',
-      score: 30,
-      message: 'Parcel too small for meaningful subdivision.',
-    };
+  if (zoning.includes('konut') || zoning.includes('commercial') || zoning.includes('ticari')) {
+    score += 12;
+    signals.push('flexible_zoning_pattern');
   }
 
-  if (areaM2 < 3000) {
-    return {
-      potential: 'medium',
-      score: 55,
-      message: 'Medium subdivision potential: can split into 2-3 units.',
-    };
+  if (road.includes('highway') || road.includes('anayol') || road.includes('cadde')) {
+    score += 10;
+    signals.push('road_frontage_support');
   }
 
-  if (areaM2 < 7000) {
-    return {
-      potential: 'high',
-      score: 75,
-      message: 'High subdivision potential: can split into 3-5 units.',
-    };
-  }
+  const level = score >= 75 ? 'high' : score >= 52 ? 'medium' : 'low';
 
   return {
-    potential: 'high',
-    score: 88,
-    message: 'Very high subdivision potential: can support 5+ subdivisions.',
+    level,
+    score: Math.max(0, Math.min(100, score)),
+    splitabilitySignals: signals,
   };
 }

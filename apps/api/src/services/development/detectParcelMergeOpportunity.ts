@@ -1,53 +1,47 @@
-import { PARCEL_MERGE_RULES, MERGE_OPPORTUNITY_SIGNALS } from '../../config/development/parcelMergeRules';
+import { PARCEL_MERGE_RULES } from '../../config/development/parcelMergeRules';
 
-export type ParcelMergeOpportunity = {
-  opportunity: boolean;
+export type ParcelMergeOpportunityResult = {
   score: number;
+  level: 'limited' | 'assembly' | 'expansion';
   signals: string[];
-  message: string;
 };
+
+function zoningKey(zoningStatus?: string) {
+  const value = (zoningStatus || '').toLowerCase();
+  if (value.includes('sanayi') || value.includes('industrial')) return 'industrial';
+  if (value.includes('ticari') || value.includes('commercial') || value.includes('karma') || value.includes('mixed')) return 'mixed';
+  if (value.includes('turizm') || value.includes('tourism')) return 'tourism';
+  return 'residential';
+}
 
 export function detectParcelMergeOpportunity(input: {
   areaM2?: number;
   district?: string;
-  zoning?: string;
-  infraScore?: number;
-}): ParcelMergeOpportunity {
-  const areaM2 = input.areaM2 || 0;
-  const infraScore = input.infraScore || 50;
-
+  zoningStatus?: string;
+}): ParcelMergeOpportunityResult {
+  const area = input.areaM2 || 0;
+  const district = (input.district || '').toLowerCase();
   const signals: string[] = [];
-  let score = 0;
+  let score = 28;
 
-  if (areaM2 >= PARCEL_MERGE_RULES.minMergeSize && areaM2 < PARCEL_MERGE_RULES.optimalMergeSize) {
-    signals.push(MERGE_OPPORTUNITY_SIGNALS.assembly);
-    score += 35;
+  if (area >= PARCEL_MERGE_RULES.minimumAssemblyAreaM2) {
+    score += 24;
+    signals.push('assembly_scale_possible');
+  }
+  if (area >= PARCEL_MERGE_RULES.expansionAreaThresholdM2) {
+    score += 18;
+    signals.push('expansion_scale_possible');
   }
 
-  if (areaM2 >= PARCEL_MERGE_RULES.optimalMergeSize && areaM2 <= 10000) {
-    signals.push(MERGE_OPPORTUNITY_SIGNALS.developer_aggregation);
-    score += 50;
-  }
+  score += PARCEL_MERGE_RULES.districtAggregationBonuses[district as keyof typeof PARCEL_MERGE_RULES.districtAggregationBonuses] || 0;
+  score += PARCEL_MERGE_RULES.zoningBonuses[zoningKey(input.zoningStatus) as keyof typeof PARCEL_MERGE_RULES.zoningBonuses];
 
-  if (areaM2 >= 5000 && infraScore >= 70) {
-    signals.push(MERGE_OPPORTUNITY_SIGNALS.expansion_potential);
-    score += 25;
-  }
-
-  if (areaM2 >= 8000) {
-    signals.push(MERGE_OPPORTUNITY_SIGNALS.consolidation);
-    score += 20;
-  }
-
-  const opportunity = signals.length > 0;
-  const message = opportunity
-    ? `${signals.length} merge signal(s) detected. Parcel suitable for aggregation.`
-    : 'No significant merge opportunities detected.';
+  const bounded = Math.max(0, Math.min(100, Math.round(score)));
+  const level = bounded >= 78 ? 'expansion' : bounded >= 56 ? 'assembly' : 'limited';
 
   return {
-    opportunity,
-    score: Math.min(100, score),
+    score: bounded,
+    level,
     signals,
-    message,
   };
 }

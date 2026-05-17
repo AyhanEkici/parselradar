@@ -1,72 +1,34 @@
-export type ProjectabilityLevel = 'easy' | 'moderate' | 'difficult';
+import { PROJECTABILITY_THRESHOLDS } from '../../config/development/developerThresholds';
 
 export type ProjectabilityResult = {
-  level: ProjectabilityLevel;
   score: number;
-  constraints: string[];
-  recommendations: string[];
+  level: 'easy' | 'moderate' | 'difficult';
+  blockers: string[];
 };
 
 export function calculateProjectability(input: {
-  areaM2?: number;
-  zoning?: string;
-  roadAccessScore?: number;
+  densityScore: number;
   infrastructureScore?: number;
-  densityPotential?: string;
-  frontageDepthScore?: number;
+  roadAccessScore?: number;
+  frontageDepthScore: number;
+  subdivisionScore: number;
+  rezoningScore: number;
 }): ProjectabilityResult {
-  const constraints: string[] = [];
-  const recommendations: string[] = [];
-  let score = 70;
+  const blockers: string[] = [];
+  let score = input.densityScore * 0.24 + (input.infrastructureScore || 0) * 0.18 + (input.roadAccessScore || 0) * 0.16 + input.frontageDepthScore * 0.18 + input.subdivisionScore * 0.12 + input.rezoningScore * 0.12;
 
-  const areaM2 = input.areaM2 || 0;
-  const roadScore = input.roadAccessScore || 50;
-  const infraScore = input.infrastructureScore || 50;
-  const frontageScore = input.frontageDepthScore || 50;
-  const normalizedZoning = (input.zoning || '').toLowerCase();
+  if ((input.infrastructureScore || 0) < 45) blockers.push('infrastructure_constraint');
+  if ((input.roadAccessScore || 0) < 45) blockers.push('access_constraint');
+  if (input.frontageDepthScore < 48) blockers.push('geometry_constraint');
+  if (input.densityScore < 52) blockers.push('density_constraint');
 
-  if (areaM2 < 1000) {
-    constraints.push('Small parcel size limits development options');
-    score -= 15;
-  }
-
-  if (roadScore < 50) {
-    constraints.push('Poor road access increases development costs');
-    score -= 20;
-    recommendations.push('Consider investing in road access improvements');
-  }
-
-  if (infraScore < 40) {
-    constraints.push('Limited infrastructure availability');
-    score -= 15;
-    recommendations.push('Evaluate utility extension feasibility');
-  }
-
-  if (frontageScore < 45) {
-    constraints.push('Challenging parcel geometry');
-    score -= 10;
-    recommendations.push('Consider geometric constraints in design');
-  }
-
-  if (normalizedZoning.includes('tarla') || normalizedZoning.includes('agricultural')) {
-    constraints.push('Agricultural zoning requires rezoning approval');
-    score -= 25;
-    recommendations.push('Initiate rezoning study and municipal negotiations');
-  }
-
-  const finalScore = Math.max(0, Math.min(100, score));
-
-  let level: ProjectabilityLevel = 'moderate';
-  if (finalScore >= 75) {
-    level = 'easy';
-  } else if (finalScore <= 50) {
-    level = 'difficult';
-  }
+  score -= blockers.length * 4;
+  const bounded = Math.max(0, Math.min(100, Math.round(score)));
+  const level = bounded >= PROJECTABILITY_THRESHOLDS.easy ? 'easy' : bounded >= PROJECTABILITY_THRESHOLDS.moderate ? 'moderate' : 'difficult';
 
   return {
+    score: bounded,
     level,
-    score: finalScore,
-    constraints,
-    recommendations,
+    blockers,
   };
 }

@@ -193,8 +193,8 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       parcelMergeOpportunity: full.parcelMergeOpportunity,
       rezoningUpside: full.rezoningUpside,
       projectability: full.projectability,
+      developmentScenario: full.developmentScenario || [],
       developmentSignals: full.developmentSignals || [],
-      developmentSummary: full.developmentSummary,
     };
   });
 
@@ -234,3 +234,4 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     auditReferences: audits,
   });
 };
+

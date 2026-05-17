@@ -8,7 +8,7 @@ import PropertySubmission from '../models/PropertySubmission';
 import { scoreProperty } from '../services/analysis/scoreProperty';
 import { buildComparableMarketIntelligence } from '../services/comparables';
 import { buildGeoIntelligence } from '../services/geo';
-import { buildDevelopmentScenario } from '../services/development';
+import { buildDevelopmentIntelligence } from '../services/development';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -113,8 +113,8 @@ function toResponseFromRun(run: any, reused: boolean) {
     parcelMergeOpportunity: full.parcelMergeOpportunity,
     rezoningUpside: full.rezoningUpside,
     projectability: full.projectability,
+    developmentScenario: full.developmentScenario || [],
     developmentSignals: full.developmentSignals || [],
-    developmentSummary: full.developmentSummary,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -208,16 +208,17 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       water: propertyObj.water,
     });
 
-    const developmentScenario = buildDevelopmentScenario({
+    const developmentIntelligence = buildDevelopmentIntelligence({
       areaM2: propertyObj.areaM2,
-      city: propertyObj.il,
+      zoningStatus: propertyObj.zoningStatus,
       district: propertyObj.ilce,
-      zoning: propertyObj.zoningStatus,
-      marketHeat: comparableMarket.marketHeat,
-      roadAccessScore: geoIntelligence.roadAccessScore,
+      roadAccess: propertyObj.roadAccess,
+      addressText: propertyObj.addressText,
+      mahalleOrKoy: propertyObj.mahalleOrKoy,
+      pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
       infrastructureScore: geoIntelligence.infrastructureScore,
-      growthPhase: geoIntelligence.growthPotential?.developmentPhase,
-      avgComparablePricePerM2: comparableMarket.avgComparablePricePerM2,
+      roadAccessScore: geoIntelligence.roadAccessScore,
+      regionalDemandScore: geoIntelligence.regionalDemand?.demandScore,
     });
 
     const run = await AnalysisRun.create({
@@ -268,15 +269,15 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         regionalDemand: geoIntelligence.regionalDemand,
         strategicLocationSignals: geoIntelligence.strategicLocationSignals,
         geoSummary: geoIntelligence.geoSummary,
-        subdivisionPotential: developmentScenario.subdivisionPotential,
-        frontageDepthScore: developmentScenario.frontageDepthScore,
-        densityPotential: developmentScenario.densityPotential,
-        developerROI: developmentScenario.developerROI,
-        parcelMergeOpportunity: developmentScenario.parcelMergeOpportunity,
-        rezoningUpside: developmentScenario.rezoningUpside,
-        projectability: developmentScenario.projectability,
-        developmentSignals: developmentScenario.developmentSignals,
-        developmentSummary: developmentScenario.developmentSummary,
+        subdivisionPotential: developmentIntelligence.subdivisionPotential,
+        frontageDepthScore: developmentIntelligence.frontageDepthScore,
+        densityPotential: developmentIntelligence.densityPotential,
+        developerROI: developmentIntelligence.developerROI,
+        parcelMergeOpportunity: developmentIntelligence.parcelMergeOpportunity,
+        rezoningUpside: developmentIntelligence.rezoningUpside,
+        projectability: developmentIntelligence.projectability,
+        developmentScenario: developmentIntelligence.developmentScenario,
+        developmentSignals: developmentIntelligence.developmentSignals,
       },
     });
 
@@ -332,3 +333,4 @@ export const parselInsight = async (req: AuthRequest, res: Response) =>
 
 export const developerFit = async (req: AuthRequest, res: Response) =>
   runAnalysis(req, res, { productType: 'DEVELOPER_FIT' });
+

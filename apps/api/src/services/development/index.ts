@@ -1,115 +1,112 @@
-import { calculateSubdivisionPotential, SubdivisionPotential } from './calculateSubdivisionPotential';
-import { calculateFrontageDepthScore, FrontageDepthResult } from './calculateFrontageDepthScore';
-import { calculateDensityPotential, DensityClassification } from './calculateDensityPotential';
-import { calculateDeveloperROI, DeveloperROITier } from './calculateDeveloperROI';
-import { detectParcelMergeOpportunity, ParcelMergeOpportunity } from './detectParcelMergeOpportunity';
-import { simulateRezoningUpside, RezoningUpsideResult } from './simulateRezoningUpside';
-import { calculateProjectability, ProjectabilityResult } from './calculateProjectability';
+import { calculateSubdivisionPotential } from './calculateSubdivisionPotential';
+import { calculateFrontageDepthScore } from './calculateFrontageDepthScore';
+import { calculateDensityPotential } from './calculateDensityPotential';
+import { calculateDeveloperROI } from './calculateDeveloperROI';
+import { detectParcelMergeOpportunity } from './detectParcelMergeOpportunity';
+import { simulateRezoningUpside } from './simulateRezoningUpside';
+import { calculateProjectability } from './calculateProjectability';
+import { buildDevelopmentScenario } from './buildDevelopmentScenario';
 
-export type DevelopmentScenarioOutput = {
-  subdivisionPotential: { potential: SubdivisionPotential; score: number; message: string };
-  frontageDepthScore: FrontageDepthResult;
-  densityPotential: { classification: DensityClassification; score: number };
-  developerROI: { tier: DeveloperROITier; score: number; description: string };
-  parcelMergeOpportunity: ParcelMergeOpportunity;
-  rezoningUpside: RezoningUpsideResult;
-  projectability: ProjectabilityResult;
+export type DevelopmentIntelligenceOutput = {
+  subdivisionPotential: ReturnType<typeof calculateSubdivisionPotential>;
+  frontageDepthScore: ReturnType<typeof calculateFrontageDepthScore>;
+  densityPotential: ReturnType<typeof calculateDensityPotential>;
+  developerROI: ReturnType<typeof calculateDeveloperROI>;
+  parcelMergeOpportunity: ReturnType<typeof detectParcelMergeOpportunity>;
+  rezoningUpside: ReturnType<typeof simulateRezoningUpside>;
+  projectability: ReturnType<typeof calculateProjectability>;
+  developmentScenario: ReturnType<typeof buildDevelopmentScenario>;
   developmentSignals: string[];
-  developmentSummary: string;
 };
 
-export function buildDevelopmentScenario(input: {
+export function buildDevelopmentIntelligence(input: {
   areaM2?: number;
-  city?: string;
+  zoningStatus?: string;
   district?: string;
-  zoning?: string;
-  frontageM?: number;
-  depthM?: number;
-  isCorner?: boolean;
-  shapeDescription?: string;
-  marketHeat?: string;
-  roadAccessScore?: number;
+  roadAccess?: string;
+  addressText?: string;
+  mahalleOrKoy?: string;
+  pricingDeltaRatio?: number;
   infrastructureScore?: number;
-  growthPhase?: 'emerging' | 'developing' | 'mature' | 'saturated';
-  avgComparablePricePerM2?: number;
-}): DevelopmentScenarioOutput {
-  const subdivision = calculateSubdivisionPotential({
+  roadAccessScore?: number;
+  regionalDemandScore?: number;
+}): DevelopmentIntelligenceOutput {
+  const subdivisionPotential = calculateSubdivisionPotential({
     areaM2: input.areaM2,
-    zoning: input.zoning,
-    district: input.district,
+    zoningStatus: input.zoningStatus,
+    roadAccess: input.roadAccess,
   });
 
-  const frontageDepth = calculateFrontageDepthScore({
-    frontageM: input.frontageM,
-    depthM: input.depthM,
+  const frontageDepthScore = calculateFrontageDepthScore({
     areaM2: input.areaM2,
-    isCorner: input.isCorner,
-    shapeDescription: input.shapeDescription,
+    roadAccess: input.roadAccess,
+    addressText: input.addressText,
+    mahalleOrKoy: input.mahalleOrKoy,
   });
 
-  const density = calculateDensityPotential({
+  const densityPotential = calculateDensityPotential({
+    zoningStatus: input.zoningStatus,
     areaM2: input.areaM2,
-    zoning: input.zoning,
-    city: input.city,
   });
 
   const developerROI = calculateDeveloperROI({
-    areaM2: input.areaM2,
-    densityScore: density.score,
-    marketHeat: input.marketHeat,
+    densityScore: densityPotential.score,
+    demandScore: input.regionalDemandScore,
     infrastructureScore: input.infrastructureScore,
-    rezoningPotential: 50,
-    projectabilityScore: 65,
+    pricingDeltaRatio: input.pricingDeltaRatio,
+    frontageDepthScore: frontageDepthScore.score,
   });
 
-  const merge = detectParcelMergeOpportunity({
+  const parcelMergeOpportunity = detectParcelMergeOpportunity({
     areaM2: input.areaM2,
     district: input.district,
-    zoning: input.zoning,
-    infraScore: input.infrastructureScore,
+    zoningStatus: input.zoningStatus,
   });
 
-  const rezoning = simulateRezoningUpside({
-    city: input.city,
-    district: input.district,
-    growthPhase: input.growthPhase,
-    infraScore: input.infrastructureScore,
+  const rezoningUpside = simulateRezoningUpside({
+    zoningStatus: input.zoningStatus,
+    infrastructureScore: input.infrastructureScore,
+    roadAccessScore: input.roadAccessScore,
+    demandScore: input.regionalDemandScore,
   });
 
   const projectability = calculateProjectability({
-    areaM2: input.areaM2,
-    zoning: input.zoning,
-    roadAccessScore: input.roadAccessScore,
+    densityScore: densityPotential.score,
     infrastructureScore: input.infrastructureScore,
-    densityPotential: density.classification,
-    frontageDepthScore: frontageDepth.score,
+    roadAccessScore: input.roadAccessScore,
+    frontageDepthScore: frontageDepthScore.score,
+    subdivisionScore: subdivisionPotential.score,
+    rezoningScore: rezoningUpside.score,
   });
 
-  const signals: string[] = [];
+  const developmentScenario = buildDevelopmentScenario({
+    subdivisionLevel: subdivisionPotential.level,
+    densityCategory: densityPotential.category,
+    roiScenario: developerROI.scenario,
+    rezoningScenario: rezoningUpside.scenario,
+    projectabilityLevel: projectability.level,
+  });
 
-  if (subdivision.potential === 'high') signals.push(`High subdivision potential: ${subdivision.message}`);
-  if (frontageDepth.quality === 'excellent') signals.push('Excellent frontage/depth geometry');
-  if (merge.opportunity) signals.push(`Merge opportunity: ${merge.signals.join(', ')}`);
-  if (rezoning.scenario !== 'stable') signals.push(`Rezoning upside: ${rezoning.scenario}`);
-  if (projectability.level === 'easy') signals.push('Easy to develop parcel');
-
-  const summary =
-    `Development readiness: ${projectability.level}. ` +
-    `Density potential: ${density.classification}. ` +
-    `Developer ROI tier: ${developerROI.tier}. ` +
-    `Rezoning scenario: ${rezoning.scenario}. ` +
-    (merge.opportunity ? `Merge signals detected: ${merge.signals.length}.` : 'No merge signals.');
+  const developmentSignals = Array.from(new Set([
+    ...subdivisionPotential.splitabilitySignals,
+    ...frontageDepthScore.geometrySignals,
+    ...densityPotential.supportingSignals,
+    ...developerROI.roiSignals,
+    ...parcelMergeOpportunity.signals,
+    ...rezoningUpside.signals,
+    ...projectability.blockers,
+  ]));
 
   return {
-    subdivisionPotential: subdivision,
-    frontageDepthScore: frontageDepth,
-    densityPotential: density,
+    subdivisionPotential,
+    frontageDepthScore,
+    densityPotential,
     developerROI,
-    parcelMergeOpportunity: merge,
-    rezoningUpside: rezoning,
+    parcelMergeOpportunity,
+    rezoningUpside,
     projectability,
-    developmentSignals: signals,
-    developmentSummary: summary,
+    developmentScenario,
+    developmentSignals,
   };
 }
 
@@ -120,3 +117,4 @@ export { calculateDeveloperROI } from './calculateDeveloperROI';
 export { detectParcelMergeOpportunity } from './detectParcelMergeOpportunity';
 export { simulateRezoningUpside } from './simulateRezoningUpside';
 export { calculateProjectability } from './calculateProjectability';
+export { buildDevelopmentScenario } from './buildDevelopmentScenario';

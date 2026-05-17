@@ -1,24 +1,26 @@
 export const FRONTAGE_DEPTH_WEIGHTS = {
-  frontageDesirability: {
-    excellent: { minM: 30, score: 90 },
-    good: { minM: 20, score: 75 },
-    adequate: { minM: 10, score: 60 },
-    narrow: { minM: 0, score: 40 },
+  baseScore: 52,
+  roadAccessBonus: {
+    highway: 18,
+    anayol: 12,
+    arterial: 9,
+    local: 4,
+    village: -10,
+    unknown: 0,
   },
-  depthPenalties: {
-    shallowPenalty: { maxM: 15, penalty: 25 },
-    moderatePenalty: { maxM: 30, penalty: 10 },
-    deepParcelPenalty: { maxM: 50, penalty: 15 },
-    extremelyDeepPenalty: { maxM: 10000, penalty: 30 },
+  areaBands: {
+    compact: { max: 700, score: -8 },
+    balanced: { max: 2500, score: 12 },
+    deep: { max: 5000, score: 4 },
+    oversized: { max: Number.POSITIVE_INFINITY, score: -6 },
   },
-  cornerBonus: 15,
-  rectangularityBonus: 10,
-  irregularShapePenalty: 20,
+  cornerKeywordBonus: 8,
+  narrowKeywordPenalty: -10,
+  deepShapePenalty: -8,
 } as const;
 
-export const FRONTAGE_DEPTH_SCORE_FACTORS = {
-  frontageWeight: 0.35,
-  depthWeight: 0.35,
-  cornerWeight: 0.15,
-  regularityWeight: 0.15,
+export const GEOMETRY_HEURISTIC_KEYWORDS = {
+  corner: ['corner', 'kose', 'köşe', 'bulvar', 'cadde'],
+  narrow: ['dar', 'narrow', 'ince'],
+  deep: ['derin', 'deep', 'uzun'],
 } as const;

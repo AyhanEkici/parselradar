@@ -1,79 +1,64 @@
-import { FRONTAGE_DEPTH_WEIGHTS, FRONTAGE_DEPTH_SCORE_FACTORS } from '../../config/development/frontageDepthWeights';
+import { FRONTAGE_DEPTH_WEIGHTS, GEOMETRY_HEURISTIC_KEYWORDS } from '../../config/development/frontageDepthWeights';
 
-export type FrontageDepthResult = {
+export type FrontageDepthScoreResult = {
   score: number;
-  frontageScore: number;
-  depthScore: number;
-  isCornerLot: boolean;
-  quality: 'excellent' | 'good' | 'adequate' | 'poor';
+  geometrySignals: string[];
 };
 
+function roadKey(roadAccess?: string) {
+  const value = (roadAccess || '').toLowerCase();
+  if (value.includes('highway') || value.includes('otoyol')) return 'highway';
+  if (value.includes('anayol') || value.includes('bulvar')) return 'anayol';
+  if (value.includes('arter') || value.includes('cadde')) return 'arterial';
+  if (value.includes('village') || value.includes('koy') || value.includes('köy')) return 'village';
+  if (value.trim()) return 'local';
+  return 'unknown';
+}
+
 export function calculateFrontageDepthScore(input: {
-  frontageM?: number;
-  depthM?: number;
   areaM2?: number;
-  isCorner?: boolean;
-  shapeDescription?: string;
-}): FrontageDepthResult {
-  const frontageM = input.frontageM || 15;
-  const depthM = input.depthM || 30;
-  const isCorner = input.isCorner || false;
-  const shape = (input.shapeDescription || '').toLowerCase();
+  roadAccess?: string;
+  addressText?: string;
+  mahalleOrKoy?: string;
+}): FrontageDepthScoreResult {
+  const area = input.areaM2 || 0;
+  const text = `${input.addressText || ''} ${input.mahalleOrKoy || ''}`.toLowerCase();
+  const signals: string[] = [];
+  let score = FRONTAGE_DEPTH_WEIGHTS.baseScore;
 
-  let frontageScore: number = FRONTAGE_DEPTH_WEIGHTS.frontageDesirability.adequate.score;
-  if (frontageM >= 30) {
-    frontageScore = FRONTAGE_DEPTH_WEIGHTS.frontageDesirability.excellent.score as number;
-  } else if (frontageM >= 20) {
-    frontageScore = FRONTAGE_DEPTH_WEIGHTS.frontageDesirability.good.score as number;
-  } else if (frontageM >= 10) {
-    frontageScore = FRONTAGE_DEPTH_WEIGHTS.frontageDesirability.adequate.score as number;
+  score += FRONTAGE_DEPTH_WEIGHTS.roadAccessBonus[roadKey(input.roadAccess) as keyof typeof FRONTAGE_DEPTH_WEIGHTS.roadAccessBonus];
+
+  if (area <= FRONTAGE_DEPTH_WEIGHTS.areaBands.compact.max) {
+    score += FRONTAGE_DEPTH_WEIGHTS.areaBands.compact.score;
+    signals.push('compact_geometry');
+  } else if (area <= FRONTAGE_DEPTH_WEIGHTS.areaBands.balanced.max) {
+    score += FRONTAGE_DEPTH_WEIGHTS.areaBands.balanced.score;
+    signals.push('balanced_depth_ratio_proxy');
+  } else if (area <= FRONTAGE_DEPTH_WEIGHTS.areaBands.deep.max) {
+    score += FRONTAGE_DEPTH_WEIGHTS.areaBands.deep.score;
+    signals.push('deep_lot_proxy');
   } else {
-    frontageScore = FRONTAGE_DEPTH_WEIGHTS.frontageDesirability.narrow.score as number;
+    score += FRONTAGE_DEPTH_WEIGHTS.areaBands.oversized.score;
+    signals.push('oversized_depth_penalty');
   }
 
-  let depthScore = 70;
-  if (depthM <= 15) {
-    depthScore = 100 - FRONTAGE_DEPTH_WEIGHTS.depthPenalties.shallowPenalty.penalty;
-  } else if (depthM <= 30) {
-    depthScore = 100 - FRONTAGE_DEPTH_WEIGHTS.depthPenalties.moderatePenalty.penalty;
-  } else if (depthM <= 50) {
-    depthScore = 100 - FRONTAGE_DEPTH_WEIGHTS.depthPenalties.deepParcelPenalty.penalty;
-  } else {
-    depthScore = 100 - FRONTAGE_DEPTH_WEIGHTS.depthPenalties.extremelyDeepPenalty.penalty;
+  if (GEOMETRY_HEURISTIC_KEYWORDS.corner.some((keyword) => text.includes(keyword))) {
+    score += FRONTAGE_DEPTH_WEIGHTS.cornerKeywordBonus;
+    signals.push('corner_opportunity_bonus');
   }
 
-  let cornerBonus = 0;
-  if (isCorner) {
-    cornerBonus = FRONTAGE_DEPTH_WEIGHTS.cornerBonus;
+  if (GEOMETRY_HEURISTIC_KEYWORDS.narrow.some((keyword) => text.includes(keyword))) {
+    score += FRONTAGE_DEPTH_WEIGHTS.narrowKeywordPenalty;
+    signals.push('narrow_parcel_penalty');
   }
 
-  let regularityBonus = 0;
-  if (shape.includes('rectangular') || shape.includes('regular') || shape.includes('düzgün')) {
-    regularityBonus = FRONTAGE_DEPTH_WEIGHTS.rectangularityBonus;
-  } else if (shape.includes('irregular') || shape.includes('düzensiz')) {
-    regularityBonus = -FRONTAGE_DEPTH_WEIGHTS.irregularShapePenalty;
+  if (GEOMETRY_HEURISTIC_KEYWORDS.deep.some((keyword) => text.includes(keyword)) || area > 4000) {
+    score += FRONTAGE_DEPTH_WEIGHTS.deepShapePenalty;
+    signals.push('deep_parcel_penalty');
   }
-
-  const score = Math.round(
-    frontageScore * FRONTAGE_DEPTH_SCORE_FACTORS.frontageWeight +
-      depthScore * FRONTAGE_DEPTH_SCORE_FACTORS.depthWeight +
-      cornerBonus * FRONTAGE_DEPTH_SCORE_FACTORS.cornerWeight +
-      regularityBonus * FRONTAGE_DEPTH_SCORE_FACTORS.regularityWeight
-  );
-
-  const finalScore = Math.max(0, Math.min(100, score));
-
-  let quality: 'excellent' | 'good' | 'adequate' | 'poor' = 'adequate';
-  if (finalScore >= 80) quality = 'excellent';
-  else if (finalScore >= 65) quality = 'good';
-  else if (finalScore >= 45) quality = 'adequate';
-  else quality = 'poor';
 
   return {
-    score: finalScore,
-    frontageScore,
-    depthScore,
-    isCornerLot: isCorner,
-    quality,
+    score: Math.max(0, Math.min(100, Math.round(score))),
+    geometrySignals: signals,
   };
 }

@@ -1,92 +1,52 @@
 import React from 'react';
 
-interface DevelopmentScenarioTimelineProps {
-  developmentScenario?: {
-    subdivisionPotential: { potential: string; score: number };
-    densityPotential: { classification: string; score: number };
-    projectability: { level: string; score: number };
-    developerROI: { tier: string; score: number };
-  };
-}
+type Item = {
+  phase: 'land_control' | 'scheme_test' | 'entitlement_watch' | 'delivery_readiness';
+  title: string;
+  detail: string;
+};
 
-export const DevelopmentScenarioTimeline: React.FC<DevelopmentScenarioTimelineProps> = ({
-  developmentScenario,
-}) => {
-  if (!developmentScenario) return null;
+type Props = {
+  developmentScenario?: Item[];
+  developmentSignals?: string[];
+};
 
-  const phases = [
-    {
-      title: 'Phase 1: Due Diligence',
-      description: `Land split: ${developmentScenario.subdivisionPotential.potential}`,
-      indicator: developmentScenario.subdivisionPotential.potential,
-    },
-    {
-      title: 'Phase 2: Planning',
-      description: `Density: ${developmentScenario.densityPotential.classification}`,
-      indicator: 'planning',
-    },
-    {
-      title: 'Phase 3: Development',
-      description: `Complexity: ${developmentScenario.projectability.level}`,
-      indicator: developmentScenario.projectability.level,
-    },
-    {
-      title: 'Phase 4: Returns',
-      description: `ROI tier: ${developmentScenario.developerROI.tier}`,
-      indicator: developmentScenario.developerROI.tier,
-    },
-  ];
-
-  const getIndicatorColor = (indicator: string) => {
-    const normalized = (indicator || '').toLowerCase();
-    if (
-      normalized === 'high' ||
-      normalized === 'aggressive' ||
-      normalized === 'easy' ||
-      normalized === 'excellent'
-    ) {
-      return 'bg-emerald-100 text-emerald-900 border-emerald-300';
-    }
-    if (normalized === 'medium' || normalized === 'moderate' || normalized === 'adequate') {
-      return 'bg-amber-100 text-amber-900 border-amber-300';
-    }
-    if (
-      normalized === 'low' ||
-      normalized === 'conservative' ||
-      normalized === 'difficult' ||
-      normalized === 'poor'
-    ) {
-      return 'bg-red-100 text-red-900 border-red-300';
-    }
-    return 'bg-blue-100 text-blue-900 border-blue-300';
-  };
+export const DevelopmentScenarioTimeline: React.FC<Props> = ({ developmentScenario = [], developmentSignals = [] }) => {
+  if (developmentScenario.length === 0) return null;
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <div className="mb-4">
-        <h3 className="font-semibold text-gray-900">Development Timeline</h3>
-        <p className="text-sm text-gray-600">Project scenario progression</p>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900">Development Scenario</h3>
+        <p className="mt-1 text-xs text-slate-600">Recommended developer sequencing</p>
       </div>
 
-      <div className="space-y-3">
-        {phases.map((phase, idx) => (
-          <div key={idx} className="flex gap-3">
-            <div className="flex flex-col items-center">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 border-2 border-indigo-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold text-indigo-700">{idx + 1}</span>
-              </div>
-              {idx < phases.length - 1 && <div className="w-0.5 h-12 bg-indigo-200 my-1" />}
+      <div className="mt-4 space-y-4">
+        {developmentScenario.map((item, index) => (
+          <div key={`${item.phase}-${index}`} className="flex gap-3">
+            <div className="mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+              {index + 1}
             </div>
-            <div className="pb-2 flex-1">
-              <div className="font-medium text-gray-900">{phase.title}</div>
-              <div className="text-sm text-gray-600 mb-2">{phase.description}</div>
-              <div className={`inline-block px-2.5 py-1 rounded-full border text-xs font-medium ${getIndicatorColor(phase.indicator)}`}>
-                {phase.indicator}
-              </div>
+            <div className="flex-1 rounded-lg border border-slate-100 bg-slate-50 px-3 py-3">
+              <div className="text-sm font-semibold text-slate-900">{item.title}</div>
+              <div className="mt-1 text-xs text-slate-600">{item.detail}</div>
             </div>
           </div>
         ))}
       </div>
+
+      {developmentSignals.length > 0 && (
+        <div className="mt-4 border-t border-slate-100 pt-4">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600">Signals</div>
+          <div className="flex flex-wrap gap-2">
+            {developmentSignals.map((signal) => (
+              <span key={signal} className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700">
+                {signal.replace(/_/g, ' ')}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

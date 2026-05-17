@@ -174,8 +174,8 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       parcelMergeOpportunity: full.parcelMergeOpportunity,
       rezoningUpside: full.rezoningUpside,
       projectability: full.projectability,
+      developmentScenario: full.developmentScenario || [],
       developmentSignals: full.developmentSignals || [],
-      developmentSummary: full.developmentSummary,
     };
   });
 
@@ -279,3 +279,4 @@ export const shareDealPool = async (req: AuthRequest, res: Response) => {
   await DealShareAudit.create({ dealPoolEntryId: entry._id, sharedWithType: req.body.sharedWithType, sharedWithName: req.body.sharedWithName, sharedWithContact: req.body.sharedWithContact, sharedFields: req.body.sharedFields, adminUserId: adminUser._id });
   res.json({ ok: true });
 };
+

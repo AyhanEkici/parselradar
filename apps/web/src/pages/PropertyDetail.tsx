@@ -304,36 +304,46 @@ export default function PropertyDetail() {
       };
       strategicLocationSignals?: string[];
       geoSummary?: string;
-      subdivisionPotential?: { potential: string; score: number; message: string };
+      subdivisionPotential?: {
+        level: 'low' | 'medium' | 'high';
+        score: number;
+        splitabilitySignals: string[];
+      };
       frontageDepthScore?: {
         score: number;
-        frontageScore: number;
-        depthScore: number;
-        quality: string;
+        geometrySignals: string[];
       };
-      densityPotential?: { classification: string; score: number };
-      developerROI?: { tier: string; score: number; description: string };
-      parcelMergeOpportunity?: {
-        opportunity: boolean;
+      densityPotential?: {
+        category: 'low_rise' | 'mid_rise' | 'mixed_use' | 'industrial' | 'tourism';
         score: number;
+        supportingSignals: string[];
+      };
+      developerROI?: {
+        score: number;
+        scenario: 'conservative' | 'moderate' | 'aggressive';
+        roiSignals: string[];
+      };
+      parcelMergeOpportunity?: {
+        score: number;
+        level: 'limited' | 'assembly' | 'expansion';
         signals: string[];
-        message: string;
       };
       rezoningUpside?: {
-        scenario: string;
         score: number;
-        multiplier: number;
-        probability: number;
-        message: string;
+        scenario: 'stable' | 'moderate_upside' | 'speculative_upside' | 'infrastructure_linked';
+        signals: string[];
       };
       projectability?: {
-        level: string;
         score: number;
-        constraints: string[];
-        recommendations: string[];
+        level: 'easy' | 'moderate' | 'difficult';
+        blockers: string[];
       };
+      developmentScenario?: Array<{
+        phase: 'land_control' | 'scheme_test' | 'entitlement_watch' | 'delivery_readiness';
+        title: string;
+        detail: string;
+      }>;
       developmentSignals?: string[];
-      developmentSummary?: string;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -748,62 +758,44 @@ export default function PropertyDetail() {
               </div>
             )}
 
-            {latestAnalysis.developmentSummary && (
-              <div className="mt-6">
-                <div className="mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900">Development Intelligence</h3>
-                  <p className="text-sm text-gray-600">Scenario-based development readiness analysis</p>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  <SubdivisionCard subdivisionPotential={latestAnalysis.subdivisionPotential} />
-                  <DevelopmentPotentialCard
-                    subdivisionPotential={latestAnalysis.subdivisionPotential}
-                    frontageDepthScore={latestAnalysis.frontageDepthScore}
-                    densityPotential={latestAnalysis.densityPotential}
-                  />
-                  <DeveloperROICard developerROI={latestAnalysis.developerROI} />
-                  <RezoningUpsideCard rezoningUpside={latestAnalysis.rezoningUpside} />
-                  <ParcelMergeCard parcelMergeOpportunity={latestAnalysis.parcelMergeOpportunity} />
-                  <ProjectabilityCard projectability={latestAnalysis.projectability} />
-                </div>
-
-                {latestAnalysis.developmentSummary && (
-                  <div className="mt-4">
-                    <DevelopmentScenarioTimeline
-                      developmentScenario={{
-                        subdivisionPotential: latestAnalysis.subdivisionPotential || { potential: 'unknown', score: 0 },
-                        densityPotential: latestAnalysis.densityPotential || { classification: 'unknown', score: 0 },
-                        projectability: latestAnalysis.projectability || { level: 'unknown', score: 0 },
-                        developerROI: latestAnalysis.developerROI || { tier: 'unknown', score: 0 },
-                      }}
+            {latestAnalysis.projectability && (
+              <>
+                <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-4">
+                    <DevelopmentPotentialCard
+                      densityPotential={latestAnalysis.densityPotential}
+                      projectability={latestAnalysis.projectability}
                     />
                   </div>
-                )}
-
-                {latestAnalysis.developmentSignals && latestAnalysis.developmentSignals.length > 0 && (
-                  <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4">
-                    <div className="text-sm font-semibold text-gray-900 mb-2">Development Signals</div>
-                    <div className="flex flex-wrap gap-2">
-                      {latestAnalysis.developmentSignals.map((signal) => (
-                        <span
-                          key={signal}
-                          className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-medium"
-                        >
-                          {signal}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="xl:col-span-2">
+                    <DeveloperROICard developerROI={latestAnalysis.developerROI} />
                   </div>
-                )}
-
-                {latestAnalysis.developmentSummary && (
-                  <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                    <div className="text-xs font-semibold text-blue-900 uppercase mb-2">Development Summary</div>
-                    <p className="text-sm text-blue-900">{latestAnalysis.developmentSummary}</p>
+                  <div className="xl:col-span-2">
+                    <SubdivisionCard subdivisionPotential={latestAnalysis.subdivisionPotential} />
                   </div>
-                )}
-              </div>
+                  <div className="xl:col-span-2">
+                    <ParcelMergeCard parcelMergeOpportunity={latestAnalysis.parcelMergeOpportunity} />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <RezoningUpsideCard rezoningUpside={latestAnalysis.rezoningUpside} />
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-4">
+                    <ProjectabilityCard
+                      projectability={latestAnalysis.projectability}
+                      frontageDepthScore={latestAnalysis.frontageDepthScore}
+                    />
+                  </div>
+                  <div className="xl:col-span-8">
+                    <DevelopmentScenarioTimeline
+                      developmentScenario={latestAnalysis.developmentScenario}
+                      developmentSignals={latestAnalysis.developmentSignals}
+                    />
+                  </div>
+                </div>
+              </>
             )}
 
             {(latestAnalysis.strengths?.length || latestAnalysis.missingInputs?.length) && (
@@ -1026,3 +1018,5 @@ export default function PropertyDetail() {
     </div>
   );
 }
+
+
