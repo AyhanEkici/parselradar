@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-// import { apiFetch } from '../lib/api';
+import { apiFetch } from '../lib/api';
+import {
+  AdminButton,
+  AdminEmptyState,
+  AdminHeader,
+  AdminPage,
+  AdminStatusPill,
+  AdminSurface,
+  AdminToolbar,
+} from '../components/admin';
 
 const docTypes = [
   { key: 'ONLINE_IMAR_DURUM_BELGESI', label: 'Online İmar Durum Belgesi' },
@@ -21,15 +30,145 @@ const docTypes = [
 
 export default function PropertyDocuments() {
   const { id } = useParams();
+  const [documents, setDocuments] = useState<
+    Array<{
+      _id: string;
+      documentType: string;
+      originalName: string;
+      uploadedAt?: string;
+      createdAt?: string;
+      mimeType?: string;
+      fileUrl?: string;
+      downloadUrl?: string;
+      fileMissing?: boolean;
+      sizeBytes?: number;
+    }>
+  >([]);
+  const [loading, setLoading] = useState(false);
+  const [uploadingType, setUploadingType] = useState('');
+  const [deletingId, setDeletingId] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
+  const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+
+  function absoluteFileUrl(fileUrl?: string) {
+    if (!fileUrl) return '';
+    const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) return fileUrl;
+    return `${base.replace(/\/+$/, '')}/${fileUrl.replace(/^\/+/, '')}`;
+  }
+
+  function formatBytes(bytes?: number) {
+    if (typeof bytes !== 'number' || Number.isNaN(bytes) || bytes < 0) return '-';
+    if (bytes < 1024) return `${bytes} B`;
+    const kb = bytes / 1024;
+    if (kb < 1024) return `${kb.toFixed(1)} KB`;
+    const mb = kb / 1024;
+    return `${mb.toFixed(2)} MB`;
+  }
+
+  const loadDocuments = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      const data = (await apiFetch(`properties/${id}`)) as {
+        documents?: Array<{
+          _id: string;
+          documentType: string;
+          originalName: string;
+          uploadedAt?: string;
+          createdAt?: string;
+          mimeType?: string;
+          fileUrl?: string;
+          downloadUrl?: string;
+          fileMissing?: boolean;
+          sizeBytes?: number;
+        }>;
+      };
+      setDocuments(Array.isArray(data.documents) ? data.documents : []);
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      setError(e.error || e.message || 'Belge listesi alınamadı');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const cards = useMemo(() => {
+    return documents.map((doc) => {
+      const fileHref = absoluteFileUrl(doc.fileUrl);
+      const downloadHref = absoluteFileUrl(doc.downloadUrl || doc.fileUrl);
+      const isImage = (doc.mimeType || '').startsWith('image/');
+      const isPdf = doc.mimeType === 'application/pdf';
+      const hasFile = Boolean(fileHref) && !doc.fileMissing;
+      return { ...doc, fileHref, downloadHref, isImage, isPdf, hasFile };
+    });
+  }, [documents]);
+
+  useEffect(() => {
+    let disposed = false;
+    const nextUrls: Record<string, string> = {};
+    const currentObjectUrls: string[] = [];
+
+    const loadPreviews = async () => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+      const failed: Record<string, string> = {};
+
+      await Promise.all(
+        cards.map(async (doc) => {
+          if (!doc.isImage || !doc.hasFile || !doc.fileHref) return;
+          try {
+            const response = await fetch(doc.fileHref, {
+              method: 'GET',
+              credentials: 'include',
+              headers: {
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+            });
+            if (!response.ok) {
+              throw new Error(`Preview request failed (${response.status})`);
+            }
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            nextUrls[doc._id] = objectUrl;
+            currentObjectUrls.push(objectUrl);
+          } catch {
+            failed[doc._id] = 'Authenticated preview unavailable';
+          }
+        })
+      );
+
+      if (disposed) {
+        currentObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+        return;
+      }
+
+      setPreviewUrls(nextUrls);
+      setPreviewErrors(failed);
+    };
+
+    loadPreviews();
+
+    return () => {
+      disposed = true;
+      currentObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [cards]);
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     const formData = new FormData(e.currentTarget);
+    const currentType = String(formData.get('documentType') || '');
+    setUploadingType(currentType);
     const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
     try {
       const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
@@ -49,32 +188,163 @@ export default function PropertyDocuments() {
       }
 
       setSuccess('Yüklendi');
+      await loadDocuments();
     } catch (err: any) {
       setError(err?.message || 'Yükleme başarısız');
+    } finally {
+      setUploadingType('');
+    }
+  };
+
+  const handleDelete = async (documentId: string) => {
+    if (!id) return;
+    setDeletingId(documentId);
+    setError('');
+    setSuccess('');
+    try {
+      await apiFetch(`properties/${id}/documents/${documentId}`, { method: 'DELETE' });
+      setSuccess('Belge silindi');
+      await loadDocuments();
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      setError(e.error || e.message || 'Silme başarısız');
+    } finally {
+      setDeletingId('');
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Belge Yükle</h2>
-      <ul className="mb-4">
-        {docTypes.map(dt => (
-          <li key={dt.key} className="mb-2">
-            <form onSubmit={handleUpload} className="flex items-center space-x-2">
-              <input type="hidden" name="documentType" value={dt.key} />
-              <span className="w-56">{dt.label}</span>
-              <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.webp" required />
-              <button className="bg-blue-600 text-white px-3 py-1 rounded" type="submit">Yükle</button>
-            </form>
-          </li>
-        ))}
-      </ul>
-      {success && <div className="text-green-600">{success}</div>}
-      {error && <div className="text-red-600">{error}</div>}
-      <div className="mt-4 flex space-x-2">
-        <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => navigate(`/properties/${id}/consent`)}>Devam: Açık Rıza</button>
-        <button className="bg-gray-200 px-4 py-2 rounded" onClick={() => navigate(`/properties/${id}/result`)}>Sonuç</button>
-      </div>
-    </div>
+    <AdminPage>
+      <AdminSurface className="p-4 sm:p-5 space-y-5">
+        <AdminHeader
+          title="Belge Yönetimi"
+          subtitle="Belgeleri yükleyin, önizleyin ve yönetin"
+        />
+
+        {loading ? <div className="text-sm text-slate-600">Loading documents...</div> : null}
+        {success ? <div className="text-sm text-emerald-600">{success}</div> : null}
+        {error ? <div className="text-sm text-red-600">{error}</div> : null}
+
+        <section className="space-y-3">
+          <AdminToolbar className="justify-between">
+            <h3 className="text-sm font-semibold text-slate-800">Existing Documents</h3>
+          </AdminToolbar>
+
+          {!loading && cards.length === 0 ? (
+            <AdminEmptyState>Henüz belge yüklenmedi.</AdminEmptyState>
+          ) : null}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {cards.map((doc) => (
+              <article key={doc._id} className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm hover:shadow-md transition">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <AdminStatusPill tone="info">{doc.documentType}</AdminStatusPill>
+                  <span className="text-xs text-slate-500">
+                    {new Date(doc.createdAt || doc.uploadedAt || '').toLocaleString()}
+                  </span>
+                </div>
+
+                <div className="text-sm font-medium text-slate-900 break-words" title={doc.originalName}>
+                  {doc.originalName}
+                </div>
+                <div className="mt-1 text-xs text-slate-500">Size: {formatBytes(doc.sizeBytes)}</div>
+
+                <div className="mt-3">
+                  {doc.isImage && doc.hasFile && previewUrls[doc._id] ? (
+                    <img
+                      src={previewUrls[doc._id]}
+                      alt={doc.originalName}
+                      className="w-full h-40 object-cover rounded-lg border border-slate-200"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-40 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-xs text-slate-500 text-center px-3">
+                      {!doc.hasFile
+                        ? 'Legacy file missing — re-upload required'
+                        : doc.isImage
+                        ? previewErrors[doc._id] || 'Loading preview...'
+                        : doc.isPdf
+                        ? 'PDF document'
+                        : 'File preview not available'}
+                    </div>
+                  )}
+                </div>
+
+                <AdminToolbar className="mt-3">
+                  <AdminButton
+                    variant="primary"
+                    disabled={!doc.hasFile}
+                    onClick={() => {
+                      if (doc.hasFile) window.open(doc.fileHref, '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    Open
+                  </AdminButton>
+
+                  <a
+                    href={doc.downloadHref || '#'}
+                    download={doc.originalName}
+                    className={`h-9 px-3 rounded-md border text-sm font-medium transition-colors flex items-center ${
+                      !doc.hasFile
+                        ? 'pointer-events-none opacity-50 bg-white text-slate-400 border-slate-200'
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                    }`}
+                    onClick={(e) => {
+                      if (!doc.hasFile) e.preventDefault();
+                    }}
+                  >
+                    Download
+                  </a>
+
+                  <AdminButton
+                    variant="danger"
+                    disabled={deletingId === doc._id}
+                    onClick={() => handleDelete(doc._id)}
+                  >
+                    {deletingId === doc._id ? 'Deleting...' : 'Delete'}
+                  </AdminButton>
+                </AdminToolbar>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 p-4 bg-slate-50/40">
+          <AdminToolbar className="justify-between mb-3">
+            <h3 className="text-sm font-semibold text-slate-800">Upload New Documents</h3>
+          </AdminToolbar>
+
+          <ul className="space-y-2">
+            {docTypes.map((dt) => (
+              <li key={dt.key}>
+                <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-[220px_1fr_auto] gap-2 items-center">
+                  <input type="hidden" name="documentType" value={dt.key} />
+                  <div className="text-sm text-slate-700">{dt.label}</div>
+                  <input
+                    className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
+                    type="file"
+                    name="file"
+                    accept=".pdf,.png,.jpg,.jpeg,.webp"
+                    required
+                  />
+                  <AdminButton type="submit" variant="primary" disabled={uploadingType === dt.key}>
+                    {uploadingType === dt.key ? 'Yükleniyor...' : 'Yükle'}
+                  </AdminButton>
+                </form>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div className="mt-2 flex flex-wrap gap-2">
+          <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}/consent`)}>
+            Devam: Açık Rıza
+          </AdminButton>
+          <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}/result`)}>
+            Sonuç
+          </AdminButton>
+        </div>
+      </AdminSurface>
+    </AdminPage>
   );
 }
