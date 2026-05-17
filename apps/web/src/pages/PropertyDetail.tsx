@@ -38,6 +38,7 @@ export default function PropertyDetail() {
       _id: string;
       documentType: string;
       originalName: string;
+      createdAt?: string;
       uploadedAt: string;
     }>;
     analyses: Array<{
@@ -46,7 +47,16 @@ export default function PropertyDetail() {
       score: number;
       signal: string;
       createdAt: string;
+      previewSummary?: Record<string, unknown>;
     }>;
+    latestAnalysis?: {
+      _id: string;
+      productType: string;
+      score: number;
+      signal: string;
+      createdAt: string;
+      previewSummary?: Record<string, unknown>;
+    };
     analysisSummary?: {
       quickScore?: { score: number; signal: string; createdAt: string } | null;
       parcelInsight?: { score: number; signal: string; createdAt: string } | null;
@@ -63,6 +73,8 @@ export default function PropertyDetail() {
 
   const [detail, setDetail] = useState<DetailResponse | null>(null);
   const [error, setError] = useState('');
+  const [rerunLoading, setRerunLoading] = useState(false);
+  const [rerunError, setRerunError] = useState('');
 
   const normalizeDetail = (data: unknown): DetailResponse => {
     const maybe = data as Partial<DetailResponse> & Record<string, unknown>;
@@ -72,6 +84,7 @@ export default function PropertyDetail() {
         owner: maybe.owner,
         documents: Array.isArray(maybe.documents) ? maybe.documents : [],
         analyses: Array.isArray(maybe.analyses) ? maybe.analyses : [],
+        latestAnalysis: maybe.latestAnalysis as DetailResponse['latestAnalysis'],
         analysisSummary: maybe.analysisSummary,
         auditReferences: Array.isArray(maybe.auditReferences) ? maybe.auditReferences : [],
       };
@@ -82,18 +95,38 @@ export default function PropertyDetail() {
       owner: undefined,
       documents: [],
       analyses: [],
+      latestAnalysis: undefined,
       analysisSummary: undefined,
       auditReferences: [],
     };
   };
 
-  useEffect(() => {
+  const fetchDetail = async () => {
     if (!resolvedId) return;
+    setError('');
     const endpoint = isAdminPath ? `admin/properties/${resolvedId}` : `properties/${resolvedId}`;
-    apiFetch(endpoint)
-      .then((data) => setDetail(normalizeDetail(data)))
-      .catch((err) => setError((err as { error?: string }).error || 'Detay yüklenemedi'));
+    const data = await apiFetch(endpoint);
+    setDetail(normalizeDetail(data));
+  };
+
+  useEffect(() => {
+    fetchDetail().catch((err) => setError((err as { error?: string }).error || 'Detay yüklenemedi'));
   }, [resolvedId, isAdminPath]);
+
+  const rerunAnalysis = async () => {
+    if (!resolvedId) return;
+    setRerunLoading(true);
+    setRerunError('');
+    try {
+      await apiFetch(`analysis/${resolvedId}/quick-score?force=1`, { method: 'POST' });
+      await fetchDetail();
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      setRerunError(e.error || e.message || 'Analiz başarısız');
+    } finally {
+      setRerunLoading(false);
+    }
+  };
 
   if (isAdminPath && user?.role !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
@@ -102,10 +135,16 @@ export default function PropertyDetail() {
   if (error) return <div className="text-center mt-20 text-red-600">{error}</div>;
   if (!detail) return <div className="text-center mt-20">Yükleniyor...</div>;
 
-  const { property, owner, documents, analysisSummary, analyses, auditReferences } = detail;
+  const { property, owner, documents, analysisSummary, analyses, auditReferences, latestAnalysis } = detail;
 
   const formatMoney = (value?: number) =>
     typeof value === 'number' ? `${value.toLocaleString('tr-TR')} TL` : '-';
+
+  const latestSummary = latestAnalysis?.previewSummary || {};
+  const latestExplanation =
+    String((latestSummary['summary'] as string) || (latestSummary['explanation'] as string) || '').trim() || '-';
+  const latestReused =
+    typeof latestSummary['reused'] === 'boolean' ? (latestSummary['reused'] ? 'Yes' : 'No') : '-';
 
   return (
     <div className="max-w-6xl mx-auto mt-8 p-6 bg-white rounded shadow overflow-hidden">
@@ -150,22 +189,33 @@ export default function PropertyDetail() {
         <section className="border rounded p-4">
           <h3 className="font-semibold mb-2">Yüklenen Belgeler</h3>
           {documents.length === 0 ? (
-            <div className="text-gray-500">Belge bulunamadı</div>
+            <div className="text-gray-500">No documents uploaded yet</div>
           ) : (
             <ul className="space-y-2">
               {documents.map((doc) => (
                 <li key={doc._id} className="border rounded p-2">
                   <div className="font-medium break-words">{doc.documentType}</div>
                   <div className="text-gray-700 break-words">{doc.originalName}</div>
-                  <div className="text-xs text-gray-500">{new Date(doc.uploadedAt).toLocaleString()}</div>
+                  <div className="text-xs text-gray-500">{new Date(doc.createdAt || doc.uploadedAt).toLocaleString()}</div>
                 </li>
               ))}
             </ul>
           )}
+          <div className="mt-3">
+            <Link to={`/properties/${resolvedId}/documents`} className="inline-flex bg-gray-800 text-white px-3 py-2 rounded text-sm">Upload documents</Link>
+          </div>
         </section>
 
         <section className="border rounded p-4">
           <h3 className="font-semibold mb-2">Analiz Özeti</h3>
+          <div className="border rounded p-2 mb-2 bg-gray-50">
+            <div className="font-medium">Latest Analysis</div>
+            <div>Score: {latestAnalysis?.score ?? '-'}</div>
+            <div>Signal: {latestAnalysis?.signal || '-'}</div>
+            <div>Reused: {latestReused}</div>
+            <div className="break-words">Explanation: {latestExplanation}</div>
+            <div className="text-xs text-gray-500">{latestAnalysis?.createdAt ? new Date(latestAnalysis.createdAt).toLocaleString() : '-'}</div>
+          </div>
           <div className="space-y-2">
             <div className="border rounded p-2">
               <div className="font-medium">Quick Score</div>
@@ -210,9 +260,16 @@ export default function PropertyDetail() {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Link to={`/properties/${resolvedId}/result`} className="bg-blue-600 text-white px-3 py-2 rounded text-sm">Open Analysis</Link>
-        <Link to={`/properties/${resolvedId}/result`} className="bg-indigo-600 text-white px-3 py-2 rounded text-sm">Re-run Analysis</Link>
+        <button
+          onClick={rerunAnalysis}
+          disabled={rerunLoading}
+          className="bg-indigo-600 text-white px-3 py-2 rounded text-sm disabled:opacity-60"
+        >
+          {rerunLoading ? 'Running...' : 'Re-run Analysis'}
+        </button>
         <Link to={`/properties/${resolvedId}/documents`} className="bg-gray-800 text-white px-3 py-2 rounded text-sm">View Documents</Link>
       </div>
+      {rerunError && <div className="mt-2 text-sm text-red-600">{rerunError}</div>}
 
       {analyses.length > 0 && (
         <div className="mt-4 text-xs text-gray-600">

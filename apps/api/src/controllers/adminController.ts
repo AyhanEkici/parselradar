@@ -9,6 +9,8 @@ import User from '../models/User';
 import AnalysisRun from '../models/AnalysisRun';
 import CreditLedger from '../models/CreditLedger';
 import StripeCheckoutSession from '../models/StripeCheckoutSession';
+import DocumentUpload from '../models/DocumentUpload';
+import AuditEvent from '../models/AuditEvent';
 // GET /admin/users
 export const getAdminUsers = async (req: AuthRequest, res: Response) => {
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
@@ -43,7 +45,9 @@ export const getAdminAnalyses = async (req: AuthRequest, res: Response) => {
   const analyses = await AnalysisRun.find(filter)
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
-    .limit(limit);
+    .limit(limit)
+    .populate('userId', 'name email role')
+    .populate('propertySubmissionId', 'addressText il ilce mahalleOrKoy ada parsel status');
   res.json({ analyses, page, limit, total, totalPages: Math.ceil(total / limit) });
 };
 
@@ -83,9 +87,52 @@ export const getAllProperties = async (req: AuthRequest, res: Response) => {
 };
 
 export const getPropertyById = async (req: AuthRequest, res: Response) => {
-  const property = await PropertySubmission.findById(req.params.id);
+  const property = await PropertySubmission.findById(req.params.id).lean();
   if (!property) return res.status(404).json({ error: 'Bulunamadı' });
-  res.json(property);
+
+  const [owner, documents, analyses, audits] = await Promise.all([
+    User.findById(property.userId).select('email name role').lean(),
+    DocumentUpload.find({ propertySubmissionId: property._id })
+      .sort({ uploadedAt: -1 })
+      .select('documentType originalName uploadedAt mimeType sizeBytes')
+      .lean(),
+    AnalysisRun.find({ propertySubmissionId: property._id })
+      .sort({ createdAt: -1 })
+      .select('productType score signal createdAt previewSummary')
+      .lean(),
+    AuditEvent.find({
+      $or: [
+        { targetId: String(property._id) },
+        { 'metadata.propertyId': String(property._id) },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .select('type message success createdAt')
+      .lean(),
+  ]);
+
+  const latestByType = (type: string, altType?: string) =>
+    analyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;
+  const latestAnalysis = analyses[0] || null;
+  const visibleDocuments = documents.map((doc: any) => ({
+    ...doc,
+    createdAt: doc.uploadedAt,
+  }));
+
+  res.json({
+    property,
+    owner,
+    documents: visibleDocuments,
+    analyses,
+    latestAnalysis,
+    analysisSummary: {
+      quickScore: latestByType('quick-score', 'QUICK_SCORE'),
+      parcelInsight: latestByType('parsel-insight', 'PARSEL_INSIGHT'),
+      developerFit: latestByType('developer-fit', 'DEVELOPER_FIT'),
+    },
+    auditReferences: audits,
+  });
 };
 
 export const reviewProperty = async (req: AuthRequest, res: Response) => {

@@ -146,17 +146,24 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       .lean(),
   ]);
 
-  const latestByType = (type: string) => analyses.find((a) => a.productType === type) || null;
+  const latestByType = (type: string, altType?: string) =>
+    analyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;
+  const latestAnalysis = analyses[0] || null;
+  const visibleDocuments = documents.map((doc: any) => ({
+    ...doc,
+    createdAt: doc.uploadedAt,
+  }));
 
   return res.json({
     property,
     owner,
-    documents,
+    documents: visibleDocuments,
     analyses,
+    latestAnalysis,
     analysisSummary: {
-      quickScore: latestByType('quick-score'),
-      parcelInsight: latestByType('parsel-insight'),
-      developerFit: latestByType('developer-fit'),
+      quickScore: latestByType('quick-score', 'QUICK_SCORE'),
+      parcelInsight: latestByType('parsel-insight', 'PARSEL_INSIGHT'),
+      developerFit: latestByType('developer-fit', 'DEVELOPER_FIT'),
     },
     auditReferences: audits,
   });

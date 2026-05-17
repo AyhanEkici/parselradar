@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
+import { Link } from 'react-router-dom';
 
 interface Analysis {
   _id: string;
-  userId: string;
-  propertySubmissionId: string;
+  userId:
+    | string
+    | {
+        _id?: string;
+        name?: string;
+        email?: string;
+      };
+  propertySubmissionId:
+    | string
+    | {
+        _id?: string;
+        addressText?: string;
+        il?: string;
+        ilce?: string;
+      };
   score: number;
-  signal: string;
+  signal?: string;
   reused: boolean;
   createdAt: string;
 }
@@ -61,11 +75,29 @@ export default function AdminAnalyses() {
             {!loading && analyses.length === 0 ? <tr><td colSpan={6} className="text-center">Kayıt yok</td></tr> : null}
             {analyses.map(a => (
               <tr key={a._id}>
-                <td className="border px-2">{a.score}</td>
-                <td className="border px-2">{a.signal}</td>
+                <td className="border px-2">{typeof a.score === 'number' ? a.score : '-'}</td>
+                <td className="border px-2">{a.signal || '-'}</td>
                 <td className="border px-2">{a.reused ? 'Evet' : 'Hayır'}</td>
-                <td className="border px-2">{a.propertySubmissionId}</td>
-                <td className="border px-2">{a.userId}</td>
+                <td className="border px-2">
+                  {typeof a.propertySubmissionId === 'object' ? (
+                    <Link
+                      className="text-blue-600 hover:underline"
+                      to={`/admin/properties/${a.propertySubmissionId._id}`}
+                    >
+                      {a.propertySubmissionId.addressText || 'Adres girilmemiş'}
+                      {a.propertySubmissionId.il || a.propertySubmissionId.ilce
+                        ? ` (${a.propertySubmissionId.il || '-'} / ${a.propertySubmissionId.ilce || '-'})`
+                        : ''}
+                    </Link>
+                  ) : (
+                    a.propertySubmissionId
+                  )}
+                </td>
+                <td className="border px-2">
+                  {typeof a.userId === 'object'
+                    ? `${a.userId.name || '-'} (${a.userId.email || '-'})`
+                    : a.userId}
+                </td>
                 <td className="border px-2">{new Date(a.createdAt).toLocaleString()}</td>
               </tr>
             ))}
