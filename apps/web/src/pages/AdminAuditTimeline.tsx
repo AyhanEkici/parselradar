@@ -7,7 +7,6 @@ import {
   AdminHeader,
   AdminInput,
   AdminPage,
-  AdminStatusPill,
   AdminSurface,
   AdminTable,
   AdminTableWrap,
@@ -78,13 +77,17 @@ export default function AdminAuditTimeline() {
       const rows = Array.isArray(data?.events)
         ? data.events
         : Array.isArray(data?.items)
-        ? data.items
-        : [];
+          ? data.items
+          : [];
 
       setEvents(rows);
-      setTotalPages(Number(data?.totalPages || 1));
+      setTotalPages(Math.max(1, Number(data?.totalPages || 1)));
     } catch (e) {
-      setError((e as { error?: string; message?: string }).error || (e as Error).message || 'Audit verileri alınamadı');
+      setError(
+        (e as { error?: string; message?: string }).error ||
+          (e as Error).message ||
+          'Audit verileri alınamadı',
+      );
     } finally {
       setLoading(false);
     }
@@ -96,17 +99,22 @@ export default function AdminAuditTimeline() {
   }, [type, actorUserId, page]);
 
   if (!user || user.role !== 'ADMIN') {
-    return <div>Yönetici yetkisi gerekli</div>;
-  }
-
-  if (error) {
-    return <div>Hata: {error}</div>;
+    return (
+      <AdminPage>
+        <AdminSurface>
+          <AdminEmptyState>Yönetici yetkisi gerekli</AdminEmptyState>
+        </AdminSurface>
+      </AdminPage>
+    );
   }
 
   return (
     <AdminPage className="overflow-x-hidden">
-      <AdminSurface className="p-4 sm:p-5 space-y-4">
-        <AdminHeader title="Audit Timeline" subtitle="Sistem ve yönetici işlemlerinin olay akışı" />
+      <AdminSurface className="space-y-4 p-4 sm:p-5">
+        <AdminHeader
+          title="Audit Timeline"
+          subtitle="Sistem ve yönetici işlemlerinin olay akışı"
+        />
 
         <AdminToolbar>
           <AdminInput
@@ -140,6 +148,12 @@ export default function AdminAuditTimeline() {
           </AdminButton>
         </AdminToolbar>
 
+        {error ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            Hata: {error}
+          </div>
+        ) : null}
+
         <AdminTableWrap className="overflow-hidden">
           <AdminTable className="w-full table-fixed text-[11px] sm:text-xs">
             <thead>
@@ -155,53 +169,78 @@ export default function AdminAuditTimeline() {
             </thead>
 
             <tbody>
-              {!loading && events.map((ev) => (
-                <tr key={ev._id} className={ev.success ? '' : 'bg-red-50/60'}>
-                  <AdminTd className="whitespace-nowrap">
-                    {new Date(ev.createdAt).toLocaleString()}
-                  </AdminTd>
-
-                  <AdminTd className="break-words">{ev.type || ''}</AdminTd>
-
-                  <AdminTd className="break-words">
-                    {ev.actorUserId ? (
-                      <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
-                    ) : null}{' '}
-                    {ev.actorRole || ''}
-                  </AdminTd>
-
-                  <AdminTd className="break-words">
-                    {ev.targetType || ''}{' '}
-                    {ev.targetId ? <span title={ev.targetId}>{shortenId(ev.targetId)}</span> : null}
-                  </AdminTd>
-
-                  <AdminTd className="break-words whitespace-normal">{ev.message || ''}</AdminTd>
-
-                  <AdminTd className="text-center">
-                    <AdminStatusPill tone={ev.success ? 'success' : 'danger'}>
-                      {ev.success ? '✓' : '✗'}
-                    </AdminStatusPill>
-                  </AdminTd>
-
-                  <AdminTd
-                    className="break-words whitespace-normal"
-                    title={JSON.stringify(ev.metadata || {})}
-                  >
-                    {metadataToText(ev.metadata)}
+              {loading ? (
+                <tr>
+                  <AdminTd colSpan={7} className="py-6 text-center text-slate-500">
+                    Loading...
                   </AdminTd>
                 </tr>
-              ))}
+              ) : null}
+
+              {!loading && events.length === 0 ? (
+                <tr>
+                  <AdminTd colSpan={7}>
+                    <AdminEmptyState>Audit kaydı bulunamadı</AdminEmptyState>
+                  </AdminTd>
+                </tr>
+              ) : null}
+
+              {!loading &&
+                events.map((ev) => (
+                  <tr key={ev._id} className={ev.success ? '' : 'bg-red-50/60'}>
+                    <AdminTd className="whitespace-nowrap">
+                      {new Date(ev.createdAt).toLocaleString()}
+                    </AdminTd>
+
+                    <AdminTd className="break-words">{ev.type || ''}</AdminTd>
+
+                    <AdminTd className="break-words">
+                      {ev.actorUserId ? (
+                        <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
+                      ) : null}{' '}
+                      {ev.actorRole || ''}
+                    </AdminTd>
+
+                    <AdminTd className="break-words">
+                      {ev.targetType || ''}{' '}
+                      {ev.targetId ? (
+                        <span title={ev.targetId}>{shortenId(ev.targetId)}</span>
+                      ) : null}
+                    </AdminTd>
+
+                    <AdminTd className="break-words whitespace-normal">
+                      {ev.message || ''}
+                    </AdminTd>
+
+                    <AdminTd className="text-center">
+                      <span
+                        className={
+                          ev.success
+                            ? 'inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700'
+                            : 'inline-flex rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700'
+                        }
+                      >
+                        {ev.success ? '✓' : '✗'}
+                      </span>
+                    </AdminTd>
+
+                    <AdminTd
+                      className="break-words whitespace-normal"
+                      title={JSON.stringify(ev.metadata || {})}
+                    >
+                      {metadataToText(ev.metadata)}
+                    </AdminTd>
+                  </tr>
+                ))}
             </tbody>
           </AdminTable>
         </AdminTableWrap>
-
-        {loading ? <div className="text-sm text-slate-500">Loading...</div> : null}
-        {!loading && events.length === 0 ? <AdminEmptyState>Audit kaydı bulunamadı</AdminEmptyState> : null}
 
         <AdminToolbar className="justify-between">
           <div className="text-sm text-slate-600">
             Page {page} / {totalPages}
           </div>
+
           <div className="flex items-center gap-2">
             <AdminButton
               disabled={page <= 1}
@@ -209,6 +248,7 @@ export default function AdminAuditTimeline() {
             >
               Prev
             </AdminButton>
+
             <AdminButton
               disabled={page >= totalPages}
               onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
