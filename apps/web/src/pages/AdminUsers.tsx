@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
+import {
+  AdminButton,
+  AdminEmptyState,
+  AdminHeader,
+  AdminInput,
+  AdminPage,
+  AdminSelect,
+  AdminStatusPill,
+  AdminSurface,
+  AdminTable,
+  AdminTableWrap,
+  AdminTd,
+  AdminTh,
+  AdminToolbar,
+} from '../components/admin';
 
 interface User {
   _id: string;
@@ -45,48 +60,92 @@ export default function AdminUsers() {
   if (error) return <div>Hata: {error}</div>;
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Kullanıcılar</h1>
-      <div className="mb-2 flex gap-2 items-center">
-        <input className="border px-2 py-1 text-xs" placeholder="Ara (email, isim)" value={search} onChange={e => { setPage(1); setSearch(e.target.value); }} />
-        <select className="border px-2 py-1 text-xs" value={role} onChange={e => { setPage(1); setRole(e.target.value); }}>
-          <option value="">Tüm Roller</option>
-          <option value="USER">USER</option>
-          <option value="ADMIN">ADMIN</option>
-        </select>
-        <button className="border px-2 py-1 text-xs" onClick={() => { setSearch(''); setRole(''); setPage(1); }}>Temizle</button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border text-xs">
-          <thead>
-            <tr>
-              <th className="border px-2">Email</th>
-              <th className="border px-2">İsim</th>
-              <th className="border px-2">Rol</th>
-              <th className="border px-2">Kredi</th>
-              <th className="border px-2">Oluşturulma</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? <tr><td colSpan={5} className="text-center">Yükleniyor...</td></tr> : null}
-            {!loading && users.length === 0 ? <tr><td colSpan={5} className="text-center">Kayıt yok</td></tr> : null}
-            {users.map(u => (
-              <tr key={u._id}>
-                <td className="border px-2">{u.email}</td>
-                <td className="border px-2">{u.name}</td>
-                <td className="border px-2"><span className={`px-2 py-1 rounded text-white ${u.role === 'ADMIN' ? 'bg-blue-600' : 'bg-gray-500'}`}>{u.role}</span></td>
-                <td className="border px-2">{u.credits ?? '-'}</td>
-                <td className="border px-2">{new Date(u.createdAt).toLocaleString()}</td>
+    <AdminPage>
+      <AdminSurface className="p-4 sm:p-5 space-y-4">
+        <AdminHeader
+          title="Kullanıcılar"
+          subtitle="Tüm kullanıcıları filtreleyin, rollerini inceleyin ve kredi durumunu takip edin"
+        />
+
+        <AdminToolbar>
+          <AdminInput
+            className="w-full sm:w-72"
+            placeholder="Ara (email, isim)"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+          />
+          <AdminSelect
+            className="w-full sm:w-44"
+            value={role}
+            onChange={(e) => {
+              setPage(1);
+              setRole(e.target.value);
+            }}
+          >
+            <option value="">Tüm Roller</option>
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </AdminSelect>
+          <AdminButton
+            onClick={() => {
+              setSearch('');
+              setRole('');
+              setPage(1);
+            }}
+          >
+            Temizle
+          </AdminButton>
+        </AdminToolbar>
+
+        <AdminTableWrap>
+          <AdminTable>
+            <thead>
+              <tr>
+                <AdminTh>Email</AdminTh>
+                <AdminTh>İsim</AdminTh>
+                <AdminTh>Rol</AdminTh>
+                <AdminTh>Kredi</AdminTh>
+                <AdminTh>Oluşturulma</AdminTh>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex gap-2 mt-2 justify-center">
-        <button className="border px-2 py-1 text-xs" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>Önceki</button>
-        <span>Sayfa {page} / {totalPages}</span>
-        <button className="border px-2 py-1 text-xs" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Sonraki</button>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {!loading && users.map((u) => (
+                <tr key={u._id} className="hover:bg-slate-50/70 transition-colors">
+                  <AdminTd className="font-medium text-slate-900 break-all">{u.email}</AdminTd>
+                  <AdminTd className="break-words">{u.name}</AdminTd>
+                  <AdminTd>
+                    <AdminStatusPill tone={u.role === 'ADMIN' ? 'info' : 'neutral'}>{u.role}</AdminStatusPill>
+                  </AdminTd>
+                  <AdminTd>
+                    <span className="inline-flex min-w-[3rem] justify-center rounded-md bg-emerald-50 border border-emerald-200 px-2 py-1 text-xs font-semibold text-emerald-700">
+                      {u.credits ?? '-'}
+                    </span>
+                  </AdminTd>
+                  <AdminTd className="whitespace-nowrap">{new Date(u.createdAt).toLocaleString()}</AdminTd>
+                </tr>
+              ))}
+            </tbody>
+          </AdminTable>
+        </AdminTableWrap>
+
+        {loading ? <div className="text-sm text-slate-500">Yükleniyor...</div> : null}
+        {!loading && users.length === 0 ? <AdminEmptyState>Kayıt yok</AdminEmptyState> : null}
+
+        <AdminToolbar className="justify-between">
+          <div className="text-sm text-slate-600">Sayfa {page} / {totalPages}</div>
+          <div className="flex items-center gap-2">
+            <AdminButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+              Önceki
+            </AdminButton>
+            <AdminButton disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+              Sonraki
+            </AdminButton>
+          </div>
+        </AdminToolbar>
+      </AdminSurface>
+    </AdminPage>
   );
 }
