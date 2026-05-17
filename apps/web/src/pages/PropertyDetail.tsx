@@ -64,12 +64,36 @@ export default function PropertyDetail() {
   const [detail, setDetail] = useState<DetailResponse | null>(null);
   const [error, setError] = useState('');
 
+  const normalizeDetail = (data: unknown): DetailResponse => {
+    const maybe = data as Partial<DetailResponse> & Record<string, unknown>;
+    if (maybe && typeof maybe === 'object' && maybe.property) {
+      return {
+        property: maybe.property as DetailResponse['property'],
+        owner: maybe.owner,
+        documents: Array.isArray(maybe.documents) ? maybe.documents : [],
+        analyses: Array.isArray(maybe.analyses) ? maybe.analyses : [],
+        analysisSummary: maybe.analysisSummary,
+        auditReferences: Array.isArray(maybe.auditReferences) ? maybe.auditReferences : [],
+      };
+    }
+
+    return {
+      property: maybe as DetailResponse['property'],
+      owner: undefined,
+      documents: [],
+      analyses: [],
+      analysisSummary: undefined,
+      auditReferences: [],
+    };
+  };
+
   useEffect(() => {
     if (!resolvedId) return;
-    apiFetch(`properties/${resolvedId}`)
-      .then((data) => setDetail(data as DetailResponse))
+    const endpoint = isAdminPath ? `admin/properties/${resolvedId}` : `properties/${resolvedId}`;
+    apiFetch(endpoint)
+      .then((data) => setDetail(normalizeDetail(data)))
       .catch((err) => setError((err as { error?: string }).error || 'Detay yüklenemedi'));
-  }, [resolvedId]);
+  }, [resolvedId, isAdminPath]);
 
   if (isAdminPath && user?.role !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
