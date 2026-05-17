@@ -179,6 +179,13 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       overpricingRisk: full.overpricingRisk,
       comparableSummary: full.comparableSummary,
       topComparables: full.topComparables || [],
+      infrastructureScore: full.infrastructureScore,
+      roadAccessScore: full.roadAccessScore,
+      utilityCoverage: full.utilityCoverage,
+      growthPotential: full.growthPotential,
+      regionalDemand: full.regionalDemand,
+      strategicLocationSignals: full.strategicLocationSignals || [],
+      geoSummary: full.geoSummary,
     };
   });
 

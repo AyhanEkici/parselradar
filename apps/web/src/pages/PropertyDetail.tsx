@@ -19,6 +19,13 @@ import {
   OpportunitySignalCard,
   PricingPositionCard,
 } from '../components/market';
+import {
+  InfrastructureCard,
+  RegionalDemandCard,
+  GrowthPotentialCard,
+  StrategicLocationCard,
+  GeoIntelligenceGrid,
+} from '../components/geo';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -268,6 +275,26 @@ export default function PropertyDetail() {
         priceDeltaRatio: number;
         daysSinceCreated: number;
       }>;
+      infrastructureScore?: number;
+      roadAccessScore?: number;
+      utilityCoverage?: {
+        electricityScore: number;
+        waterScore: number;
+        gasScore: number;
+        internetScore: number;
+        totalScore: number;
+      };
+      growthPotential?: {
+        growthScore: number;
+        developmentPhase: 'emerging' | 'developing' | 'mature' | 'saturated';
+        growthIndicators: number;
+      };
+      regionalDemand?: {
+        demandLevel: 'cold' | 'stable' | 'active' | 'high_growth';
+        demandScore: number;
+      };
+      strategicLocationSignals?: string[];
+      geoSummary?: string;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -638,6 +665,49 @@ export default function PropertyDetail() {
             <div className="mt-4">
               <ComparableTable rows={latestAnalysis.topComparables} />
             </div>
+
+            {latestAnalysis.infrastructureScore !== undefined && (
+              <div className="mt-4">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4">
+                  <div className="xl:col-span-1">
+                    <InfrastructureCard
+                      infrastructureScore={latestAnalysis.infrastructureScore}
+                      roadAccessScore={latestAnalysis.roadAccessScore}
+                      utilityCoverage={latestAnalysis.utilityCoverage}
+                    />
+                  </div>
+                  {latestAnalysis.regionalDemand && (
+                    <div className="xl:col-span-1">
+                      <RegionalDemandCard regionalDemand={latestAnalysis.regionalDemand} />
+                    </div>
+                  )}
+                  {latestAnalysis.growthPotential && (
+                    <div className="xl:col-span-1">
+                      <GrowthPotentialCard growthPotential={latestAnalysis.growthPotential} />
+                    </div>
+                  )}
+                  {latestAnalysis.strategicLocationSignals && (
+                    <div className="xl:col-span-1">
+                      <StrategicLocationCard strategicLocationSignals={latestAnalysis.strategicLocationSignals} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.geoSummary && (
+              <div className="mt-4">
+                <GeoIntelligenceGrid
+                  infrastructureScore={latestAnalysis.infrastructureScore || 0}
+                  roadAccessScore={latestAnalysis.roadAccessScore || 0}
+                  utilityCoverage={latestAnalysis.utilityCoverage}
+                  growthPotential={latestAnalysis.growthPotential}
+                  regionalDemand={latestAnalysis.regionalDemand}
+                  strategicLocationSignals={latestAnalysis.strategicLocationSignals || []}
+                  geoSummary={latestAnalysis.geoSummary}
+                />
+              </div>
+            )}
 
             {(latestAnalysis.strengths?.length || latestAnalysis.missingInputs?.length) && (
               <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">

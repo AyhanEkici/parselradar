@@ -7,6 +7,7 @@ import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 import { scoreProperty } from '../services/analysis/scoreProperty';
 import { buildComparableMarketIntelligence } from '../services/comparables';
+import { buildGeoIntelligence } from '../services/geo';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -97,6 +98,13 @@ function toResponseFromRun(run: any, reused: boolean) {
     overpricingRisk: full.overpricingRisk,
     comparableSummary: full.comparableSummary,
     topComparables: full.topComparables || [],
+    infrastructureScore: full.infrastructureScore,
+    roadAccessScore: full.roadAccessScore,
+    utilityCoverage: full.utilityCoverage,
+    growthPotential: full.growthPotential,
+    regionalDemand: full.regionalDemand,
+    strategicLocationSignals: full.strategicLocationSignals || [],
+    geoSummary: full.geoSummary,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -180,6 +188,16 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       })),
     });
 
+    const geoIntelligence = buildGeoIntelligence({
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+      areaM2: propertyObj.areaM2,
+      zoningStatus: propertyObj.zoningStatus,
+      roadAccess: propertyObj.roadAccess,
+      electricity: propertyObj.electricity,
+      water: propertyObj.water,
+    });
+
     const run = await AnalysisRun.create({
       propertySubmissionId: property._id,
       userId: normalizedUserId,
@@ -221,6 +239,13 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         comparableRiskSignals: comparableMarket.riskSignals,
         pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
         medianComparablePricePerM2: comparableMarket.medianComparablePricePerM2,
+        infrastructureScore: geoIntelligence.infrastructureScore,
+        roadAccessScore: geoIntelligence.roadAccessScore,
+        utilityCoverage: geoIntelligence.utilityCoverage,
+        growthPotential: geoIntelligence.growthPotential,
+        regionalDemand: geoIntelligence.regionalDemand,
+        strategicLocationSignals: geoIntelligence.strategicLocationSignals,
+        geoSummary: geoIntelligence.geoSummary,
       },
     });
 
