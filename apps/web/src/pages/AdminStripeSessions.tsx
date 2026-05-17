@@ -2,11 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 interface StripeSession {
   _id: string;
   sessionId: string;
-  userId: string;
-  amount: number;
+  userId: User | string;
+  creditAmount: number;
+  amountTotal?: number;
+  currency?: string;
   status: string;
   fulfilledAt?: string;
   createdAt: string;
@@ -50,25 +59,30 @@ export default function AdminStripeSessions() {
             <tr>
               <th className="border px-2">SessionId</th>
               <th className="border px-2">Kullanıcı</th>
-              <th className="border px-2">Tutar</th>
+              <th className="border px-2">Kredi</th>
+              <th className="border px-2">Ödenen Tutar</th>
               <th className="border px-2">Durum</th>
               <th className="border px-2">FulfilledAt</th>
               <th className="border px-2">Oluşturulma</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan={6} className="text-center">Yükleniyor...</td></tr> : null}
-            {!loading && sessions.length === 0 ? <tr><td colSpan={6} className="text-center">Kayıt yok</td></tr> : null}
-            {sessions.map(s => (
-              <tr key={s._id}>
-                <td className="border px-2">{s.sessionId}</td>
-                <td className="border px-2">{s.userId}</td>
-                <td className="border px-2">{s.amount}</td>
-                <td className="border px-2">{s.status}</td>
-                <td className="border px-2">{s.fulfilledAt ? new Date(s.fulfilledAt).toLocaleString() : '-'}</td>
-                <td className="border px-2">{new Date(s.createdAt).toLocaleString()}</td>
-              </tr>
-            ))}
+            {loading ? <tr><td colSpan={7} className="text-center">Yükleniyor...</td></tr> : null}
+            {!loading && sessions.length === 0 ? <tr><td colSpan={7} className="text-center">Kayıt yok</td></tr> : null}
+            {sessions.map(s => {
+              const user = typeof s.userId === 'object' ? s.userId : null;
+              return (
+                <tr key={s._id}>
+                  <td className="border px-2">{s.sessionId}</td>
+                  <td className="border px-2">{user ? `${user.name} (${user.email})` : s.userId}</td>
+                  <td className="border px-2">{s.creditAmount}</td>
+                  <td className="border px-2">{s.amountTotal ? `${s.currency || 'USD'} ${s.amountTotal.toFixed(2)}` : '-'}</td>
+                  <td className="border px-2">{s.status}</td>
+                  <td className="border px-2">{s.fulfilledAt ? new Date(s.fulfilledAt).toLocaleString() : '-'}</td>
+                  <td className="border px-2">{new Date(s.createdAt).toLocaleString()}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

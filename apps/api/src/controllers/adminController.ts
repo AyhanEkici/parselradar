@@ -43,7 +43,20 @@ export const getAdminUsers = async (req: AuthRequest, res: Response) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .select('-passwordHash');
-  res.json({ users, page, limit, total, totalPages: Math.ceil(total / limit) });
+
+  // Compute current credit balance for each user
+  const usersWithCredits = await Promise.all(
+    users.map(async (u) => {
+      const ledger = await CreditLedger.find({ userId: u._id });
+      const currentBalance = ledger.reduce((sum, entry) => sum + entry.amount, 0);
+      return {
+        ...u.toObject(),
+        credits: currentBalance,
+      };
+    })
+  );
+
+  res.json({ users: usersWithCredits, page, limit, total, totalPages: Math.ceil(total / limit) });
 };
 
 // GET /admin/analyses
@@ -90,7 +103,8 @@ export const getAdminStripeSessions = async (req: AuthRequest, res: Response) =>
   const sessions = await StripeCheckoutSession.find(filter)
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
-    .limit(limit);
+    .limit(limit)
+    .populate('userId', 'name email role');
   res.json({ sessions, page, limit, total, totalPages: Math.ceil(total / limit) });
 };
 

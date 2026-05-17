@@ -117,6 +117,9 @@ export const stripeWebhook = async (req: Request, res: Response) => {
     if (checkoutSession && checkoutSession.status !== 'PAID') {
       await CreditLedger.create({ userId, type: 'STRIPE', amount: creditAmount, reason: 'Stripe kredi yükleme' });
       checkoutSession.status = 'PAID';
+      checkoutSession.fulfilledAt = new Date();
+      checkoutSession.amountTotal = session.amount_total ? session.amount_total / 100 : undefined;
+      checkoutSession.currency = session.currency?.toUpperCase();
       await checkoutSession.save();
       await logAuditEvent({
         type: 'stripe_webhook',
