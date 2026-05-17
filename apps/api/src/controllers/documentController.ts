@@ -6,11 +6,19 @@ import { requireAuthUser } from '../utils/authUser';
 import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 
-const toPublicFileUrl = (storedPath: string) => {
-  const normalized = storedPath.replace(/\\/g, '/');
-  const index = normalized.lastIndexOf('/uploads/');
-  if (index >= 0) return normalized.substring(index);
-  return `/uploads/${path.basename(normalized)}`;
+const toStoredName = (storedPath?: string, storedName?: string) => {
+  if (storedName && String(storedName).trim()) return String(storedName).trim();
+  if (!storedPath || !String(storedPath).trim()) return null;
+  const normalized = String(storedPath).replace(/\\/g, '/');
+  const name = path.posix.basename(normalized);
+  if (!name || name === '/' || name === '.') return null;
+  return name;
+};
+
+const toPublicFileUrl = (storedPath?: string, storedName?: string) => {
+  const name = toStoredName(storedPath, storedName);
+  if (!name) return null;
+  return `/uploads/${encodeURIComponent(name)}`;
 };
 
 export const uploadDocument = async (req: AuthRequest, res: Response) => {
@@ -46,14 +54,18 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
       userId: user._id,
       documentType,
       originalName: req.file.originalname,
+      storedName: req.file.filename,
       storedPath: req.file.path,
       mimeType: req.file.mimetype,
       sizeBytes: req.file.size,
     });
+    const fileUrl = toPublicFileUrl(doc.storedPath, doc.storedName);
     const payload = {
       ...doc.toObject(),
       createdAt: doc.uploadedAt,
-      fileUrl: toPublicFileUrl(doc.storedPath),
+      storedName: toStoredName(doc.storedPath, doc.storedName),
+      fileUrl,
+      downloadUrl: fileUrl,
     };
     res.json(payload);
   } catch (err: any) {
@@ -69,8 +81,11 @@ export const getDocuments = async (req: AuthRequest, res: Response) => {
   res.json(
     docs.map((doc) => ({
       ...doc.toObject(),
+      storedName: toStoredName(doc.storedPath, doc.storedName),
+      fileUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
+      downloadUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
+      fileMissing: !toPublicFileUrl(doc.storedPath, doc.storedName),
       createdAt: doc.uploadedAt,
-      fileUrl: toPublicFileUrl(doc.storedPath),
     }))
   );
 };

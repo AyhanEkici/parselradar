@@ -5,6 +5,7 @@ export interface IDocumentUpload extends Document {
   userId: mongoose.Types.ObjectId;
   documentType: string;
   originalName: string;
+  storedName?: string;
   storedPath: string;
   mimeType: string;
   sizeBytes: number;
@@ -16,6 +17,7 @@ const DocumentUploadSchema = new Schema<IDocumentUpload>({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   documentType: { type: String, required: true },
   originalName: { type: String, required: true },
+  storedName: { type: String },
   storedPath: { type: String, required: true },
   mimeType: { type: String, required: true },
   sizeBytes: { type: Number, required: true },

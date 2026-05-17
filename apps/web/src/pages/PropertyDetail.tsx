@@ -50,6 +50,8 @@ export default function PropertyDetail() {
       createdAt?: string;
       uploadedAt: string;
       fileUrl?: string;
+      downloadUrl?: string;
+      fileMissing?: boolean;
     }>;
     analyses: Array<{
       _id: string;
@@ -229,12 +231,20 @@ export default function PropertyDetail() {
                   <div className="font-medium break-words">{doc.documentType}</div>
                   <div className="text-gray-700 break-words">{doc.originalName}</div>
                   <div className="text-xs text-gray-500">{new Date(doc.createdAt || doc.uploadedAt).toLocaleString()}</div>
+                  {!doc.fileUrl || doc.fileMissing ? (
+                    <div className="text-xs text-red-600 mt-1">File path missing - re-upload required</div>
+                  ) : null}
                 </li>
               ))}
             </ul>
           )}
           <div className="mt-3">
-            <Link to={`/properties/${resolvedId}/documents`} className="inline-flex bg-gray-800 text-white px-3 py-2 rounded text-sm">Upload documents</Link>
+            <Link
+              to={isAdminPath ? `/admin/properties/${resolvedId}/documents` : `/properties/${resolvedId}/documents`}
+              className="inline-flex bg-gray-800 text-white px-3 py-2 rounded text-sm"
+            >
+              Upload documents
+            </Link>
           </div>
         </section>
 

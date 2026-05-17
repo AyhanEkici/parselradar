@@ -11,6 +11,9 @@ type DocumentItem = {
   createdAt?: string;
   mimeType?: string;
   fileUrl?: string;
+  downloadUrl?: string;
+  storedName?: string;
+  fileMissing?: boolean;
 };
 
 type DetailResponse = {
@@ -60,9 +63,11 @@ export default function AdminPropertyDocuments() {
   const cards = useMemo(() => {
     return documents.map((doc) => {
       const fileHref = absoluteFileUrl(doc.fileUrl);
+      const downloadHref = absoluteFileUrl(doc.downloadUrl || doc.fileUrl);
       const isImage = (doc.mimeType || '').startsWith('image/');
       const isPdf = doc.mimeType === 'application/pdf';
-      return { ...doc, fileHref, isImage, isPdf };
+      const hasFile = Boolean(fileHref) && !doc.fileMissing;
+      return { ...doc, fileHref, downloadHref, isImage, isPdf, hasFile };
     });
   }, [documents]);
 
@@ -100,28 +105,27 @@ export default function AdminPropertyDocuments() {
               <img src={doc.fileHref} alt={doc.originalName} className="w-full h-40 object-cover rounded border" loading="lazy" />
             ) : (
               <div className="w-full h-40 rounded border bg-gray-50 flex items-center justify-center text-xs text-gray-500">
-                {doc.isPdf ? 'PDF document' : 'File preview not available'}
+                {!doc.hasFile ? 'File path missing - re-upload required' : doc.isPdf ? 'PDF document' : 'File preview not available'}
               </div>
             )}
 
             <div className="flex flex-wrap gap-2 mt-1">
-              <a
-                href={doc.fileHref || '#'}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                type="button"
                 className="px-3 py-1 text-xs rounded bg-blue-600 text-white disabled:opacity-50"
-                onClick={(e) => {
-                  if (!doc.fileHref) e.preventDefault();
+                disabled={!doc.hasFile}
+                onClick={() => {
+                  if (doc.hasFile) window.open(doc.fileHref, '_blank', 'noopener,noreferrer');
                 }}
               >
                 Open
-              </a>
+              </button>
               <a
-                href={doc.fileHref || '#'}
-                download={!doc.isPdf && !doc.isImage ? doc.originalName : undefined}
-                className="px-3 py-1 text-xs rounded bg-gray-800 text-white"
+                href={doc.downloadHref || '#'}
+                download={doc.originalName}
+                className={`px-3 py-1 text-xs rounded bg-gray-800 text-white ${!doc.hasFile ? 'pointer-events-none opacity-50' : ''}`}
                 onClick={(e) => {
-                  if (!doc.fileHref) e.preventDefault();
+                  if (!doc.hasFile) e.preventDefault();
                 }}
               >
                 Download
