@@ -14,7 +14,8 @@
     "pilot:env": "ts-node scripts/verifyPilotEnv.ts",
     "pilot:checklist": "ts-node scripts/pilotChecklist.ts",
     "pilot:flow": "ts-node scripts/pilotFlow.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "promote:admin": "ts-node scripts/promoteAdmin.ts"
   },
   "dependencies": {
     "@parselradar/shared": "file:../../packages/shared",
