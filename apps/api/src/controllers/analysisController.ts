@@ -9,6 +9,7 @@ import { scoreProperty } from '../services/analysis/scoreProperty';
 import { buildComparableMarketIntelligence } from '../services/comparables';
 import { buildGeoIntelligence } from '../services/geo';
 import { buildDevelopmentIntelligence } from '../services/development';
+import { buildSpatialIntelligence } from '../services/spatial';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -115,6 +116,16 @@ function toResponseFromRun(run: any, reused: boolean) {
     projectability: full.projectability,
     developmentScenario: full.developmentScenario || [],
     developmentSignals: full.developmentSignals || [],
+    coordinates: full.coordinates,
+    nearbyInfrastructure: full.nearbyInfrastructure || [],
+    infrastructureDistances: full.infrastructureDistances || {},
+    spatialSignals: full.spatialSignals || [],
+    spatialLiquidity: full.spatialLiquidity,
+    clusterStrength: full.clusterStrength,
+    geoConfidence: full.geoConfidence,
+    mapSummary: full.mapSummary,
+    comparableMapPoints: full.comparableMapPoints || [],
+    regionalCluster: full.regionalCluster,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -166,7 +177,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
     })
       .sort({ createdAt: -1 })
       .limit(600)
-      .select('il ilce zoningStatus areaM2 askingPriceTRY pricePerM2 roadAccess electricity water createdAt')
+.select('il ilce zoningStatus areaM2 askingPriceTRY pricePerM2 roadAccess electricity water latitude longitude coordinateSource geocodeConfidence createdAt')
       .lean();
 
     const comparableMarket = buildComparableMarketIntelligence({
@@ -219,6 +230,27 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       infrastructureScore: geoIntelligence.infrastructureScore,
       roadAccessScore: geoIntelligence.roadAccessScore,
       regionalDemandScore: geoIntelligence.regionalDemand?.demandScore,
+    });
+
+    const spatialIntelligence = buildSpatialIntelligence({
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+      latitude: propertyObj.latitude,
+      longitude: propertyObj.longitude,
+      coordinateSource: propertyObj.coordinateSource,
+      geocodeConfidence: propertyObj.geocodeConfidence,
+      zoningStatus: propertyObj.zoningStatus,
+      comparables: comparableCandidates.map((candidate: any) => ({
+        _id: String(candidate._id),
+        il: candidate.il,
+        ilce: candidate.ilce,
+        areaM2: candidate.areaM2,
+        pricePerM2: candidate.pricePerM2,
+        latitude: candidate.latitude,
+        longitude: candidate.longitude,
+        coordinateSource: candidate.coordinateSource,
+        geocodeConfidence: candidate.geocodeConfidence,
+      })),
     });
 
     const run = await AnalysisRun.create({
@@ -278,6 +310,16 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         projectability: developmentIntelligence.projectability,
         developmentScenario: developmentIntelligence.developmentScenario,
         developmentSignals: developmentIntelligence.developmentSignals,
+        coordinates: spatialIntelligence.coordinates,
+        nearbyInfrastructure: spatialIntelligence.nearbyInfrastructure,
+        infrastructureDistances: spatialIntelligence.infrastructureDistances,
+        spatialSignals: spatialIntelligence.spatialSignals,
+        spatialLiquidity: spatialIntelligence.spatialLiquidity,
+        clusterStrength: spatialIntelligence.clusterStrength,
+        geoConfidence: spatialIntelligence.geoConfidence,
+        mapSummary: spatialIntelligence.mapSummary,
+        comparableMapPoints: spatialIntelligence.comparableMapPoints,
+        regionalCluster: spatialIntelligence.regionalCluster,
       },
     });
 
@@ -333,4 +375,5 @@ export const parselInsight = async (req: AuthRequest, res: Response) =>
 
 export const developerFit = async (req: AuthRequest, res: Response) =>
   runAnalysis(req, res, { productType: 'DEVELOPER_FIT' });
+
 

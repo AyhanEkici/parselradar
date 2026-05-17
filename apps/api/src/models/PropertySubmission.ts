@@ -11,6 +11,8 @@ export interface IPropertySubmission extends Document {
   addressText?: string;
   latitude?: number;
   longitude?: number;
+  coordinateSource?: 'exact' | 'approximate' | 'district_center_fallback';
+  geocodeConfidence?: number;
   askingPriceTRY?: number;
   areaM2?: number;
   pricePerM2?: number;
@@ -48,6 +50,8 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   addressText: { type: String },
   latitude: { type: Number },
   longitude: { type: Number },
+  coordinateSource: { type: String, enum: ['exact', 'approximate', 'district_center_fallback'] },
+  geocodeConfidence: { type: Number, min: 0, max: 100 },
   askingPriceTRY: { type: Number },
   areaM2: { type: Number },
   pricePerM2: { type: Number },
@@ -73,3 +77,4 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
 }, { timestamps: true });
 
 export default mongoose.model<IPropertySubmission>('PropertySubmission', PropertySubmissionSchema);
+

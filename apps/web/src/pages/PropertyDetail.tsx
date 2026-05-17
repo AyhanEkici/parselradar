@@ -35,6 +35,13 @@ import {
   ProjectabilityCard,
   DevelopmentScenarioTimeline,
 } from '../components/development';
+import {
+  PropertyMapCard,
+  NearbyInfrastructureMap,
+  ComparableMapCluster,
+  SpatialSignalsCard,
+  RegionalHeatMapCard,
+} from '../components/maps';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -184,6 +191,10 @@ export default function PropertyDetail() {
     roadAccess?: string;
     electricity?: string;
     water?: string;
+    latitude?: number;
+    longitude?: number;
+    coordinateSource?: 'exact' | 'approximate' | 'district_center_fallback';
+    geocodeConfidence?: number;
     status?: string;
     createdAt: string;
     updatedAt: string;
@@ -344,6 +355,46 @@ export default function PropertyDetail() {
         detail: string;
       }>;
       developmentSignals?: string[];
+      coordinates?: {
+        latitude: number;
+        longitude: number;
+        source: 'exact' | 'approximate' | 'district_center_fallback';
+      } | null;
+      nearbyInfrastructure?: Array<{
+        id: string;
+        name: string;
+        type: string;
+        distanceKm: number;
+        city: string;
+      }>;
+      infrastructureDistances?: {
+        airport?: number;
+        industrial_zone?: number;
+        university?: number;
+        hospital?: number;
+        road_corridor?: number;
+        tourism_zone?: number;
+      };
+      spatialSignals?: string[];
+      spatialLiquidity?: { score: number; label: 'thin' | 'balanced' | 'liquid' };
+      clusterStrength?: number;
+      geoConfidence?: {
+        level: 'exact' | 'approximate' | 'district_center_fallback' | 'unresolved';
+        score: number;
+      };
+      mapSummary?: string;
+      comparableMapPoints?: Array<{
+        _id: string;
+        latitude: number;
+        longitude: number;
+        distanceKm: number;
+        pricePerM2?: number;
+      }>;
+      regionalCluster?: {
+        municipality?: { city: string; district?: string; distanceKm: number };
+        roadCluster?: { name: string; distanceKm: number };
+        clusterLabel: string;
+      };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -1018,5 +1069,6 @@ export default function PropertyDetail() {
     </div>
   );
 }
+
 
 
