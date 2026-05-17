@@ -30,15 +30,27 @@ export default function PropertyDocuments() {
     setError('');
     setSuccess('');
     const formData = new FormData(e.currentTarget);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
     try {
-      await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
+      const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
         method: 'POST',
         body: formData,
         credentials: 'include',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
+
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null;
+      if (!response.ok) {
+        const reqId = data?.requestId ? ` (requestId: ${data.requestId})` : '';
+        throw new Error((data?.error || 'Yükleme başarısız') + reqId);
+      }
+
       setSuccess('Yüklendi');
-    } catch {
-      setError('Yükleme başarısız');
+    } catch (err: any) {
+      setError(err?.message || 'Yükleme başarısız');
     }
   };
 
