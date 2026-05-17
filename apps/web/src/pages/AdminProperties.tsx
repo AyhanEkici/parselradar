@@ -6,6 +6,7 @@ import {
   AdminEmptyState,
   AdminHeader,
   AdminInput,
+  AdminLayout,
   AdminPage,
   AdminStatusPill,
   AdminSurface,
@@ -92,8 +93,9 @@ export default function AdminProperties() {
   });
 
   return (
-    <AdminPage>
-      <AdminSurface className="p-4 sm:p-5 space-y-4">
+    <AdminLayout title="Properties">
+      <AdminPage className="p-0 sm:p-0">
+        <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
           title="Tüm Mülkler"
           subtitle="Mülkleri durum, lokasyon ve temel metrikleriyle inceleyin"
@@ -167,7 +169,8 @@ export default function AdminProperties() {
             })}
           </ul>
         )}
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }

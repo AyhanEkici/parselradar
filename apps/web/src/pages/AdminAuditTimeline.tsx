@@ -6,6 +6,7 @@ import {
   AdminEmptyState,
   AdminHeader,
   AdminInput,
+  AdminLayout,
   AdminPage,
   AdminSurface,
   AdminTable,
@@ -126,8 +127,9 @@ export default function AdminAuditTimeline() {
   }
 
   return (
-    <AdminPage className="overflow-x-hidden">
-      <AdminSurface className="space-y-4 p-4 sm:p-5">
+    <AdminLayout title="Audit Timeline">
+      <AdminPage className="overflow-x-hidden p-0 sm:p-0">
+        <AdminSurface className="space-y-4 p-4 sm:p-5">
         <AdminHeader
           title="Audit Timeline"
           subtitle="Sistem ve yönetici işlemlerinin olay akışı"
@@ -297,7 +299,8 @@ export default function AdminAuditTimeline() {
             </AdminButton>
           </div>
         </AdminToolbar>
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }

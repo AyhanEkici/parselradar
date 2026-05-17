@@ -6,6 +6,7 @@ import {
   AdminButton,
   AdminEmptyState,
   AdminHeader,
+  AdminLayout,
   AdminPage,
   AdminStatusPill,
   AdminSurface,
@@ -95,8 +96,9 @@ export default function AdminAnalyses() {
   if (error) return <div>Hata: {error}</div>;
 
   return (
-    <AdminPage>
-      <AdminSurface className="p-4 sm:p-5 space-y-4">
+    <AdminLayout title="Analyses">
+      <AdminPage className="p-0 sm:p-0">
+        <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
           title="Analizler"
           subtitle="Skor, sinyal ve yeniden kullanım durumlarıyla analiz kayıtlarını izleyin"
@@ -171,7 +173,8 @@ export default function AdminAnalyses() {
             </AdminButton>
           </div>
         </AdminToolbar>
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }

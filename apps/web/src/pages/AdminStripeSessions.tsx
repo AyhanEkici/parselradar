@@ -5,6 +5,7 @@ import {
   AdminButton,
   AdminEmptyState,
   AdminHeader,
+  AdminLayout,
   AdminPage,
   AdminStatusPill,
   AdminSurface,
@@ -98,8 +99,9 @@ export default function AdminStripeSessions() {
   if (error) return <div>Hata: {error}</div>;
 
   return (
-    <AdminPage>
-      <AdminSurface className="p-4 sm:p-5 space-y-4">
+    <AdminLayout title="Stripe Sessions">
+      <AdminPage className="p-0 sm:p-0">
+        <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
           title="Stripe Oturumları"
           subtitle="Ödeme oturumlarını durum, kullanıcı ve kredi karşılığıyla görüntüleyin"
@@ -166,7 +168,8 @@ export default function AdminStripeSessions() {
             </AdminButton>
           </div>
         </AdminToolbar>
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }

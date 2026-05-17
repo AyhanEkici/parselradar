@@ -6,6 +6,7 @@ import {
   AdminButton,
   AdminEmptyState,
   AdminHeader,
+  AdminLayout,
   AdminPage,
   AdminStatusPill,
   AdminSurface,
@@ -222,8 +223,9 @@ export default function AdminPropertyDocuments() {
   }
 
   return (
-    <AdminPage>
-      <AdminSurface className="p-4 sm:p-5 space-y-5">
+    <AdminLayout title="Property Documents">
+      <AdminPage className="p-0 sm:p-0">
+        <AdminSurface className="p-4 sm:p-5 space-y-5">
         <AdminHeader
           title="Property Documents"
           subtitle={title || 'Belge yönetimi'}
@@ -360,7 +362,8 @@ export default function AdminPropertyDocuments() {
             </AdminButton>
           </form>
         </section>
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }

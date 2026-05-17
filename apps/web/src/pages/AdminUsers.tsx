@@ -6,6 +6,7 @@ import {
   AdminEmptyState,
   AdminHeader,
   AdminInput,
+  AdminLayout,
   AdminPage,
   AdminSelect,
   AdminStatusPill,
@@ -60,8 +61,9 @@ export default function AdminUsers() {
   if (error) return <div>Hata: {error}</div>;
 
   return (
-    <AdminPage>
-      <AdminSurface className="p-4 sm:p-5 space-y-4">
+    <AdminLayout title="Users">
+      <AdminPage className="p-0 sm:p-0">
+        <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
           title="Kullanıcılar"
           subtitle="Tüm kullanıcıları filtreleyin, rollerini inceleyin ve kredi durumunu takip edin"
@@ -145,7 +147,8 @@ export default function AdminUsers() {
             </AdminButton>
           </div>
         </AdminToolbar>
-      </AdminSurface>
-    </AdminPage>
+        </AdminSurface>
+      </AdminPage>
+    </AdminLayout>
   );
 }
