@@ -27,13 +27,30 @@ export const createCheckoutSession = async (req: AuthRequest, res: Response) => 
     });
     return res.status(400).json({ error: 'Geçersiz veya desteklenmeyen kredi paketi' });
   }
+  // Map creditAmount to price ID
+  const priceId = creditAmount === 25 ? process.env.STRIPE_PRICE_25_CREDITS : process.env.STRIPE_PRICE_50_CREDITS;
+  if (!priceId || !priceId.startsWith('price_')) {
+    await logAuditEvent({
+      type: 'stripe_checkout_create',
+      actorUserId: user._id.toString(),
+      actorRole: user.role,
+      targetType: 'User',
+      targetId: user._id.toString(),
+      message: 'Checkout failed: Stripe price ID not configured',
+      metadata: { creditAmount, priceId },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(500).json({ error: 'Stripe price ID not configured for requested credit amount' });
+  }
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [{ price_data: { currency: 'try', product_data: { name: 'Kredi' }, unit_amount: creditAmount * 100, }, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: 'payment',
-      success_url: req.headers.origin + '/credits?success=1',
-      cancel_url: req.headers.origin + '/credits?canceled=1',
+      success_url: process.env.CLIENT_URL + '/credits?success=1',
+      cancel_url: process.env.CLIENT_URL + '/credits?canceled=1',
       metadata: { userId: user._id.toString(), creditAmount: creditAmount.toString() },
     });
     await StripeCheckoutSession.create({ userId: user._id, sessionId: session.id, creditAmount, status: 'PENDING' });
