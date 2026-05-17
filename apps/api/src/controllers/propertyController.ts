@@ -10,6 +10,11 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
     const user = requireAuthUser(req);
     const parsed = PropertySubmissionCreateInputSchema.safeParse(req.body);
     if (!parsed.success) {
+      const fields: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const key = String(issue.path[0] || 'form');
+        if (!fields[key]) fields[key] = issue.message;
+      }
       await logAuditEvent({
         type: 'property_create',
         actorUserId: user._id.toString(),
@@ -22,7 +27,7 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
         userAgent: req.get('user-agent'),
         success: false,
       });
-      return res.status(400).json({ error: 'Geçersiz veri', details: parsed.error.errors });
+      return res.status(400).json({ error: 'Validation failed', fields });
     }
     const input = parsed.data;
     const doc: Record<string, unknown> = { ...input, userId: user._id };
@@ -52,6 +57,10 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
     res.json(property);
   } catch (err: any) {
     if (err.name === 'ValidationError') {
+      const fields: Record<string, string> = {};
+      Object.keys(err.errors || {}).forEach((key) => {
+        fields[key] = err.errors[key]?.message || 'Invalid value';
+      });
       await logAuditEvent({
         type: 'property_create',
         actorUserId: undefined,
@@ -64,7 +73,7 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
         userAgent: req.get('user-agent'),
         success: false,
       });
-      return res.status(400).json({ error: 'Mongoose validation error', details: err.errors });
+      return res.status(400).json({ error: 'Validation failed', fields });
     }
     console.error('Property creation error:', err);
     await logAuditEvent({
