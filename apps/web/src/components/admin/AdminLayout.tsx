@@ -20,6 +20,7 @@ const navItems: AdminNavItem[] = [
   { label: 'Credit Ledger', to: '/admin/credit-ledger', matchPrefixes: ['/admin/credit-ledger'] },
   { label: 'Stripe Sessions', to: '/admin/stripe-sessions', matchPrefixes: ['/admin/stripe-sessions'] },
   { label: 'Properties', to: '/admin/properties', matchPrefixes: ['/admin/properties'] },
+  { label: 'Runtime', to: '/admin/runtime', matchPrefixes: ['/admin/runtime'] },
 ];
 
 export function AdminLayout({ title = 'Admin Area', children }: AdminLayoutProps) {

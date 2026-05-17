@@ -30,6 +30,8 @@ import WorkspaceDashboard from './pages/WorkspaceDashboard';
 import WorkspacePortfolio from './pages/WorkspacePortfolio';
 import WorkspaceWatchlist from './pages/WorkspaceWatchlist';
 import WorkspaceActivity from './pages/WorkspaceActivity';
+import NotificationInbox from './pages/NotificationInbox';
+import NotificationPreferences from './pages/NotificationPreferences';
 import NotFound from './pages/NotFound';
 import { ToastProvider } from './components/ui';
 
@@ -51,6 +53,7 @@ export default function App() {
             <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
             <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
             <a href="/organizations" className="hover:underline">Organizations</a>
+            <a href="/notifications" className="hover:underline">Notifications</a>
           </nav>
         </div>
         <Routes>
@@ -86,6 +89,8 @@ export default function App() {
           <Route path="/workspace/:organizationId/portfolio" element={<WorkspacePortfolio />} />
           <Route path="/workspace/:organizationId/watchlist" element={<WorkspaceWatchlist />} />
           <Route path="/workspace/:organizationId/activity" element={<WorkspaceActivity />} />
+          <Route path="/notifications" element={<NotificationInbox />} />
+          <Route path="/notifications/preferences" element={<NotificationPreferences />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
