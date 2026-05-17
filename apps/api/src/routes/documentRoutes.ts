@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadDocument, getDocuments } from '../controllers/documentController';
+import { uploadDocument, getDocuments, viewDocument, downloadDocument } from '../controllers/documentController';
 import { auth } from '../middleware/auth';
 import { upload } from '../middleware/upload';
 
@@ -7,5 +7,7 @@ const router = express.Router();
 
 router.post('/:propertyId/documents', auth, upload.single('file'), uploadDocument);
 router.get('/:propertyId/documents', auth, getDocuments);
+router.get('/:propertyId/documents/:documentId/view', auth, viewDocument);
+router.get('/:propertyId/documents/:documentId/download', auth, downloadDocument);
 
 export default router;

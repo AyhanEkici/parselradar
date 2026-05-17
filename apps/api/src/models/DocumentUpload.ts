@@ -6,7 +6,8 @@ export interface IDocumentUpload extends Document {
   documentType: string;
   originalName: string;
   storedName?: string;
-  storedPath: string;
+  storedPath?: string;
+  gridFsFileId?: mongoose.Types.ObjectId;
   mimeType: string;
   sizeBytes: number;
   uploadedAt: Date;
@@ -18,7 +19,8 @@ const DocumentUploadSchema = new Schema<IDocumentUpload>({
   documentType: { type: String, required: true },
   originalName: { type: String, required: true },
   storedName: { type: String },
-  storedPath: { type: String, required: true },
+  storedPath: { type: String },
+  gridFsFileId: { type: Schema.Types.ObjectId },
   mimeType: { type: String, required: true },
   sizeBytes: { type: Number, required: true },
   uploadedAt: { type: Date, default: Date.now },

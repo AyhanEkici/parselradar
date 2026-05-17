@@ -232,7 +232,7 @@ export default function PropertyDetail() {
                   <div className="text-gray-700 break-words">{doc.originalName}</div>
                   <div className="text-xs text-gray-500">{new Date(doc.createdAt || doc.uploadedAt).toLocaleString()}</div>
                   {!doc.fileUrl || doc.fileMissing ? (
-                    <div className="text-xs text-red-600 mt-1">File path missing - re-upload required</div>
+                    <div className="text-xs text-red-600 mt-1">Legacy file missing — re-upload required</div>
                   ) : null}
                 </li>
               ))}

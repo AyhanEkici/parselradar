@@ -105,7 +105,7 @@ export default function AdminPropertyDocuments() {
               <img src={doc.fileHref} alt={doc.originalName} className="w-full h-40 object-cover rounded border" loading="lazy" />
             ) : (
               <div className="w-full h-40 rounded border bg-gray-50 flex items-center justify-center text-xs text-gray-500">
-                {!doc.hasFile ? 'File path missing - re-upload required' : doc.isPdf ? 'PDF document' : 'File preview not available'}
+                {!doc.hasFile ? 'Legacy file missing — re-upload required' : doc.isPdf ? 'PDF document' : 'File preview not available'}
               </div>
             )}
 

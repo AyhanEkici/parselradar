@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import mongoose from 'mongoose';
-import path from 'path';
 import { logAuditEvent } from '../utils/auditLog';
 import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
@@ -11,20 +10,10 @@ import AuditEvent from '../models/AuditEvent';
 import User from '../models/User';
 import { PropertySubmissionCreateInputSchema } from '../validation/propertySchemas';
 
-const toStoredName = (storedPath?: string, storedName?: string) => {
-  if (storedName && String(storedName).trim()) return String(storedName).trim();
-  if (!storedPath || !String(storedPath).trim()) return null;
-  const normalized = String(storedPath).replace(/\\/g, '/');
-  const name = path.posix.basename(normalized);
-  if (!name || name === '/' || name === '.') return null;
-  return name;
-};
-
-const toPublicFileUrl = (storedPath?: string, storedName?: string) => {
-  const name = toStoredName(storedPath, storedName);
-  if (!name) return null;
-  return `/uploads/${encodeURIComponent(name)}`;
-};
+const toGridFsUrls = (propertyId: string, documentId: string) => ({
+  fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
+  downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
+});
 
 const mapCreationSource = (inputMethod?: string) => {
   const value = String(inputMethod || '').toUpperCase();
@@ -152,7 +141,7 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     User.findById(property.userId).select('email name role').lean(),
     DocumentUpload.find({ propertySubmissionId: property._id })
       .sort({ uploadedAt: -1 })
-      .select('documentType originalName storedName storedPath uploadedAt mimeType sizeBytes')
+      .select('documentType originalName storedName storedPath gridFsFileId uploadedAt mimeType sizeBytes')
       .lean(),
     AnalysisRun.find({ propertySubmissionId: property._id })
       .sort({ createdAt: -1 })
@@ -176,10 +165,9 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
   const visibleDocuments = documents.map((doc: any) => ({
     ...doc,
     createdAt: doc.uploadedAt,
-    storedName: toStoredName(doc.storedPath, doc.storedName),
-    fileUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
-    downloadUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
-    fileMissing: !toPublicFileUrl(doc.storedPath, doc.storedName),
+    storedName: doc.storedName || null,
+    ...(doc.gridFsFileId ? toGridFsUrls(String(property._id), String(doc._id)) : { fileUrl: null, downloadUrl: null }),
+    fileMissing: !doc.gridFsFileId,
   }));
   const titleFields = {
     ownerName: owner?.name || '-',

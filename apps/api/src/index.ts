@@ -21,7 +21,6 @@ import adminRoutes from './routes/adminRoutes';
 import auditRoutes from './routes/auditRoutes';
 import helmet from 'helmet';
 import { requestIdMiddleware } from './middleware/requestId';
-import { UPLOAD_DIR } from './middleware/upload';
 
 
 
@@ -86,7 +85,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Serve uploaded files for document preview/download
-app.use('/uploads', express.static(UPLOAD_DIR));
+app.use('/uploads', express.static(path.resolve(__dirname, 'uploads')));
 
 mongoose.connect(ENV.MONGODB_URI)
   .then(() => {

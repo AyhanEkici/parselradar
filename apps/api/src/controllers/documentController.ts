@@ -1,24 +1,26 @@
 import { Response } from 'express';
 import mongoose from 'mongoose';
-import path from 'path';
+import { GridFSBucket, ObjectId } from 'mongodb';
 import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
 import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 
-const toStoredName = (storedPath?: string, storedName?: string) => {
-  if (storedName && String(storedName).trim()) return String(storedName).trim();
-  if (!storedPath || !String(storedPath).trim()) return null;
-  const normalized = String(storedPath).replace(/\\/g, '/');
-  const name = path.posix.basename(normalized);
-  if (!name || name === '/' || name === '.') return null;
-  return name;
+const toGridFsUrls = (propertyId: string, documentId: string) => ({
+  fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
+  downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
+});
+
+const getBucket = () => {
+  const db = mongoose.connection.db;
+  if (!db) throw new Error('Database connection not ready');
+  return new GridFSBucket(db, { bucketName: 'documents' });
 };
 
-const toPublicFileUrl = (storedPath?: string, storedName?: string) => {
-  const name = toStoredName(storedPath, storedName);
-  if (!name) return null;
-  return `/uploads/${encodeURIComponent(name)}`;
+const canAccessProperty = async (user: AuthRequest['user'], propertyId: string) => {
+  if (!user) return null;
+  if (user.role === 'ADMIN') return PropertySubmission.findById(propertyId);
+  return PropertySubmission.findOne({ _id: propertyId, userId: user._id });
 };
 
 export const uploadDocument = async (req: AuthRequest, res: Response) => {
@@ -32,7 +34,8 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
 
     const property = await PropertySubmission.findOne({ _id: propertyId, userId: user._id });
     if (!property) return res.status(404).json({ error: 'Mülk bulunamadı', requestId });
-    if (!req.file) return res.status(400).json({ error: 'Dosya gerekli', requestId });
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: 'Dosya gerekli', requestId });
 
     const { documentType } = req.body as { documentType?: string };
     if (!documentType || !String(documentType).trim()) {
@@ -42,30 +45,46 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
     const existing = await DocumentUpload.findOne({
       propertySubmissionId: property._id,
       documentType,
-      originalName: req.file.originalname,
-      sizeBytes: req.file.size,
+      originalName: file.originalname,
+      sizeBytes: file.size,
     });
     if (existing) {
       return res.status(409).json({ error: 'Document already uploaded', requestId });
     }
 
+    const bucket = getBucket();
+    const uploadStream = bucket.openUploadStream(file.originalname, {
+      contentType: file.mimetype,
+      metadata: {
+        propertySubmissionId: String(property._id),
+        userId: String(user._id),
+        documentType,
+      },
+    });
+    await new Promise<void>((resolve, reject) => {
+      uploadStream.on('finish', () => resolve());
+      uploadStream.on('error', reject);
+      uploadStream.end(file.buffer);
+    });
+
     const doc = await DocumentUpload.create({
       propertySubmissionId: property._id,
       userId: user._id,
       documentType,
-      originalName: req.file.originalname,
-      storedName: req.file.filename,
-      storedPath: req.file.path,
-      mimeType: req.file.mimetype,
-      sizeBytes: req.file.size,
+      originalName: file.originalname,
+      storedName: String(uploadStream.filename || file.originalname),
+      gridFsFileId: uploadStream.id as mongoose.Types.ObjectId,
+      mimeType: file.mimetype,
+      sizeBytes: file.size,
     });
-    const fileUrl = toPublicFileUrl(doc.storedPath, doc.storedName);
+    const { fileUrl, downloadUrl } = toGridFsUrls(String(property._id), String(doc._id));
     const payload = {
       ...doc.toObject(),
       createdAt: doc.uploadedAt,
-      storedName: toStoredName(doc.storedPath, doc.storedName),
+      storedName: doc.storedName,
       fileUrl,
-      downloadUrl: fileUrl,
+      downloadUrl,
+      fileMissing: false,
     };
     res.json(payload);
   } catch (err: any) {
@@ -75,17 +94,71 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
 
 export const getDocuments = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const property = await PropertySubmission.findOne({ _id: req.params.propertyId, userId: user._id });
+  const property = await canAccessProperty(user, req.params.propertyId);
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
   const docs = await DocumentUpload.find({ propertySubmissionId: property._id }).sort({ uploadedAt: -1 });
   res.json(
-    docs.map((doc) => ({
+    docs.map((doc) => {
+      const hasGridFs = Boolean(doc.gridFsFileId);
+      const urls = hasGridFs
+        ? toGridFsUrls(String(property._id), String(doc._id))
+        : { fileUrl: null, downloadUrl: null };
+      return {
       ...doc.toObject(),
-      storedName: toStoredName(doc.storedPath, doc.storedName),
-      fileUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
-      downloadUrl: toPublicFileUrl(doc.storedPath, doc.storedName),
-      fileMissing: !toPublicFileUrl(doc.storedPath, doc.storedName),
+      storedName: doc.storedName,
+      ...urls,
+      fileMissing: !hasGridFs,
       createdAt: doc.uploadedAt,
-    }))
+    }})
   );
+};
+
+export const viewDocument = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const { propertyId, documentId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(propertyId) || !mongoose.Types.ObjectId.isValid(documentId)) {
+    return res.status(400).json({ error: 'Geçersiz parametre' });
+  }
+  const property = await canAccessProperty(user, propertyId);
+  if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+  const doc = await DocumentUpload.findOne({ _id: documentId, propertySubmissionId: property._id });
+  if (!doc) return res.status(404).json({ error: 'Belge bulunamadı' });
+  if (!doc.gridFsFileId) return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
+
+  const bucket = getBucket();
+  const fileId = new ObjectId(String(doc.gridFsFileId));
+  res.setHeader('Content-Type', doc.mimeType || 'application/octet-stream');
+  const isInline = (doc.mimeType || '').startsWith('image/') || doc.mimeType === 'application/pdf';
+  const disposition = isInline ? 'inline' : 'attachment';
+  res.setHeader('Content-Disposition', `${disposition}; filename="${encodeURIComponent(doc.originalName)}"`);
+
+  const stream = bucket.openDownloadStream(fileId);
+  stream.on('error', () => {
+    if (!res.headersSent) res.status(404).json({ error: 'Dosya bulunamadı' });
+  });
+  stream.pipe(res);
+};
+
+export const downloadDocument = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const { propertyId, documentId } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(propertyId) || !mongoose.Types.ObjectId.isValid(documentId)) {
+    return res.status(400).json({ error: 'Geçersiz parametre' });
+  }
+  const property = await canAccessProperty(user, propertyId);
+  if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+  const doc = await DocumentUpload.findOne({ _id: documentId, propertySubmissionId: property._id });
+  if (!doc) return res.status(404).json({ error: 'Belge bulunamadı' });
+  if (!doc.gridFsFileId) return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
+
+  const bucket = getBucket();
+  const fileId = new ObjectId(String(doc.gridFsFileId));
+  res.setHeader('Content-Type', doc.mimeType || 'application/octet-stream');
+  res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(doc.originalName)}"`);
+
+  const stream = bucket.openDownloadStream(fileId);
+  stream.on('error', () => {
+    if (!res.headersSent) res.status(404).json({ error: 'Dosya bulunamadı' });
+  });
+  stream.pipe(res);
 };
