@@ -12,6 +12,7 @@ import {
   AdminSurface,
   AdminToolbar,
 } from '../components/admin';
+import { useToast } from '../components/ui';
 
 type DocumentItem = {
   _id: string;
@@ -57,8 +58,6 @@ export default function AdminPropertyDocuments() {
   const { user } = useAuth();
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [title, setTitle] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState('');
@@ -66,6 +65,7 @@ export default function AdminPropertyDocuments() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
+  const toast = useToast();
 
   const docTypes = [
     'ONLINE_IMAR_DURUM_BELGESI',
@@ -87,7 +87,6 @@ export default function AdminPropertyDocuments() {
   const fetchDocuments = async () => {
     if (!propertyId) return;
     setLoading(true);
-    setError('');
     const data = (await apiFetch(`admin/properties/${propertyId}`)) as DetailResponse;
     setDocuments(Array.isArray(data.documents) ? data.documents : []);
     setTitle(
@@ -100,17 +99,17 @@ export default function AdminPropertyDocuments() {
 
   useEffect(() => {
     fetchDocuments().catch((e) => {
-      setError((e as { error?: string; message?: string }).error || (e as Error).message || 'Belge listesi alınamadı');
+      toast.error((e as { error?: string; message?: string }).error || (e as Error).message || 'Belge listesi alınamadı');
       setLoading(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!propertyId || !file) return;
     setUploading(true);
-    setError('');
-    setSuccess('');
+    const loadingToastId = toast.loading('Belge yükleniyor...');
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
       const formData = new FormData();
@@ -129,12 +128,14 @@ export default function AdminPropertyDocuments() {
       if (!response.ok) {
         throw new Error(data?.error || 'Yükleme başarısız');
       }
-      setSuccess('Document uploaded');
+      toast.dismiss(loadingToastId);
+      toast.success('Document uploaded');
       setFile(null);
       await fetchDocuments();
     } catch (err) {
       const e = err as { message?: string };
-      setError(e.message || 'Yükleme başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error(e.message || 'Yükleme başarısız');
     } finally {
       setUploading(false);
     }
@@ -143,15 +144,16 @@ export default function AdminPropertyDocuments() {
   const handleDelete = async (documentId: string) => {
     if (!propertyId) return;
     setDeletingId(documentId);
-    setError('');
-    setSuccess('');
+    const loadingToastId = toast.loading('Belge siliniyor...');
     try {
       await apiFetch(`properties/${propertyId}/documents/${documentId}`, { method: 'DELETE' });
-      setSuccess('Document deleted');
+      toast.dismiss(loadingToastId);
+      toast.success('Document deleted');
       await fetchDocuments();
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      setError(e.error || e.message || 'Silme başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Silme başarısız');
     } finally {
       setDeletingId('');
     }
@@ -237,15 +239,13 @@ export default function AdminPropertyDocuments() {
         />
 
         {loading && <div className="text-sm text-slate-600">Loading documents...</div>}
-        {error && <div className="text-sm text-red-600">{error}</div>}
-        {success && <div className="text-sm text-emerald-600">{success}</div>}
 
         <section className="space-y-3">
           <AdminToolbar className="justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Existing Documents</h3>
           </AdminToolbar>
 
-          {!loading && !error && cards.length === 0 ? (
+          {!loading && cards.length === 0 ? (
             <AdminEmptyState>No documents uploaded yet</AdminEmptyState>
           ) : null}
 

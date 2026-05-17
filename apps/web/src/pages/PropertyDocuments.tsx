@@ -10,6 +10,7 @@ import {
   AdminSurface,
   AdminToolbar,
 } from '../components/admin';
+import { useToast } from '../components/ui';
 
 const docTypes = [
   { key: 'ONLINE_IMAR_DURUM_BELGESI', label: 'Online İmar Durum Belgesi' },
@@ -47,11 +48,10 @@ export default function PropertyDocuments() {
   const [loading, setLoading] = useState(false);
   const [uploadingType, setUploadingType] = useState('');
   const [deletingId, setDeletingId] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
+  const toast = useToast();
 
   function absoluteFileUrl(fileUrl?: string) {
     if (!fileUrl) return '';
@@ -90,7 +90,7 @@ export default function PropertyDocuments() {
       setDocuments(Array.isArray(data.documents) ? data.documents : []);
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      setError(e.error || e.message || 'Belge listesi alınamadı');
+      toast.error(e.error || e.message || 'Belge listesi alınamadı');
     } finally {
       setLoading(false);
     }
@@ -164,11 +164,10 @@ export default function PropertyDocuments() {
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
     const formData = new FormData(e.currentTarget);
     const currentType = String(formData.get('documentType') || '');
     setUploadingType(currentType);
+    const loadingToastId = toast.loading('Belge yükleniyor...');
     const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
     try {
       const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
@@ -187,10 +186,12 @@ export default function PropertyDocuments() {
         throw new Error((data?.error || 'Yükleme başarısız') + reqId);
       }
 
-      setSuccess('Yüklendi');
+      toast.dismiss(loadingToastId);
+      toast.success('Belge yüklendi');
       await loadDocuments();
     } catch (err: any) {
-      setError(err?.message || 'Yükleme başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error(err?.message || 'Yükleme başarısız');
     } finally {
       setUploadingType('');
     }
@@ -199,15 +200,16 @@ export default function PropertyDocuments() {
   const handleDelete = async (documentId: string) => {
     if (!id) return;
     setDeletingId(documentId);
-    setError('');
-    setSuccess('');
+    const loadingToastId = toast.loading('Belge siliniyor...');
     try {
       await apiFetch(`properties/${id}/documents/${documentId}`, { method: 'DELETE' });
-      setSuccess('Belge silindi');
+      toast.dismiss(loadingToastId);
+      toast.success('Belge silindi');
       await loadDocuments();
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      setError(e.error || e.message || 'Silme başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Silme başarısız');
     } finally {
       setDeletingId('');
     }
@@ -222,8 +224,6 @@ export default function PropertyDocuments() {
         />
 
         {loading ? <div className="text-sm text-slate-600">Loading documents...</div> : null}
-        {success ? <div className="text-sm text-emerald-600">{success}</div> : null}
-        {error ? <div className="text-sm text-red-600">{error}</div> : null}
 
         <section className="space-y-3">
           <AdminToolbar className="justify-between">

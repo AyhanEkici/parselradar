@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
+import { useToast } from '../components/ui';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -17,29 +18,35 @@ export default function PropertyResult() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analysisRunId, setAnalysisRunId] = useState<string | null>(null);
   const [pdfId, setPdfId] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const toast = useToast();
 
   const runAnalysis = async (type: string) => {
-    setError('');
     setResult(null);
     setPdfId(null);
+    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
     try {
       const res = await apiFetch(`analysis/${id}/${type}` , { method: 'POST' });
       setResult(res);
       setAnalysisRunId(res.id);
+      toast.dismiss(loadingToastId);
+      toast.success('Analiz tamamlandı');
     } catch (err) {
-      setError((err as { error?: string }).error || 'Analiz başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'Analiz başarısız');
     }
   };
 
   const purchasePDF = async () => {
     if (!analysisRunId) return;
-    setError('');
+    const loadingToastId = toast.loading('PDF satın alma işlemi başlatılıyor...');
     try {
       const res = await apiFetch(`reports/${analysisRunId}/purchase-pdf`, { method: 'POST' });
       setPdfId(res.id);
+      toast.dismiss(loadingToastId);
+      toast.success('PDF satın alma başarılı');
     } catch (err) {
-      setError((err as { error?: string }).error || 'PDF alınamadı');
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'PDF alınamadı');
     }
   };
 
@@ -68,7 +75,6 @@ export default function PropertyResult() {
       {pdfId && (
         <a className="bg-blue-600 text-white px-4 py-2 rounded" href={`/reports/${pdfId}/download`}>PDF Raporu İndir</a>
       )}
-      {error && <div className="text-red-600 mt-2">{error}</div>}
       <div className="mt-6 text-xs text-gray-600 border-t pt-4">{DISCLAIMER}</div>
     </div>
   );

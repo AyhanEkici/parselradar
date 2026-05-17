@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
+import { useToast } from '../components/ui';
 
 export default function Credits() {
   const [credits, setCredits] = useState<number>(0);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     apiFetch('credits').then(r => setCredits(r.credits));
@@ -12,15 +13,18 @@ export default function Credits() {
 
   const handleCheckout = async (amount: number) => {
     setLoading(true);
-    setError('');
+    const loadingToastId = toast.loading(`Checkout hazırlanıyor (${amount} kredi)...`);
     try {
       const res = await apiFetch('stripe/create-checkout-session', {
         method: 'POST',
         body: JSON.stringify({ creditAmount: amount }),
       });
+      toast.dismiss(loadingToastId);
+      toast.success('Stripe checkout sayfasına yönlendiriliyorsunuz');
       window.location.href = res.url;
     } catch (err) {
-      setError((err as { error?: string }).error || 'İşlem başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'İşlem başarısız');
     } finally {
       setLoading(false);
     }
@@ -28,12 +32,15 @@ export default function Credits() {
 
   const handleDevAdd = async () => {
     setLoading(true);
-    setError('');
+    const loadingToastId = toast.loading('Kredi ekleniyor...');
     try {
       await apiFetch('credits/dev-add', { method: 'POST', body: JSON.stringify({ amount: 10 }) });
       setCredits(c => c + 10);
+      toast.dismiss(loadingToastId);
+      toast.success('10 kredi eklendi');
     } catch (err) {
-      setError((err as { error?: string }).error || 'Dev kredi eklenemedi');
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'Dev kredi eklenemedi');
     } finally {
       setLoading(false);
     }
@@ -51,7 +58,6 @@ export default function Credits() {
       <div className="mt-4">
         <button className="bg-gray-200 px-4 py-2 rounded" disabled={loading} onClick={handleDevAdd}>Dev Only: 10 Kredi Ekle</button>
       </div>
-      {error && <div className="text-red-600 mt-2">{error}</div>}
     </div>
   );
 }

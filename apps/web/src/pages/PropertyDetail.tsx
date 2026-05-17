@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../components/ui';
 
 // Score Gauge Component
 const ScoreGauge = ({ score, confidence }: { score: number; confidence: number }) => {
@@ -263,14 +264,12 @@ export default function PropertyDetail() {
   const [detail, setDetail] = useState<DetailResponse | null>(null);
   const [error, setError] = useState('');
   const [rerunLoading, setRerunLoading] = useState(false);
-  const [rerunError, setRerunError] = useState('');
   const [statusValue, setStatusValue] = useState('NEW');
   const [statusUpdating, setStatusUpdating] = useState(false);
-  const [statusError, setStatusError] = useState('');
-  const [statusSuccess, setStatusSuccess] = useState('');
   const [selectedDoc, setSelectedDoc] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [expandedAuditId, setExpandedAuditId] = useState<string | null>(null);
+  const toast = useToast();
 
   const normalizeDetail = (data: unknown): DetailResponse => {
     const maybe = data as Partial<DetailResponse> & Record<string, unknown>;
@@ -324,13 +323,16 @@ export default function PropertyDetail() {
   const rerunAnalysis = async () => {
     if (!resolvedId) return;
     setRerunLoading(true);
-    setRerunError('');
+    const loadingToastId = toast.loading('Analiz yeniden çalıştırılıyor...');
     try {
       await apiFetch(`analysis/${resolvedId}/quick-score?force=1`, { method: 'POST' });
       await fetchDetail();
+      toast.dismiss(loadingToastId);
+      toast.success('Analiz güncellendi');
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      setRerunError(e.error || e.message || 'Analiz başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Analiz başarısız');
     } finally {
       setRerunLoading(false);
     }
@@ -339,8 +341,7 @@ export default function PropertyDetail() {
   const updateStatus = async (newStatus: string) => {
     if (!resolvedId) return;
     setStatusUpdating(true);
-    setStatusError('');
-    setStatusSuccess('');
+    const loadingToastId = toast.loading('Durum güncelleniyor...');
     try {
       await apiFetch(`admin/properties/${resolvedId}/status`, {
         method: 'PATCH',
@@ -348,11 +349,13 @@ export default function PropertyDetail() {
         body: JSON.stringify({ status: newStatus }),
       });
       setStatusValue(newStatus);
-      setStatusSuccess('Status updated');
       await fetchDetail();
+      toast.dismiss(loadingToastId);
+      toast.success('Status updated');
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      setStatusError(e.error || e.message || 'Status update failed');
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Status update failed');
     } finally {
       setStatusUpdating(false);
     }
@@ -486,10 +489,6 @@ export default function PropertyDetail() {
               >
                 📊 Rerun Analysis
               </button>
-              {statusSuccess && (
-                <span className="text-xs text-green-600 font-semibold">✓ {statusSuccess}</span>
-              )}
-              {statusError && <span className="text-xs text-red-600 font-semibold">✕ {statusError}</span>}
             </div>
           </div>
         </div>
@@ -803,13 +802,6 @@ export default function PropertyDetail() {
         doc={selectedDoc}
         onClose={() => setModalOpen(false)}
       />
-
-      {/* Error Messages */}
-      {rerunError && (
-        <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-800 px-4 py-3 rounded-lg">
-          {rerunError}
-        </div>
-      )}
     </div>
   );
 }

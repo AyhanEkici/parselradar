@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { login } from '../lib/auth';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../components/ui';
 
 type LoginResponse = {
   id?: string;
@@ -14,28 +15,32 @@ type LoginResponse = {
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setIsSubmitting(true);
+    const loadingToastId = toast.loading('Giriş yapılıyor...');
 
     try {
       const res = (await login(email.trim(), password)) as LoginResponse;
 
       if (!res?.id || !res?.email || !res?.role || !res?.token) {
-        setError(res?.error || 'Giriş başarısız');
+        toast.dismiss(loadingToastId);
+        toast.error(res?.error || 'Giriş başarısız');
         return;
       }
 
       localStorage.setItem('parselradar_token', res.token);
       window.dispatchEvent(new Event('storage'));
+      toast.dismiss(loadingToastId);
+      toast.success('Giriş başarılı');
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError((err as { error?: string; message?: string }).error || 'Giriş başarısız');
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string; message?: string }).error || 'Giriş başarısız');
     } finally {
       setIsSubmitting(false);
     }
@@ -62,8 +67,6 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
         />
-
-        {error && <div className="text-red-600">{error}</div>}
 
         <button
           className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-60"
