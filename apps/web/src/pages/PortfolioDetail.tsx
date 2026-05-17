@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import PortfolioSummaryCard from '../components/portfolio/PortfolioSummaryCard';
 import PortfolioExposureCard from '../components/portfolio/PortfolioExposureCard';
@@ -48,6 +48,17 @@ export default function PortfolioDetail() {
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-6xl space-y-4">
         <h1 className="text-2xl font-bold text-slate-900">{data.portfolio?.name || 'Portfolio'}</h1>
+
+        {id ? (
+          <div>
+            <Link
+              to={`/investor/portfolio/${id}/analytics`}
+              className="inline-flex rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            >
+              Open Portfolio Intelligence
+            </Link>
+          </div>
+        ) : null}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <PortfolioSummaryCard title="Holdings" value={data.items?.length || 0} />

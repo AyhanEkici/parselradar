@@ -29,6 +29,7 @@ import SavedAnalyses from './pages/SavedAnalyses';
 import Watchlist from './pages/Watchlist';
 import PortfolioDashboard from './pages/PortfolioDashboard';
 import PortfolioDetail from './pages/PortfolioDetail';
+import PortfolioAnalytics from './pages/PortfolioAnalytics';
 import Organizations from './pages/Organizations';
 import OrganizationDetail from './pages/OrganizationDetail';
 import WorkspaceDashboard from './pages/WorkspaceDashboard';
@@ -97,6 +98,7 @@ export default function App() {
           <Route path="/investor/watchlist" element={<Watchlist />} />
           <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
           <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
+          <Route path="/investor/portfolio/:id/analytics" element={<PortfolioAnalytics />} />
           <Route path="/organizations" element={<Organizations />} />
           <Route path="/organizations/:id" element={<OrganizationDetail />} />
           <Route path="/workspace/:organizationId/dashboard" element={<WorkspaceDashboard />} />
