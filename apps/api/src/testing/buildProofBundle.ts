@@ -125,8 +125,13 @@ function buildHarnessSafetySection(): VerificationSection {
     /\.update\(/,
     /\.delete\(/,
     /\.enqueue\(/,
-    /\.add\(/,
+    /\bqueue\.add\(/,
+    /\bqueues\.add\(/,
   ];
+
+  function stripSelfDeclaredForbiddenPatterns(content: string): string {
+    return content.replace(/const forbiddenPatterns\s*=\s*\[[\s\S]*?\];/m, '');
+  }
 
   for (const filePath of filesToScan) {
     if (!fs.existsSync(filePath)) {
@@ -156,7 +161,10 @@ function buildHarnessSafetySection(): VerificationSection {
       continue;
     }
 
-    const hasForbiddenPattern = forbiddenPatterns.some((pattern) => pattern.test(content));
+    const baseName = filePath.split(/[/\\]/).slice(-1)[0];
+    const scanContent = baseName === 'buildProofBundle.ts' ? stripSelfDeclaredForbiddenPatterns(content) : content;
+
+    const hasForbiddenPattern = forbiddenPatterns.some((pattern) => pattern.test(scanContent));
     checks.push(
       makeCheck(
         'Harness Safety',

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
 
-export function readinessController(req: Request, res: Response) {
-  const snapshot = buildOperationalSnapshot();
+export async function readinessController(req: Request, res: Response) {
+  const snapshot = await buildOperationalSnapshot();
   const readyStates = ['READY', 'RUNNING'];
   const isReady = readyStates.includes(snapshot.runtimeStatus.state);
 

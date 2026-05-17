@@ -21,7 +21,14 @@ import adminRoutes from './routes/adminRoutes';
 import auditRoutes from './routes/auditRoutes';
 import investorRoutes from './routes/investorRoutes';
 import portfolioRoutes from './routes/portfolioRoutes';
+import portfolioAnalyticsRoutes from './routes/portfolioAnalyticsRoutes';
 import exportRoutes from './routes/exportRoutes';
+import organizationRoutes from './routes/organizationRoutes';
+import workspaceRoutes from './routes/workspaceRoutes';
+import sharedAnalysisRoutes from './routes/sharedAnalysisRoutes';
+import notificationRoutes from './routes/notificationRoutes';
+import observabilityRoutes from './routes/observabilityRoutes';
+import connectorActivationRoutes from './routes/connectorActivationRoutes';
 import helmet from 'helmet';
 import { requestIdMiddleware } from './middleware/requestId';
 import { healthController } from './health/healthController';
@@ -121,7 +128,18 @@ app.use('/analysis', analysisRoutes);
 app.use('/reports', reportRoutes);
 app.use('/investor', investorRoutes);
 app.use('/investor', portfolioRoutes);
+app.use('/investor', portfolioAnalyticsRoutes);
 app.use('/exports', exportRoutes);
+
+// Workspace + organization surfaces (mounted at root)
+app.use('/', organizationRoutes);
+app.use('/', workspaceRoutes);
+app.use('/', sharedAnalysisRoutes);
+
+// Notification and admin observability/connectors surfaces (root-mounted with internal prefixes)
+app.use('/', notificationRoutes);
+app.use('/', observabilityRoutes);
+app.use('/', connectorActivationRoutes);
 
 app.use('/admin', adminRoutes);
 app.use('/', auditRoutes);

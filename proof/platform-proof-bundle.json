@@ -1,0 +1,5658 @@
+{
+  "generatedAt": "2026-05-17T22:57:03.638Z",
+  "gitSha": "ca310f70b67e43d53a39722af9e8aac849cd2513",
+  "dirtyWorkingTree": true,
+  "overallStatus": "WARN",
+  "summary": {
+    "totalSections": 12,
+    "totalChecks": 307,
+    "passCount": 299,
+    "warnCount": 8,
+    "failCount": 0,
+    "skippedCount": 0
+  },
+  "sections": [
+    {
+      "category": "Admin",
+      "checks": [
+        {
+          "category": "Admin",
+          "name": "Admin middleware enforces ADMIN role",
+          "status": "PASS",
+          "message": "Admin middleware explicitly checks for the ADMIN role."
+        },
+        {
+          "category": "Admin",
+          "name": "admin middleware file exists",
+          "status": "PASS",
+          "message": "Admin middleware file presence verified."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/analyses",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/credit-ledger",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/deployment",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/properties",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/runtime",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/stripe-sessions",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin route /admin/users",
+          "status": "PASS",
+          "message": "Expected admin route is declared."
+        },
+        {
+          "category": "Admin",
+          "name": "Admin routes require auth and admin middleware",
+          "status": "PASS",
+          "message": "All admin routes are structurally gated by auth and admin middleware."
+        },
+        {
+          "category": "Admin",
+          "name": "ADMIN_EMAIL readiness",
+          "status": "PASS",
+          "message": "ADMIN_EMAIL is present.",
+          "detail": "ADMIN_EMAIL=PRESENT"
+        },
+        {
+          "category": "Admin",
+          "name": "adminController file exists",
+          "status": "PASS",
+          "message": "Admin controller file presence verified."
+        },
+        {
+          "category": "Admin",
+          "name": "adminRoutes file exists",
+          "status": "PASS",
+          "message": "Admin route file presence verified."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/analyses",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/credit-ledger",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "POST",
+          "path": "/admin/deal-pool/:entryId/share",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "POST",
+          "path": "/admin/deal-pool/:propertyId/accept",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/deployment",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/properties",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/properties/:id",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "PATCH",
+          "path": "/admin/properties/:id/review",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "PATCH",
+          "path": "/admin/properties/:id/status",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/runtime",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/stripe-sessions",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
+          "path": "/admin/users",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        }
+      ],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 13,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Auth",
+      "checks": [
+        {
+          "category": "Auth",
+          "name": "Auth limiter on register/login/logout",
+          "status": "PASS",
+          "message": "Register, login, and logout routes are rate limited."
+        },
+        {
+          "category": "Auth",
+          "name": "auth middleware file exists",
+          "status": "PASS",
+          "message": "Auth middleware file presence verified."
+        },
+        {
+          "category": "Auth",
+          "name": "Auth middleware validates JWT and user lookup",
+          "status": "PASS",
+          "message": "Auth middleware verifies JWT and resolves the user record."
+        },
+        {
+          "category": "Auth",
+          "name": "authController file exists",
+          "status": "PASS",
+          "message": "Auth controller file presence verified."
+        },
+        {
+          "category": "Auth",
+          "name": "authRoutes file exists",
+          "status": "PASS",
+          "message": "Auth route file presence verified."
+        },
+        {
+          "category": "Auth",
+          "name": "CLIENT_URL readiness",
+          "status": "PASS",
+          "message": "CLIENT_URL is present.",
+          "detail": "CLIENT_URL=PRESENT"
+        },
+        {
+          "category": "Auth",
+          "name": "JWT_SECRET readiness",
+          "status": "PASS",
+          "message": "JWT secret is present with acceptable length.",
+          "detail": "JWT_SECRET=PRESENT, length=96"
+        },
+        {
+          "category": "Auth",
+          "name": "Route GET /auth/me",
+          "status": "PASS",
+          "message": "Expected auth route is declared."
+        },
+        {
+          "category": "Auth",
+          "name": "Route POST /auth/login",
+          "status": "PASS",
+          "message": "Expected auth route is declared."
+        },
+        {
+          "category": "Auth",
+          "name": "Route POST /auth/logout",
+          "status": "PASS",
+          "message": "Expected auth route is declared."
+        },
+        {
+          "category": "Auth",
+          "name": "Route POST /auth/register",
+          "status": "PASS",
+          "message": "Expected auth route is declared."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Auth",
+          "routeFile": "apps/api/src/routes/authRoutes.ts",
+          "method": "POST",
+          "path": "/auth/login",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Auth",
+          "routeFile": "apps/api/src/routes/authRoutes.ts",
+          "method": "POST",
+          "path": "/auth/logout",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Auth",
+          "routeFile": "apps/api/src/routes/authRoutes.ts",
+          "method": "GET",
+          "path": "/auth/me",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Auth",
+          "routeFile": "apps/api/src/routes/authRoutes.ts",
+          "method": "POST",
+          "path": "/auth/register",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 11,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Connectors",
+      "checks": [
+        {
+          "category": "Connectors",
+          "name": "Connector truth state demographic_feed",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_DEMOGRAPHIC_API_KEY=MISSING, CONNECTOR_DEMOGRAPHIC_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state email_provider",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "NOTIFY_SMTP_HOST=MISSING, NOTIFY_SMTP_USER=MISSING, NOTIFY_SMTP_PASS=MISSING, NOTIFY_EMAIL_FROM=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state infrastructure_feed",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_INFRA_API_KEY=MISSING, CONNECTOR_INFRA_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state listing_feed",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_LISTING_API_KEY=MISSING, CONNECTOR_LISTING_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state map_geocoding",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_MAPS_API_KEY=MISSING, CONNECTOR_MAPS_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state municipality_zoning",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_MUNICIPALITY_TOKEN=MISSING, CONNECTOR_MUNICIPALITY_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector truth state tkgm_parcel",
+          "status": "WARN",
+          "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+          "detail": "CONNECTOR_TKGM_API_KEY=MISSING, CONNECTOR_TKGM_ENDPOINT=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "activateConnectorIfEligible.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "buildConnectorActivationAudit.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector live call policy is explicitly gated",
+          "status": "PASS",
+          "message": "Connector live calls stay gated behind CONNECTOR_TEST_MODE=active."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector live-call mode",
+          "status": "PASS",
+          "message": "Live connector calls remain disabled by configuration.",
+          "detail": "CONNECTOR_TEST_MODE=MISSING"
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/activate",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/activation-plan",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/audit",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/credentials",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/deactivate",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/source-approval",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/:connectorKey/test",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector route /admin/connectors/audit-trail",
+          "status": "PASS",
+          "message": "Expected connector route is declared."
+        },
+        {
+          "category": "Connectors",
+          "name": "Connector routes require auth and admin middleware",
+          "status": "PASS",
+          "message": "All connector routes are structurally gated by auth and admin middleware."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorActivationController.ts exists",
+          "status": "PASS",
+          "message": "Required connector surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorActivationPolicies.ts exists",
+          "status": "PASS",
+          "message": "Required connector surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "ConnectorActivationRecord.ts exists",
+          "status": "PASS",
+          "message": "Required connector model file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorActivationRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required connector surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "ConnectorCredentialProfile.ts exists",
+          "status": "PASS",
+          "message": "Required connector model file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorExecutionRegistry.ts exists",
+          "status": "PASS",
+          "message": "Required connector surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "ConnectorSourceApproval.ts exists",
+          "status": "PASS",
+          "message": "Required connector model file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "ConnectorTestRun.ts exists",
+          "status": "PASS",
+          "message": "Required connector model file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "deactivateConnector.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "demographicConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "emailProviderConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "executeConnectorTestRun.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "getConnectorActivationState.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "infrastructureConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "listingConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "mapGeocodingConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "municipalityConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "storeConnectorCredentialProfile.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "tkgmConnector.ts exists",
+          "status": "PASS",
+          "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "validateConnectorSamplePayload.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "GET",
+          "path": "/admin/connectors",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "GET",
+          "path": "/admin/connectors/:connectorKey",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "POST",
+          "path": "/admin/connectors/:connectorKey/activate",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "GET",
+          "path": "/admin/connectors/:connectorKey/activation-plan",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "GET",
+          "path": "/admin/connectors/:connectorKey/audit",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "POST",
+          "path": "/admin/connectors/:connectorKey/credentials",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "POST",
+          "path": "/admin/connectors/:connectorKey/deactivate",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "PATCH",
+          "path": "/admin/connectors/:connectorKey/source-approval",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "POST",
+          "path": "/admin/connectors/:connectorKey/test",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Connectors",
+          "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+          "method": "GET",
+          "path": "/admin/connectors/audit-trail",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        }
+      ],
+      "riskRegister": [
+        {
+          "category": "Connectors",
+          "severity": "medium",
+          "title": "Connector activation routes are mutating by design",
+          "detail": "Connector credential, test, activation, and deactivation endpoints exist. The verification harness inspects them statically and does not invoke them."
+        }
+      ],
+      "missingExternalConfigs": [
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_TKGM_API_KEY",
+          "reason": "Connector tkgm_parcel is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_TKGM_ENDPOINT",
+          "reason": "Connector tkgm_parcel is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_MUNICIPALITY_TOKEN",
+          "reason": "Connector municipality_zoning is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_MUNICIPALITY_ENDPOINT",
+          "reason": "Connector municipality_zoning is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_LISTING_API_KEY",
+          "reason": "Connector listing_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_LISTING_ENDPOINT",
+          "reason": "Connector listing_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_INFRA_API_KEY",
+          "reason": "Connector infrastructure_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_INFRA_ENDPOINT",
+          "reason": "Connector infrastructure_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_DEMOGRAPHIC_API_KEY",
+          "reason": "Connector demographic_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_DEMOGRAPHIC_ENDPOINT",
+          "reason": "Connector demographic_feed is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_MAPS_API_KEY",
+          "reason": "Connector map_geocoding is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "CONNECTOR_MAPS_ENDPOINT",
+          "reason": "Connector map_geocoding is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "NOTIFY_SMTP_HOST",
+          "reason": "Connector email_provider is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "NOTIFY_SMTP_USER",
+          "reason": "Connector email_provider is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "NOTIFY_SMTP_PASS",
+          "reason": "Connector email_provider is missing a required configuration key.",
+          "status": "WARN"
+        },
+        {
+          "category": "Connectors",
+          "key": "NOTIFY_EMAIL_FROM",
+          "reason": "Connector email_provider is missing a required configuration key.",
+          "status": "WARN"
+        }
+      ],
+      "connectorStates": [
+        {
+          "key": "tkgm_parcel",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_TKGM_API_KEY",
+            "CONNECTOR_TKGM_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_TKGM_API_KEY",
+            "CONNECTOR_TKGM_ENDPOINT"
+          ],
+          "legalRequirement": "tkgm_license"
+        },
+        {
+          "key": "municipality_zoning",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_MUNICIPALITY_TOKEN",
+            "CONNECTOR_MUNICIPALITY_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_MUNICIPALITY_TOKEN",
+            "CONNECTOR_MUNICIPALITY_ENDPOINT"
+          ],
+          "legalRequirement": "municipality_terms"
+        },
+        {
+          "key": "listing_feed",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_LISTING_API_KEY",
+            "CONNECTOR_LISTING_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_LISTING_API_KEY",
+            "CONNECTOR_LISTING_ENDPOINT"
+          ],
+          "legalRequirement": "listing_feed_terms"
+        },
+        {
+          "key": "infrastructure_feed",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_INFRA_API_KEY",
+            "CONNECTOR_INFRA_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_INFRA_API_KEY",
+            "CONNECTOR_INFRA_ENDPOINT"
+          ],
+          "legalRequirement": "infrastructure_feed_terms"
+        },
+        {
+          "key": "demographic_feed",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_DEMOGRAPHIC_API_KEY",
+            "CONNECTOR_DEMOGRAPHIC_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_DEMOGRAPHIC_API_KEY",
+            "CONNECTOR_DEMOGRAPHIC_ENDPOINT"
+          ],
+          "legalRequirement": "demographic_feed_terms"
+        },
+        {
+          "key": "map_geocoding",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "CONNECTOR_MAPS_API_KEY",
+            "CONNECTOR_MAPS_ENDPOINT"
+          ],
+          "missingEnv": [
+            "CONNECTOR_MAPS_API_KEY",
+            "CONNECTOR_MAPS_ENDPOINT"
+          ],
+          "legalRequirement": "map_provider_terms"
+        },
+        {
+          "key": "email_provider",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "requiredEnv": [
+            "NOTIFY_SMTP_HOST",
+            "NOTIFY_SMTP_USER",
+            "NOTIFY_SMTP_PASS",
+            "NOTIFY_EMAIL_FROM"
+          ],
+          "missingEnv": [
+            "NOTIFY_SMTP_HOST",
+            "NOTIFY_SMTP_USER",
+            "NOTIFY_SMTP_PASS",
+            "NOTIFY_EMAIL_FROM"
+          ],
+          "legalRequirement": "email_provider_terms"
+        }
+      ],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 35,
+      "warnCount": 7,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "WARN"
+    },
+    {
+      "category": "Harness Safety",
+      "checks": [
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan buildProofBundle.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan platformVerification.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verify-platform.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyAdmin.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyAuth.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyConnectors.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyInvestor.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyModels.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyNotifications.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyObservability.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyPortfolio.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyRoutes.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyRuntime.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "Read-only scan verifyWorkspace.ts",
+          "status": "PASS",
+          "message": "Verification source remains free of obvious mutating or external-call patterns."
+        },
+        {
+          "category": "Harness Safety",
+          "name": "VERIFY_PLATFORM_ALLOW_EXTERNAL default",
+          "status": "PASS",
+          "message": "External verification mode is not enabled by default."
+        }
+      ],
+      "routeChecks": [],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 15,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Investor",
+      "checks": [
+        {
+          "category": "Investor",
+          "name": "buildInvestorDashboardSummary.ts exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "Investor route /investor/dashboard",
+          "status": "PASS",
+          "message": "Expected investor route is declared."
+        },
+        {
+          "category": "Investor",
+          "name": "Investor route /investor/saved-analyses",
+          "status": "PASS",
+          "message": "Expected investor route is declared."
+        },
+        {
+          "category": "Investor",
+          "name": "Investor route /investor/watchlist",
+          "status": "PASS",
+          "message": "Expected investor route is declared."
+        },
+        {
+          "category": "Investor",
+          "name": "Investor routes require auth middleware",
+          "status": "PASS",
+          "message": "All investor routes are structurally gated by auth middleware."
+        },
+        {
+          "category": "Investor",
+          "name": "investorController.ts exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "InvestorDashboard.tsx exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "investorRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "SavedAnalyses.tsx exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "SavedAnalysis.ts exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "Watchlist.ts exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        },
+        {
+          "category": "Investor",
+          "name": "Watchlist.tsx exists",
+          "status": "PASS",
+          "message": "Required investor surface file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "GET",
+          "path": "/investor/dashboard",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "GET",
+          "path": "/investor/saved-analyses",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "POST",
+          "path": "/investor/saved-analyses",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "DELETE",
+          "path": "/investor/saved-analyses/:id",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "GET",
+          "path": "/investor/watchlist",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "POST",
+          "path": "/investor/watchlist",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Investor",
+          "routeFile": "apps/api/src/routes/investorRoutes.ts",
+          "method": "DELETE",
+          "path": "/investor/watchlist/:id",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 12,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Models",
+      "checks": [
+        {
+          "category": "Models",
+          "name": "Model AnalysisRun.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model ConnectorActivationRecord.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model ConnectorCredentialProfile.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model ConnectorSourceApproval.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model ConnectorTestRun.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model ConsentRecord.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model CreditLedger.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model DocumentUpload.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model NotificationDelivery.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model NotificationDigest.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model NotificationEvent.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model NotificationPreference.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model Organization.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model OrganizationMember.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model Portfolio.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model PortfolioItem.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model PropertySubmission.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model Report.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model SavedAnalysis.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model User.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model Watchlist.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model Workspace.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model WorkspaceActivity.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model WorkspacePortfolio.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Model WorkspaceWatchlist.ts",
+          "status": "PASS",
+          "message": "Required model file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service buildNotificationInbox.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service buildWorkspaceActivityFeed.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service calculatePortfolioBenchmark.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service createPortfolioSnapshot.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service executeConnectorTestRun.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service getConnectorActivationState.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        },
+        {
+          "category": "Models",
+          "name": "Service processNotificationDelivery.ts",
+          "status": "PASS",
+          "message": "Required service file is present."
+        }
+      ],
+      "routeChecks": [],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 32,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Notifications",
+      "checks": [
+        {
+          "category": "Notifications",
+          "name": "Email notification delivery readiness",
+          "status": "WARN",
+          "message": "Email delivery env keys are incomplete. Notification delivery remains not configured.",
+          "detail": "NOTIFY_EMAIL_FROM=MISSING, NOTIFY_SMTP_HOST=MISSING, NOTIFY_SMTP_USER=MISSING, NOTIFY_SMTP_PASS=MISSING"
+        },
+        {
+          "category": "Notifications",
+          "name": "buildNotificationInbox.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "deliveryProviders.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification provider remains stub-safe",
+          "status": "PASS",
+          "message": "Configured email delivery still resolves to a stub-safe provider name."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications/:id/archive",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications/:id/read",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications/digests",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications/preferences",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification route /notifications/test-event",
+          "status": "PASS",
+          "message": "Expected notification route is declared."
+        },
+        {
+          "category": "Notifications",
+          "name": "Notification routes require auth middleware",
+          "status": "PASS",
+          "message": "All notification routes are structurally gated by auth middleware."
+        },
+        {
+          "category": "Notifications",
+          "name": "notificationController.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationDelivery.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationDigest.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationEvent.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationInbox.tsx exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationPreference.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "NotificationPreferences.tsx exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "notificationRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "processNotificationDelivery.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        },
+        {
+          "category": "Notifications",
+          "name": "queueNotificationDelivery.ts exists",
+          "status": "PASS",
+          "message": "Required notifications surface file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "GET",
+          "path": "/notifications",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "POST",
+          "path": "/notifications/:id/archive",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "POST",
+          "path": "/notifications/:id/read",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "GET",
+          "path": "/notifications/digests",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "GET",
+          "path": "/notifications/preferences",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "PATCH",
+          "path": "/notifications/preferences",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Notifications",
+          "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+          "method": "POST",
+          "path": "/notifications/test-event",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [
+        {
+          "category": "Notifications",
+          "severity": "medium",
+          "title": "Notification test-event route is mutating",
+          "detail": "A notification test-event route exists in the product API. The verification harness inspects route declarations only and never invokes that endpoint."
+        }
+      ],
+      "missingExternalConfigs": [
+        {
+          "category": "Notifications",
+          "key": "NOTIFY_EMAIL_FROM",
+          "reason": "Email delivery is not fully configured.",
+          "status": "WARN"
+        },
+        {
+          "category": "Notifications",
+          "key": "NOTIFY_SMTP_HOST",
+          "reason": "Email delivery is not fully configured.",
+          "status": "WARN"
+        },
+        {
+          "category": "Notifications",
+          "key": "NOTIFY_SMTP_USER",
+          "reason": "Email delivery is not fully configured.",
+          "status": "WARN"
+        },
+        {
+          "category": "Notifications",
+          "key": "NOTIFY_SMTP_PASS",
+          "reason": "Email delivery is not fully configured.",
+          "status": "WARN"
+        }
+      ],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [
+        {
+          "channel": "email",
+          "state": "NOT_CONFIGURED",
+          "status": "WARN",
+          "missingEnv": [
+            "NOTIFY_EMAIL_FROM",
+            "NOTIFY_SMTP_HOST",
+            "NOTIFY_SMTP_USER",
+            "NOTIFY_SMTP_PASS"
+          ]
+        }
+      ],
+      "passCount": 20,
+      "warnCount": 1,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "WARN"
+    },
+    {
+      "category": "Observability",
+      "checks": [
+        {
+          "category": "Observability",
+          "name": "AdminAnalytics.tsx exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "AdminAuditTimeline.tsx exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "AdminDeploymentOverview.tsx exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "AdminObservability.tsx exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "AdminSystemRuntime.tsx exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "buildObservabilitySnapshot.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "buildOperationalSnapshot.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "healthController.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "livenessController.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "Observability route /admin/analytics",
+          "status": "PASS",
+          "message": "Expected observability route is declared."
+        },
+        {
+          "category": "Observability",
+          "name": "Observability route /admin/observability",
+          "status": "PASS",
+          "message": "Expected observability route is declared."
+        },
+        {
+          "category": "Observability",
+          "name": "Observability route /admin/telemetry",
+          "status": "PASS",
+          "message": "Expected observability route is declared."
+        },
+        {
+          "category": "Observability",
+          "name": "Observability routes require auth and admin middleware",
+          "status": "PASS",
+          "message": "All observability routes are structurally gated by auth and admin middleware."
+        },
+        {
+          "category": "Observability",
+          "name": "observabilityController.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "observabilityRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "readinessController.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        },
+        {
+          "category": "Observability",
+          "name": "telemetryProvider.ts exists",
+          "status": "PASS",
+          "message": "Required observability file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Observability",
+          "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+          "method": "GET",
+          "path": "/admin/analytics",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Observability",
+          "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+          "method": "GET",
+          "path": "/admin/observability",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Observability",
+          "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+          "method": "GET",
+          "path": "/admin/telemetry",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        }
+      ],
+      "riskRegister": [
+        {
+          "category": "Observability",
+          "severity": "low",
+          "title": "Observability controllers are not executed by the harness",
+          "detail": "The proof bundle verifies observability files, routes, and admin gating statically. It does not execute telemetry, readiness, or deployment snapshots."
+        }
+      ],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 17,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Portfolio",
+      "checks": [
+        {
+          "category": "Portfolio",
+          "name": "calculatePortfolioBenchmark.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "createPortfolioSnapshot.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id/analytics",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id/benchmark",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id/exposure",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id/performance",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio route /investor/portfolio/:id/scenarios",
+          "status": "PASS",
+          "message": "Expected portfolio route is declared."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio routes require auth middleware",
+          "status": "PASS",
+          "message": "All portfolio routes are structurally gated by auth middleware."
+        },
+        {
+          "category": "Portfolio",
+          "name": "Portfolio.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "PortfolioAnalytics.tsx exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "portfolioAnalyticsController.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "portfolioAnalyticsRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "portfolioController.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "PortfolioDashboard.tsx exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "PortfolioDetail.tsx exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "PortfolioItem.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        },
+        {
+          "category": "Portfolio",
+          "name": "portfolioRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required portfolio surface file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+          "method": "POST",
+          "path": "/investor/portfolio",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id/analytics",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id/benchmark",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id/exposure",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+          "method": "POST",
+          "path": "/investor/portfolio/:id/items",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+          "method": "DELETE",
+          "path": "/investor/portfolio/:id/items/:itemId",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id/performance",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Portfolio",
+          "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+          "method": "GET",
+          "path": "/investor/portfolio/:id/scenarios",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 19,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Routes",
+      "checks": [
+        {
+          "category": "Routes",
+          "name": "adminRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "adminRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "adminRoutes mounted at /admin",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "analysisRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "analysisRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "analysisRoutes mounted at /analysis",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "API index file exists",
+          "status": "PASS",
+          "message": "apps/api/src/index.ts presence verified."
+        },
+        {
+          "category": "Routes",
+          "name": "auditRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "auditRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "auditRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "authRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "authRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "authRoutes mounted at /auth",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "connectorActivationRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "connectorActivationRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "connectorActivationRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "consentRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "consentRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "consentRoutes mounted at /properties",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "creditRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "creditRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "creditRoutes mounted at /credits",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "documentRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "documentRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "documentRoutes mounted at /properties",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "exportRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "exportRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "exportRoutes mounted at /exports",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page AdminAuditTimeline.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page AdminConnectorDetail.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page AdminConnectors.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page AdminObservability.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page Dashboard.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page InvestorDashboard.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page Login.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page NotificationInbox.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page NotificationPreferences.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page PortfolioAnalytics.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page PortfolioDashboard.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page Register.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page WorkspaceActivity.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Frontend page WorkspaceDashboard.tsx",
+          "status": "PASS",
+          "message": "Expected frontend page file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "Health route /health",
+          "status": "PASS",
+          "message": "Health route is registered in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "Health route /health/live",
+          "status": "PASS",
+          "message": "Health route is registered in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "Health route /health/ready",
+          "status": "PASS",
+          "message": "Health route is registered in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "investorRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "investorRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "investorRoutes mounted at /investor",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "notificationRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "notificationRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "notificationRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "observabilityRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "observabilityRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "observabilityRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "organizationRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "organizationRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "organizationRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioAnalyticsRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioAnalyticsRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioAnalyticsRoutes mounted at /investor",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "portfolioRoutes mounted at /investor",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "propertyRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "propertyRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "propertyRoutes mounted at /properties",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "reportRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "reportRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "reportRoutes mounted at /reports",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "sharedAnalysisRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "sharedAnalysisRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "sharedAnalysisRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "stripeRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "stripeRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "stripeRoutes mounted at /stripe",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        },
+        {
+          "category": "Routes",
+          "name": "workspaceRoutes default export",
+          "status": "PASS",
+          "message": "Route file exports default router."
+        },
+        {
+          "category": "Routes",
+          "name": "workspaceRoutes file exists",
+          "status": "PASS",
+          "message": "Mounted route file is present."
+        },
+        {
+          "category": "Routes",
+          "name": "workspaceRoutes mounted at /",
+          "status": "PASS",
+          "message": "Route mount found in index.ts."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "GET",
+          "path": "/health",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "GET",
+          "path": "/health/live",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "GET",
+          "path": "/health/ready",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "POST",
+          "path": "/stripe/webhook",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 78,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Runtime",
+      "checks": [
+        {
+          "category": "Runtime",
+          "name": "API build script exists",
+          "status": "PASS",
+          "message": "API package build script presence verified."
+        },
+        {
+          "category": "Runtime",
+          "name": "API tsconfig exists",
+          "status": "PASS",
+          "message": "API TypeScript config presence verified."
+        },
+        {
+          "category": "Runtime",
+          "name": "bullmq truth state",
+          "status": "PASS",
+          "message": "bullmq resolved to DISABLED.",
+          "detail": "BullMQ is disabled because distributed runtime is off."
+        },
+        {
+          "category": "Runtime",
+          "name": "Core runtime env readiness",
+          "status": "PASS",
+          "message": "Core runtime env keys are present.",
+          "detail": "MONGODB_URI=PRESENT, JWT_SECRET=PRESENT, CLIENT_URL=PRESENT"
+        },
+        {
+          "category": "Runtime",
+          "name": "jobs exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "queueEvents.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "queueFactory.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "queues truth state",
+          "status": "PASS",
+          "message": "queues resolved to DISABLED.",
+          "detail": "Distributed queue backend is disabled."
+        },
+        {
+          "category": "Runtime",
+          "name": "redis truth state",
+          "status": "PASS",
+          "message": "redis resolved to DISABLED.",
+          "detail": "Distributed runtime is disabled by configuration."
+        },
+        {
+          "category": "Runtime",
+          "name": "redisClient.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "redisConfig.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "redisHealth.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "Root build script exists",
+          "status": "PASS",
+          "message": "Root package build script presence verified."
+        },
+        {
+          "category": "Runtime",
+          "name": "runtimeConfig.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "runtimeState.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "VERIFY_PLATFORM_ALLOW_EXTERNAL mode",
+          "status": "PASS",
+          "message": "External verification mode is not enabled.",
+          "detail": "VERIFY_PLATFORM_ALLOW_EXTERNAL=MISSING"
+        },
+        {
+          "category": "Runtime",
+          "name": "Web build script exists",
+          "status": "PASS",
+          "message": "Web package build script presence verified."
+        },
+        {
+          "category": "Runtime",
+          "name": "Web tsconfig exists",
+          "status": "PASS",
+          "message": "Web TypeScript config presence verified."
+        },
+        {
+          "category": "Runtime",
+          "name": "workerFactory.ts exists",
+          "status": "PASS",
+          "message": "Required runtime surface file or directory is present."
+        },
+        {
+          "category": "Runtime",
+          "name": "workers truth state",
+          "status": "PASS",
+          "message": "workers resolved to DISABLED.",
+          "detail": "Workers are disabled because distributed runtime is off."
+        }
+      ],
+      "routeChecks": [],
+      "riskRegister": [],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [
+        {
+          "key": "redis",
+          "state": "DISABLED",
+          "status": "PASS",
+          "reason": "Distributed runtime is disabled by configuration."
+        },
+        {
+          "key": "bullmq",
+          "state": "DISABLED",
+          "status": "PASS",
+          "reason": "BullMQ is disabled because distributed runtime is off."
+        },
+        {
+          "key": "queues",
+          "state": "DISABLED",
+          "status": "PASS",
+          "reason": "Distributed queue backend is disabled."
+        },
+        {
+          "key": "workers",
+          "state": "DISABLED",
+          "status": "PASS",
+          "reason": "Workers are disabled because distributed runtime is off."
+        }
+      ],
+      "notificationStates": [],
+      "passCount": 20,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    },
+    {
+      "category": "Workspace",
+      "checks": [
+        {
+          "category": "Workspace",
+          "name": "buildSharedPortfolioSummary.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "buildWorkspaceActivityFeed.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "Organization.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "organizationController.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "OrganizationDetail.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "OrganizationMember.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "organizationRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "Organizations.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "sharedAnalysisController.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "sharedAnalysisRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /organizations",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /workspace/:organizationId/activity",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /workspace/:organizationId/dashboard",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /workspace/:organizationId/portfolios",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /workspace/:organizationId/shared-analysis",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace route /workspace/:organizationId/watchlist",
+          "status": "PASS",
+          "message": "Expected workspace route is declared."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace routes require auth middleware",
+          "status": "PASS",
+          "message": "All workspace and organization routes are structurally gated by auth middleware."
+        },
+        {
+          "category": "Workspace",
+          "name": "Workspace.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspaceActivity.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspaceActivity.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "workspaceController.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspaceDashboard.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspacePortfolio.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspacePortfolio.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "workspaceRoutes.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspaceWatchlist.ts exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        },
+        {
+          "category": "Workspace",
+          "name": "WorkspaceWatchlist.tsx exists",
+          "status": "PASS",
+          "message": "Required workspace surface file is present."
+        }
+      ],
+      "routeChecks": [
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "GET",
+          "path": "/organizations",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "POST",
+          "path": "/organizations",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "GET",
+          "path": "/organizations/:id",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "POST",
+          "path": "/organizations/:id/members",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "DELETE",
+          "path": "/organizations/:id/members/:memberId",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+          "method": "PATCH",
+          "path": "/organizations/:id/members/:memberId",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "GET",
+          "path": "/workspace/:organizationId/activity",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "GET",
+          "path": "/workspace/:organizationId/dashboard",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "GET",
+          "path": "/workspace/:organizationId/portfolios",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "POST",
+          "path": "/workspace/:organizationId/portfolios",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+          "method": "GET",
+          "path": "/workspace/:organizationId/shared-analysis",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+          "method": "POST",
+          "path": "/workspace/:organizationId/shared-analysis",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "GET",
+          "path": "/workspace/:organizationId/watchlist",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Workspace",
+          "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+          "method": "POST",
+          "path": "/workspace/:organizationId/watchlist",
+          "requiresAuth": true,
+          "requiresAdmin": false
+        }
+      ],
+      "riskRegister": [
+        {
+          "category": "Workspace",
+          "severity": "low",
+          "title": "Workspace membership is inferred structurally",
+          "detail": "The harness proves auth gating and file availability, but organization membership checks remain controller-level behavior that is not executed."
+        }
+      ],
+      "missingExternalConfigs": [],
+      "connectorStates": [],
+      "runtimeStates": [],
+      "notificationStates": [],
+      "passCount": 27,
+      "warnCount": 0,
+      "failCount": 0,
+      "skippedCount": 0,
+      "overallStatus": "PASS"
+    }
+  ],
+  "checks": [
+    {
+      "category": "Admin",
+      "name": "Admin middleware enforces ADMIN role",
+      "status": "PASS",
+      "message": "Admin middleware explicitly checks for the ADMIN role."
+    },
+    {
+      "category": "Admin",
+      "name": "admin middleware file exists",
+      "status": "PASS",
+      "message": "Admin middleware file presence verified."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/analyses",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/credit-ledger",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/deployment",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/properties",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/runtime",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/stripe-sessions",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin route /admin/users",
+      "status": "PASS",
+      "message": "Expected admin route is declared."
+    },
+    {
+      "category": "Admin",
+      "name": "Admin routes require auth and admin middleware",
+      "status": "PASS",
+      "message": "All admin routes are structurally gated by auth and admin middleware."
+    },
+    {
+      "category": "Admin",
+      "name": "ADMIN_EMAIL readiness",
+      "status": "PASS",
+      "message": "ADMIN_EMAIL is present.",
+      "detail": "ADMIN_EMAIL=PRESENT"
+    },
+    {
+      "category": "Admin",
+      "name": "adminController file exists",
+      "status": "PASS",
+      "message": "Admin controller file presence verified."
+    },
+    {
+      "category": "Admin",
+      "name": "adminRoutes file exists",
+      "status": "PASS",
+      "message": "Admin route file presence verified."
+    },
+    {
+      "category": "Auth",
+      "name": "Auth limiter on register/login/logout",
+      "status": "PASS",
+      "message": "Register, login, and logout routes are rate limited."
+    },
+    {
+      "category": "Auth",
+      "name": "auth middleware file exists",
+      "status": "PASS",
+      "message": "Auth middleware file presence verified."
+    },
+    {
+      "category": "Auth",
+      "name": "Auth middleware validates JWT and user lookup",
+      "status": "PASS",
+      "message": "Auth middleware verifies JWT and resolves the user record."
+    },
+    {
+      "category": "Auth",
+      "name": "authController file exists",
+      "status": "PASS",
+      "message": "Auth controller file presence verified."
+    },
+    {
+      "category": "Auth",
+      "name": "authRoutes file exists",
+      "status": "PASS",
+      "message": "Auth route file presence verified."
+    },
+    {
+      "category": "Auth",
+      "name": "CLIENT_URL readiness",
+      "status": "PASS",
+      "message": "CLIENT_URL is present.",
+      "detail": "CLIENT_URL=PRESENT"
+    },
+    {
+      "category": "Auth",
+      "name": "JWT_SECRET readiness",
+      "status": "PASS",
+      "message": "JWT secret is present with acceptable length.",
+      "detail": "JWT_SECRET=PRESENT, length=96"
+    },
+    {
+      "category": "Auth",
+      "name": "Route GET /auth/me",
+      "status": "PASS",
+      "message": "Expected auth route is declared."
+    },
+    {
+      "category": "Auth",
+      "name": "Route POST /auth/login",
+      "status": "PASS",
+      "message": "Expected auth route is declared."
+    },
+    {
+      "category": "Auth",
+      "name": "Route POST /auth/logout",
+      "status": "PASS",
+      "message": "Expected auth route is declared."
+    },
+    {
+      "category": "Auth",
+      "name": "Route POST /auth/register",
+      "status": "PASS",
+      "message": "Expected auth route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state demographic_feed",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_DEMOGRAPHIC_API_KEY=MISSING, CONNECTOR_DEMOGRAPHIC_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state email_provider",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "NOTIFY_SMTP_HOST=MISSING, NOTIFY_SMTP_USER=MISSING, NOTIFY_SMTP_PASS=MISSING, NOTIFY_EMAIL_FROM=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state infrastructure_feed",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_INFRA_API_KEY=MISSING, CONNECTOR_INFRA_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state listing_feed",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_LISTING_API_KEY=MISSING, CONNECTOR_LISTING_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state map_geocoding",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_MAPS_API_KEY=MISSING, CONNECTOR_MAPS_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state municipality_zoning",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_MUNICIPALITY_TOKEN=MISSING, CONNECTOR_MUNICIPALITY_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector truth state tkgm_parcel",
+      "status": "WARN",
+      "message": "Static connector truth state resolved to NOT_CONFIGURED.",
+      "detail": "CONNECTOR_TKGM_API_KEY=MISSING, CONNECTOR_TKGM_ENDPOINT=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "activateConnectorIfEligible.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "buildConnectorActivationAudit.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector live call policy is explicitly gated",
+      "status": "PASS",
+      "message": "Connector live calls stay gated behind CONNECTOR_TEST_MODE=active."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector live-call mode",
+      "status": "PASS",
+      "message": "Live connector calls remain disabled by configuration.",
+      "detail": "CONNECTOR_TEST_MODE=MISSING"
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/activate",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/activation-plan",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/audit",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/credentials",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/deactivate",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/source-approval",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/:connectorKey/test",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector route /admin/connectors/audit-trail",
+      "status": "PASS",
+      "message": "Expected connector route is declared."
+    },
+    {
+      "category": "Connectors",
+      "name": "Connector routes require auth and admin middleware",
+      "status": "PASS",
+      "message": "All connector routes are structurally gated by auth and admin middleware."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorActivationController.ts exists",
+      "status": "PASS",
+      "message": "Required connector surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorActivationPolicies.ts exists",
+      "status": "PASS",
+      "message": "Required connector surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "ConnectorActivationRecord.ts exists",
+      "status": "PASS",
+      "message": "Required connector model file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorActivationRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required connector surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "ConnectorCredentialProfile.ts exists",
+      "status": "PASS",
+      "message": "Required connector model file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorExecutionRegistry.ts exists",
+      "status": "PASS",
+      "message": "Required connector surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "ConnectorSourceApproval.ts exists",
+      "status": "PASS",
+      "message": "Required connector model file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "ConnectorTestRun.ts exists",
+      "status": "PASS",
+      "message": "Required connector model file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "deactivateConnector.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "demographicConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "emailProviderConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "executeConnectorTestRun.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "getConnectorActivationState.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "infrastructureConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "listingConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "mapGeocodingConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "municipalityConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "storeConnectorCredentialProfile.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "tkgmConnector.ts exists",
+      "status": "PASS",
+      "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "validateConnectorSamplePayload.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan buildProofBundle.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan platformVerification.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verify-platform.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyAdmin.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyAuth.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyConnectors.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyInvestor.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyModels.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyNotifications.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyObservability.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyPortfolio.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyRoutes.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyRuntime.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "Read-only scan verifyWorkspace.ts",
+      "status": "PASS",
+      "message": "Verification source remains free of obvious mutating or external-call patterns."
+    },
+    {
+      "category": "Harness Safety",
+      "name": "VERIFY_PLATFORM_ALLOW_EXTERNAL default",
+      "status": "PASS",
+      "message": "External verification mode is not enabled by default."
+    },
+    {
+      "category": "Investor",
+      "name": "buildInvestorDashboardSummary.ts exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "Investor route /investor/dashboard",
+      "status": "PASS",
+      "message": "Expected investor route is declared."
+    },
+    {
+      "category": "Investor",
+      "name": "Investor route /investor/saved-analyses",
+      "status": "PASS",
+      "message": "Expected investor route is declared."
+    },
+    {
+      "category": "Investor",
+      "name": "Investor route /investor/watchlist",
+      "status": "PASS",
+      "message": "Expected investor route is declared."
+    },
+    {
+      "category": "Investor",
+      "name": "Investor routes require auth middleware",
+      "status": "PASS",
+      "message": "All investor routes are structurally gated by auth middleware."
+    },
+    {
+      "category": "Investor",
+      "name": "investorController.ts exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "InvestorDashboard.tsx exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "investorRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "SavedAnalyses.tsx exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "SavedAnalysis.ts exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "Watchlist.ts exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Investor",
+      "name": "Watchlist.tsx exists",
+      "status": "PASS",
+      "message": "Required investor surface file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model AnalysisRun.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model ConnectorActivationRecord.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model ConnectorCredentialProfile.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model ConnectorSourceApproval.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model ConnectorTestRun.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model ConsentRecord.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model CreditLedger.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model DocumentUpload.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model NotificationDelivery.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model NotificationDigest.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model NotificationEvent.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model NotificationPreference.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model Organization.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model OrganizationMember.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model Portfolio.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model PortfolioItem.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model PropertySubmission.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model Report.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model SavedAnalysis.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model User.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model Watchlist.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model Workspace.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model WorkspaceActivity.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model WorkspacePortfolio.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Model WorkspaceWatchlist.ts",
+      "status": "PASS",
+      "message": "Required model file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service buildNotificationInbox.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service buildWorkspaceActivityFeed.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service calculatePortfolioBenchmark.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service createPortfolioSnapshot.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service executeConnectorTestRun.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service getConnectorActivationState.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Models",
+      "name": "Service processNotificationDelivery.ts",
+      "status": "PASS",
+      "message": "Required service file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "Email notification delivery readiness",
+      "status": "WARN",
+      "message": "Email delivery env keys are incomplete. Notification delivery remains not configured.",
+      "detail": "NOTIFY_EMAIL_FROM=MISSING, NOTIFY_SMTP_HOST=MISSING, NOTIFY_SMTP_USER=MISSING, NOTIFY_SMTP_PASS=MISSING"
+    },
+    {
+      "category": "Notifications",
+      "name": "buildNotificationInbox.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "deliveryProviders.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification provider remains stub-safe",
+      "status": "PASS",
+      "message": "Configured email delivery still resolves to a stub-safe provider name."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications/:id/archive",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications/:id/read",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications/digests",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications/preferences",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification route /notifications/test-event",
+      "status": "PASS",
+      "message": "Expected notification route is declared."
+    },
+    {
+      "category": "Notifications",
+      "name": "Notification routes require auth middleware",
+      "status": "PASS",
+      "message": "All notification routes are structurally gated by auth middleware."
+    },
+    {
+      "category": "Notifications",
+      "name": "notificationController.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationDelivery.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationDigest.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationEvent.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationInbox.tsx exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationPreference.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "NotificationPreferences.tsx exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "notificationRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "processNotificationDelivery.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Notifications",
+      "name": "queueNotificationDelivery.ts exists",
+      "status": "PASS",
+      "message": "Required notifications surface file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "AdminAnalytics.tsx exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "AdminAuditTimeline.tsx exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "AdminDeploymentOverview.tsx exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "AdminObservability.tsx exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "AdminSystemRuntime.tsx exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "buildObservabilitySnapshot.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "buildOperationalSnapshot.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "healthController.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "livenessController.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "Observability route /admin/analytics",
+      "status": "PASS",
+      "message": "Expected observability route is declared."
+    },
+    {
+      "category": "Observability",
+      "name": "Observability route /admin/observability",
+      "status": "PASS",
+      "message": "Expected observability route is declared."
+    },
+    {
+      "category": "Observability",
+      "name": "Observability route /admin/telemetry",
+      "status": "PASS",
+      "message": "Expected observability route is declared."
+    },
+    {
+      "category": "Observability",
+      "name": "Observability routes require auth and admin middleware",
+      "status": "PASS",
+      "message": "All observability routes are structurally gated by auth and admin middleware."
+    },
+    {
+      "category": "Observability",
+      "name": "observabilityController.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "observabilityRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "readinessController.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Observability",
+      "name": "telemetryProvider.ts exists",
+      "status": "PASS",
+      "message": "Required observability file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "calculatePortfolioBenchmark.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "createPortfolioSnapshot.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id/analytics",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id/benchmark",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id/exposure",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id/performance",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio route /investor/portfolio/:id/scenarios",
+      "status": "PASS",
+      "message": "Expected portfolio route is declared."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio routes require auth middleware",
+      "status": "PASS",
+      "message": "All portfolio routes are structurally gated by auth middleware."
+    },
+    {
+      "category": "Portfolio",
+      "name": "Portfolio.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "PortfolioAnalytics.tsx exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "portfolioAnalyticsController.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "portfolioAnalyticsRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "portfolioController.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "PortfolioDashboard.tsx exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "PortfolioDetail.tsx exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "PortfolioItem.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Portfolio",
+      "name": "portfolioRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "adminRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "adminRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "adminRoutes mounted at /admin",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "analysisRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "analysisRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "analysisRoutes mounted at /analysis",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "API index file exists",
+      "status": "PASS",
+      "message": "apps/api/src/index.ts presence verified."
+    },
+    {
+      "category": "Routes",
+      "name": "auditRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "auditRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "auditRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "authRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "authRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "authRoutes mounted at /auth",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "connectorActivationRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "connectorActivationRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "connectorActivationRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "consentRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "consentRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "consentRoutes mounted at /properties",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "creditRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "creditRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "creditRoutes mounted at /credits",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "documentRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "documentRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "documentRoutes mounted at /properties",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "exportRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "exportRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "exportRoutes mounted at /exports",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page AdminAuditTimeline.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page AdminConnectorDetail.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page AdminConnectors.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page AdminObservability.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page Dashboard.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page InvestorDashboard.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page Login.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page NotificationInbox.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page NotificationPreferences.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page PortfolioAnalytics.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page PortfolioDashboard.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page Register.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page WorkspaceActivity.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Frontend page WorkspaceDashboard.tsx",
+      "status": "PASS",
+      "message": "Expected frontend page file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Health route /health",
+      "status": "PASS",
+      "message": "Health route is registered in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "Health route /health/live",
+      "status": "PASS",
+      "message": "Health route is registered in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "Health route /health/ready",
+      "status": "PASS",
+      "message": "Health route is registered in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "investorRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "investorRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "investorRoutes mounted at /investor",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "notificationRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "notificationRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "notificationRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "observabilityRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "observabilityRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "observabilityRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "organizationRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "organizationRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "organizationRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioAnalyticsRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioAnalyticsRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioAnalyticsRoutes mounted at /investor",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "portfolioRoutes mounted at /investor",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "propertyRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "propertyRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "propertyRoutes mounted at /properties",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "reportRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "reportRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "reportRoutes mounted at /reports",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "sharedAnalysisRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "sharedAnalysisRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "sharedAnalysisRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "stripeRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "stripeRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "stripeRoutes mounted at /stripe",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "workspaceRoutes default export",
+      "status": "PASS",
+      "message": "Route file exports default router."
+    },
+    {
+      "category": "Routes",
+      "name": "workspaceRoutes file exists",
+      "status": "PASS",
+      "message": "Mounted route file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "workspaceRoutes mounted at /",
+      "status": "PASS",
+      "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Runtime",
+      "name": "API build script exists",
+      "status": "PASS",
+      "message": "API package build script presence verified."
+    },
+    {
+      "category": "Runtime",
+      "name": "API tsconfig exists",
+      "status": "PASS",
+      "message": "API TypeScript config presence verified."
+    },
+    {
+      "category": "Runtime",
+      "name": "bullmq truth state",
+      "status": "PASS",
+      "message": "bullmq resolved to DISABLED.",
+      "detail": "BullMQ is disabled because distributed runtime is off."
+    },
+    {
+      "category": "Runtime",
+      "name": "Core runtime env readiness",
+      "status": "PASS",
+      "message": "Core runtime env keys are present.",
+      "detail": "MONGODB_URI=PRESENT, JWT_SECRET=PRESENT, CLIENT_URL=PRESENT"
+    },
+    {
+      "category": "Runtime",
+      "name": "jobs exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "queueEvents.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "queueFactory.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "queues truth state",
+      "status": "PASS",
+      "message": "queues resolved to DISABLED.",
+      "detail": "Distributed queue backend is disabled."
+    },
+    {
+      "category": "Runtime",
+      "name": "redis truth state",
+      "status": "PASS",
+      "message": "redis resolved to DISABLED.",
+      "detail": "Distributed runtime is disabled by configuration."
+    },
+    {
+      "category": "Runtime",
+      "name": "redisClient.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "redisConfig.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "redisHealth.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "Root build script exists",
+      "status": "PASS",
+      "message": "Root package build script presence verified."
+    },
+    {
+      "category": "Runtime",
+      "name": "runtimeConfig.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "runtimeState.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "VERIFY_PLATFORM_ALLOW_EXTERNAL mode",
+      "status": "PASS",
+      "message": "External verification mode is not enabled.",
+      "detail": "VERIFY_PLATFORM_ALLOW_EXTERNAL=MISSING"
+    },
+    {
+      "category": "Runtime",
+      "name": "Web build script exists",
+      "status": "PASS",
+      "message": "Web package build script presence verified."
+    },
+    {
+      "category": "Runtime",
+      "name": "Web tsconfig exists",
+      "status": "PASS",
+      "message": "Web TypeScript config presence verified."
+    },
+    {
+      "category": "Runtime",
+      "name": "workerFactory.ts exists",
+      "status": "PASS",
+      "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "workers truth state",
+      "status": "PASS",
+      "message": "workers resolved to DISABLED.",
+      "detail": "Workers are disabled because distributed runtime is off."
+    },
+    {
+      "category": "Workspace",
+      "name": "buildSharedPortfolioSummary.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "buildWorkspaceActivityFeed.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "Organization.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "organizationController.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "OrganizationDetail.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "OrganizationMember.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "organizationRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "Organizations.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "sharedAnalysisController.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "sharedAnalysisRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /organizations",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /workspace/:organizationId/activity",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /workspace/:organizationId/dashboard",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /workspace/:organizationId/portfolios",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /workspace/:organizationId/shared-analysis",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace route /workspace/:organizationId/watchlist",
+      "status": "PASS",
+      "message": "Expected workspace route is declared."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace routes require auth middleware",
+      "status": "PASS",
+      "message": "All workspace and organization routes are structurally gated by auth middleware."
+    },
+    {
+      "category": "Workspace",
+      "name": "Workspace.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspaceActivity.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspaceActivity.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "workspaceController.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspaceDashboard.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspacePortfolio.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspacePortfolio.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "workspaceRoutes.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspaceWatchlist.ts exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    },
+    {
+      "category": "Workspace",
+      "name": "WorkspaceWatchlist.tsx exists",
+      "status": "PASS",
+      "message": "Required workspace surface file is present."
+    }
+  ],
+  "routeChecks": [
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/analyses",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Observability",
+      "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+      "method": "GET",
+      "path": "/admin/analytics",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "GET",
+      "path": "/admin/connectors",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "GET",
+      "path": "/admin/connectors/:connectorKey",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "POST",
+      "path": "/admin/connectors/:connectorKey/activate",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "GET",
+      "path": "/admin/connectors/:connectorKey/activation-plan",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "GET",
+      "path": "/admin/connectors/:connectorKey/audit",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "POST",
+      "path": "/admin/connectors/:connectorKey/credentials",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "POST",
+      "path": "/admin/connectors/:connectorKey/deactivate",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "PATCH",
+      "path": "/admin/connectors/:connectorKey/source-approval",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "POST",
+      "path": "/admin/connectors/:connectorKey/test",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Connectors",
+      "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "method": "GET",
+      "path": "/admin/connectors/audit-trail",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/credit-ledger",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "POST",
+      "path": "/admin/deal-pool/:entryId/share",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "POST",
+      "path": "/admin/deal-pool/:propertyId/accept",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/deployment",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Observability",
+      "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+      "method": "GET",
+      "path": "/admin/observability",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/properties",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/properties/:id",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "PATCH",
+      "path": "/admin/properties/:id/review",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "PATCH",
+      "path": "/admin/properties/:id/status",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/runtime",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/stripe-sessions",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Observability",
+      "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+      "method": "GET",
+      "path": "/admin/telemetry",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/users",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Auth",
+      "routeFile": "apps/api/src/routes/authRoutes.ts",
+      "method": "POST",
+      "path": "/auth/login",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Auth",
+      "routeFile": "apps/api/src/routes/authRoutes.ts",
+      "method": "POST",
+      "path": "/auth/logout",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Auth",
+      "routeFile": "apps/api/src/routes/authRoutes.ts",
+      "method": "GET",
+      "path": "/auth/me",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Auth",
+      "routeFile": "apps/api/src/routes/authRoutes.ts",
+      "method": "POST",
+      "path": "/auth/register",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "GET",
+      "path": "/health",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "GET",
+      "path": "/health/live",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "GET",
+      "path": "/health/ready",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "GET",
+      "path": "/investor/dashboard",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+      "method": "POST",
+      "path": "/investor/portfolio",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id/analytics",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id/benchmark",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id/exposure",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+      "method": "POST",
+      "path": "/investor/portfolio/:id/items",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+      "method": "DELETE",
+      "path": "/investor/portfolio/:id/items/:itemId",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id/performance",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Portfolio",
+      "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/investor/portfolio/:id/scenarios",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "GET",
+      "path": "/investor/saved-analyses",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "POST",
+      "path": "/investor/saved-analyses",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "DELETE",
+      "path": "/investor/saved-analyses/:id",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "GET",
+      "path": "/investor/watchlist",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "POST",
+      "path": "/investor/watchlist",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Investor",
+      "routeFile": "apps/api/src/routes/investorRoutes.ts",
+      "method": "DELETE",
+      "path": "/investor/watchlist/:id",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "GET",
+      "path": "/notifications",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "POST",
+      "path": "/notifications/:id/archive",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "POST",
+      "path": "/notifications/:id/read",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "GET",
+      "path": "/notifications/digests",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "GET",
+      "path": "/notifications/preferences",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "PATCH",
+      "path": "/notifications/preferences",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Notifications",
+      "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+      "method": "POST",
+      "path": "/notifications/test-event",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "GET",
+      "path": "/organizations",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "POST",
+      "path": "/organizations",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "GET",
+      "path": "/organizations/:id",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "POST",
+      "path": "/organizations/:id/members",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "DELETE",
+      "path": "/organizations/:id/members/:memberId",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+      "method": "PATCH",
+      "path": "/organizations/:id/members/:memberId",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "POST",
+      "path": "/stripe/webhook",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "GET",
+      "path": "/workspace/:organizationId/activity",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "GET",
+      "path": "/workspace/:organizationId/dashboard",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "GET",
+      "path": "/workspace/:organizationId/portfolios",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "POST",
+      "path": "/workspace/:organizationId/portfolios",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+      "method": "GET",
+      "path": "/workspace/:organizationId/shared-analysis",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+      "method": "POST",
+      "path": "/workspace/:organizationId/shared-analysis",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "GET",
+      "path": "/workspace/:organizationId/watchlist",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Workspace",
+      "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+      "method": "POST",
+      "path": "/workspace/:organizationId/watchlist",
+      "requiresAuth": true,
+      "requiresAdmin": false
+    }
+  ],
+  "riskRegister": [
+    {
+      "category": "Connectors",
+      "severity": "medium",
+      "title": "Connector activation routes are mutating by design",
+      "detail": "Connector credential, test, activation, and deactivation endpoints exist. The verification harness inspects them statically and does not invoke them."
+    },
+    {
+      "category": "Notifications",
+      "severity": "medium",
+      "title": "Notification test-event route is mutating",
+      "detail": "A notification test-event route exists in the product API. The verification harness inspects route declarations only and never invokes that endpoint."
+    },
+    {
+      "category": "Observability",
+      "severity": "low",
+      "title": "Observability controllers are not executed by the harness",
+      "detail": "The proof bundle verifies observability files, routes, and admin gating statically. It does not execute telemetry, readiness, or deployment snapshots."
+    },
+    {
+      "category": "Workspace",
+      "severity": "low",
+      "title": "Workspace membership is inferred structurally",
+      "detail": "The harness proves auth gating and file availability, but organization membership checks remain controller-level behavior that is not executed."
+    }
+  ],
+  "missingExternalConfigs": [
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_TKGM_API_KEY",
+      "reason": "Connector tkgm_parcel is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_TKGM_ENDPOINT",
+      "reason": "Connector tkgm_parcel is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_MUNICIPALITY_TOKEN",
+      "reason": "Connector municipality_zoning is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_MUNICIPALITY_ENDPOINT",
+      "reason": "Connector municipality_zoning is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_LISTING_API_KEY",
+      "reason": "Connector listing_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_LISTING_ENDPOINT",
+      "reason": "Connector listing_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_INFRA_API_KEY",
+      "reason": "Connector infrastructure_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_INFRA_ENDPOINT",
+      "reason": "Connector infrastructure_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_DEMOGRAPHIC_API_KEY",
+      "reason": "Connector demographic_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_DEMOGRAPHIC_ENDPOINT",
+      "reason": "Connector demographic_feed is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_MAPS_API_KEY",
+      "reason": "Connector map_geocoding is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "CONNECTOR_MAPS_ENDPOINT",
+      "reason": "Connector map_geocoding is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "NOTIFY_SMTP_HOST",
+      "reason": "Connector email_provider is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "NOTIFY_SMTP_USER",
+      "reason": "Connector email_provider is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "NOTIFY_SMTP_PASS",
+      "reason": "Connector email_provider is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Connectors",
+      "key": "NOTIFY_EMAIL_FROM",
+      "reason": "Connector email_provider is missing a required configuration key.",
+      "status": "WARN"
+    },
+    {
+      "category": "Notifications",
+      "key": "NOTIFY_EMAIL_FROM",
+      "reason": "Email delivery is not fully configured.",
+      "status": "WARN"
+    },
+    {
+      "category": "Notifications",
+      "key": "NOTIFY_SMTP_HOST",
+      "reason": "Email delivery is not fully configured.",
+      "status": "WARN"
+    },
+    {
+      "category": "Notifications",
+      "key": "NOTIFY_SMTP_USER",
+      "reason": "Email delivery is not fully configured.",
+      "status": "WARN"
+    },
+    {
+      "category": "Notifications",
+      "key": "NOTIFY_SMTP_PASS",
+      "reason": "Email delivery is not fully configured.",
+      "status": "WARN"
+    }
+  ],
+  "connectorStates": [
+    {
+      "key": "tkgm_parcel",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_TKGM_API_KEY",
+        "CONNECTOR_TKGM_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_TKGM_API_KEY",
+        "CONNECTOR_TKGM_ENDPOINT"
+      ],
+      "legalRequirement": "tkgm_license"
+    },
+    {
+      "key": "municipality_zoning",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_MUNICIPALITY_TOKEN",
+        "CONNECTOR_MUNICIPALITY_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_MUNICIPALITY_TOKEN",
+        "CONNECTOR_MUNICIPALITY_ENDPOINT"
+      ],
+      "legalRequirement": "municipality_terms"
+    },
+    {
+      "key": "listing_feed",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_LISTING_API_KEY",
+        "CONNECTOR_LISTING_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_LISTING_API_KEY",
+        "CONNECTOR_LISTING_ENDPOINT"
+      ],
+      "legalRequirement": "listing_feed_terms"
+    },
+    {
+      "key": "infrastructure_feed",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_INFRA_API_KEY",
+        "CONNECTOR_INFRA_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_INFRA_API_KEY",
+        "CONNECTOR_INFRA_ENDPOINT"
+      ],
+      "legalRequirement": "infrastructure_feed_terms"
+    },
+    {
+      "key": "demographic_feed",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_DEMOGRAPHIC_API_KEY",
+        "CONNECTOR_DEMOGRAPHIC_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_DEMOGRAPHIC_API_KEY",
+        "CONNECTOR_DEMOGRAPHIC_ENDPOINT"
+      ],
+      "legalRequirement": "demographic_feed_terms"
+    },
+    {
+      "key": "map_geocoding",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "CONNECTOR_MAPS_API_KEY",
+        "CONNECTOR_MAPS_ENDPOINT"
+      ],
+      "missingEnv": [
+        "CONNECTOR_MAPS_API_KEY",
+        "CONNECTOR_MAPS_ENDPOINT"
+      ],
+      "legalRequirement": "map_provider_terms"
+    },
+    {
+      "key": "email_provider",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "requiredEnv": [
+        "NOTIFY_SMTP_HOST",
+        "NOTIFY_SMTP_USER",
+        "NOTIFY_SMTP_PASS",
+        "NOTIFY_EMAIL_FROM"
+      ],
+      "missingEnv": [
+        "NOTIFY_SMTP_HOST",
+        "NOTIFY_SMTP_USER",
+        "NOTIFY_SMTP_PASS",
+        "NOTIFY_EMAIL_FROM"
+      ],
+      "legalRequirement": "email_provider_terms"
+    }
+  ],
+  "runtimeStates": [
+    {
+      "key": "redis",
+      "state": "DISABLED",
+      "status": "PASS",
+      "reason": "Distributed runtime is disabled by configuration."
+    },
+    {
+      "key": "bullmq",
+      "state": "DISABLED",
+      "status": "PASS",
+      "reason": "BullMQ is disabled because distributed runtime is off."
+    },
+    {
+      "key": "queues",
+      "state": "DISABLED",
+      "status": "PASS",
+      "reason": "Distributed queue backend is disabled."
+    },
+    {
+      "key": "workers",
+      "state": "DISABLED",
+      "status": "PASS",
+      "reason": "Workers are disabled because distributed runtime is off."
+    }
+  ],
+  "notificationStates": [
+    {
+      "channel": "email",
+      "state": "NOT_CONFIGURED",
+      "status": "WARN",
+      "missingEnv": [
+        "NOTIFY_EMAIL_FROM",
+        "NOTIFY_SMTP_HOST",
+        "NOTIFY_SMTP_USER",
+        "NOTIFY_SMTP_PASS"
+      ]
+    }
+  ]
+}

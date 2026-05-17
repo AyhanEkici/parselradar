@@ -12,6 +12,7 @@ import {
 	getAdminAnalyses,
 	getAdminCreditLedger,
 	getAdminStripeSessions,
+	getAdminDeploymentOverview,
 	getAdminRuntimeOverview
 } from '../controllers/adminController';
 
@@ -29,6 +30,7 @@ router.get('/users', auth, admin, getAdminUsers);
 router.get('/analyses', auth, admin, getAdminAnalyses);
 router.get('/credit-ledger', auth, admin, getAdminCreditLedger);
 router.get('/stripe-sessions', auth, admin, getAdminStripeSessions);
+router.get('/deployment', auth, admin, getAdminDeploymentOverview);
 router.get('/runtime', auth, admin, getAdminRuntimeOverview);
 
 export default router;

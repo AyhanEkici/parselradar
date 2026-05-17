@@ -241,10 +241,29 @@ export function parseExpressRouterFile(
 }
 
 export function parseIndexMounts(indexContent: string): Array<{ mountPath: string; symbol: string }> {
-  return [...indexContent.matchAll(/app\.use\(\s*['"`]([^'"`]+)['"`]\s*,\s*([A-Za-z0-9_]+)/g)].map((match) => ({
-    mountPath: normalizeRoutePath(match[1]),
-    symbol: match[2],
-  }));
+  const mounts: Array<{ mountPath: string; symbol: string }> = [];
+  const directMatches = [...indexContent.matchAll(/app\.use\(\s*['"`]([^'"`]+)['"`]\s*,\s*([A-Za-z0-9_]+)/g)];
+  for (const match of directMatches) {
+    mounts.push({ mountPath: normalizeRoutePath(match[1]), symbol: match[2] });
+  }
+
+  const wrapperMatches = [
+    ...indexContent.matchAll(
+      /app\.use\(\s*['"`]([^'"`]+)['"`]\s*,\s*\([^)]*\)\s*=>\s*\{[\s\S]*?\b([A-Za-z0-9_]+)\s*\(\s*req\s*,\s*res\s*,\s*next\s*\)/g,
+    ),
+  ];
+  for (const match of wrapperMatches) {
+    mounts.push({ mountPath: normalizeRoutePath(match[1]), symbol: match[2] });
+  }
+
+  // Preserve determinism: stable order while removing duplicates.
+  const seen = new Set<string>();
+  return mounts.filter((mount) => {
+    const key = `${mount.mountPath}::${mount.symbol}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export function parseAppRoutes(category: string, absolutePath: string): RouteCheck[] {

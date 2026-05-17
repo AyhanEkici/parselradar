@@ -13,6 +13,7 @@ import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import DocumentUpload from '../models/DocumentUpload';
 import AuditEvent from '../models/AuditEvent';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
+import os from 'os';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -108,6 +109,44 @@ export const getAdminStripeSessions = async (req: AuthRequest, res: Response) =>
     .limit(limit)
     .populate('userId', 'name email role');
   res.json({ sessions, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// GET /admin/deployment
+export const getAdminDeploymentOverview = async (_req: AuthRequest, res: Response) => {
+  const cpuCount = os.cpus()?.length || 0;
+  const memoryMb = Math.round((os.totalmem?.() || 0) / 1024 / 1024);
+
+  const runningOnRailway = Boolean(process.env.RAILWAY_SERVICE_ID || process.env.RAILWAY_SERVICE_NAME);
+  const runningOnVercel = Boolean(process.env.VERCEL);
+
+  res.json({
+    deploymentStatus: 'TEMPLATE_ONLY',
+    scalingStatus: 'NOT_CONFIGURED',
+    backupStatus: 'NOT_CONFIGURED',
+    runtimeCapacity: {
+      cpuCount,
+      memoryMb,
+      nodeEnv: process.env.NODE_ENV || 'unknown',
+      status: 'STATIC_SNAPSHOT_ONLY',
+    },
+    deploymentProfile: {
+      cloudRuntimeClaim: runningOnRailway ? 'RAILWAY' : runningOnVercel ? 'VERCEL' : 'UNKNOWN',
+      deploymentProfile: process.env.NODE_ENV || 'unknown',
+      deploymentStateDeclared: 'TEMPLATE_ONLY',
+      envReadiness: {
+        MONGODB_URI: process.env.MONGODB_URI ? 'PRESENT' : 'MISSING',
+        JWT_SECRET: process.env.JWT_SECRET ? 'PRESENT' : 'MISSING',
+        CLIENT_URL: process.env.CLIENT_URL ? 'PRESENT' : 'MISSING',
+        REDIS_URL: process.env.REDIS_URL ? 'PRESENT' : 'MISSING',
+      },
+    },
+    scalingPolicy: { enabled: false, minReplicas: null, maxReplicas: null, cpuTarget: null },
+    backupPolicy: { enabled: false, strategy: 'NONE', schedule: null },
+    retentionPolicy: { logsDays: null, backupsDays: null },
+    securityAuditSummary: {
+      note: 'Static admin deployment overview. No live cloud claims are inferred without explicit runtime signals.',
+    },
+  });
 };
 
 // GET /admin/runtime

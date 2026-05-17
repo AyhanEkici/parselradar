@@ -1,0 +1,570 @@
+[
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/analyses",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Observability",
+    "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+    "method": "GET",
+    "path": "/admin/analytics",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "GET",
+    "path": "/admin/connectors",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "GET",
+    "path": "/admin/connectors/:connectorKey",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "POST",
+    "path": "/admin/connectors/:connectorKey/activate",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "GET",
+    "path": "/admin/connectors/:connectorKey/activation-plan",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "GET",
+    "path": "/admin/connectors/:connectorKey/audit",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "POST",
+    "path": "/admin/connectors/:connectorKey/credentials",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "POST",
+    "path": "/admin/connectors/:connectorKey/deactivate",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "PATCH",
+    "path": "/admin/connectors/:connectorKey/source-approval",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "POST",
+    "path": "/admin/connectors/:connectorKey/test",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Connectors",
+    "routeFile": "apps/api/src/routes/connectorActivationRoutes.ts",
+    "method": "GET",
+    "path": "/admin/connectors/audit-trail",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/credit-ledger",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "POST",
+    "path": "/admin/deal-pool/:entryId/share",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "POST",
+    "path": "/admin/deal-pool/:propertyId/accept",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/deployment",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Observability",
+    "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+    "method": "GET",
+    "path": "/admin/observability",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/properties",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/properties/:id",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "PATCH",
+    "path": "/admin/properties/:id/review",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "PATCH",
+    "path": "/admin/properties/:id/status",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/runtime",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/stripe-sessions",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Observability",
+    "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
+    "method": "GET",
+    "path": "/admin/telemetry",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/users",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Auth",
+    "routeFile": "apps/api/src/routes/authRoutes.ts",
+    "method": "POST",
+    "path": "/auth/login",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Auth",
+    "routeFile": "apps/api/src/routes/authRoutes.ts",
+    "method": "POST",
+    "path": "/auth/logout",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Auth",
+    "routeFile": "apps/api/src/routes/authRoutes.ts",
+    "method": "GET",
+    "path": "/auth/me",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Auth",
+    "routeFile": "apps/api/src/routes/authRoutes.ts",
+    "method": "POST",
+    "path": "/auth/register",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
+    "path": "/health",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
+    "path": "/health/live",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
+    "path": "/health/ready",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "GET",
+    "path": "/investor/dashboard",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+    "method": "POST",
+    "path": "/investor/portfolio",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id/analytics",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id/benchmark",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id/exposure",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+    "method": "POST",
+    "path": "/investor/portfolio/:id/items",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioRoutes.ts",
+    "method": "DELETE",
+    "path": "/investor/portfolio/:id/items/:itemId",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id/performance",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Portfolio",
+    "routeFile": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+    "method": "GET",
+    "path": "/investor/portfolio/:id/scenarios",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "GET",
+    "path": "/investor/saved-analyses",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "POST",
+    "path": "/investor/saved-analyses",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "DELETE",
+    "path": "/investor/saved-analyses/:id",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "GET",
+    "path": "/investor/watchlist",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "POST",
+    "path": "/investor/watchlist",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Investor",
+    "routeFile": "apps/api/src/routes/investorRoutes.ts",
+    "method": "DELETE",
+    "path": "/investor/watchlist/:id",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "GET",
+    "path": "/notifications",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "POST",
+    "path": "/notifications/:id/archive",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "POST",
+    "path": "/notifications/:id/read",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "GET",
+    "path": "/notifications/digests",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "GET",
+    "path": "/notifications/preferences",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "PATCH",
+    "path": "/notifications/preferences",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Notifications",
+    "routeFile": "apps/api/src/routes/notificationRoutes.ts",
+    "method": "POST",
+    "path": "/notifications/test-event",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "GET",
+    "path": "/organizations",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "POST",
+    "path": "/organizations",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "GET",
+    "path": "/organizations/:id",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "POST",
+    "path": "/organizations/:id/members",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "DELETE",
+    "path": "/organizations/:id/members/:memberId",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/organizationRoutes.ts",
+    "method": "PATCH",
+    "path": "/organizations/:id/members/:memberId",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "POST",
+    "path": "/stripe/webhook",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "GET",
+    "path": "/workspace/:organizationId/activity",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "GET",
+    "path": "/workspace/:organizationId/dashboard",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "GET",
+    "path": "/workspace/:organizationId/portfolios",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "POST",
+    "path": "/workspace/:organizationId/portfolios",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+    "method": "GET",
+    "path": "/workspace/:organizationId/shared-analysis",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+    "method": "POST",
+    "path": "/workspace/:organizationId/shared-analysis",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "GET",
+    "path": "/workspace/:organizationId/watchlist",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Workspace",
+    "routeFile": "apps/api/src/routes/workspaceRoutes.ts",
+    "method": "POST",
+    "path": "/workspace/:organizationId/watchlist",
+    "requiresAuth": true,
+    "requiresAdmin": false
+  }
+]
