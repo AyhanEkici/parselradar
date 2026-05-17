@@ -12,6 +12,13 @@ import {
   ScoreBreakdownCard,
   ValuationBandCard,
 } from '../components/analysis';
+import {
+  ComparablePropertiesCard,
+  ComparableTable,
+  MarketHeatCard,
+  OpportunitySignalCard,
+  PricingPositionCard,
+} from '../components/market';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -205,6 +212,24 @@ export default function PropertyDetail() {
       developerFit?: string;
       zoningPotential?: string;
       liquiditySignal?: string;
+      comparableCount?: number;
+      avgComparablePricePerM2?: number;
+      marketHeat?: 'COLD' | 'STABLE' | 'ACTIVE' | 'HOT' | string;
+      pricingPosition?: 'UNDER_MARKET' | 'FAIR_MARKET' | 'ABOVE_MARKET' | 'HEAVILY_OVERPRICED' | string;
+      opportunitySignals?: string[];
+      overpricingRisk?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
+      comparableSummary?: string;
+      topComparables?: Array<{
+        _id: string;
+        il?: string;
+        ilce?: string;
+        zoningStatus?: string;
+        areaM2?: number;
+        normalizedPricePerM2: number;
+        similarityScore: number;
+        priceDeltaRatio: number;
+        daysSinceCreated: number;
+      }>;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     }>;
@@ -225,6 +250,24 @@ export default function PropertyDetail() {
       developerFit?: string;
       zoningPotential?: string;
       liquiditySignal?: string;
+      comparableCount?: number;
+      avgComparablePricePerM2?: number;
+      marketHeat?: 'COLD' | 'STABLE' | 'ACTIVE' | 'HOT' | string;
+      pricingPosition?: 'UNDER_MARKET' | 'FAIR_MARKET' | 'ABOVE_MARKET' | 'HEAVILY_OVERPRICED' | string;
+      opportunitySignals?: string[];
+      overpricingRisk?: 'LOW' | 'MEDIUM' | 'HIGH' | string;
+      comparableSummary?: string;
+      topComparables?: Array<{
+        _id: string;
+        il?: string;
+        ilce?: string;
+        zoningStatus?: string;
+        areaM2?: number;
+        normalizedPricePerM2: number;
+        similarityScore: number;
+        priceDeltaRatio: number;
+        daysSinceCreated: number;
+      }>;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -557,6 +600,43 @@ export default function PropertyDetail() {
                 documentCount={documents.length}
                 factorsUsed={latestAnalysis.factorsUsed}
               />
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+              <div className="xl:col-span-4">
+                <ComparablePropertiesCard
+                  comparableCount={latestAnalysis.comparableCount}
+                  avgComparablePricePerM2={latestAnalysis.avgComparablePricePerM2}
+                  comparableSummary={latestAnalysis.comparableSummary}
+                />
+              </div>
+              <div className="xl:col-span-3">
+                <MarketHeatCard
+                  marketHeat={latestAnalysis.marketHeat}
+                  comparableCount={latestAnalysis.comparableCount}
+                />
+              </div>
+              <div className="xl:col-span-3">
+                <PricingPositionCard
+                  pricingPosition={latestAnalysis.pricingPosition}
+                  subjectPricePerM2={
+                    typeof latestAnalysis.factorsUsed?.subjectPricePerM2 === 'number'
+                      ? latestAnalysis.factorsUsed.subjectPricePerM2
+                      : property.pricePerM2
+                  }
+                  avgComparablePricePerM2={latestAnalysis.avgComparablePricePerM2}
+                />
+              </div>
+              <div className="xl:col-span-2">
+                <OpportunitySignalCard
+                  opportunitySignals={latestAnalysis.opportunitySignals}
+                  overpricingRisk={latestAnalysis.overpricingRisk}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <ComparableTable rows={latestAnalysis.topComparables} />
             </div>
 
             {(latestAnalysis.strengths?.length || latestAnalysis.missingInputs?.length) && (

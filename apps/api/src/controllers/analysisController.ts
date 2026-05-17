@@ -6,6 +6,7 @@ import CreditLedger from '../models/CreditLedger';
 import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 import { scoreProperty } from '../services/analysis/scoreProperty';
+import { buildComparableMarketIntelligence } from '../services/comparables';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -88,6 +89,14 @@ function toResponseFromRun(run: any, reused: boolean) {
     developerFit: full.developerFit,
     zoningPotential: full.zoningPotential,
     liquiditySignal: full.liquiditySignal,
+    comparableCount: full.comparableCount,
+    avgComparablePricePerM2: full.avgComparablePricePerM2,
+    marketHeat: full.marketHeat,
+    pricingPosition: full.pricingPosition,
+    opportunitySignals: full.opportunitySignals || [],
+    overpricingRisk: full.overpricingRisk,
+    comparableSummary: full.comparableSummary,
+    topComparables: full.topComparables || [],
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -130,6 +139,46 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
     }
 
     const engine = await computeEngineResult(property, normalizedUserId, options.productType);
+    const propertyObj = property.toObject();
+
+    const comparableCandidates = await PropertySubmission.find({
+      _id: { $ne: property._id },
+      askingPriceTRY: { $gt: 0 },
+      areaM2: { $gt: 0 },
+    })
+      .sort({ createdAt: -1 })
+      .limit(600)
+      .select('il ilce zoningStatus areaM2 askingPriceTRY pricePerM2 roadAccess electricity water createdAt')
+      .lean();
+
+    const comparableMarket = buildComparableMarketIntelligence({
+      subject: {
+        _id: String(property._id),
+        il: propertyObj.il,
+        ilce: propertyObj.ilce,
+        zoningStatus: propertyObj.zoningStatus,
+        areaM2: propertyObj.areaM2,
+        askingPriceTRY: propertyObj.askingPriceTRY,
+        pricePerM2: propertyObj.pricePerM2,
+        roadAccess: propertyObj.roadAccess,
+        electricity: propertyObj.electricity,
+        water: propertyObj.water,
+        createdAt: propertyObj.createdAt,
+      },
+      candidates: comparableCandidates.map((candidate: any) => ({
+        _id: String(candidate._id),
+        il: candidate.il,
+        ilce: candidate.ilce,
+        zoningStatus: candidate.zoningStatus,
+        areaM2: candidate.areaM2,
+        askingPriceTRY: candidate.askingPriceTRY,
+        pricePerM2: candidate.pricePerM2,
+        roadAccess: candidate.roadAccess,
+        electricity: candidate.electricity,
+        water: candidate.water,
+        createdAt: candidate.createdAt,
+      })),
+    });
 
     const run = await AnalysisRun.create({
       propertySubmissionId: property._id,
@@ -161,6 +210,17 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         zoningPotential: engine.zoningPotential,
         liquiditySignal: engine.liquiditySignal,
         riskClassification: engine.riskClassification,
+        comparableCount: comparableMarket.comparableCount,
+        avgComparablePricePerM2: comparableMarket.avgComparablePricePerM2,
+        marketHeat: comparableMarket.marketHeat,
+        pricingPosition: comparableMarket.pricingPosition,
+        opportunitySignals: comparableMarket.opportunitySignals,
+        overpricingRisk: comparableMarket.overpricingRisk,
+        comparableSummary: comparableMarket.comparableSummary,
+        topComparables: comparableMarket.topComparables,
+        comparableRiskSignals: comparableMarket.riskSignals,
+        pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+        medianComparablePricePerM2: comparableMarket.medianComparablePricePerM2,
       },
     });
 

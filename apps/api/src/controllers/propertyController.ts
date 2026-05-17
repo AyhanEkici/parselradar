@@ -145,7 +145,9 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       .lean(),
     AnalysisRun.find({ propertySubmissionId: property._id })
       .sort({ createdAt: -1 })
-      .select('productType score signal createdAt previewSummary')
+      .select(
+        'productType score signal confidence strengths risks missingInputs recommendation factorsUsed createdAt previewSummary fullAnalysis'
+      )
       .lean(),
     AuditEvent.find({
       $or: [
@@ -159,9 +161,30 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       .lean(),
   ]);
 
+  const enrichedAnalyses = analyses.map((analysis: any) => {
+    const full = (analysis.fullAnalysis || {}) as Record<string, any>;
+    return {
+      ...analysis,
+      recommendations: full.recommendations || [],
+      valuationBand: full.valuationBand,
+      marketPosition: full.marketPosition,
+      developerFit: full.developerFit,
+      zoningPotential: full.zoningPotential,
+      liquiditySignal: full.liquiditySignal,
+      comparableCount: full.comparableCount,
+      avgComparablePricePerM2: full.avgComparablePricePerM2,
+      marketHeat: full.marketHeat,
+      pricingPosition: full.pricingPosition,
+      opportunitySignals: full.opportunitySignals || [],
+      overpricingRisk: full.overpricingRisk,
+      comparableSummary: full.comparableSummary,
+      topComparables: full.topComparables || [],
+    };
+  });
+
   const latestByType = (type: string, altType?: string) =>
-    analyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;
-  const latestAnalysis = analyses[0] || null;
+    enrichedAnalyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;
+  const latestAnalysis = enrichedAnalyses[0] || null;
   const visibleDocuments = documents.map((doc: any) => ({
     ...doc,
     createdAt: doc.uploadedAt,
@@ -185,7 +208,7 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     generatedPropertyTitle,
     titleDerivation: titleFields,
     documents: visibleDocuments,
-    analyses,
+    analyses: enrichedAnalyses,
     latestAnalysis,
     analysisSummary: {
       quickScore: latestByType('quick-score', 'QUICK_SCORE'),
