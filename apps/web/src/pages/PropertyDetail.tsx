@@ -61,6 +61,12 @@ export default function PropertyDetail() {
       productType: string;
       score: number;
       signal: string;
+      confidence?: number;
+      strengths?: string[];
+      risks?: string[];
+      missingInputs?: string[];
+      recommendation?: string;
+      factorsUsed?: Record<string, any>;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     }>;
@@ -69,6 +75,12 @@ export default function PropertyDetail() {
       productType: string;
       score: number;
       signal: string;
+      confidence?: number;
+      strengths?: string[];
+      risks?: string[];
+      missingInputs?: string[];
+      recommendation?: string;
+      factorsUsed?: Record<string, any>;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -317,46 +329,99 @@ export default function PropertyDetail() {
 
         <section className="border rounded p-4">
           <h3 className="font-semibold mb-2">Rule-based preliminary analysis</h3>
-          <div className="text-xs text-amber-700 mb-2">
-            This is not a certified valuation. It is based only on submitted fields and uploaded documents currently available to the system.
+          <div className="text-xs text-amber-700 mb-3 bg-amber-50 p-2 rounded border border-amber-200">
+            <strong>DISCLAIMER:</strong> This is a rule-based preliminary analysis only. It is NOT a certified valuation. It is based only on submitted fields and uploaded documents currently available to the system. Do not use for financial, legal, or investment decisions without professional review.
           </div>
-          <div className="border rounded p-2 mb-2 bg-gray-50">
-            <div className="font-medium">Latest Analysis</div>
-            <div>Score: {latestAnalysis?.score ?? '-'}</div>
-            <div>Signal: {latestAnalysis?.signal || '-'}</div>
-            <div>Reused: {latestReused}</div>
-            <div className="break-words">Explanation: {latestExplanation}</div>
-            <div className="text-xs text-gray-500">{latestAnalysis?.createdAt ? new Date(latestAnalysis.createdAt).toLocaleString() : '-'}</div>
-          </div>
-          <div className="border rounded p-2 mb-2 bg-white">
-            <div className="font-medium">Input factors used</div>
-            <div>price: {formatMoney(property.askingPriceTRY)}</div>
-            <div>area: {property.areaM2 || '-'} m²</div>
-            <div>zoning: {property.zoningStatus || '-'}</div>
-            <div>road: {factorRoad}</div>
-            <div>utilities: {factorUtilities}</div>
-            <div>documents count: {factorDocuments}</div>
-          </div>
-          <div className="space-y-2">
-            <div className="border rounded p-2">
-              <div className="font-medium">Quick Score</div>
-              <div>Skor: {analysisSummary?.quickScore?.score ?? '-'}</div>
-              <div>Signal: {analysisSummary?.quickScore?.signal ?? '-'}</div>
-              <div className="text-xs text-gray-500">{analysisSummary?.quickScore?.createdAt ? new Date(analysisSummary.quickScore.createdAt).toLocaleString() : '-'}</div>
+          
+          {latestAnalysis && (
+            <div className="space-y-3">
+              <div className="border rounded p-3 bg-gradient-to-r from-blue-50 to-white">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="font-semibold">Analysis Summary</div>
+                  <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${
+                    latestAnalysis.signal === 'STRONG' ? 'bg-green-600' :
+                    latestAnalysis.signal === 'MODERATE' ? 'bg-yellow-600' :
+                    latestAnalysis.signal === 'WEAK' ? 'bg-orange-600' :
+                    'bg-red-600'
+                  }`}>
+                    {latestAnalysis.signal}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm mb-2">
+                  <div><span className="font-semibold">Score:</span> {latestAnalysis.score}/100</div>
+                  <div><span className="font-semibold">Confidence:</span> {latestAnalysis.confidence ?? '-'}%</div>
+                  <div><span className="font-semibold">Date:</span> {latestAnalysis.createdAt ? new Date(latestAnalysis.createdAt).toLocaleDateString() : '-'}</div>
+                </div>
+                <div className="text-sm text-gray-700 break-words">{latestExplanation}</div>
+              </div>
+
+              {latestAnalysis.recommendation && (
+                <div className="border-l-4 border-blue-500 bg-blue-50 p-3 rounded">
+                  <div className="font-semibold text-sm mb-1">Recommendation:</div>
+                  <div className="text-sm text-gray-700">{latestAnalysis.recommendation}</div>
+                </div>
+              )}
+
+              {latestAnalysis.strengths && latestAnalysis.strengths.length > 0 && (
+                <div className="border rounded p-3 bg-green-50">
+                  <div className="font-semibold text-sm mb-2 text-green-800">Strengths:</div>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {latestAnalysis.strengths.map((s, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-green-600 font-bold">✓</span>
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {latestAnalysis.risks && latestAnalysis.risks.length > 0 && (
+                <div className="border rounded p-3 bg-red-50">
+                  <div className="font-semibold text-sm mb-2 text-red-800">Risk Factors:</div>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {latestAnalysis.risks.map((r, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-red-600 font-bold">⚠</span>
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {latestAnalysis.missingInputs && latestAnalysis.missingInputs.length > 0 && (
+                <div className="border rounded p-3 bg-orange-50">
+                  <div className="font-semibold text-sm mb-2 text-orange-800">Information Gaps:</div>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    {latestAnalysis.missingInputs.map((m, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-orange-600 font-bold">•</span>
+                        <span>{m}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {latestAnalysis.factorsUsed && Object.keys(latestAnalysis.factorsUsed).length > 0 && (
+                <div className="border rounded p-3 bg-gray-50">
+                  <div className="font-semibold text-sm mb-2">Factors Analyzed:</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    {Object.entries(latestAnalysis.factorsUsed).map(([key, value]) => (
+                      <div key={key} className="text-gray-700">
+                        <span className="font-medium">{key}:</span> {String(value)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="border rounded p-2">
-              <div className="font-medium">Parcel Insight</div>
-              <div>Skor: {analysisSummary?.parcelInsight?.score ?? '-'}</div>
-              <div>Signal: {analysisSummary?.parcelInsight?.signal ?? '-'}</div>
-              <div className="text-xs text-gray-500">{analysisSummary?.parcelInsight?.createdAt ? new Date(analysisSummary.parcelInsight.createdAt).toLocaleString() : '-'}</div>
-            </div>
-            <div className="border rounded p-2">
-              <div className="font-medium">Developer Fit</div>
-              <div>Skor: {analysisSummary?.developerFit?.score ?? '-'}</div>
-              <div>Signal: {analysisSummary?.developerFit?.signal ?? '-'}</div>
-              <div className="text-xs text-gray-500">{analysisSummary?.developerFit?.createdAt ? new Date(analysisSummary.developerFit.createdAt).toLocaleString() : '-'}</div>
-            </div>
-          </div>
+          )}
+
+          {!latestAnalysis && (
+            <div className="text-gray-500 p-3">No analysis available yet. Click "Re-run Analysis" to generate.</div>
+          )}
         </section>
       </div>
 

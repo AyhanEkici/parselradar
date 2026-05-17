@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import PropertySubmission from '../models/PropertySubmission';
 import AnalysisRun from '../models/AnalysisRun';
+import DocumentUpload from '../models/DocumentUpload';
 import mongoose from 'mongoose';
 import { getUserCredits } from '../utils/credits';
 import CreditLedger from '../models/CreditLedger';
@@ -23,44 +24,194 @@ function normalizeUserId(userId: unknown) {
 }
 
 function buildQuickAssessment(property: any) {
-  let score = 45;
-  const riskFlags: string[] = [];
-  const missingInfo: string[] = [];
+  const assessment = {
+    baseScore: 0,
+    strengths: [] as string[],
+    risks: [] as string[],
+    missingInputs: [] as string[],
+    factorsUsed: {} as Record<string, number | string>,
+  };
 
-  if (property.askingPriceTRY && property.askingPriceTRY > 0) score += 12;
-  else missingInfo.push('Fiyat bilgisi eksik');
-
-  if (property.areaM2 && property.areaM2 > 0) score += 10;
-  else missingInfo.push('Alan bilgisi eksik');
-
-  if (property.ada) score += 8;
-  else missingInfo.push('Ada bilgisi eksik');
-
-  if (property.parsel) score += 8;
-  else missingInfo.push('Parsel bilgisi eksik');
-
-  if (!property.addressText) {
-    riskFlags.push('Adres detayı sınırlı');
+  // Price and market factors (max 25 points)
+  if (property.askingPriceTRY && property.askingPriceTRY > 0) {
+    assessment.baseScore += 15;
+    assessment.strengths.push('Asking price provided');
+    assessment.factorsUsed['askingPriceTRY'] = property.askingPriceTRY;
   } else {
-    score += 5;
+    assessment.missingInputs.push('Asking price');
+    assessment.risks.push('No price benchmark available');
   }
 
-  if (property.zoningStatus?.toString().toUpperCase().includes('UNKNOWN')) {
-    riskFlags.push('İmar durumu net değil');
+  if (property.pricePerM2 && property.pricePerM2 > 0) {
+    assessment.baseScore += 10;
+    assessment.factorsUsed['pricePerM2'] = property.pricePerM2;
+    const pricePerM2 = property.pricePerM2;
+    if (pricePerM2 < 5000) {
+      assessment.strengths.push('Unit price appears competitive');
+    } else if (pricePerM2 > 50000) {
+      assessment.risks.push('Unit price significantly above typical market');
+    }
+  } else if (property.askingPriceTRY && property.areaM2) {
+    assessment.risks.push('Cannot calculate unit price (area/price mismatch)');
   }
 
-  if (score > 100) score = 100;
-  if (score < 0) score = 0;
+  // Area and size factors (max 20 points)
+  if (property.areaM2 && property.areaM2 > 0) {
+    assessment.baseScore += 12;
+    assessment.strengths.push('Area documented');
+    assessment.factorsUsed['areaM2'] = property.areaM2;
+    if (property.areaM2 < 50) {
+      assessment.risks.push('Small parcel size may limit development options');
+    } else if (property.areaM2 > 50000) {
+      assessment.risks.push('Large parcel requires specialized marketing');
+    }
+  } else {
+    assessment.missingInputs.push('Parcel area');
+    assessment.risks.push('Area uncertainty');
+  }
 
-  const signal = score >= 75 ? 'HIGH' : score >= 55 ? 'MEDIUM' : 'LOW';
+  // Title deed and parcel identification (max 25 points)
+  if (property.tapuType && property.tapuType !== 'UNKNOWN') {
+    assessment.baseScore += 8;
+    assessment.factorsUsed['tapuType'] = property.tapuType;
+    if (property.tapuType.includes('KAT_MULKIYETI')) {
+      assessment.strengths.push('Individual apartment title (simplified ownership)');
+    } else if (property.tapuType.includes('TAPU')) {
+      assessment.strengths.push('Full title deed registered');
+    } else {
+      assessment.risks.push(`Title type ${property.tapuType} requires verification`);
+    }
+  } else {
+    assessment.missingInputs.push('Title deed type');
+    assessment.risks.push('No title information available');
+  }
+
+  if (property.ada) {
+    assessment.baseScore += 8;
+    assessment.strengths.push('Cadastral block (ada) identified');
+    assessment.factorsUsed['ada'] = property.ada;
+  } else {
+    assessment.missingInputs.push('Cadastral block (ada)');
+  }
+
+  if (property.parsel) {
+    assessment.baseScore += 9;
+    assessment.strengths.push('Parcel number (parsel) identified');
+    assessment.factorsUsed['parsel'] = property.parsel;
+  } else {
+    assessment.missingInputs.push('Parcel number (parsel)');
+  }
+
+  // Zoning and land use (max 15 points)
+  if (property.zoningStatus && !property.zoningStatus.toString().toUpperCase().includes('UNKNOWN')) {
+    assessment.baseScore += 12;
+    assessment.factorsUsed['zoningStatus'] = property.zoningStatus;
+    const zoning = property.zoningStatus.toString().toUpperCase();
+    if (zoning.includes('RESIDENTIAL') || zoning.includes('COMMERCIAL') || zoning.includes('MIXED')) {
+      assessment.strengths.push('Clear zoning status');
+    } else if (zoning.includes('AGRICULTURAL')) {
+      assessment.risks.push('Agricultural zoning may limit commercial development');
+    } else if (zoning.includes('GREEN') || zoning.includes('PROTECTED')) {
+      assessment.risks.push('Protected/green zone may restrict development');
+    }
+  } else {
+    assessment.missingInputs.push('Zoning classification');
+    assessment.risks.push('Zoning status uncertain');
+  }
+
+  // Infrastructure and utilities (max 10 points)
+  if (property.roadAccess && property.roadAccess !== 'UNKNOWN') {
+    assessment.baseScore += 5;
+    assessment.factorsUsed['roadAccess'] = property.roadAccess;
+    if (!property.roadAccess.toString().toUpperCase().includes('NO') && !property.roadAccess.toString().toUpperCase().includes('NONE')) {
+      assessment.strengths.push('Road access available');
+    } else {
+      assessment.risks.push('Limited or no direct road access');
+    }
+  } else {
+    assessment.missingInputs.push('Road access');
+  }
+
+  if (property.electricity) {
+    assessment.baseScore += 2;
+    assessment.factorsUsed['electricity'] = property.electricity;
+    if (!property.electricity.toString().toUpperCase().includes('NO') && !property.electricity.toString().toUpperCase().includes('NONE')) {
+      assessment.strengths.push('Electricity available');
+    } else {
+      assessment.risks.push('No electricity connection');
+    }
+  }
+
+  if (property.water) {
+    assessment.baseScore += 3;
+    assessment.factorsUsed['water'] = property.water;
+    if (!property.water.toString().toUpperCase().includes('NO') && !property.water.toString().toUpperCase().includes('NONE')) {
+      assessment.strengths.push('Water available');
+    } else {
+      assessment.risks.push('No water connection');
+    }
+  }
+
+  // Documentation and verification (max 5 points)
+  const docCount = (property._documentCount || 0);
+  if (docCount > 0) {
+    const docBonus = Math.min(5, docCount);
+    assessment.baseScore += docBonus;
+    assessment.factorsUsed['uploadedDocuments'] = docCount;
+    if (docCount >= 3) {
+      assessment.strengths.push(`${docCount} supporting documents uploaded`);
+    } else {
+      assessment.risks.push(`Only ${docCount} document(s) uploaded; more documentation recommended`);
+    }
+  } else {
+    assessment.missingInputs.push('Supporting documents');
+    assessment.risks.push('No documents uploaded for verification');
+  }
+
+  // Cap score at 100 and compute signal
+  let score = Math.min(100, Math.max(0, assessment.baseScore));
+
+  // Penalty for high missing inputs
+  const missingCount = assessment.missingInputs.length;
+  if (missingCount > 4) {
+    score = Math.max(0, score - (missingCount - 4) * 8);
+  }
+
+  // Compute signal based on score and risk count
+  let signal = 'MODERATE';
+  if (score >= 80 && assessment.risks.length <= 2) {
+    signal = 'STRONG';
+  } else if (score >= 60 && assessment.risks.length <= 3) {
+    signal = 'MODERATE';
+  } else if (score >= 40) {
+    signal = 'WEAK';
+  } else {
+    signal = 'NEEDS_REVIEW';
+  }
+
+  // Confidence: inverse of missing inputs
+  const confidence = Math.max(20, 100 - missingCount * 15);
+
+  // Generate summary and recommendation
+  const recommendation =
+    signal === 'STRONG'
+      ? 'Sufficient data for preliminary assessment. Consider proceeding with technical review.'
+      : signal === 'MODERATE'
+      ? 'Additional documentation recommended before detailed evaluation.'
+      : signal === 'WEAK'
+      ? 'Gather missing information before proceeding with analysis.'
+      : 'Comprehensive data collection required. Cannot proceed with reliable assessment.';
+
   const summary =
-    signal === 'HIGH'
-      ? 'Temel alan/fiyat/parsel verisi güçlü. Detaylı doğrulama önerilir.'
-      : signal === 'MEDIUM'
-      ? 'Temel sinyaller orta seviyede. Eksik verileri tamamlayın.'
-      : 'Veri eksiklikleri yüksek. Belge ve parsel bilgisini tamamlayın.';
+    signal === 'STRONG'
+      ? `Strong data profile (${score} pts): Core property details well documented. Low missing-data risk.`
+      : signal === 'MODERATE'
+      ? `Moderate data profile (${score} pts): Key details available. ${missingCount} information gaps identified.`
+      : signal === 'WEAK'
+      ? `Weak data profile (${score} pts): Significant information gaps (${missingCount}). Detailed documentation needed.`
+      : `Insufficient data profile (${score} pts): Cannot reliably assess property. Critical information missing.`;
 
-  return { score, signal, riskFlags, missingInfo, summary };
+  return { score, signal, strengths: assessment.strengths, risks: assessment.risks, missingInputs: assessment.missingInputs, factorsUsed: assessment.factorsUsed, confidence, summary, recommendation };
 }
 
 export const quickScore = async (req: AuthRequest, res: Response) => {
@@ -102,25 +253,42 @@ export const quickScore = async (req: AuthRequest, res: Response) => {
       id: existingRun._id,
       score: existingRun.score,
       signal: existingRun.signal,
+      confidence: existingRun.confidence,
       reused: true,
-      summary: (existingRun.previewSummary as any)?.summary || 'Mevcut hızlı analiz sonucu tekrar kullanıldı.',
+      summary: (existingRun.previewSummary as any)?.summary || 'Existing quick-score reused.',
+      strengths: existingRun.strengths || [],
+      risks: existingRun.risks || [],
+      missingInputs: existingRun.missingInputs || [],
+      recommendation: existingRun.recommendation || '',
+      factorsUsed: existingRun.factorsUsed || {},
       createdAt: existingRun.createdAt,
       message: 'Idempotent: existing quick-score result reused.'
     });
   }
   try {
     await deductCredits(normalizeUserId(userId), COSTS.quick);
-    const assessment = buildQuickAssessment(property);
+    
+    // Get document count
+    const docCount = await DocumentUpload.countDocuments({ propertySubmissionId: property._id });
+    const propWithDocs = { ...property.toObject(), _documentCount: docCount };
+    
+    const assessment = buildQuickAssessment(propWithDocs);
     const run = await AnalysisRun.create({
       propertySubmissionId: property._id,
       userId,
       productType: 'QUICK_SCORE',
       score: assessment.score,
       signal: assessment.signal,
-      riskFlags: assessment.riskFlags,
-      missingInfo: assessment.missingInfo,
+      confidence: assessment.confidence,
+      strengths: assessment.strengths,
+      risks: assessment.risks,
+      riskFlags: assessment.risks,
+      missingInputs: assessment.missingInputs,
+      missingInfo: assessment.missingInputs,
       assumptions: [],
       unverifiableInfo: [],
+      factorsUsed: assessment.factorsUsed,
+      recommendation: assessment.recommendation,
       previewSummary: { summary: assessment.summary, reused: false },
       fullAnalysis: {}
     });
@@ -131,7 +299,7 @@ export const quickScore = async (req: AuthRequest, res: Response) => {
       targetType: 'AnalysisRun',
       targetId: run._id.toString(),
       message: 'Quick-score created',
-      metadata: { propertyId: property._id.toString() },
+      metadata: { propertyId: property._id.toString(), score: assessment.score, signal: assessment.signal },
       ip: req.ip,
       userAgent: req.get('user-agent'),
       success: true,
@@ -140,12 +308,15 @@ export const quickScore = async (req: AuthRequest, res: Response) => {
       id: run._id,
       score: run.score,
       signal: run.signal,
+      confidence: run.confidence,
       reused: false,
-      summary: (run.previewSummary as any)?.summary || '-',
+      summary: assessment.summary,
+      strengths: assessment.strengths,
+      risks: assessment.risks,
+      missingInputs: assessment.missingInputs,
+      recommendation: assessment.recommendation,
+      factorsUsed: assessment.factorsUsed,
       createdAt: run.createdAt,
-      topRisks: run.riskFlags,
-      missingDocs: run.missingInfo,
-      recommendedAction: run.signal === 'HIGH' ? 'Detaylı teknik incelemeye geçin.' : 'Eksik belge ve verileri tamamlayın.',
     });
   } catch (err: any) {
     if ((err.message || '').toLowerCase().includes('yetersiz kredi')) {
