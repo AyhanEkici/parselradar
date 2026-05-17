@@ -10,6 +10,15 @@ import { buildComparableMarketIntelligence } from '../services/comparables';
 import { buildGeoIntelligence } from '../services/geo';
 import { buildDevelopmentIntelligence } from '../services/development';
 import { buildSpatialIntelligence } from '../services/spatial';
+import { ingestComparableListings } from '../services/ingestion/ingestComparableListings';
+import { ingestMunicipalitySignals } from '../services/ingestion/ingestMunicipalitySignals';
+import { ingestInfrastructureSignals } from '../services/ingestion/ingestInfrastructureSignals';
+import { scheduleAnalysisRefresh } from '../services/jobs/scheduleAnalysisRefresh';
+import { queuePropertyReanalysis } from '../services/jobs/queuePropertyReanalysis';
+import { processSpatialRefresh } from '../services/jobs/processSpatialRefresh';
+import { processMarketRefresh } from '../services/jobs/processMarketRefresh';
+import { buildMarketCache } from '../services/cache/buildMarketCache';
+import { warmComparableCache } from '../services/cache/warmComparableCache';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -126,6 +135,15 @@ function toResponseFromRun(run: any, reused: boolean) {
     mapSummary: full.mapSummary,
     comparableMapPoints: full.comparableMapPoints || [],
     regionalCluster: full.regionalCluster,
+    analysisVersion: run.analysisVersion || full.analysisVersion,
+    refreshReason: run.refreshReason || full.refreshReason,
+    sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+    cacheTimestamp: run.cacheTimestamp || full.cacheTimestamp,
+    refreshStatus: full.refreshStatus,
+    freshnessScore: full.freshnessScore,
+    ingestionSignals: full.ingestionSignals || [],
+    staleFlags: full.staleFlags || [],
+    cacheState: full.cacheState,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -253,6 +271,98 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       })),
     });
 
+    const refreshPlan = scheduleAnalysisRefresh({
+      propertyId: String(property._id),
+      lastAnalysisAt: existingRun?.createdAt,
+      lastSpatialRefresh: propertyObj.lastSpatialRefresh,
+      lastMarketRefresh: propertyObj.lastMarketRefresh,
+    });
+
+    const queuedRefresh = queuePropertyReanalysis({
+      propertyId: String(property._id),
+      reason: refreshPlan.refreshReason,
+    });
+
+    const listingIngestion = ingestComparableListings({
+      sourceRows: comparableCandidates.map((candidate: any) => ({
+        externalId: String(candidate._id),
+        il: candidate.il,
+        ilce: candidate.ilce,
+        areaM2: candidate.areaM2,
+        pricePerM2: candidate.pricePerM2,
+        askingPriceTRY: candidate.askingPriceTRY,
+        latitude: candidate.latitude,
+        longitude: candidate.longitude,
+      })),
+    });
+
+    const municipalityIngestion = ingestMunicipalitySignals({
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+    });
+
+    const infrastructureIngestion = ingestInfrastructureSignals({
+      city: propertyObj.il,
+    });
+
+    const spatialRefresh = processSpatialRefresh({
+      propertyId: String(property._id),
+      staleFlags: refreshPlan.staleFlags,
+      lastSpatialRefresh: propertyObj.lastSpatialRefresh,
+    });
+
+    const marketRefresh = processMarketRefresh({
+      propertyId: String(property._id),
+      staleFlags: refreshPlan.staleFlags,
+      lastMarketRefresh: propertyObj.lastMarketRefresh,
+    });
+
+      const districtKey = `${String(propertyObj.il || '').toLowerCase()}:${String(propertyObj.ilce || '').toLowerCase()}`;
+    const marketCache = buildMarketCache({
+      districtKey,
+      payload: {
+        comparableCount: comparableMarket.comparableCount,
+        marketHeat: comparableMarket.marketHeat,
+        clusterStrength: spatialIntelligence.clusterStrength,
+      },
+    });
+
+    const comparableCache = warmComparableCache({
+      districtKey,
+      comparableCount: listingIngestion.ingestedCount,
+    });
+
+    const ingestionSignals = Array.from(new Set([
+      ...listingIngestion.signals,
+      ...municipalityIngestion.signals,
+      ...infrastructureIngestion.signals,
+      queuedRefresh.refreshStatus === 'queued' ? 'reanalysis_queued' : 'reanalysis_not_queued',
+      spatialRefresh.refreshReason,
+      marketRefresh.refreshReason,
+    ]));
+
+    const sourceConfidence = municipalityIngestion.matched && infrastructureIngestion.airportCount + infrastructureIngestion.industrialCount > 0
+      ? 'verified'
+      : listingIngestion.ingestedCount >= 3
+        ? 'medium'
+        : 'low';
+
+    const freshnessBase = sourceConfidence === 'verified' ? 84 : sourceConfidence === 'medium' ? 66 : 42;
+    const freshnessScore = Math.max(0, Math.min(100, freshnessBase - refreshPlan.staleFlags.length * 18));
+
+    const cacheState = {
+      market: marketCache.key ? 'warm' : 'cold',
+      comparable: comparableCache.key ? 'warm' : 'cold',
+      spatial: spatialRefresh.refreshStatus === 'refreshing' ? 'refreshing' : 'warm',
+    };
+
+    property.set({
+      lastSpatialRefresh: new Date(),
+      lastMarketRefresh: new Date(),
+      ingestionState: refreshPlan.staleFlags.length > 0 ? 'queued' : 'ready',
+    });
+    await property.save();
+
     const run = await AnalysisRun.create({
       propertySubmissionId: property._id,
       userId: normalizedUserId,
@@ -275,6 +385,10 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         score: engine.score,
         signal: engine.signal,
       },
+      analysisVersion: 'V8',
+      refreshReason: refreshPlan.refreshReason,
+      sourceConfidence,
+      cacheTimestamp: new Date(),
       fullAnalysis: {
         recommendations: engine.recommendations,
         valuationBand: engine.valuationBand,
@@ -320,6 +434,12 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         mapSummary: spatialIntelligence.mapSummary,
         comparableMapPoints: spatialIntelligence.comparableMapPoints,
         regionalCluster: spatialIntelligence.regionalCluster,
+        analysisVersion: 'V8',
+        refreshStatus: refreshPlan.staleFlags.length > 0 ? 'queued' : 'fresh',
+        freshnessScore,
+        ingestionSignals,
+        staleFlags: refreshPlan.staleFlags,
+        cacheState,
       },
     });
 
@@ -375,5 +495,7 @@ export const parselInsight = async (req: AuthRequest, res: Response) =>
 
 export const developerFit = async (req: AuthRequest, res: Response) =>
   runAnalysis(req, res, { productType: 'DEVELOPER_FIT' });
+
+
 
 

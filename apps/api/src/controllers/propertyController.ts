@@ -205,6 +205,15 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       mapSummary: full.mapSummary,
       comparableMapPoints: full.comparableMapPoints || [],
       regionalCluster: full.regionalCluster,
+      analysisVersion: analysis.analysisVersion || full.analysisVersion,
+      refreshReason: analysis.refreshReason || full.refreshReason,
+      sourceConfidence: analysis.sourceConfidence || full.sourceConfidence,
+      cacheTimestamp: analysis.cacheTimestamp || full.cacheTimestamp,
+      refreshStatus: full.refreshStatus,
+      freshnessScore: full.freshnessScore,
+      ingestionSignals: full.ingestionSignals || [],
+      staleFlags: full.staleFlags || [],
+      cacheState: full.cacheState,
     };
   });
 
@@ -244,5 +253,6 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     auditReferences: audits,
   });
 };
+
 
 

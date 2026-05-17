@@ -34,6 +34,9 @@ export interface IPropertySubmission extends Document {
   electricity: string;
   water: string;
   villageDistanceText?: string;
+  lastSpatialRefresh?: Date;
+  lastMarketRefresh?: Date;
+  ingestionState?: 'idle' | 'queued' | 'refreshing' | 'ready' | 'stale';
   status?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -73,8 +76,12 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   electricity: { type: String, required: true },
   water: { type: String, required: true },
   villageDistanceText: { type: String },
+  lastSpatialRefresh: { type: Date },
+  lastMarketRefresh: { type: Date },
+  ingestionState: { type: String, enum: ['idle', 'queued', 'refreshing', 'ready', 'stale'] },
   status: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model<IPropertySubmission>('PropertySubmission', PropertySubmissionSchema);
+
 

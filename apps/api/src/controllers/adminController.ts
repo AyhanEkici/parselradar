@@ -186,6 +186,15 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       mapSummary: full.mapSummary,
       comparableMapPoints: full.comparableMapPoints || [],
       regionalCluster: full.regionalCluster,
+      analysisVersion: analysis.analysisVersion || full.analysisVersion,
+      refreshReason: analysis.refreshReason || full.refreshReason,
+      sourceConfidence: analysis.sourceConfidence || full.sourceConfidence,
+      cacheTimestamp: analysis.cacheTimestamp || full.cacheTimestamp,
+      refreshStatus: full.refreshStatus,
+      freshnessScore: full.freshnessScore,
+      ingestionSignals: full.ingestionSignals || [],
+      staleFlags: full.staleFlags || [],
+      cacheState: full.cacheState,
     };
   });
 
@@ -289,5 +298,6 @@ export const shareDealPool = async (req: AuthRequest, res: Response) => {
   await DealShareAudit.create({ dealPoolEntryId: entry._id, sharedWithType: req.body.sharedWithType, sharedWithName: req.body.sharedWithName, sharedWithContact: req.body.sharedWithContact, sharedFields: req.body.sharedFields, adminUserId: adminUser._id });
   res.json({ ok: true });
 };
+
 
 

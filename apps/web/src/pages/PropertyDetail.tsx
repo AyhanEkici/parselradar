@@ -42,6 +42,13 @@ import {
   SpatialSignalsCard,
   RegionalHeatMapCard,
 } from '../components/maps';
+import {
+  RefreshStatusCard,
+  MarketFreshnessCard,
+  DataConfidenceCard,
+  IntelligenceSourceCard,
+  AnalysisVersionCard,
+} from '../components/system';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -195,6 +202,9 @@ export default function PropertyDetail() {
     longitude?: number;
     coordinateSource?: 'exact' | 'approximate' | 'district_center_fallback';
     geocodeConfidence?: number;
+    lastSpatialRefresh?: string;
+    lastMarketRefresh?: string;
+    ingestionState?: 'idle' | 'queued' | 'refreshing' | 'ready' | 'stale';
     status?: string;
     createdAt: string;
     updatedAt: string;
@@ -395,6 +405,15 @@ export default function PropertyDetail() {
         roadCluster?: { name: string; distanceKm: number };
         clusterLabel: string;
       };
+      analysisVersion?: string;
+      refreshReason?: string;
+      sourceConfidence?: 'low' | 'medium' | 'verified' | string;
+      cacheTimestamp?: string;
+      refreshStatus?: string;
+      freshnessScore?: number;
+      ingestionSignals?: string[];
+      staleFlags?: string[];
+      cacheState?: { market?: string; comparable?: string; spatial?: string };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -849,6 +868,41 @@ export default function PropertyDetail() {
               </>
             )}
 
+            {latestAnalysis.analysisVersion && (
+              <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-3">
+                  <RefreshStatusCard
+                    refreshStatus={latestAnalysis.refreshStatus}
+                    staleFlags={latestAnalysis.staleFlags}
+                  />
+                </div>
+                <div className="xl:col-span-3">
+                  <MarketFreshnessCard
+                    freshnessScore={latestAnalysis.freshnessScore}
+                    cacheState={latestAnalysis.cacheState}
+                  />
+                </div>
+                <div className="xl:col-span-2">
+                  <DataConfidenceCard
+                    sourceConfidence={latestAnalysis.sourceConfidence}
+                    ingestionSignals={latestAnalysis.ingestionSignals}
+                  />
+                </div>
+                <div className="xl:col-span-2">
+                  <AnalysisVersionCard
+                    analysisVersion={latestAnalysis.analysisVersion}
+                    cacheTimestamp={latestAnalysis.cacheTimestamp}
+                  />
+                </div>
+                <div className="xl:col-span-2">
+                  <IntelligenceSourceCard
+                    ingestionSignals={latestAnalysis.ingestionSignals}
+                    refreshReason={latestAnalysis.refreshReason}
+                  />
+                </div>
+              </div>
+            )}
+
             {(latestAnalysis.strengths?.length || latestAnalysis.missingInputs?.length) && (
               <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
@@ -1069,6 +1123,7 @@ export default function PropertyDetail() {
     </div>
   );
 }
+
 
 
 

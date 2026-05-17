@@ -19,6 +19,10 @@ export interface IAnalysisRun extends Document {
   recommendation?: string;
   previewSummary: Record<string, unknown>;
   fullAnalysis: Record<string, unknown>;
+  analysisVersion?: string;
+  refreshReason?: string;
+  sourceConfidence?: 'low' | 'medium' | 'verified';
+  cacheTimestamp?: Date;
   createdAt: Date;
 }
 
@@ -40,7 +44,12 @@ const AnalysisRunSchema = new Schema<IAnalysisRun>({
   recommendation: { type: String },
   previewSummary: { type: Schema.Types.Mixed, required: true },
   fullAnalysis: { type: Schema.Types.Mixed, required: true },
+  analysisVersion: { type: String },
+  refreshReason: { type: String },
+  sourceConfidence: { type: String, enum: ['low', 'medium', 'verified'] },
+  cacheTimestamp: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model<IAnalysisRun>('AnalysisRun', AnalysisRunSchema);
+
