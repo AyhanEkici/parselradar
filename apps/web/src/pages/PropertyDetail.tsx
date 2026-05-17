@@ -3,45 +3,15 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../components/ui';
-
-// Score Gauge Component
-const ScoreGauge = ({ score, confidence }: { score: number; confidence: number }) => {
-  const radius = 45;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
-  const getColor = (s: number) => {
-    if (s >= 80) return '#10b981';
-    if (s >= 60) return '#f59e0b';
-    if (s >= 40) return '#f97316';
-    return '#ef4444';
-  };
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <svg width="120" height="120" className="transform -rotate-90">
-        <circle cx="60" cy="60" r={radius} fill="none" stroke="#e5e7eb" strokeWidth="8" />
-        <circle
-          cx="60"
-          cy="60"
-          r={radius}
-          fill="none"
-          stroke={getColor(score)}
-          strokeWidth="8"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
-        />
-        <text x="60" y="65" textAnchor="middle" className="text-2xl font-bold fill-gray-900">
-          {score}
-        </text>
-      </svg>
-      <div className="text-center">
-        <div className="text-sm font-semibold text-gray-700">Score</div>
-        <div className="text-xs text-gray-500">Confidence: {confidence}%</div>
-      </div>
-    </div>
-  );
-};
+import {
+  AnalysisFactorsGrid,
+  ConfidenceCard,
+  MarketPositionCard,
+  RecommendationTimeline,
+  RiskMatrix,
+  ScoreBreakdownCard,
+  ValuationBandCard,
+} from '../components/analysis';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -228,7 +198,13 @@ export default function PropertyDetail() {
       risks?: string[];
       missingInputs?: string[];
       recommendation?: string;
+      recommendations?: string[];
       factorsUsed?: Record<string, any>;
+      valuationBand?: { low?: number; mid?: number; high?: number; currency?: string };
+      marketPosition?: string;
+      developerFit?: string;
+      zoningPotential?: string;
+      liquiditySignal?: string;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     }>;
@@ -242,7 +218,13 @@ export default function PropertyDetail() {
       risks?: string[];
       missingInputs?: string[];
       recommendation?: string;
+      recommendations?: string[];
       factorsUsed?: Record<string, any>;
+      valuationBand?: { low?: number; mid?: number; high?: number; currency?: string };
+      marketPosition?: string;
+      developerFit?: string;
+      zoningPotential?: string;
+      liquiditySignal?: string;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -497,117 +479,109 @@ export default function PropertyDetail() {
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Analysis Section */}
         {latestAnalysis && (
-          <section className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">Rule-Based Analysis</h2>
-
-            <div className="text-sm text-amber-700 mb-6 bg-amber-50 p-3 rounded-lg border border-amber-200">
-              <strong>⚠️ DISCLAIMER:</strong> This is a preliminary rule-based analysis, NOT a
-              certified valuation. Based on submitted fields and documents only.
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-              <div className="flex justify-center">
-                <ScoreGauge score={latestAnalysis.score} confidence={latestAnalysis.confidence ?? 0} />
+          <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-md">
+            <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">Analysis Intelligence Dashboard</h2>
+                <p className="mt-1 text-sm text-slate-600">Explainable, evidence-backed property intelligence</p>
               </div>
-
-              <div className="lg:col-span-3 space-y-4">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`text-4xl font-bold px-4 py-2 rounded-lg text-white ${
-                      latestAnalysis.signal === 'STRONG'
-                        ? 'bg-green-600'
-                        : latestAnalysis.signal === 'MODERATE'
-                        ? 'bg-yellow-600'
-                        : latestAnalysis.signal === 'WEAK'
-                        ? 'bg-orange-600'
-                        : 'bg-red-600'
-                    }`}
-                  >
-                    {latestAnalysis.signal}
-                  </span>
-                  <div>
-                    <div className="text-sm text-gray-600">Investment Signal</div>
-                    <div className="text-gray-900">
-                      {latestAnalysis.signal === 'STRONG'
-                        ? 'Favorable indicators detected'
-                        : latestAnalysis.signal === 'MODERATE'
-                        ? 'Mixed indicators, caution advised'
-                        : latestAnalysis.signal === 'WEAK'
-                        ? 'Concerning patterns identified'
-                        : 'Additional review required'}
-                    </div>
-                  </div>
-                </div>
-
-                {latestAnalysis.recommendation && (
-                  <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                    <div className="font-semibold text-blue-900 mb-1">📋 Next Steps:</div>
-                    <p className="text-blue-800">{latestAnalysis.recommendation}</p>
-                  </div>
-                )}
+              <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2">
+                <div className="text-xs font-semibold uppercase tracking-wide text-blue-700">Signal</div>
+                <div className="text-lg font-semibold text-blue-900">{latestAnalysis.signal}</div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-              {latestAnalysis.strengths && latestAnalysis.strengths.length > 0 && (
-                <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                  <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
-                    <span className="text-2xl">✓</span> Strengths
-                  </h4>
-                  <ul className="space-y-2">
-                    {latestAnalysis.strengths.map((s, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-green-800">
-                        <span className="text-green-600 font-bold flex-shrink-0">•</span>
-                        <span>{s}</span>
-                      </li>
-                    ))}
+            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <strong>DISCLAIMER:</strong> Preliminary rule-based analysis, not a certified valuation. Uses submitted fields and document evidence only.
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+              <div className="xl:col-span-6">
+                <ScoreBreakdownCard
+                  score={latestAnalysis.score}
+                  confidence={latestAnalysis.confidence}
+                  factorsUsed={latestAnalysis.factorsUsed}
+                />
+              </div>
+              <div className="xl:col-span-3">
+                <ConfidenceCard
+                  confidence={latestAnalysis.confidence}
+                  missingInputs={latestAnalysis.missingInputs}
+                  factorsUsed={latestAnalysis.factorsUsed}
+                  documentCount={documents.length}
+                />
+              </div>
+              <div className="xl:col-span-3">
+                <ValuationBandCard
+                  askingPriceTRY={property.askingPriceTRY}
+                  valuationBand={latestAnalysis.valuationBand}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+              <div className="xl:col-span-4">
+                <MarketPositionCard
+                  marketPosition={latestAnalysis.marketPosition}
+                  liquiditySignal={latestAnalysis.liquiditySignal}
+                  developerFit={latestAnalysis.developerFit}
+                  zoningPotential={latestAnalysis.zoningPotential}
+                  signal={latestAnalysis.signal}
+                  score={latestAnalysis.score}
+                />
+              </div>
+              <div className="xl:col-span-4">
+                <RiskMatrix risks={latestAnalysis.risks} />
+              </div>
+              <div className="xl:col-span-4">
+                <RecommendationTimeline
+                  recommendation={latestAnalysis.recommendation}
+                  recommendations={latestAnalysis.recommendations}
+                  risks={latestAnalysis.risks}
+                  missingInputs={latestAnalysis.missingInputs}
+                  marketPosition={latestAnalysis.marketPosition}
+                  developerFit={latestAnalysis.developerFit}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <AnalysisFactorsGrid
+                property={{
+                  areaM2: property.areaM2,
+                  zoningStatus: property.zoningStatus,
+                  roadAccess: property.roadAccess,
+                  electricity: property.electricity,
+                  water: property.water,
+                }}
+                documentCount={documents.length}
+                factorsUsed={latestAnalysis.factorsUsed}
+              />
+            </div>
+
+            {(latestAnalysis.strengths?.length || latestAnalysis.missingInputs?.length) && (
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                  <h4 className="text-sm font-semibold text-emerald-900">Strength highlights</h4>
+                  <ul className="mt-2 space-y-1 text-sm text-emerald-800">
+                    {(latestAnalysis.strengths || []).length > 0 ? (
+                      (latestAnalysis.strengths || []).map((item, i) => <li key={`${item}-${i}`}>• {item}</li>)
+                    ) : (
+                      <li>• No strengths were provided for this run.</li>
+                    )}
                   </ul>
                 </div>
-              )}
 
-              {latestAnalysis.risks && latestAnalysis.risks.length > 0 && (
-                <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                  <h4 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
-                    <span className="text-2xl">⚠</span> Risk Factors
-                  </h4>
-                  <ul className="space-y-2">
-                    {latestAnalysis.risks.map((r, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-red-800">
-                        <span className="text-red-600 font-bold flex-shrink-0">•</span>
-                        <span>{r}</span>
-                      </li>
-                    ))}
+                <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
+                  <h4 className="text-sm font-semibold text-orange-900">Information gaps</h4>
+                  <ul className="mt-2 space-y-1 text-sm text-orange-800">
+                    {(latestAnalysis.missingInputs || []).length > 0 ? (
+                      (latestAnalysis.missingInputs || []).map((item, i) => <li key={`${item}-${i}`}>• {item}</li>)
+                    ) : (
+                      <li>• No missing input fields detected.</li>
+                    )}
                   </ul>
                 </div>
-              )}
-            </div>
-
-            {latestAnalysis.factorsUsed && Object.keys(latestAnalysis.factorsUsed).length > 0 && (
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Factors Considered:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {Object.entries(latestAnalysis.factorsUsed).map(([key, value]) => (
-                    <div
-                      key={key}
-                      className="bg-gray-100 border border-gray-300 rounded-full px-3 py-1 text-xs font-medium text-gray-700"
-                    >
-                      <span className="font-semibold">{key}:</span> {String(value)}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {latestAnalysis.missingInputs && latestAnalysis.missingInputs.length > 0 && (
-              <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-                <h4 className="font-semibold text-orange-900 mb-3 flex items-center gap-2">
-                  <span className="text-2xl">ℹ</span> Information Gaps
-                </h4>
-                <ul className="space-y-1 text-sm text-orange-800">
-                  {latestAnalysis.missingInputs.map((m, i) => (
-                    <li key={i}>• {m}</li>
-                  ))}
-                </ul>
               </div>
             )}
           </section>
