@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { requireAuthUser } from '../utils/authUser';
+import { logAuditEvent } from '../utils/auditLog';
 import PropertySubmission from '../models/PropertySubmission';
 import DealPoolEntry from '../models/DealPoolEntry';
 import DealShareAudit from '../models/DealShareAudit';
@@ -181,6 +182,42 @@ export const reviewProperty = async (req: AuthRequest, res: Response) => {
   if (!property) return res.status(404).json({ error: 'Bulunamadı' });
   Object.assign(property, req.body);
   await property.save();
+  res.json(property);
+};
+
+export const updatePropertyStatus = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const allowedStatuses = ['NEW', 'REVIEWING', 'APPROVED', 'REJECTED'];
+  const { status } = req.body;
+
+  if (!status || !allowedStatuses.includes(status)) {
+    return res.status(400).json({ error: `Invalid status. Allowed: ${allowedStatuses.join(', ')}` });
+  }
+
+  const property = await PropertySubmission.findById(req.params.id);
+  if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+
+  const previousStatus = property.status || 'NEW';
+  property.status = status;
+  await property.save();
+
+  await logAuditEvent({
+    type: 'property_status_updated',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'PropertySubmission',
+    targetId: String(property._id),
+    message: `Property status changed from ${previousStatus} to ${status}`,
+    metadata: {
+      previousStatus,
+      newStatus: status,
+      propertyAddress: property.addressText,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   res.json(property);
 };
 

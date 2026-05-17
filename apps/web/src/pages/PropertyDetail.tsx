@@ -90,6 +90,10 @@ export default function PropertyDetail() {
   const [error, setError] = useState('');
   const [rerunLoading, setRerunLoading] = useState(false);
   const [rerunError, setRerunError] = useState('');
+  const [statusValue, setStatusValue] = useState('NEW');
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const [statusError, setStatusError] = useState('');
+  const [statusSuccess, setStatusSuccess] = useState('');
 
   const normalizeDetail = (data: unknown): DetailResponse => {
     const maybe = data as Partial<DetailResponse> & Record<string, unknown>;
@@ -129,7 +133,9 @@ export default function PropertyDetail() {
     setError('');
     const endpoint = isAdminPath ? `admin/properties/${resolvedId}` : `properties/${resolvedId}`;
     const data = await apiFetch(endpoint);
-    setDetail(normalizeDetail(data));
+    const normalized = normalizeDetail(data);
+    setDetail(normalized);
+    setStatusValue(normalized.property?.status || 'NEW');
   };
 
   useEffect(() => {
@@ -148,6 +154,27 @@ export default function PropertyDetail() {
       setRerunError(e.error || e.message || 'Analiz başarısız');
     } finally {
       setRerunLoading(false);
+    }
+  };
+
+  const updateStatus = async () => {
+    if (!resolvedId) return;
+    setStatusUpdating(true);
+    setStatusError('');
+    setStatusSuccess('');
+    try {
+      await apiFetch(`admin/properties/${resolvedId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: statusValue }),
+      });
+      setStatusSuccess('Status updated');
+      await fetchDetail();
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      setStatusError(e.error || e.message || 'Status update failed');
+    } finally {
+      setStatusUpdating(false);
     }
   };
 
@@ -181,6 +208,40 @@ export default function PropertyDetail() {
         </div>
         <span className="px-3 py-1 rounded-full text-xs bg-gray-100 border">Durum: {property.status || 'NEW'}</span>
       </div>
+
+      {isAdminPath && (
+        <section className="border rounded p-4 mb-4 bg-blue-50">
+          <h3 className="font-semibold mb-3">Review Status</h3>
+          <div className="flex flex-wrap gap-2 items-end">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold">Status</span>
+              <select
+                className="border rounded px-2 py-1 text-sm"
+                value={statusValue}
+                onChange={(e) => {
+                  setStatusValue(e.target.value);
+                  setStatusSuccess('');
+                  setStatusError('');
+                }}
+              >
+                <option value="NEW">NEW</option>
+                <option value="REVIEWING">REVIEWING</option>
+                <option value="APPROVED">APPROVED</option>
+                <option value="REJECTED">REJECTED</option>
+              </select>
+            </label>
+            <button
+              onClick={updateStatus}
+              disabled={statusUpdating || statusValue === (property.status || 'NEW')}
+              className="px-4 py-2 text-sm rounded bg-blue-600 text-white disabled:opacity-60"
+            >
+              {statusUpdating ? 'Saving...' : 'Save Status'}
+            </button>
+          </div>
+          {statusSuccess && <div className="text-xs text-green-700 mt-2">{statusSuccess}</div>}
+          {statusError && <div className="text-xs text-red-700 mt-2">{statusError}</div>}
+        </section>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-sm">
         <section className="border rounded p-4">

@@ -5,6 +5,7 @@ import {
 	getAllProperties,
 	getPropertyById,
 	reviewProperty,
+	updatePropertyStatus,
 	acceptDealPool,
 	shareDealPool,
 	getAdminUsers,
@@ -18,6 +19,7 @@ const router = express.Router();
 router.get('/properties', auth, admin, getAllProperties);
 router.get('/properties/:id', auth, admin, getPropertyById);
 router.patch('/properties/:id/review', auth, admin, reviewProperty);
+router.patch('/properties/:id/status', auth, admin, updatePropertyStatus);
 router.post('/deal-pool/:propertyId/accept', auth, admin, acceptDealPool);
 router.post('/deal-pool/:entryId/share', auth, admin, shareDealPool);
 
