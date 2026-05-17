@@ -639,6 +639,76 @@ export default function PropertyDetail() {
     }
   };
 
+  const shareAnalysisToOrganization = async () => {
+    if (!resolvedId) return;
+    const organizationId = window.prompt('Organization ID giriniz (Organizations sayfasından):');
+    if (!organizationId) return;
+
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Sharing analysis to organization...');
+    try {
+      await apiFetch(`workspace/${organizationId}/shared-analysis`, {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Analysis shared to organization workspace');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Share analysis failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
+  const addToSharedWorkspacePortfolio = async () => {
+    if (!resolvedId) return;
+    const organizationId = window.prompt('Organization ID giriniz (Organizations sayfasından):');
+    if (!organizationId) return;
+    const title = window.prompt('Shared portfolio adı', 'Shared Portfolio') || 'Shared Portfolio';
+
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Adding property to shared workspace portfolio...');
+    try {
+      await apiFetch(`workspace/${organizationId}/portfolios`, {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId, title }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Property added to shared workspace portfolio');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Shared portfolio action failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
+  const addToSharedWorkspaceWatchlist = async () => {
+    if (!resolvedId) return;
+    const organizationId = window.prompt('Organization ID giriniz (Organizations sayfasından):');
+    if (!organizationId) return;
+
+    setInvestorActionLoading(true);
+    const loadingToastId = toast.loading('Adding property to shared workspace watchlist...');
+    try {
+      await apiFetch(`workspace/${organizationId}/watchlist`, {
+        method: 'POST',
+        body: JSON.stringify({ propertyId: resolvedId }),
+      });
+      toast.dismiss(loadingToastId);
+      toast.success('Property added to shared workspace watchlist');
+    } catch (err) {
+      const e = err as { error?: string; message?: string };
+      toast.dismiss(loadingToastId);
+      toast.error(e.error || e.message || 'Shared watchlist action failed');
+    } finally {
+      setInvestorActionLoading(false);
+    }
+  };
+
   if (isAdminPath && user?.role !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
@@ -804,6 +874,27 @@ export default function PropertyDetail() {
                 className="px-4 py-2 rounded text-sm font-semibold bg-amber-500 text-white hover:bg-amber-600 disabled:opacity-50"
               >
                 Export Analysis JSON
+              </button>
+              <button
+                onClick={shareAnalysisToOrganization}
+                disabled={investorActionLoading || !latestAnalysis}
+                className="px-4 py-2 rounded text-sm font-semibold bg-indigo-700 text-white hover:bg-indigo-800 disabled:opacity-50"
+              >
+                Share Analysis to Organization
+              </button>
+              <button
+                onClick={addToSharedWorkspacePortfolio}
+                disabled={investorActionLoading}
+                className="px-4 py-2 rounded text-sm font-semibold bg-fuchsia-700 text-white hover:bg-fuchsia-800 disabled:opacity-50"
+              >
+                Add to Shared Workspace Portfolio
+              </button>
+              <button
+                onClick={addToSharedWorkspaceWatchlist}
+                disabled={investorActionLoading}
+                className="px-4 py-2 rounded text-sm font-semibold bg-cyan-700 text-white hover:bg-cyan-800 disabled:opacity-50"
+              >
+                Add to Shared Workspace Watchlist
               </button>
             </div>
           </div>

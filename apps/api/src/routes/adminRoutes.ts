@@ -11,7 +11,8 @@ import {
 	getAdminUsers,
 	getAdminAnalyses,
 	getAdminCreditLedger,
-	getAdminStripeSessions
+	getAdminStripeSessions,
+	getAdminRuntimeOverview
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.get('/users', auth, admin, getAdminUsers);
 router.get('/analyses', auth, admin, getAdminAnalyses);
 router.get('/credit-ledger', auth, admin, getAdminCreditLedger);
 router.get('/stripe-sessions', auth, admin, getAdminStripeSessions);
+router.get('/runtime', auth, admin, getAdminRuntimeOverview);
 
 export default router;

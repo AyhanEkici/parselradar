@@ -12,6 +12,7 @@ import CreditLedger from '../models/CreditLedger';
 import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import DocumentUpload from '../models/DocumentUpload';
 import AuditEvent from '../models/AuditEvent';
+import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -107,6 +108,12 @@ export const getAdminStripeSessions = async (req: AuthRequest, res: Response) =>
     .limit(limit)
     .populate('userId', 'name email role');
   res.json({ sessions, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// GET /admin/runtime
+export const getAdminRuntimeOverview = async (_req: AuthRequest, res: Response) => {
+  const snapshot = await buildOperationalSnapshot();
+  res.json(snapshot);
 };
 
 export const getAllProperties = async (req: AuthRequest, res: Response) => {

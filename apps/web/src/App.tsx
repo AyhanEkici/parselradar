@@ -24,6 +24,12 @@ import SavedAnalyses from './pages/SavedAnalyses';
 import Watchlist from './pages/Watchlist';
 import PortfolioDashboard from './pages/PortfolioDashboard';
 import PortfolioDetail from './pages/PortfolioDetail';
+import Organizations from './pages/Organizations';
+import OrganizationDetail from './pages/OrganizationDetail';
+import WorkspaceDashboard from './pages/WorkspaceDashboard';
+import WorkspacePortfolio from './pages/WorkspacePortfolio';
+import WorkspaceWatchlist from './pages/WorkspaceWatchlist';
+import WorkspaceActivity from './pages/WorkspaceActivity';
 import NotFound from './pages/NotFound';
 import { ToastProvider } from './components/ui';
 
@@ -44,6 +50,7 @@ export default function App() {
             <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
             <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
             <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
+            <a href="/organizations" className="hover:underline">Organizations</a>
           </nav>
         </div>
         <Routes>
@@ -73,6 +80,12 @@ export default function App() {
           <Route path="/investor/watchlist" element={<Watchlist />} />
           <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
           <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
+          <Route path="/organizations" element={<Organizations />} />
+          <Route path="/organizations/:id" element={<OrganizationDetail />} />
+          <Route path="/workspace/:organizationId/dashboard" element={<WorkspaceDashboard />} />
+          <Route path="/workspace/:organizationId/portfolio" element={<WorkspacePortfolio />} />
+          <Route path="/workspace/:organizationId/watchlist" element={<WorkspaceWatchlist />} />
+          <Route path="/workspace/:organizationId/activity" element={<WorkspaceActivity />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
