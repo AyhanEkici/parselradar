@@ -1,3 +1,11 @@
+import {
+  INFRASTRUCTURE_SCORE_COMPONENTS,
+  INFRASTRUCTURE_WEIGHTS,
+  ROAD_PROXIMITY_KEYWORDS,
+  ROAD_PROXIMITY_SCORES,
+} from '../../config/analysis/infrastructureWeights';
+import { DEFAULT_ZONING_PROFILE, LAND_USE_DESIRABILITY_WEIGHTS, ZONING_WEIGHTS } from '../../config/analysis/zoningWeights';
+
 type DeveloperFitInput = {
   areaM2?: number;
   zoningStatus?: string;
@@ -31,14 +39,24 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
-export function calculateDeveloperFit(input: DeveloperFitInput): DeveloperFitResult {
-  const zoning = normalize(input.zoningStatus);
+function resolveZoningProfile(zoningStatus?: string) {
+  const zoning = normalize(zoningStatus);
+  const found = Object.entries(ZONING_WEIGHTS).find(([key]) => zoning.includes(key));
+  return found ? found[1] : DEFAULT_ZONING_PROFILE;
+}
 
-  let zoningPotentialScore = 45;
-  if (zoning.includes('residential') || zoning.includes('konut')) zoningPotentialScore = 85;
-  else if (zoning.includes('commercial') || zoning.includes('ticari') || zoning.includes('mixed')) zoningPotentialScore = 90;
-  else if (zoning.includes('agricultural') || zoning.includes('tarim')) zoningPotentialScore = 35;
-  else if (zoning.includes('protected') || zoning.includes('sit') || zoning.includes('park')) zoningPotentialScore = 25;
+function roadProximityScore(value?: string) {
+  const v = normalize(value);
+  if (!v) return ROAD_PROXIMITY_SCORES.unknown;
+  if (ROAD_PROXIMITY_KEYWORDS.strong.some((k) => v.includes(k))) return ROAD_PROXIMITY_SCORES.strong;
+  if (ROAD_PROXIMITY_KEYWORDS.medium.some((k) => v.includes(k))) return ROAD_PROXIMITY_SCORES.medium;
+  if (ROAD_PROXIMITY_KEYWORDS.weak.some((k) => v.includes(k))) return ROAD_PROXIMITY_SCORES.weak;
+  return ROAD_PROXIMITY_SCORES.unknown;
+}
+
+export function calculateDeveloperFit(input: DeveloperFitInput): DeveloperFitResult {
+  const zoningProfile = resolveZoningProfile(input.zoningStatus);
+  const zoningPotentialScore = zoningProfile.zoningPotentialScore;
 
   let parcelReadinessScore = 20;
   if (input.ada) parcelReadinessScore += 25;
@@ -46,10 +64,23 @@ export function calculateDeveloperFit(input: DeveloperFitInput): DeveloperFitRes
   if (input.pafta) parcelReadinessScore += 10;
   if (input.tapuType && normalize(input.tapuType) !== 'unknown') parcelReadinessScore += 15;
 
-  let infraScore = 35;
-  if (!hasNegativeUtility(input.roadAccess)) infraScore += 20;
-  if (!hasNegativeUtility(input.electricity)) infraScore += 20;
-  if (!hasNegativeUtility(input.water)) infraScore += 20;
+  const roadScore = roadProximityScore(input.roadAccess);
+  const electricityScore = hasNegativeUtility(input.electricity)
+    ? INFRASTRUCTURE_SCORE_COMPONENTS.baseScore - INFRASTRUCTURE_SCORE_COMPONENTS.missingPenalty
+    : INFRASTRUCTURE_SCORE_COMPONENTS.baseScore + INFRASTRUCTURE_SCORE_COMPONENTS.electricityPositive;
+  const waterScore = hasNegativeUtility(input.water)
+    ? INFRASTRUCTURE_SCORE_COMPONENTS.baseScore - INFRASTRUCTURE_SCORE_COMPONENTS.missingPenalty
+    : INFRASTRUCTURE_SCORE_COMPONENTS.baseScore + INFRASTRUCTURE_SCORE_COMPONENTS.waterPositive;
+
+  const infraScore = clamp(
+    Math.round(
+      roadScore * INFRASTRUCTURE_WEIGHTS.roadAccess +
+        electricityScore * INFRASTRUCTURE_WEIGHTS.electricity +
+        waterScore * INFRASTRUCTURE_WEIGHTS.water,
+    ),
+    0,
+    100,
+  );
 
   let sizeScore = 40;
   if (typeof input.areaM2 === 'number' && input.areaM2 > 0) {
@@ -59,11 +90,21 @@ export function calculateDeveloperFit(input: DeveloperFitInput): DeveloperFitRes
     else sizeScore = 50;
   }
 
+  const landUseDesirabilityScore = clamp(
+    Math.round(
+      zoningProfile.desirabilityScore * LAND_USE_DESIRABILITY_WEIGHTS.zoningDesirability +
+        infraScore * LAND_USE_DESIRABILITY_WEIGHTS.infrastructureSupport +
+        sizeScore * LAND_USE_DESIRABILITY_WEIGHTS.parcelSizeFit,
+    ),
+    0,
+    100,
+  );
+
   const developerFitScore = Math.round(
     zoningPotentialScore * 0.35 +
       clamp(parcelReadinessScore, 0, 100) * 0.3 +
       clamp(infraScore, 0, 100) * 0.2 +
-      sizeScore * 0.15,
+      landUseDesirabilityScore * 0.15,
   );
 
   const developerFit: DeveloperFitResult['developerFit'] =

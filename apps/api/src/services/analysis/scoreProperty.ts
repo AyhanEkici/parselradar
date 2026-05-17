@@ -227,6 +227,7 @@ export function scoreProperty(input: ScorePropertyInput): ScorePropertyOutput {
     zoningPotentialScore: developer.zoningPotentialScore,
     parcelReadinessScore: developer.parcelReadinessScore,
     riskClassification: risks.riskClassification,
+    calibrationConfigVersion: 'analysis-v2-config-tables',
   };
 
   return {
