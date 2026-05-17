@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
+import {
+  AdminButton,
+  AdminEmptyState,
+  AdminHeader,
+  AdminInput,
+  AdminPage,
+  AdminStatusPill,
+  AdminSurface,
+  AdminTable,
+  AdminTableWrap,
+  AdminTd,
+  AdminTh,
+  AdminToolbar,
+} from '../components/admin';
 
 type AuditEvent = {
   _id: string;
@@ -90,130 +104,120 @@ export default function AdminAuditTimeline() {
   }
 
   return (
-    <div className="p-4 max-w-6xl mx-auto overflow-x-hidden">
-      <h1 className="text-2xl font-bold mb-4">Audit Timeline</h1>
+    <AdminPage className="overflow-x-hidden">
+      <AdminSurface className="p-4 sm:p-5 space-y-4">
+        <AdminHeader title="Audit Timeline" subtitle="Sistem ve yönetici işlemlerinin olay akışı" />
 
-      <div className="mb-2 flex gap-2 items-center">
-        <input
-          className="border px-2 py-1 text-xs"
-          placeholder="Type filter"
-          value={type}
-          onChange={(e) => {
-            setPage(1);
-            setType(e.target.value);
-          }}
-        />
+        <AdminToolbar>
+          <AdminInput
+            className="w-full sm:w-56"
+            placeholder="Type filter"
+            value={type}
+            onChange={(e) => {
+              setPage(1);
+              setType(e.target.value);
+            }}
+          />
 
-        <input
-          className="border px-2 py-1 text-xs"
-          placeholder="ActorUserId filter"
-          value={actorUserId}
-          onChange={(e) => {
-            setPage(1);
-            setActorUserId(e.target.value);
-          }}
-        />
+          <AdminInput
+            className="w-full sm:w-64"
+            placeholder="ActorUserId filter"
+            value={actorUserId}
+            onChange={(e) => {
+              setPage(1);
+              setActorUserId(e.target.value);
+            }}
+          />
 
-        <button
-          className="border px-2 py-1 text-xs"
-          onClick={() => {
-            setType('');
-            setActorUserId('');
-            setPage(1);
-          }}
-        >
-          Clear
-        </button>
-      </div>
+          <AdminButton
+            onClick={() => {
+              setType('');
+              setActorUserId('');
+              setPage(1);
+            }}
+          >
+            Clear
+          </AdminButton>
+        </AdminToolbar>
 
-      <div className="w-full overflow-hidden">
-        <table className="w-full table-fixed border text-[11px] sm:text-xs">
-          <thead>
-            <tr>
-              <th className="border px-2 w-[14%]">Time</th>
-              <th className="border px-2 w-[12%]">Type</th>
-              <th className="border px-2 w-[16%]">Actor</th>
-              <th className="border px-2 w-[16%]">Target</th>
-              <th className="border px-2 w-[18%]">Message</th>
-              <th className="border px-2 w-[8%]">Success</th>
-              <th className="border px-2 w-[16%]">Metadata</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {loading ? (
+        <AdminTableWrap className="overflow-hidden">
+          <AdminTable className="w-full table-fixed text-[11px] sm:text-xs">
+            <thead>
               <tr>
-                <td colSpan={7} className="text-center">
-                  Loading...
-                </td>
+                <AdminTh className="w-[14%]">Time</AdminTh>
+                <AdminTh className="w-[12%]">Type</AdminTh>
+                <AdminTh className="w-[16%]">Actor</AdminTh>
+                <AdminTh className="w-[16%]">Target</AdminTh>
+                <AdminTh className="w-[18%]">Message</AdminTh>
+                <AdminTh className="w-[8%] text-center">Success</AdminTh>
+                <AdminTh className="w-[16%]">Metadata</AdminTh>
               </tr>
-            ) : null}
+            </thead>
 
-            {!loading && events.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center">
-                  Audit kaydı bulunamadı
-                </td>
-              </tr>
-            ) : null}
+            <tbody>
+              {!loading && events.map((ev) => (
+                <tr key={ev._id} className={ev.success ? '' : 'bg-red-50/60'}>
+                  <AdminTd className="whitespace-nowrap">
+                    {new Date(ev.createdAt).toLocaleString()}
+                  </AdminTd>
 
-            {events.map((ev) => (
-              <tr key={ev._id} className={ev.success ? '' : 'bg-red-50'}>
-                <td className="border px-2 whitespace-nowrap align-top">
-                  {new Date(ev.createdAt).toLocaleString()}
-                </td>
+                  <AdminTd className="break-words">{ev.type || ''}</AdminTd>
 
-                <td className="border px-2 break-words align-top">{ev.type || ''}</td>
+                  <AdminTd className="break-words">
+                    {ev.actorUserId ? (
+                      <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
+                    ) : null}{' '}
+                    {ev.actorRole || ''}
+                  </AdminTd>
 
-                <td className="border px-2 break-words align-top">
-                  {ev.actorUserId ? (
-                    <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
-                  ) : null}{' '}
-                  {ev.actorRole || ''}
-                </td>
+                  <AdminTd className="break-words">
+                    {ev.targetType || ''}{' '}
+                    {ev.targetId ? <span title={ev.targetId}>{shortenId(ev.targetId)}</span> : null}
+                  </AdminTd>
 
-                <td className="border px-2 break-words align-top">
-                  {ev.targetType || ''}{' '}
-                  {ev.targetId ? <span title={ev.targetId}>{shortenId(ev.targetId)}</span> : null}
-                </td>
+                  <AdminTd className="break-words whitespace-normal">{ev.message || ''}</AdminTd>
 
-                <td className="border px-2 break-words whitespace-normal align-top">{ev.message || ''}</td>
+                  <AdminTd className="text-center">
+                    <AdminStatusPill tone={ev.success ? 'success' : 'danger'}>
+                      {ev.success ? '✓' : '✗'}
+                    </AdminStatusPill>
+                  </AdminTd>
 
-                <td className="border px-2 text-center align-top">{ev.success ? '✓' : '✗'}</td>
+                  <AdminTd
+                    className="break-words whitespace-normal"
+                    title={JSON.stringify(ev.metadata || {})}
+                  >
+                    {metadataToText(ev.metadata)}
+                  </AdminTd>
+                </tr>
+              ))}
+            </tbody>
+          </AdminTable>
+        </AdminTableWrap>
 
-                <td
-                  className="border px-2 break-words whitespace-normal align-top"
-                  title={JSON.stringify(ev.metadata || {})}
-                >
-                  {metadataToText(ev.metadata)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        {loading ? <div className="text-sm text-slate-500">Loading...</div> : null}
+        {!loading && events.length === 0 ? <AdminEmptyState>Audit kaydı bulunamadı</AdminEmptyState> : null}
 
-      <div className="mt-2 flex gap-2 items-center">
-        <button
-          className="border px-2 py-1 text-xs"
-          disabled={page <= 1}
-          onClick={() => setPage((current) => Math.max(1, current - 1))}
-        >
-          Prev
-        </button>
-
-        <span>
-          Page {page} / {totalPages}
-        </span>
-
-        <button
-          className="border px-2 py-1 text-xs"
-          disabled={page >= totalPages}
-          onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+        <AdminToolbar className="justify-between">
+          <div className="text-sm text-slate-600">
+            Page {page} / {totalPages}
+          </div>
+          <div className="flex items-center gap-2">
+            <AdminButton
+              disabled={page <= 1}
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+            >
+              Prev
+            </AdminButton>
+            <AdminButton
+              disabled={page >= totalPages}
+              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+            >
+              Next
+            </AdminButton>
+          </div>
+        </AdminToolbar>
+      </AdminSurface>
+    </AdminPage>
   );
 }
