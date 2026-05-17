@@ -8,6 +8,7 @@ import PropertySubmission from '../models/PropertySubmission';
 import { scoreProperty } from '../services/analysis/scoreProperty';
 import { buildComparableMarketIntelligence } from '../services/comparables';
 import { buildGeoIntelligence } from '../services/geo';
+import { buildDevelopmentScenario } from '../services/development';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -105,6 +106,15 @@ function toResponseFromRun(run: any, reused: boolean) {
     regionalDemand: full.regionalDemand,
     strategicLocationSignals: full.strategicLocationSignals || [],
     geoSummary: full.geoSummary,
+    subdivisionPotential: full.subdivisionPotential,
+    frontageDepthScore: full.frontageDepthScore,
+    densityPotential: full.densityPotential,
+    developerROI: full.developerROI,
+    parcelMergeOpportunity: full.parcelMergeOpportunity,
+    rezoningUpside: full.rezoningUpside,
+    projectability: full.projectability,
+    developmentSignals: full.developmentSignals || [],
+    developmentSummary: full.developmentSummary,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -198,6 +208,18 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       water: propertyObj.water,
     });
 
+    const developmentScenario = buildDevelopmentScenario({
+      areaM2: propertyObj.areaM2,
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+      zoning: propertyObj.zoningStatus,
+      marketHeat: comparableMarket.marketHeat,
+      roadAccessScore: geoIntelligence.roadAccessScore,
+      infrastructureScore: geoIntelligence.infrastructureScore,
+      growthPhase: geoIntelligence.growthPotential?.developmentPhase,
+      avgComparablePricePerM2: comparableMarket.avgComparablePricePerM2,
+    });
+
     const run = await AnalysisRun.create({
       propertySubmissionId: property._id,
       userId: normalizedUserId,
@@ -246,6 +268,15 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         regionalDemand: geoIntelligence.regionalDemand,
         strategicLocationSignals: geoIntelligence.strategicLocationSignals,
         geoSummary: geoIntelligence.geoSummary,
+        subdivisionPotential: developmentScenario.subdivisionPotential,
+        frontageDepthScore: developmentScenario.frontageDepthScore,
+        densityPotential: developmentScenario.densityPotential,
+        developerROI: developmentScenario.developerROI,
+        parcelMergeOpportunity: developmentScenario.parcelMergeOpportunity,
+        rezoningUpside: developmentScenario.rezoningUpside,
+        projectability: developmentScenario.projectability,
+        developmentSignals: developmentScenario.developmentSignals,
+        developmentSummary: developmentScenario.developmentSummary,
       },
     });
 

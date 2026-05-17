@@ -26,6 +26,15 @@ import {
   StrategicLocationCard,
   GeoIntelligenceGrid,
 } from '../components/geo';
+import {
+  DevelopmentPotentialCard,
+  DeveloperROICard,
+  SubdivisionCard,
+  RezoningUpsideCard,
+  ParcelMergeCard,
+  ProjectabilityCard,
+  DevelopmentScenarioTimeline,
+} from '../components/development';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -295,6 +304,36 @@ export default function PropertyDetail() {
       };
       strategicLocationSignals?: string[];
       geoSummary?: string;
+      subdivisionPotential?: { potential: string; score: number; message: string };
+      frontageDepthScore?: {
+        score: number;
+        frontageScore: number;
+        depthScore: number;
+        quality: string;
+      };
+      densityPotential?: { classification: string; score: number };
+      developerROI?: { tier: string; score: number; description: string };
+      parcelMergeOpportunity?: {
+        opportunity: boolean;
+        score: number;
+        signals: string[];
+        message: string;
+      };
+      rezoningUpside?: {
+        scenario: string;
+        score: number;
+        multiplier: number;
+        probability: number;
+        message: string;
+      };
+      projectability?: {
+        level: string;
+        score: number;
+        constraints: string[];
+        recommendations: string[];
+      };
+      developmentSignals?: string[];
+      developmentSummary?: string;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -706,6 +745,64 @@ export default function PropertyDetail() {
                   strategicLocationSignals={latestAnalysis.strategicLocationSignals || []}
                   geoSummary={latestAnalysis.geoSummary}
                 />
+              </div>
+            )}
+
+            {latestAnalysis.developmentSummary && (
+              <div className="mt-6">
+                <div className="mb-3">
+                  <h3 className="text-lg font-semibold text-gray-900">Development Intelligence</h3>
+                  <p className="text-sm text-gray-600">Scenario-based development readiness analysis</p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <SubdivisionCard subdivisionPotential={latestAnalysis.subdivisionPotential} />
+                  <DevelopmentPotentialCard
+                    subdivisionPotential={latestAnalysis.subdivisionPotential}
+                    frontageDepthScore={latestAnalysis.frontageDepthScore}
+                    densityPotential={latestAnalysis.densityPotential}
+                  />
+                  <DeveloperROICard developerROI={latestAnalysis.developerROI} />
+                  <RezoningUpsideCard rezoningUpside={latestAnalysis.rezoningUpside} />
+                  <ParcelMergeCard parcelMergeOpportunity={latestAnalysis.parcelMergeOpportunity} />
+                  <ProjectabilityCard projectability={latestAnalysis.projectability} />
+                </div>
+
+                {latestAnalysis.developmentSummary && (
+                  <div className="mt-4">
+                    <DevelopmentScenarioTimeline
+                      developmentScenario={{
+                        subdivisionPotential: latestAnalysis.subdivisionPotential || { potential: 'unknown', score: 0 },
+                        densityPotential: latestAnalysis.densityPotential || { classification: 'unknown', score: 0 },
+                        projectability: latestAnalysis.projectability || { level: 'unknown', score: 0 },
+                        developerROI: latestAnalysis.developerROI || { tier: 'unknown', score: 0 },
+                      }}
+                    />
+                  </div>
+                )}
+
+                {latestAnalysis.developmentSignals && latestAnalysis.developmentSignals.length > 0 && (
+                  <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4">
+                    <div className="text-sm font-semibold text-gray-900 mb-2">Development Signals</div>
+                    <div className="flex flex-wrap gap-2">
+                      {latestAnalysis.developmentSignals.map((signal) => (
+                        <span
+                          key={signal}
+                          className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-200 text-xs font-medium"
+                        >
+                          {signal}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {latestAnalysis.developmentSummary && (
+                  <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                    <div className="text-xs font-semibold text-blue-900 uppercase mb-2">Development Summary</div>
+                    <p className="text-sm text-blue-900">{latestAnalysis.developmentSummary}</p>
+                  </div>
+                )}
               </div>
             )}
 

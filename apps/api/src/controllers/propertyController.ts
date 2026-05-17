@@ -186,6 +186,15 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       regionalDemand: full.regionalDemand,
       strategicLocationSignals: full.strategicLocationSignals || [],
       geoSummary: full.geoSummary,
+      subdivisionPotential: full.subdivisionPotential,
+      frontageDepthScore: full.frontageDepthScore,
+      densityPotential: full.densityPotential,
+      developerROI: full.developerROI,
+      parcelMergeOpportunity: full.parcelMergeOpportunity,
+      rezoningUpside: full.rezoningUpside,
+      projectability: full.projectability,
+      developmentSignals: full.developmentSignals || [],
+      developmentSummary: full.developmentSummary,
     };
   });
 
