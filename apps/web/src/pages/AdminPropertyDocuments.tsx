@@ -2,6 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
+import {
+  AdminButton,
+  AdminEmptyState,
+  AdminHeader,
+  AdminPage,
+  AdminStatusPill,
+  AdminSurface,
+  AdminToolbar,
+} from '../components/admin';
 
 type DocumentItem = {
   _id: string;
@@ -14,6 +23,7 @@ type DocumentItem = {
   downloadUrl?: string;
   storedName?: string;
   fileMissing?: boolean;
+  sizeBytes?: number;
 };
 
 type DetailResponse = {
@@ -30,6 +40,15 @@ function absoluteFileUrl(fileUrl?: string) {
   const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) return fileUrl;
   return `${base.replace(/\/+$/, '')}/${fileUrl.replace(/^\/+/, '')}`;
+}
+
+function formatBytes(bytes?: number) {
+  if (typeof bytes !== 'number' || Number.isNaN(bytes) || bytes < 0) return '-';
+  if (bytes < 1024) return `${bytes} B`;
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${kb.toFixed(1)} KB`;
+  const mb = kb / 1024;
+  return `${mb.toFixed(2)} MB`;
 }
 
 export default function AdminPropertyDocuments() {
@@ -203,117 +222,145 @@ export default function AdminPropertyDocuments() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 p-4 sm:p-6 bg-white rounded shadow">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-        <div>
-          <h2 className="text-xl font-semibold">Property Documents</h2>
-          {title && <p className="text-sm text-gray-600 break-words">{title}</p>}
-        </div>
-        <Link to={`/admin/properties/${propertyId}`} className="text-sm text-blue-600 hover:underline">
-          Back to Property Detail
-        </Link>
-      </div>
+    <AdminPage>
+      <AdminSurface className="p-4 sm:p-5 space-y-5">
+        <AdminHeader
+          title="Property Documents"
+          subtitle={title || 'Belge yönetimi'}
+          actions={
+            <Link to={`/admin/properties/${propertyId}`} className="text-sm text-blue-600 hover:underline">
+              Back to Property Detail
+            </Link>
+          }
+        />
 
-      {loading && <div className="text-sm text-gray-600">Loading documents...</div>}
-      {error && <div className="text-sm text-red-600">{error}</div>}
-      {success && <div className="text-sm text-green-600">{success}</div>}
+        {loading && <div className="text-sm text-slate-600">Loading documents...</div>}
+        {error && <div className="text-sm text-red-600">{error}</div>}
+        {success && <div className="text-sm text-emerald-600">{success}</div>}
 
-      <section className="mb-5">
-        <h3 className="text-sm font-semibold mb-2">Existing Documents</h3>
-        {!loading && !error && cards.length === 0 && (
-          <div className="text-sm text-gray-600">No documents uploaded yet</div>
-        )}
+        <section className="space-y-3">
+          <AdminToolbar className="justify-between">
+            <h3 className="text-sm font-semibold text-slate-800">Existing Documents</h3>
+          </AdminToolbar>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-          {cards.map((doc) => (
-            <article key={doc._id} className="border rounded-lg p-3 flex flex-col gap-2">
-              <div className="text-sm font-medium break-words">{doc.documentType}</div>
-              <div className="text-sm text-gray-700 break-words">{doc.originalName}</div>
-              <div className="text-xs text-gray-500">{new Date(doc.createdAt || doc.uploadedAt || '').toLocaleString()}</div>
+          {!loading && !error && cards.length === 0 ? (
+            <AdminEmptyState>No documents uploaded yet</AdminEmptyState>
+          ) : null}
 
-              {doc.isImage && doc.hasFile && previewUrls[doc._id] ? (
-                <img src={previewUrls[doc._id]} alt={doc.originalName} className="w-full h-40 object-cover rounded border" loading="lazy" />
-              ) : (
-                <div className="w-full h-40 rounded border bg-gray-50 flex items-center justify-center text-xs text-gray-500">
-                  {!doc.hasFile
-                    ? 'Legacy file missing — re-upload required'
-                    : doc.isImage
-                    ? previewErrors[doc._id] || 'Loading preview...'
-                    : doc.isPdf
-                    ? 'PDF document'
-                    : 'File preview not available'}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {cards.map((doc) => (
+              <article key={doc._id} className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm hover:shadow-md transition">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <AdminStatusPill tone="info">{doc.documentType}</AdminStatusPill>
+                  <span className="text-xs text-slate-500">
+                    {new Date(doc.createdAt || doc.uploadedAt || '').toLocaleString()}
+                  </span>
                 </div>
-              )}
 
-              <div className="flex flex-wrap gap-2 mt-1">
-                <button
-                  type="button"
-                  className="px-3 py-1 text-xs rounded bg-blue-600 text-white disabled:opacity-50"
-                  disabled={!doc.hasFile}
-                  onClick={() => {
-                    if (doc.hasFile) window.open(doc.fileHref, '_blank', 'noopener,noreferrer');
-                  }}
-                >
-                  Open
-                </button>
-                <a
-                  href={doc.downloadHref || '#'}
-                  download={doc.originalName}
-                  className={`px-3 py-1 text-xs rounded bg-gray-800 text-white ${!doc.hasFile ? 'pointer-events-none opacity-50' : ''}`}
-                  onClick={(e) => {
-                    if (!doc.hasFile) e.preventDefault();
-                  }}
-                >
-                  Download
-                </a>
-                <button
-                  type="button"
-                  className="px-3 py-1 text-xs rounded bg-red-600 text-white disabled:opacity-60"
-                  onClick={() => handleDelete(doc._id)}
-                  disabled={deletingId === doc._id}
-                >
-                  {deletingId === doc._id ? 'Deleting...' : 'Delete'}
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+                <div className="text-sm font-medium text-slate-900 break-words" title={doc.originalName}>
+                  {doc.originalName}
+                </div>
 
-      <section className="border rounded p-4">
-        <h3 className="text-sm font-semibold mb-3">Upload New Documents</h3>
-        <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
-          <label className="text-xs text-gray-600 md:col-span-1">
-            Document type
-            <select
-              className="block w-full border rounded px-2 py-2 text-sm"
-              value={documentType}
-              onChange={(e) => setDocumentType(e.target.value)}
-            >
-              {docTypes.map((type) => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-          </label>
-          <label className="text-xs text-gray-600 md:col-span-2">
-            File
-            <input
-              className="block w-full border rounded px-2 py-2 text-sm"
-              type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.webp"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-              required
-            />
-          </label>
-          <button
-            type="submit"
-            className="h-10 px-3 text-sm rounded bg-indigo-600 text-white disabled:opacity-60"
-            disabled={uploading || !file}
-          >
-            {uploading ? 'Uploading...' : 'Upload'}
-          </button>
-        </form>
-      </section>
-    </div>
+                <div className="mt-1 text-xs text-slate-500">Size: {formatBytes(doc.sizeBytes)}</div>
+
+                <div className="mt-3">
+                  {doc.isImage && doc.hasFile && previewUrls[doc._id] ? (
+                    <img
+                      src={previewUrls[doc._id]}
+                      alt={doc.originalName}
+                      className="w-full h-40 object-cover rounded-lg border border-slate-200"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-40 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+                      {!doc.hasFile
+                        ? 'Legacy file missing — re-upload required'
+                        : doc.isImage
+                        ? previewErrors[doc._id] || 'Loading preview...'
+                        : doc.isPdf
+                        ? 'PDF document'
+                        : 'File preview not available'}
+                    </div>
+                  )}
+                </div>
+
+                <AdminToolbar className="mt-3">
+                  <AdminButton
+                    variant="primary"
+                    disabled={!doc.hasFile}
+                    onClick={() => {
+                      if (doc.hasFile) window.open(doc.fileHref, '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    Open
+                  </AdminButton>
+
+                  <a
+                    href={doc.downloadHref || '#'}
+                    download={doc.originalName}
+                    className={`h-9 px-3 rounded-md border text-sm font-medium transition-colors flex items-center ${
+                      !doc.hasFile
+                        ? 'pointer-events-none opacity-50 bg-white text-slate-400 border-slate-200'
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                    }`}
+                    onClick={(e) => {
+                      if (!doc.hasFile) e.preventDefault();
+                    }}
+                  >
+                    Download
+                  </a>
+
+                  <AdminButton
+                    variant="danger"
+                    onClick={() => handleDelete(doc._id)}
+                    disabled={deletingId === doc._id}
+                  >
+                    {deletingId === doc._id ? 'Deleting...' : 'Delete'}
+                  </AdminButton>
+                </AdminToolbar>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 p-4 bg-slate-50/40">
+          <AdminToolbar className="justify-between mb-3">
+            <h3 className="text-sm font-semibold text-slate-800">Upload New Documents</h3>
+          </AdminToolbar>
+
+          <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+            <label className="text-xs text-slate-600 md:col-span-1">
+              Document type
+              <select
+                className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
+                value={documentType}
+                onChange={(e) => setDocumentType(e.target.value)}
+              >
+                {docTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="text-xs text-slate-600 md:col-span-2">
+              File
+              <input
+                className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg,.webp"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                required
+              />
+            </label>
+
+            <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !file}>
+              {uploading ? 'Uploading...' : 'Upload'}
+            </AdminButton>
+          </form>
+        </section>
+      </AdminSurface>
+    </AdminPage>
   );
 }
