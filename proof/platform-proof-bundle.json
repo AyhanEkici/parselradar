@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-17T22:57:03.638Z",
-  "gitSha": "ca310f70b67e43d53a39722af9e8aac849cd2513",
+  "generatedAt": "2026-05-17T23:18:00.102Z",
+  "gitSha": "1262ae8540e191ae9482f3aa7b8fbc724c5ae52e",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 307,
-    "passCount": 299,
+    "totalChecks": 316,
+    "passCount": 308,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -502,6 +502,24 @@
         },
         {
           "category": "Connectors",
+          "name": "connectorFreshnessTracker.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorRateLimiter.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "connectorRetryPolicy.ts exists",
+          "status": "PASS",
+          "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
           "name": "ConnectorSourceApproval.ts exists",
           "status": "PASS",
           "message": "Required connector model file is present."
@@ -538,6 +556,18 @@
         },
         {
           "category": "Connectors",
+          "name": "Execution registry uses V23 municipality planning connector",
+          "status": "PASS",
+          "message": "Connector execution registry references the V23 municipality planning connector."
+        },
+        {
+          "category": "Connectors",
+          "name": "Execution registry uses V23 TKGM connector",
+          "status": "PASS",
+          "message": "Connector execution registry references the V23 TKGM production connector."
+        },
+        {
+          "category": "Connectors",
           "name": "getConnectorActivationState.ts exists",
           "status": "PASS",
           "message": "Required connector activation service file is present."
@@ -568,6 +598,24 @@
         },
         {
           "category": "Connectors",
+          "name": "municipalityPlanningConnector.ts exists",
+          "status": "PASS",
+          "message": "V23 onboarding surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "Planning governance classifications defined",
+          "status": "PASS",
+          "message": "Planning payload normalizer defines governance classification labels."
+        },
+        {
+          "category": "Connectors",
+          "name": "planningPayloadNormalizer.ts exists",
+          "status": "PASS",
+          "message": "V23 onboarding surface file is present."
+        },
+        {
+          "category": "Connectors",
           "name": "storeConnectorCredentialProfile.ts exists",
           "status": "PASS",
           "message": "Required connector activation service file is present."
@@ -577,6 +625,12 @@
           "name": "tkgmConnector.ts exists",
           "status": "PASS",
           "message": "Connector contract file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "tkgmProductionConnector.ts exists",
+          "status": "PASS",
+          "message": "V23 onboarding surface file is present."
         },
         {
           "category": "Connectors",
@@ -879,7 +933,7 @@
       ],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 35,
+      "passCount": 44,
       "warnCount": 7,
       "failCount": 0,
       "skippedCount": 0,
@@ -3258,6 +3312,24 @@
     },
     {
       "category": "Connectors",
+      "name": "connectorFreshnessTracker.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorRateLimiter.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "connectorRetryPolicy.ts exists",
+      "status": "PASS",
+      "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
       "name": "ConnectorSourceApproval.ts exists",
       "status": "PASS",
       "message": "Required connector model file is present."
@@ -3294,6 +3366,18 @@
     },
     {
       "category": "Connectors",
+      "name": "Execution registry uses V23 municipality planning connector",
+      "status": "PASS",
+      "message": "Connector execution registry references the V23 municipality planning connector."
+    },
+    {
+      "category": "Connectors",
+      "name": "Execution registry uses V23 TKGM connector",
+      "status": "PASS",
+      "message": "Connector execution registry references the V23 TKGM production connector."
+    },
+    {
+      "category": "Connectors",
       "name": "getConnectorActivationState.ts exists",
       "status": "PASS",
       "message": "Required connector activation service file is present."
@@ -3324,6 +3408,24 @@
     },
     {
       "category": "Connectors",
+      "name": "municipalityPlanningConnector.ts exists",
+      "status": "PASS",
+      "message": "V23 onboarding surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "Planning governance classifications defined",
+      "status": "PASS",
+      "message": "Planning payload normalizer defines governance classification labels."
+    },
+    {
+      "category": "Connectors",
+      "name": "planningPayloadNormalizer.ts exists",
+      "status": "PASS",
+      "message": "V23 onboarding surface file is present."
+    },
+    {
+      "category": "Connectors",
       "name": "storeConnectorCredentialProfile.ts exists",
       "status": "PASS",
       "message": "Required connector activation service file is present."
@@ -3333,6 +3435,12 @@
       "name": "tkgmConnector.ts exists",
       "status": "PASS",
       "message": "Connector contract file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "tkgmProductionConnector.ts exists",
+      "status": "PASS",
+      "message": "V23 onboarding surface file is present."
     },
     {
       "category": "Connectors",

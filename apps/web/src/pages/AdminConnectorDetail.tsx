@@ -13,6 +13,11 @@ import ConnectorTestRunPanel from '../components/connectors/ConnectorTestRunPane
 import ConnectorSourceApprovalPanel from '../components/connectors/ConnectorSourceApprovalPanel';
 import ConnectorActivationAuditPanel from '../components/connectors/ConnectorActivationAuditPanel';
 import ConnectorSamplePayloadPanel from '../components/connectors/ConnectorSamplePayloadPanel';
+import ConnectorRateLimitCard from '../components/connectors/ConnectorRateLimitCard';
+import ConnectorRetryPolicyCard from '../components/connectors/ConnectorRetryPolicyCard';
+import PlanningLayerAvailabilityCard from '../components/planning/PlanningLayerAvailabilityCard';
+import PlanningSourceFreshnessCard from '../components/planning/PlanningSourceFreshnessCard';
+import PlanningGovernanceClassificationCard from '../components/planning/PlanningGovernanceClassificationCard';
 
 export default function AdminConnectorDetail() {
   const { connectorKey } = useParams();
@@ -54,6 +59,7 @@ export default function AdminConnectorDetail() {
   const legalApproved: boolean = activationState?.legalApproved ?? status?.legalApproved ?? false;
   const approvalNote: string | null = activationState?.legalApprovalNote ?? null;
   const lastTestRun = activationState?.lastTestRun ?? null;
+  const v23 = activationState?.v23 ?? null;
 
   return (
     <AdminLayout title="Connector Detail">
@@ -135,6 +141,31 @@ export default function AdminConnectorDetail() {
                   />
                 </div>
               </div>
+
+              {/* Row 3B: Rate limit + Retry policy + Freshness */}
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-4">
+                  <ConnectorRateLimitCard rateLimit={v23?.rateLimit} />
+                </div>
+                <div className="xl:col-span-4">
+                  <ConnectorRetryPolicyCard retryPolicy={v23?.retryPolicy} />
+                </div>
+                <div className="xl:col-span-4">
+                  <PlanningSourceFreshnessCard freshness={v23?.freshness} />
+                </div>
+              </div>
+
+              {/* Row 3C: Planning layer availability + Governance (municipality) */}
+              {v23?.planning && (
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-6">
+                    <PlanningLayerAvailabilityCard connectorKey={connectorKey!} planning={v23?.planning} />
+                  </div>
+                  <div className="xl:col-span-6">
+                    <PlanningGovernanceClassificationCard governance={v23?.planning} />
+                  </div>
+                </div>
+              )}
 
               {/* Row 4: Legal card + Activation Plan */}
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">

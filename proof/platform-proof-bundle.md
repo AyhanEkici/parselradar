@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-17T22:57:03.638Z
+Generated at: 2026-05-17T23:18:00.102Z
 Overall status: WARN
-Git SHA: ca310f70b67e43d53a39722af9e8aac849cd2513
+Git SHA: 1262ae8540e191ae9482f3aa7b8fbc724c5ae52e
 Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
-- Checks: 307
-- PASS: 299
+- Checks: 316
+- PASS: 308
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -63,7 +63,7 @@ Dirty working tree: true
 ## Connectors
 
 - Overall: WARN
-- PASS: 35
+- PASS: 44
 - WARN: 7
 - FAIL: 0
 - SKIPPED: 0
@@ -98,19 +98,28 @@ Dirty working tree: true
 | PASS | connectorActivationRoutes.ts exists | Required connector surface file is present. |  |
 | PASS | ConnectorCredentialProfile.ts exists | Required connector model file is present. |  |
 | PASS | connectorExecutionRegistry.ts exists | Required connector surface file is present. |  |
+| PASS | connectorFreshnessTracker.ts exists | Required connector activation service file is present. |  |
+| PASS | connectorRateLimiter.ts exists | Required connector activation service file is present. |  |
+| PASS | connectorRetryPolicy.ts exists | Required connector activation service file is present. |  |
 | PASS | ConnectorSourceApproval.ts exists | Required connector model file is present. |  |
 | PASS | ConnectorTestRun.ts exists | Required connector model file is present. |  |
 | PASS | deactivateConnector.ts exists | Required connector activation service file is present. |  |
 | PASS | demographicConnector.ts exists | Connector contract file is present. |  |
 | PASS | emailProviderConnector.ts exists | Connector contract file is present. |  |
 | PASS | executeConnectorTestRun.ts exists | Required connector activation service file is present. |  |
+| PASS | Execution registry uses V23 municipality planning connector | Connector execution registry references the V23 municipality planning connector. |  |
+| PASS | Execution registry uses V23 TKGM connector | Connector execution registry references the V23 TKGM production connector. |  |
 | PASS | getConnectorActivationState.ts exists | Required connector activation service file is present. |  |
 | PASS | infrastructureConnector.ts exists | Connector contract file is present. |  |
 | PASS | listingConnector.ts exists | Connector contract file is present. |  |
 | PASS | mapGeocodingConnector.ts exists | Connector contract file is present. |  |
 | PASS | municipalityConnector.ts exists | Connector contract file is present. |  |
+| PASS | municipalityPlanningConnector.ts exists | V23 onboarding surface file is present. |  |
+| PASS | Planning governance classifications defined | Planning payload normalizer defines governance classification labels. |  |
+| PASS | planningPayloadNormalizer.ts exists | V23 onboarding surface file is present. |  |
 | PASS | storeConnectorCredentialProfile.ts exists | Required connector activation service file is present. |  |
 | PASS | tkgmConnector.ts exists | Connector contract file is present. |  |
+| PASS | tkgmProductionConnector.ts exists | V23 onboarding surface file is present. |  |
 | PASS | validateConnectorSamplePayload.ts exists | Required connector activation service file is present. |  |
 
 ## Harness Safety
