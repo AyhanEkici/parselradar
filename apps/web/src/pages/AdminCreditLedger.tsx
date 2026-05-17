@@ -1,14 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
+import {
+  AdminButton,
+  AdminEmptyState,
+  AdminHeader,
+  AdminPage,
+  AdminStatusPill,
+  AdminSurface,
+  AdminTable,
+  AdminTableWrap,
+  AdminTd,
+  AdminTh,
+  AdminToolbar,
+} from '../components/admin';
 
 interface LedgerEntry {
   _id: string;
-  userId: string;
+  userId:
+    | string
+    | {
+        _id?: string;
+        name?: string;
+        email?: string;
+      };
   amount: number;
   type: string;
   reason: string;
   createdAt: string;
+}
+
+function shortenId(value?: string) {
+  if (!value) return '-';
+  if (value.length <= 18) return value;
+  return `${value.slice(0, 8)}...${value.slice(-6)}`;
+}
+
+function renderUserIdentity(userId: LedgerEntry['userId']) {
+  if (typeof userId === 'string') {
+    return <span title={userId}>{shortenId(userId)}</span>;
+  }
+
+  const name = userId?.name?.trim();
+  const email = userId?.email?.trim();
+  const rawId = userId?._id;
+
+  if (name || email) {
+    return (
+      <div className="leading-5">
+        <div className="font-medium text-slate-900">{name || email}</div>
+        <div className="text-xs text-slate-500">{email && name ? email : shortenId(rawId)}</div>
+      </div>
+    );
+  }
+
+  return <span title={rawId}>{shortenId(rawId)}</span>;
 }
 
 export default function AdminCreditLedger() {
@@ -41,39 +87,70 @@ export default function AdminCreditLedger() {
   if (error) return <div>Hata: {error}</div>;
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Kredi Defteri</h1>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border text-xs">
-          <thead>
-            <tr>
-              <th className="border px-2">Tutar</th>
-              <th className="border px-2">Tip</th>
-              <th className="border px-2">Sebep</th>
-              <th className="border px-2">Kullanıcı</th>
-              <th className="border px-2">Oluşturulma</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? <tr><td colSpan={5} className="text-center">Yükleniyor...</td></tr> : null}
-            {!loading && ledger.length === 0 ? <tr><td colSpan={5} className="text-center">Kayıt yok</td></tr> : null}
-            {ledger.map(l => (
-              <tr key={l._id}>
-                <td className={`border px-2 ${l.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>{l.amount > 0 ? '+' : ''}{l.amount}</td>
-                <td className="border px-2">{l.type}</td>
-                <td className="border px-2">{l.reason}</td>
-                <td className="border px-2">{l.userId}</td>
-                <td className="border px-2">{new Date(l.createdAt).toLocaleString()}</td>
+    <AdminPage>
+      <AdminSurface className="p-4 sm:p-5 space-y-4">
+        <AdminHeader
+          title="Kredi Defteri"
+          subtitle="Kredi hareketlerini, kullanıcı bazında giriş ve çıkışlarıyla inceleyin"
+        />
+
+        <AdminTableWrap>
+          <AdminTable>
+            <thead>
+              <tr>
+                <AdminTh>Tutar</AdminTh>
+                <AdminTh>Tip</AdminTh>
+                <AdminTh>Sebep</AdminTh>
+                <AdminTh>Kullanıcı</AdminTh>
+                <AdminTh>Oluşturulma</AdminTh>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex gap-2 mt-2 justify-center">
-        <button className="border px-2 py-1 text-xs" disabled={page <= 1} onClick={() => setPage(p => p - 1)}>Önceki</button>
-        <span>Sayfa {page} / {totalPages}</span>
-        <button className="border px-2 py-1 text-xs" disabled={page >= totalPages} onClick={() => setPage(p => p + 1)}>Sonraki</button>
-      </div>
-    </div>
+            </thead>
+            <tbody>
+              {!loading && ledger.map((l) => (
+                <tr key={l._id} className="hover:bg-slate-50/70 transition-colors">
+                  <AdminTd>
+                    <span
+                      className={`inline-flex min-w-[4.5rem] justify-center rounded-md border px-2.5 py-1 text-xs font-semibold ${
+                        l.amount > 0
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-red-50 text-red-700 border-red-200'
+                      }`}
+                    >
+                      {l.amount > 0 ? '+' : ''}
+                      {l.amount}
+                    </span>
+                  </AdminTd>
+                  <AdminTd>
+                    <AdminStatusPill tone="info">{l.type}</AdminStatusPill>
+                  </AdminTd>
+                  <AdminTd className="break-words">{l.reason}</AdminTd>
+                  <AdminTd className="break-words">{renderUserIdentity(l.userId)}</AdminTd>
+                  <AdminTd className="whitespace-nowrap">{new Date(l.createdAt).toLocaleString()}</AdminTd>
+                </tr>
+              ))}
+            </tbody>
+          </AdminTable>
+        </AdminTableWrap>
+
+        {loading ? <div className="text-sm text-slate-500">Yükleniyor...</div> : null}
+        {!loading && ledger.length === 0 ? (
+          <AdminEmptyState>
+            Bu sayfada gösterilecek kredi hareketi bulunamadı.
+          </AdminEmptyState>
+        ) : null}
+
+        <AdminToolbar className="justify-between">
+          <div className="text-sm text-slate-600">Sayfa {page} / {totalPages}</div>
+          <div className="flex items-center gap-2">
+            <AdminButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+              Önceki
+            </AdminButton>
+            <AdminButton disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+              Sonraki
+            </AdminButton>
+          </div>
+        </AdminToolbar>
+      </AdminSurface>
+    </AdminPage>
   );
 }
