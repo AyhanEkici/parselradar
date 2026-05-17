@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-17T23:20:03.065Z
+Generated at: 2026-05-17T23:22:30.475Z
 Overall status: WARN
-Git SHA: a9476bfd32ff653bffa5d40e5859dd459e63da00
-Dirty working tree: false
+Git SHA: d4661fdaa9156d04452dfe4d7b3f599b265966a2
+Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
-- Checks: 316
-- PASS: 308
+- Checks: 322
+- PASS: 314
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -63,7 +63,7 @@ Dirty working tree: false
 ## Connectors
 
 - Overall: WARN
-- PASS: 44
+- PASS: 50
 - WARN: 7
 - FAIL: 0
 - SKIPPED: 0
@@ -78,6 +78,7 @@ Dirty working tree: false
 | WARN | Connector truth state municipality_zoning | Static connector truth state resolved to NOT_CONFIGURED. | CONNECTOR_MUNICIPALITY_TOKEN=MISSING, CONNECTOR_MUNICIPALITY_ENDPOINT=MISSING |
 | WARN | Connector truth state tkgm_parcel | Static connector truth state resolved to NOT_CONFIGURED. | CONNECTOR_TKGM_API_KEY=MISSING, CONNECTOR_TKGM_ENDPOINT=MISSING |
 | PASS | activateConnectorIfEligible.ts exists | Required connector activation service file is present. |  |
+| PASS | AdminConnectorDetail.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
 | PASS | buildConnectorActivationAudit.ts exists | Required connector activation service file is present. |  |
 | PASS | Connector live call policy is explicitly gated | Connector live calls stay gated behind CONNECTOR_TEST_MODE=active. |  |
 | PASS | Connector live-call mode | Live connector calls remain disabled by configuration. | CONNECTOR_TEST_MODE=MISSING |
@@ -99,8 +100,10 @@ Dirty working tree: false
 | PASS | ConnectorCredentialProfile.ts exists | Required connector model file is present. |  |
 | PASS | connectorExecutionRegistry.ts exists | Required connector surface file is present. |  |
 | PASS | connectorFreshnessTracker.ts exists | Required connector activation service file is present. |  |
+| PASS | ConnectorRateLimitCard.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
 | PASS | connectorRateLimiter.ts exists | Required connector activation service file is present. |  |
 | PASS | connectorRetryPolicy.ts exists | Required connector activation service file is present. |  |
+| PASS | ConnectorRetryPolicyCard.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
 | PASS | ConnectorSourceApproval.ts exists | Required connector model file is present. |  |
 | PASS | ConnectorTestRun.ts exists | Required connector model file is present. |  |
 | PASS | deactivateConnector.ts exists | Required connector activation service file is present. |  |
@@ -116,7 +119,10 @@ Dirty working tree: false
 | PASS | municipalityConnector.ts exists | Connector contract file is present. |  |
 | PASS | municipalityPlanningConnector.ts exists | V23 onboarding surface file is present. |  |
 | PASS | Planning governance classifications defined | Planning payload normalizer defines governance classification labels. |  |
+| PASS | PlanningGovernanceClassificationCard.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
+| PASS | PlanningLayerAvailabilityCard.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
 | PASS | planningPayloadNormalizer.ts exists | V23 onboarding surface file is present. |  |
+| PASS | PlanningSourceFreshnessCard.tsx exists (UI) | V23 connector planning UI surface file is present. |  |
 | PASS | storeConnectorCredentialProfile.ts exists | Required connector activation service file is present. |  |
 | PASS | tkgmConnector.ts exists | Connector contract file is present. |  |
 | PASS | tkgmProductionConnector.ts exists | V23 onboarding surface file is present. |  |

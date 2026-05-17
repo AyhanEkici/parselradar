@@ -11,6 +11,7 @@ import {
   VerificationSection,
   ConnectorTruthState,
   missingEnvKeys,
+  webPath,
 } from './platformVerification';
 
 const CATEGORY = 'Connectors';
@@ -64,6 +65,14 @@ export function verifyConnectors(): VerificationSection {
   const v23TkgmProductionPath = apiPath('connectors', 'tkgmProductionConnector.ts');
   const v23MunicipalityPlanningPath = apiPath('connectors', 'municipalityPlanningConnector.ts');
   const planningNormalizerPath = apiPath('services', 'planning', 'planningPayloadNormalizer.ts');
+  const frontendPlanningFiles = [
+    webPath('components', 'planning', 'PlanningLayerAvailabilityCard.tsx'),
+    webPath('components', 'planning', 'PlanningSourceFreshnessCard.tsx'),
+    webPath('components', 'planning', 'PlanningGovernanceClassificationCard.tsx'),
+    webPath('components', 'connectors', 'ConnectorRateLimitCard.tsx'),
+    webPath('components', 'connectors', 'ConnectorRetryPolicyCard.tsx'),
+    webPath('pages', 'AdminConnectorDetail.tsx'),
+  ];
 
   for (const requiredPath of [registryPath, routePath, policyPath, apiPath('controllers', 'connectorActivationController.ts')]) {
     checks.push(
@@ -83,6 +92,17 @@ export function verifyConnectors(): VerificationSection {
         `${v23Path.split(/[/\\]/).slice(-1)[0]} exists`,
         fileExists(v23Path) ? 'PASS' : 'FAIL',
         fileExists(v23Path) ? 'V23 onboarding surface file is present.' : 'V23 onboarding surface file is missing.',
+      ),
+    );
+  }
+
+  for (const uiPath of frontendPlanningFiles) {
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        `${uiPath.split(/[/\\]/).slice(-1)[0]} exists (UI)`,
+        fileExists(uiPath) ? 'PASS' : 'FAIL',
+        fileExists(uiPath) ? 'V23 connector planning UI surface file is present.' : 'V23 connector planning UI surface file is missing.',
       ),
     );
   }

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-17T23:20:03.065Z",
-  "gitSha": "a9476bfd32ff653bffa5d40e5859dd459e63da00",
-  "dirtyWorkingTree": false,
+  "generatedAt": "2026-05-17T23:22:30.475Z",
+  "gitSha": "d4661fdaa9156d04452dfe4d7b3f599b265966a2",
+  "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 316,
-    "passCount": 308,
+    "totalChecks": 322,
+    "passCount": 314,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -381,6 +381,12 @@
         },
         {
           "category": "Connectors",
+          "name": "AdminConnectorDetail.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
+        },
+        {
+          "category": "Connectors",
           "name": "buildConnectorActivationAudit.ts exists",
           "status": "PASS",
           "message": "Required connector activation service file is present."
@@ -508,6 +514,12 @@
         },
         {
           "category": "Connectors",
+          "name": "ConnectorRateLimitCard.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
+        },
+        {
+          "category": "Connectors",
           "name": "connectorRateLimiter.ts exists",
           "status": "PASS",
           "message": "Required connector activation service file is present."
@@ -517,6 +529,12 @@
           "name": "connectorRetryPolicy.ts exists",
           "status": "PASS",
           "message": "Required connector activation service file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "ConnectorRetryPolicyCard.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
         },
         {
           "category": "Connectors",
@@ -610,9 +628,27 @@
         },
         {
           "category": "Connectors",
+          "name": "PlanningGovernanceClassificationCard.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "PlanningLayerAvailabilityCard.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
+        },
+        {
+          "category": "Connectors",
           "name": "planningPayloadNormalizer.ts exists",
           "status": "PASS",
           "message": "V23 onboarding surface file is present."
+        },
+        {
+          "category": "Connectors",
+          "name": "PlanningSourceFreshnessCard.tsx exists (UI)",
+          "status": "PASS",
+          "message": "V23 connector planning UI surface file is present."
         },
         {
           "category": "Connectors",
@@ -933,7 +969,7 @@
       ],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 44,
+      "passCount": 50,
       "warnCount": 7,
       "failCount": 0,
       "skippedCount": 0,
@@ -3191,6 +3227,12 @@
     },
     {
       "category": "Connectors",
+      "name": "AdminConnectorDetail.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
+    },
+    {
+      "category": "Connectors",
       "name": "buildConnectorActivationAudit.ts exists",
       "status": "PASS",
       "message": "Required connector activation service file is present."
@@ -3318,6 +3360,12 @@
     },
     {
       "category": "Connectors",
+      "name": "ConnectorRateLimitCard.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
+    },
+    {
+      "category": "Connectors",
       "name": "connectorRateLimiter.ts exists",
       "status": "PASS",
       "message": "Required connector activation service file is present."
@@ -3327,6 +3375,12 @@
       "name": "connectorRetryPolicy.ts exists",
       "status": "PASS",
       "message": "Required connector activation service file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "ConnectorRetryPolicyCard.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
     },
     {
       "category": "Connectors",
@@ -3420,9 +3474,27 @@
     },
     {
       "category": "Connectors",
+      "name": "PlanningGovernanceClassificationCard.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "PlanningLayerAvailabilityCard.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
+    },
+    {
+      "category": "Connectors",
       "name": "planningPayloadNormalizer.ts exists",
       "status": "PASS",
       "message": "V23 onboarding surface file is present."
+    },
+    {
+      "category": "Connectors",
+      "name": "PlanningSourceFreshnessCard.tsx exists (UI)",
+      "status": "PASS",
+      "message": "V23 connector planning UI surface file is present."
     },
     {
       "category": "Connectors",
