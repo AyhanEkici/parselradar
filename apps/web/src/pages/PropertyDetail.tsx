@@ -49,6 +49,14 @@ import {
   IntelligenceSourceCard,
   AnalysisVersionCard,
 } from '../components/system';
+import {
+  MarketMomentumCard,
+  DistrictHeatCard,
+  OpportunitySignalCard as TrendOpportunitySignalCard,
+  TrendVelocityCard,
+  InvestorSignalCard,
+  ConnectorStatusCard,
+} from '../components/trends';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -204,6 +212,10 @@ export default function PropertyDetail() {
     geocodeConfidence?: number;
     lastSpatialRefresh?: string;
     lastMarketRefresh?: string;
+    lastTrendRefresh?: string;
+    opportunityScore?: number;
+    momentumScore?: number;
+    districtHeat?: number;
     ingestionState?: 'idle' | 'queued' | 'refreshing' | 'ready' | 'stale';
     status?: string;
     createdAt: string;
@@ -414,6 +426,20 @@ export default function PropertyDetail() {
       ingestionSignals?: string[];
       staleFlags?: string[];
       cacheState?: { market?: string; comparable?: string; spatial?: string };
+      trendSignals?: string[];
+      marketMomentum?: number;
+      volatilityIndex?: number;
+      investorSignal?: string;
+      connectorStatus?: {
+        networkState?: string;
+        snapshots?: Array<{ connector: string; status: string; reason?: string }>;
+        statusCounts?: Record<string, number>;
+      };
+      districtHeat?: number;
+      opportunityScore?: number;
+      trendVelocity?: { velocityScore?: number; velocityLabel?: string };
+      liquidityTrend?: { liquidityTrendScore?: number; liquidityTrend?: string };
+      alertSignals?: string[];
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -899,6 +925,74 @@ export default function PropertyDetail() {
                     ingestionSignals={latestAnalysis.ingestionSignals}
                     refreshReason={latestAnalysis.refreshReason}
                   />
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.connectorStatus && (
+              <div className="mt-4 rounded-xl border border-cyan-200 bg-cyan-50/40 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-cyan-900">Market Signal Network</h3>
+                  <p className="text-xs text-cyan-700">
+                    Deterministic connector states and trend outputs. No external live feed is assumed unless explicitly configured.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-4">
+                    <ConnectorStatusCard connectorStatus={latestAnalysis.connectorStatus} />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <MarketMomentumCard
+                      marketMomentum={latestAnalysis.marketMomentum}
+                      trendSignals={latestAnalysis.trendSignals}
+                    />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <DistrictHeatCard
+                      districtHeat={latestAnalysis.districtHeat}
+                      volatilityIndex={latestAnalysis.volatilityIndex}
+                    />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <TrendOpportunitySignalCard
+                      opportunityScore={latestAnalysis.opportunityScore}
+                      alertSignals={latestAnalysis.alertSignals}
+                    />
+                  </div>
+                  <div className="xl:col-span-2">
+                    <InvestorSignalCard
+                      investorSignal={latestAnalysis.investorSignal}
+                      trendSignals={latestAnalysis.trendSignals}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3">
+                    <TrendVelocityCard
+                      velocityScore={latestAnalysis.trendVelocity?.velocityScore}
+                      velocityLabel={latestAnalysis.trendVelocity?.velocityLabel}
+                      liquidityTrend={latestAnalysis.liquidityTrend?.liquidityTrend}
+                    />
+                  </div>
+                  <div className="xl:col-span-9 rounded-xl border border-cyan-200 bg-white p-4">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-cyan-700">Trend Signals</div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {(latestAnalysis.trendSignals || []).length > 0 ? (
+                        (latestAnalysis.trendSignals || []).map((signal, idx) => (
+                          <span
+                            key={`${signal}-${idx}`}
+                            className="rounded-full border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs text-cyan-800"
+                          >
+                            {signal}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-sm text-slate-600">No trend signals available.</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

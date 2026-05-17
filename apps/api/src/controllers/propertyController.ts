@@ -214,6 +214,16 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       ingestionSignals: full.ingestionSignals || [],
       staleFlags: full.staleFlags || [],
       cacheState: full.cacheState,
+      trendSignals: full.trendSignals || [],
+      marketMomentum: full.marketMomentum,
+      volatilityIndex: full.volatilityIndex,
+      investorSignal: full.investorSignal,
+      connectorStatus: full.connectorStatus,
+      districtHeat: full.districtHeat,
+      opportunityScore: full.opportunityScore,
+      trendVelocity: full.trendVelocity,
+      liquidityTrend: full.liquidityTrend,
+      alertSignals: full.alertSignals || [],
     };
   });
 

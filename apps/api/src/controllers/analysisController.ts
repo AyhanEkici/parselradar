@@ -19,6 +19,10 @@ import { processSpatialRefresh } from '../services/jobs/processSpatialRefresh';
 import { processMarketRefresh } from '../services/jobs/processMarketRefresh';
 import { buildMarketCache } from '../services/cache/buildMarketCache';
 import { warmComparableCache } from '../services/cache/warmComparableCache';
+import { buildConnectorNetwork } from '../services/connectors';
+import { buildSignalNetwork } from '../services/signals';
+import { buildTrendSnapshots } from '../services/trends';
+import { buildAlertNetwork } from '../services/alerts';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -144,6 +148,16 @@ function toResponseFromRun(run: any, reused: boolean) {
     ingestionSignals: full.ingestionSignals || [],
     staleFlags: full.staleFlags || [],
     cacheState: full.cacheState,
+    trendSignals: full.trendSignals || [],
+    marketMomentum: full.marketMomentum,
+    volatilityIndex: full.volatilityIndex,
+    investorSignal: full.investorSignal,
+    connectorStatus: full.connectorStatus,
+    districtHeat: full.districtHeat,
+    opportunityScore: full.opportunityScore,
+    trendVelocity: full.trendVelocity,
+    liquidityTrend: full.liquidityTrend,
+    alertSignals: full.alertSignals || [],
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -356,10 +370,84 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       spatial: spatialRefresh.refreshStatus === 'refreshing' ? 'refreshing' : 'warm',
     };
 
+    const connectorNetwork = buildConnectorNetwork({
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+      parcelId: `${String(propertyObj.ada || '')}-${String(propertyObj.parsel || '')}`,
+      lastSpatialRefresh: propertyObj.lastSpatialRefresh,
+      lastMarketRefresh: propertyObj.lastMarketRefresh,
+    });
+
+    const degradedConnectorCount = connectorNetwork.snapshots.filter((snapshot) =>
+      ['FAILED', 'STALE', 'NOT_CONFIGURED', 'MOCK_DISABLED'].includes(snapshot.status)
+    ).length;
+    const totalConnectorCount = connectorNetwork.snapshots.length || 1;
+    const liveOrReadyConnectorCount = connectorNetwork.snapshots.filter((snapshot) =>
+      snapshot.status === 'LIVE' || snapshot.status === 'READY'
+    ).length;
+    const connectorLiveRatio = liveOrReadyConnectorCount / totalConnectorCount;
+
+    const signalNetwork = buildSignalNetwork({
+      score: engine.score,
+      marketHeat: comparableMarket.marketHeat,
+      pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+      freshnessScore,
+      connectorLiveRatio,
+      currentAvgPricePerM2: comparableMarket.avgComparablePricePerM2,
+      baselinePricePerM2: propertyObj.pricePerM2 || comparableMarket.avgComparablePricePerM2,
+      infrastructureScore: geoIntelligence.infrastructureScore,
+      roadAccessScore: geoIntelligence.roadAccessScore,
+      strategicLocationSignals: geoIntelligence.strategicLocationSignals,
+      comparableCount: comparableMarket.comparableCount,
+      liquidityScore: spatialIntelligence.spatialLiquidity?.score,
+      volatilityIndex: 38 + degradedConnectorCount * 11,
+      overpricingRisk: comparableMarket.overpricingRisk,
+    });
+
+    const trendSnapshots = buildTrendSnapshots({
+      marketMomentum: signalNetwork.marketMomentum,
+      comparableCount: comparableMarket.comparableCount,
+      liquidityScore: spatialIntelligence.spatialLiquidity?.score,
+      liquiditySignal: spatialIntelligence.spatialLiquidity?.label,
+      districtHeat: signalNetwork.districtHeat,
+      priceAccelerationScore: signalNetwork.priceAcceleration.accelerationScore,
+      connectorDegradedCount: degradedConnectorCount,
+    });
+
+    const alertNetwork = buildAlertNetwork({
+      opportunityScore: signalNetwork.opportunityScore,
+      volatilityIndex: trendSnapshots.volatility.volatilityIndex,
+      marketMomentum: signalNetwork.marketMomentum,
+      previousMomentum: Math.max(
+        0,
+        signalNetwork.marketMomentum - Math.round(signalNetwork.priceAcceleration.deltaRatio * 100)
+      ),
+      infrastructureImpact: signalNetwork.infrastructureImpact,
+      investorSignal: signalNetwork.investorSignal,
+    });
+
+    const trendSignals = Array.from(
+      new Set([
+        ...ingestionSignals,
+        ...signalNetwork.trendSignals,
+        ...trendSnapshots.snapshots,
+        ...alertNetwork.alertSignals,
+      ])
+    );
+
     property.set({
       lastSpatialRefresh: new Date(),
       lastMarketRefresh: new Date(),
-      ingestionState: refreshPlan.staleFlags.length > 0 ? 'queued' : 'ready',
+      lastTrendRefresh: new Date(),
+      opportunityScore: signalNetwork.opportunityScore,
+      momentumScore: signalNetwork.marketMomentum,
+      districtHeat: signalNetwork.districtHeat,
+      ingestionState:
+        connectorNetwork.networkState === 'degraded'
+          ? 'stale'
+          : refreshPlan.staleFlags.length > 0
+            ? 'queued'
+            : 'ready',
     });
     await property.save();
 
@@ -385,7 +473,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         score: engine.score,
         signal: engine.signal,
       },
-      analysisVersion: 'V8',
+      analysisVersion: 'V9',
       refreshReason: refreshPlan.refreshReason,
       sourceConfidence,
       cacheTimestamp: new Date(),
@@ -434,12 +522,23 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         mapSummary: spatialIntelligence.mapSummary,
         comparableMapPoints: spatialIntelligence.comparableMapPoints,
         regionalCluster: spatialIntelligence.regionalCluster,
-        analysisVersion: 'V8',
+        analysisVersion: 'V9',
         refreshStatus: refreshPlan.staleFlags.length > 0 ? 'queued' : 'fresh',
         freshnessScore,
         ingestionSignals,
         staleFlags: refreshPlan.staleFlags,
         cacheState,
+        trendSignals,
+        marketMomentum: signalNetwork.marketMomentum,
+        volatilityIndex: trendSnapshots.volatility.volatilityIndex,
+        investorSignal: signalNetwork.investorSignal,
+        connectorStatus: connectorNetwork,
+        districtHeat: signalNetwork.districtHeat,
+        opportunityScore: signalNetwork.opportunityScore,
+        trendVelocity: trendSnapshots.velocity,
+        liquidityTrend: trendSnapshots.liquidity,
+        alertSignals: alertNetwork.alertSignals,
+        investorNotifications: alertNetwork.notifications,
       },
     });
 

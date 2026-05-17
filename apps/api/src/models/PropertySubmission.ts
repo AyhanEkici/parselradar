@@ -36,6 +36,10 @@ export interface IPropertySubmission extends Document {
   villageDistanceText?: string;
   lastSpatialRefresh?: Date;
   lastMarketRefresh?: Date;
+  lastTrendRefresh?: Date;
+  opportunityScore?: number;
+  momentumScore?: number;
+  districtHeat?: number;
   ingestionState?: 'idle' | 'queued' | 'refreshing' | 'ready' | 'stale';
   status?: string;
   createdAt: Date;
@@ -78,6 +82,10 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   villageDistanceText: { type: String },
   lastSpatialRefresh: { type: Date },
   lastMarketRefresh: { type: Date },
+  lastTrendRefresh: { type: Date },
+  opportunityScore: { type: Number, min: 0, max: 100 },
+  momentumScore: { type: Number, min: 0, max: 100 },
+  districtHeat: { type: Number, min: 0, max: 100 },
   ingestionState: { type: String, enum: ['idle', 'queued', 'refreshing', 'ready', 'stale'] },
   status: { type: String },
 }, { timestamps: true });
