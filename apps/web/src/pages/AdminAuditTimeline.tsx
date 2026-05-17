@@ -42,16 +42,23 @@ const shortenId = (value?: string) => {
 
 const metadataToText = (metadata?: Record<string, unknown>) => {
   if (!metadata) return '';
+
   return Object.keys(metadata)
     .map((key) => {
       const value = metadata[key];
-      return `${key}: ${typeof value === 'object' && value !== null ? '[obj]' : String(value)}`;
+
+      return `${key}: ${
+        typeof value === 'object' && value !== null
+          ? '[obj]'
+          : String(value)
+      }`;
     })
     .join(', ');
 };
 
 export default function AdminAuditTimeline() {
   const { user } = useAuth();
+
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [error, setError] = useState('');
   const [type, setType] = useState('');
@@ -67,12 +74,19 @@ export default function AdminAuditTimeline() {
     try {
       const params = new URLSearchParams();
 
-      if (type) params.append('type', type);
-      if (actorUserId) params.append('actorUserId', actorUserId);
+      if (type) {
+        params.append('type', type);
+      }
+
+      if (actorUserId) {
+        params.append('actorUserId', actorUserId);
+      }
 
       params.append('page', String(page));
 
-      const data = (await apiFetch(`/admin/audit-events?${params.toString()}`)) as AuditResponse;
+      const data = (await apiFetch(
+        `/admin/audit-events?${params.toString()}`
+      )) as AuditResponse;
 
       const rows = Array.isArray(data?.events)
         ? data.events
@@ -95,6 +109,7 @@ export default function AdminAuditTimeline() {
 
   useEffect(() => {
     fetchEvents();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, actorUserId, page]);
 
@@ -102,7 +117,9 @@ export default function AdminAuditTimeline() {
     return (
       <AdminPage>
         <AdminSurface>
-          <AdminEmptyState>Yönetici yetkisi gerekli</AdminEmptyState>
+          <AdminEmptyState>
+            Yönetici yetkisi gerekli
+          </AdminEmptyState>
         </AdminSurface>
       </AdminPage>
     );
@@ -163,7 +180,9 @@ export default function AdminAuditTimeline() {
                 <AdminTh className="w-[16%]">Actor</AdminTh>
                 <AdminTh className="w-[16%]">Target</AdminTh>
                 <AdminTh className="w-[18%]">Message</AdminTh>
-                <AdminTh className="w-[8%] text-center">Success</AdminTh>
+                <AdminTh className="w-[8%] text-center">
+                  Success
+                </AdminTh>
                 <AdminTh className="w-[16%]">Metadata</AdminTh>
               </tr>
             </thead>
@@ -171,32 +190,44 @@ export default function AdminAuditTimeline() {
             <tbody>
               {loading ? (
                 <tr>
-                  <AdminTd colSpan={7} className="py-6 text-center text-slate-500">
+                  <td
+                    colSpan={7}
+                    className="px-3 py-6 text-center text-sm text-slate-500"
+                  >
                     Loading...
-                  </AdminTd>
+                  </td>
                 </tr>
               ) : null}
 
               {!loading && events.length === 0 ? (
                 <tr>
-                  <AdminTd colSpan={7}>
-                    <AdminEmptyState>Audit kaydı bulunamadı</AdminEmptyState>
-                  </AdminTd>
+                  <td colSpan={7} className="px-3 py-6">
+                    <AdminEmptyState>
+                      Audit kaydı bulunamadı
+                    </AdminEmptyState>
+                  </td>
                 </tr>
               ) : null}
 
               {!loading &&
                 events.map((ev) => (
-                  <tr key={ev._id} className={ev.success ? '' : 'bg-red-50/60'}>
+                  <tr
+                    key={ev._id}
+                    className={ev.success ? '' : 'bg-red-50/60'}
+                  >
                     <AdminTd className="whitespace-nowrap">
                       {new Date(ev.createdAt).toLocaleString()}
                     </AdminTd>
 
-                    <AdminTd className="break-words">{ev.type || ''}</AdminTd>
+                    <AdminTd className="break-words">
+                      {ev.type || ''}
+                    </AdminTd>
 
                     <AdminTd className="break-words">
                       {ev.actorUserId ? (
-                        <span title={ev.actorUserId}>{shortenId(ev.actorUserId)}</span>
+                        <span title={ev.actorUserId}>
+                          {shortenId(ev.actorUserId)}
+                        </span>
                       ) : null}{' '}
                       {ev.actorRole || ''}
                     </AdminTd>
@@ -204,7 +235,9 @@ export default function AdminAuditTimeline() {
                     <AdminTd className="break-words">
                       {ev.targetType || ''}{' '}
                       {ev.targetId ? (
-                        <span title={ev.targetId}>{shortenId(ev.targetId)}</span>
+                        <span title={ev.targetId}>
+                          {shortenId(ev.targetId)}
+                        </span>
                       ) : null}
                     </AdminTd>
 
@@ -224,11 +257,12 @@ export default function AdminAuditTimeline() {
                       </span>
                     </AdminTd>
 
-                    <AdminTd
-                      className="break-words whitespace-normal"
-                      title={JSON.stringify(ev.metadata || {})}
-                    >
-                      {metadataToText(ev.metadata)}
+                    <AdminTd className="break-words whitespace-normal">
+                      <span
+                        title={JSON.stringify(ev.metadata || {})}
+                      >
+                        {metadataToText(ev.metadata)}
+                      </span>
                     </AdminTd>
                   </tr>
                 ))}
@@ -244,14 +278,20 @@ export default function AdminAuditTimeline() {
           <div className="flex items-center gap-2">
             <AdminButton
               disabled={page <= 1}
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              onClick={() =>
+                setPage((current) => Math.max(1, current - 1))
+              }
             >
               Prev
             </AdminButton>
 
             <AdminButton
               disabled={page >= totalPages}
-              onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+              onClick={() =>
+                setPage((current) =>
+                  Math.min(totalPages, current + 1),
+                )
+              }
             >
               Next
             </AdminButton>
