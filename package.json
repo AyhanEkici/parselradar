@@ -8,6 +8,7 @@
     "lint": "npm run lint --prefix packages/shared && npm run lint --prefix apps/api && npm run lint --prefix apps/web",
     "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
     "verify:platform": "ts-node scripts/verify-platform.ts",
+    "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",
     "seed": "npm run seed --prefix apps/api",
     "test": "npm run test --prefix packages/shared && npm run test --prefix apps/api && npm run test --prefix apps/web",
     "smoke": "npm run smoke --prefix apps/api",
