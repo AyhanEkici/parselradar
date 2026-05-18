@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiFetch } from '../lib/api';
+import { apiFetch, getApiBaseUrl } from '../lib/api';
 import {
   AdminButton,
   AdminEmptyState,
@@ -55,7 +55,7 @@ export default function PropertyDocuments() {
 
   function absoluteFileUrl(fileUrl?: string) {
     if (!fileUrl) return '';
-    const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const base = getApiBaseUrl();
     if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) return fileUrl;
     return `${base.replace(/\/+$/, '')}/${fileUrl.replace(/^\/+/, '')}`;
   }
@@ -170,7 +170,7 @@ export default function PropertyDocuments() {
     const loadingToastId = toast.loading('Belge yükleniyor...');
     const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
     try {
-      const response = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:4000') + `/properties/${id}/documents`, {
+      const response = await fetch(`${getApiBaseUrl()}/properties/${id}/documents`, {
         method: 'POST',
         body: formData,
         credentials: 'include',

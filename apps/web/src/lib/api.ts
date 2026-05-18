@@ -1,4 +1,38 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const LOCAL_API_URL = 'http://localhost:4000';
+const PRODUCTION_API_URL = 'https://parselradar-production.up.railway.app';
+
+function normalizeBaseUrl(value: string) {
+  return value.replace(/\/+$/, '');
+}
+
+function looksLikeFrontendHost(value: string) {
+  try {
+    const url = new URL(value);
+    return /vercel\.app$/i.test(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
+export function getApiBaseUrl() {
+  const configured = String(import.meta.env.VITE_API_URL || '').trim();
+
+  if (configured) {
+    const normalized = normalizeBaseUrl(configured);
+    if (!looksLikeFrontendHost(normalized)) {
+      return normalized;
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (/vercel\.app$/i.test(hostname)) {
+      return PRODUCTION_API_URL;
+    }
+  }
+
+  return LOCAL_API_URL;
+}
 
 function previewBody(text: string, maxLen = 220) {
   const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
@@ -8,7 +42,7 @@ function previewBody(text: string, maxLen = 220) {
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const cleanPath = '/' + String(path).replace(/^\/+/, '');
-  const url = API_URL.replace(/\/+$/, '') + cleanPath;
+  const url = getApiBaseUrl() + cleanPath;
 
   const token =
     typeof window !== 'undefined'

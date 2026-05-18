@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { apiFetch } from '../lib/api';
+import { apiFetch, getApiBaseUrl } from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 import {
   AdminButton,
@@ -39,7 +39,7 @@ type DetailResponse = {
 
 function absoluteFileUrl(fileUrl?: string) {
   if (!fileUrl) return '';
-  const base = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const base = getApiBaseUrl();
   if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) return fileUrl;
   return `${base.replace(/\/+$/, '')}/${fileUrl.replace(/^\/+/, '')}`;
 }
@@ -115,7 +115,7 @@ export default function AdminPropertyDocuments() {
       const formData = new FormData();
       formData.append('documentType', documentType);
       formData.append('file', file);
-      const response = await fetch(`${(import.meta.env.VITE_API_URL || 'http://localhost:4000').replace(/\/+$/, '')}/properties/${propertyId}/documents`, {
+      const response = await fetch(`${getApiBaseUrl()}/properties/${propertyId}/documents`, {
         method: 'POST',
         body: formData,
         credentials: 'include',
