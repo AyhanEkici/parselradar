@@ -1,5 +1,13 @@
 [
   {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
+    "path": "/__buildinfo",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
     "category": "Admin",
     "routeFile": "apps/api/src/routes/adminRoutes.ts",
     "method": "GET",

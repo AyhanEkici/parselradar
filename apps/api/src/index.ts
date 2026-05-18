@@ -38,6 +38,7 @@ import { shutdownWorkers } from './runtime/workerFactory';
 import { closeQueueEvents } from './runtime/queueEvents';
 import { closeQueues } from './runtime/queueFactory';
 import { closeRedisClient } from './redis/redisClient';
+import { BUILD_INFO } from './generated/buildInfo';
 
 
 
@@ -63,6 +64,17 @@ app.use(helmet());
 
 // Request ID middleware
 app.use(requestIdMiddleware);
+
+// Diagnostic build info endpoint (JSON only)
+app.get('/__buildinfo', (_req, res) => {
+  res.json({
+    gitSha: BUILD_INFO.gitSha,
+    buildTime: BUILD_INFO.buildTime,
+    platformVersion: BUILD_INFO.platformVersion,
+    routeVersion: BUILD_INFO.routeVersion,
+    nodeEnv: ENV.NODE_ENV,
+  });
+});
 
 // Mount Stripe webhook route BEFORE express.json()
 app.post('/stripe/webhook', express.raw({ type: 'application/json' }), stripeWebhook);

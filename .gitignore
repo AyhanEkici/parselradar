@@ -16,3 +16,6 @@ apps/api/uploads/
 coverage/
 .DS_Store
 *.log
+
+# Generated build metadata (created by apps/api prebuild)
+apps/api/src/generated/buildInfo.ts
