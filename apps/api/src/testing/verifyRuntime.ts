@@ -47,7 +47,9 @@ export function verifyRuntime(): VerificationSection {
   const webPackage = readText(repoPath('apps', 'web', 'package.json'));
   const buildInfoGeneratorPath = repoPath('apps', 'api', 'scripts', 'generateBuildInfo.cjs');
   const railwayTomlPath = repoPath('railway.toml');
+  const nixpacksTomlPath = repoPath('nixpacks.toml');
   const railwayToml = fileExists(railwayTomlPath) ? readText(railwayTomlPath) : '';
+  const nixpacksToml = fileExists(nixpacksTomlPath) ? readText(nixpacksTomlPath) : '';
   checks.push(
     makeCheck(CATEGORY, 'Root build script exists', rootPackage.includes('"build"') ? 'PASS' : 'FAIL', 'Root package build script presence verified.'),
     makeCheck(CATEGORY, 'API build script exists', apiPackage.includes('"build"') ? 'PASS' : 'FAIL', 'API package build script presence verified.'),
@@ -105,6 +107,37 @@ export function verifyRuntime(): VerificationSection {
         : railwayToml.includes('npm run build --prefix apps/api')
           ? 'railway.toml buildCommand includes apps/api build.'
           : 'railway.toml buildCommand does not include apps/api build.',
+    ),
+  );
+
+  checks.push(
+    makeCheck(
+      CATEGORY,
+      'Nixpacks start targets apps/api',
+      !nixpacksToml
+        ? 'SKIPPED'
+        : nixpacksToml.includes('[start]') && nixpacksToml.includes('cmd = "cd apps/api && npm start"')
+          ? 'PASS'
+          : 'WARN',
+      !nixpacksToml
+        ? 'nixpacks.toml not present; skipping Nixpacks start command check.'
+        : nixpacksToml.includes('[start]') && nixpacksToml.includes('cmd = "cd apps/api && npm start"')
+          ? 'nixpacks.toml start command targets apps/api dist entrypoint.'
+          : 'nixpacks.toml start command does not match expected apps/api start command.',
+    ),
+    makeCheck(
+      CATEGORY,
+      'Nixpacks build includes apps/api build',
+      !nixpacksToml
+        ? 'SKIPPED'
+        : nixpacksToml.includes('[phases.build]') && nixpacksToml.includes('npm run build --prefix apps/api')
+          ? 'PASS'
+          : 'WARN',
+      !nixpacksToml
+        ? 'nixpacks.toml not present; skipping Nixpacks build command check.'
+        : nixpacksToml.includes('[phases.build]') && nixpacksToml.includes('npm run build --prefix apps/api')
+          ? 'nixpacks.toml build phase includes apps/api build.'
+          : 'nixpacks.toml build phase does not include apps/api build.',
     ),
   );
 

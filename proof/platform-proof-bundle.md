@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-18T15:40:42.646Z
+Generated at: 2026-05-18T16:14:30.356Z
 Overall status: WARN
-Git SHA: b74f2f7300361cc2ccbe29ca8b5525dba02dd6e8
-Dirty working tree: false
+Git SHA: 72464a6dc22d4b8987e9d95d9130826cfb967563
+Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
-- Checks: 342
-- PASS: 334
+- Checks: 344
+- PASS: 336
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -417,7 +417,7 @@ Dirty working tree: false
 ## Runtime
 
 - Overall: PASS
-- PASS: 25
+- PASS: 27
 - WARN: 0
 - FAIL: 0
 - SKIPPED: 0
@@ -432,6 +432,8 @@ Dirty working tree: false
 | PASS | bullmq truth state | bullmq resolved to DISABLED. | BullMQ is disabled because distributed runtime is off. |
 | PASS | Core runtime env readiness | Core runtime env keys are present. | MONGODB_URI=PRESENT, JWT_SECRET=PRESENT, CLIENT_URL=PRESENT |
 | PASS | jobs exists | Required runtime surface file or directory is present. |  |
+| PASS | Nixpacks build includes apps/api build | nixpacks.toml build phase includes apps/api build. |  |
+| PASS | Nixpacks start targets apps/api | nixpacks.toml start command targets apps/api dist entrypoint. |  |
 | PASS | queueEvents.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queueFactory.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queues truth state | queues resolved to DISABLED. | Distributed queue backend is disabled. |

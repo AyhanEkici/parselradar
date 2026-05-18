@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-18T15:40:42.646Z",
-  "gitSha": "b74f2f7300361cc2ccbe29ca8b5525dba02dd6e8",
-  "dirtyWorkingTree": false,
+  "generatedAt": "2026-05-18T16:14:30.356Z",
+  "gitSha": "72464a6dc22d4b8987e9d95d9130826cfb967563",
+  "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 342,
-    "passCount": 334,
+    "totalChecks": 344,
+    "passCount": 336,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -2709,6 +2709,18 @@
         },
         {
           "category": "Runtime",
+          "name": "Nixpacks build includes apps/api build",
+          "status": "PASS",
+          "message": "nixpacks.toml build phase includes apps/api build."
+        },
+        {
+          "category": "Runtime",
+          "name": "Nixpacks start targets apps/api",
+          "status": "PASS",
+          "message": "nixpacks.toml start command targets apps/api dist entrypoint."
+        },
+        {
+          "category": "Runtime",
           "name": "queueEvents.ts exists",
           "status": "PASS",
           "message": "Required runtime surface file or directory is present."
@@ -2845,7 +2857,7 @@
         }
       ],
       "notificationStates": [],
-      "passCount": 25,
+      "passCount": 27,
       "warnCount": 0,
       "failCount": 0,
       "skippedCount": 0,
@@ -4952,6 +4964,18 @@
       "name": "jobs exists",
       "status": "PASS",
       "message": "Required runtime surface file or directory is present."
+    },
+    {
+      "category": "Runtime",
+      "name": "Nixpacks build includes apps/api build",
+      "status": "PASS",
+      "message": "nixpacks.toml build phase includes apps/api build."
+    },
+    {
+      "category": "Runtime",
+      "name": "Nixpacks start targets apps/api",
+      "status": "PASS",
+      "message": "nixpacks.toml start command targets apps/api dist entrypoint."
     },
     {
       "category": "Runtime",
