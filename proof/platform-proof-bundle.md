@@ -1,16 +1,16 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-18T16:22:54.649Z
+Generated at: 2026-05-18T21:57:05.140Z
 Overall status: WARN
-Git SHA: 3505368e79a5a15184642913530b12d707221308
-Dirty working tree: false
+Git SHA: 44325364f49321974ad160d63eaaa6d739dd381c
+Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
 - Checks: 345
-- PASS: 337
-- WARN: 8
+- PASS: 336
+- WARN: 9
 - FAIL: 0
 - SKIPPED: 0
 
@@ -416,14 +416,15 @@ Dirty working tree: false
 
 ## Runtime
 
-- Overall: PASS
-- PASS: 28
-- WARN: 0
+- Overall: WARN
+- PASS: 27
+- WARN: 1
 - FAIL: 0
 - SKIPPED: 0
 
 | Status | Check | Message | Detail |
 | --- | --- | --- | --- |
+| WARN | Railway buildCommand includes apps/api build | railway.toml buildCommand does not include apps/api build. |  |
 | PASS | API build script exists | API package build script presence verified. |  |
 | PASS | API dist entrypoint exists | apps/api/dist/index.js exists (build output present). |  |
 | PASS | API tsconfig exists | API TypeScript config presence verified. |  |
@@ -438,7 +439,6 @@ Dirty working tree: false
 | PASS | queueEvents.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queueFactory.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queues truth state | queues resolved to DISABLED. | Distributed queue backend is disabled. |
-| PASS | Railway buildCommand includes apps/api build | railway.toml buildCommand includes apps/api build. |  |
 | PASS | Railway startCommand targets apps/api | railway.toml startCommand targets apps/api dist entrypoint. |  |
 | PASS | redis truth state | redis resolved to DISABLED. | Distributed runtime is disabled by configuration. |
 | PASS | redisClient.ts exists | Required runtime surface file or directory is present. |  |

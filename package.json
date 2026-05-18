@@ -9,6 +9,7 @@
     "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
     "verify:platform": "ts-node scripts/verify-platform.ts",
     "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",
+    "check:docker-backend": "ts-node scripts/check-docker-backend-build.ts",
     "seed": "npm run seed --prefix apps/api",
     "test": "npm run test --prefix packages/shared && npm run test --prefix apps/api && npm run test --prefix apps/web",
     "smoke": "npm run smoke --prefix apps/api",

@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-18T16:22:54.649Z",
-  "gitSha": "3505368e79a5a15184642913530b12d707221308",
-  "dirtyWorkingTree": false,
+  "generatedAt": "2026-05-18T21:57:05.140Z",
+  "gitSha": "44325364f49321974ad160d63eaaa6d739dd381c",
+  "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
     "totalChecks": 345,
-    "passCount": 337,
-    "warnCount": 8,
+    "passCount": 336,
+    "warnCount": 9,
     "failCount": 0,
     "skippedCount": 0
   },
@@ -2659,6 +2659,12 @@
       "checks": [
         {
           "category": "Runtime",
+          "name": "Railway buildCommand includes apps/api build",
+          "status": "WARN",
+          "message": "railway.toml buildCommand does not include apps/api build."
+        },
+        {
+          "category": "Runtime",
           "name": "API build script exists",
           "status": "PASS",
           "message": "API package build script presence verified."
@@ -2743,12 +2749,6 @@
           "status": "PASS",
           "message": "queues resolved to DISABLED.",
           "detail": "Distributed queue backend is disabled."
-        },
-        {
-          "category": "Runtime",
-          "name": "Railway buildCommand includes apps/api build",
-          "status": "PASS",
-          "message": "railway.toml buildCommand includes apps/api build."
         },
         {
           "category": "Runtime",
@@ -2863,11 +2863,11 @@
         }
       ],
       "notificationStates": [],
-      "passCount": 28,
-      "warnCount": 0,
+      "passCount": 27,
+      "warnCount": 1,
       "failCount": 0,
       "skippedCount": 0,
-      "overallStatus": "PASS"
+      "overallStatus": "WARN"
     },
     {
       "category": "Workspace",
@@ -4923,6 +4923,12 @@
     },
     {
       "category": "Runtime",
+      "name": "Railway buildCommand includes apps/api build",
+      "status": "WARN",
+      "message": "railway.toml buildCommand does not include apps/api build."
+    },
+    {
+      "category": "Runtime",
       "name": "API build script exists",
       "status": "PASS",
       "message": "API package build script presence verified."
@@ -5007,12 +5013,6 @@
       "status": "PASS",
       "message": "queues resolved to DISABLED.",
       "detail": "Distributed queue backend is disabled."
-    },
-    {
-      "category": "Runtime",
-      "name": "Railway buildCommand includes apps/api build",
-      "status": "PASS",
-      "message": "railway.toml buildCommand includes apps/api build."
     },
     {
       "category": "Runtime",
