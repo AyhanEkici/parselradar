@@ -9,6 +9,7 @@ import {
   readText,
   VerificationSection,
   webPath,
+  parseExpressRouterFile,
 } from './platformVerification';
 
 const CATEGORY = 'Routes';
@@ -63,6 +64,46 @@ export function verifyRoutes(): VerificationSection {
   const healthRoutes = indexExists ? parseAppRoutes(CATEGORY, indexPath) : [];
 
   checks.push(makeCheck(CATEGORY, 'API index file exists', fileExists(indexPath) ? 'PASS' : 'FAIL', 'apps/api/src/index.ts presence verified.'));
+
+  const adminApiChecks = [
+    { method: 'GET' as const, path: '/admin/observability' },
+    { method: 'GET' as const, path: '/admin/analytics' },
+    { method: 'GET' as const, path: '/admin/telemetry' },
+    { method: 'GET' as const, path: '/admin/connectors' },
+    { method: 'GET' as const, path: '/admin/connectors/:connectorKey' },
+    { method: 'GET' as const, path: '/admin/deployment' },
+    { method: 'GET' as const, path: '/admin/runtime' },
+  ];
+
+  const adminRouteChecks = [
+    ...parseExpressRouterFile(CATEGORY, apiPath('routes', 'adminRoutes.ts'), '/admin'),
+    ...parseExpressRouterFile(CATEGORY, apiPath('routes', 'observabilityRoutes.ts'), '/'),
+    ...parseExpressRouterFile(CATEGORY, apiPath('routes', 'connectorActivationRoutes.ts'), '/'),
+  ];
+
+  for (const expected of adminApiChecks) {
+    const found = adminRouteChecks.find((routeCheck) => routeCheck.method === expected.method && routeCheck.path === expected.path);
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        `Admin API route ${expected.method} ${expected.path}`,
+        found ? 'PASS' : 'FAIL',
+        found ? 'Expected admin API route is declared in router files.' : 'Expected admin API route is missing from router declarations.',
+      ),
+    );
+    if (found) {
+      checks.push(
+        makeCheck(
+          CATEGORY,
+          `Admin API gating ${expected.method} ${expected.path}`,
+          found.requiresAuth && found.requiresAdmin ? 'PASS' : 'FAIL',
+          found.requiresAuth && found.requiresAdmin
+            ? 'Admin API route is structurally gated by auth + admin middleware.'
+            : 'Admin API route is missing auth/admin middleware in route declaration.',
+        ),
+      );
+    }
+  }
 
   for (const routeMount of ROUTE_MOUNTS) {
     const routeFileExists = fileExists(routeMount.file);

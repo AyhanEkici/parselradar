@@ -148,6 +148,17 @@ app.get('/health', healthController);
 app.get('/health/live', livenessController);
 app.get('/health/ready', readinessController);
 
+// Ensure unmatched API routes return JSON (prevents HTML "Cannot GET" responses)
+app.use((req, res) => {
+  const requestId = (req as any).requestId || '';
+  res.setHeader('X-Request-Id', requestId);
+  res.status(404).json({
+    error: 'API route not found',
+    path: req.originalUrl,
+    requestId,
+  });
+});
+
 app.use(errorHandler);
 
 const server = app.listen(Number(ENV.PORT), () => {

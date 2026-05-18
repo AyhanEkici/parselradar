@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-17T23:22:30.475Z
+Generated at: 2026-05-18T08:22:51.778Z
 Overall status: WARN
-Git SHA: d4661fdaa9156d04452dfe4d7b3f599b265966a2
+Git SHA: c3e1dea89280f83576fc663abe9a62c59d07b8ab
 Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
-- Checks: 322
-- PASS: 314
+- Checks: 336
+- PASS: 328
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -313,13 +313,27 @@ Dirty working tree: true
 ## Routes
 
 - Overall: PASS
-- PASS: 78
+- PASS: 92
 - WARN: 0
 - FAIL: 0
 - SKIPPED: 0
 
 | Status | Check | Message | Detail |
 | --- | --- | --- | --- |
+| PASS | Admin API gating GET /admin/analytics | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/connectors | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/connectors/:connectorKey | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/deployment | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/observability | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/runtime | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API gating GET /admin/telemetry | Admin API route is structurally gated by auth + admin middleware. |  |
+| PASS | Admin API route GET /admin/analytics | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/connectors | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/connectors/:connectorKey | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/deployment | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/observability | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/runtime | Expected admin API route is declared in router files. |  |
+| PASS | Admin API route GET /admin/telemetry | Expected admin API route is declared in router files. |  |
 | PASS | adminRoutes default export | Route file exports default router. |  |
 | PASS | adminRoutes file exists | Mounted route file is present. |  |
 | PASS | adminRoutes mounted at /admin | Route mount found in index.ts. |  |

@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-17T23:22:30.475Z",
-  "gitSha": "d4661fdaa9156d04452dfe4d7b3f599b265966a2",
+  "generatedAt": "2026-05-18T08:22:51.778Z",
+  "gitSha": "c3e1dea89280f83576fc663abe9a62c59d07b8ab",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 322,
-    "passCount": 314,
+    "totalChecks": 336,
+    "passCount": 328,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -2044,6 +2044,90 @@
       "checks": [
         {
           "category": "Routes",
+          "name": "Admin API gating GET /admin/analytics",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/connectors",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/connectors/:connectorKey",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/deployment",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/observability",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/runtime",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API gating GET /admin/telemetry",
+          "status": "PASS",
+          "message": "Admin API route is structurally gated by auth + admin middleware."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/analytics",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/connectors",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/connectors/:connectorKey",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/deployment",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/observability",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/runtime",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
+          "name": "Admin API route GET /admin/telemetry",
+          "status": "PASS",
+          "message": "Expected admin API route is declared in router files."
+        },
+        {
+          "category": "Routes",
           "name": "adminRoutes default export",
           "status": "PASS",
           "message": "Route file exports default router."
@@ -2550,7 +2634,7 @@
       "connectorStates": [],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 78,
+      "passCount": 92,
       "warnCount": 0,
       "failCount": 0,
       "skippedCount": 0,
@@ -4216,6 +4300,90 @@
       "name": "portfolioRoutes.ts exists",
       "status": "PASS",
       "message": "Required portfolio surface file is present."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/analytics",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/connectors",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/connectors/:connectorKey",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/deployment",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/observability",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/runtime",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API gating GET /admin/telemetry",
+      "status": "PASS",
+      "message": "Admin API route is structurally gated by auth + admin middleware."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/analytics",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/connectors",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/connectors/:connectorKey",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/deployment",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/observability",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/runtime",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
+    },
+    {
+      "category": "Routes",
+      "name": "Admin API route GET /admin/telemetry",
+      "status": "PASS",
+      "message": "Expected admin API route is declared in router files."
     },
     {
       "category": "Routes",
