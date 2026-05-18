@@ -62,11 +62,13 @@ function subjectPricePerM2(subject: ComparableParcelRecord) {
 export function buildComparableMarketIntelligence(input: {
   subject: ComparableParcelRecord;
   candidates: ComparableParcelRecord[];
+  nowMs?: number;
 }): ComparableMarketOutput {
   const topComparables = findComparableParcels({
     subject: input.subject,
     candidates: input.candidates,
     maxResults: 8,
+    nowMs: input.nowMs,
   });
 
   const subjectPpm2 = subjectPricePerM2(input.subject);

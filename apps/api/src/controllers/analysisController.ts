@@ -239,6 +239,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         water: candidate.water,
         createdAt: candidate.createdAt,
       })),
+      nowMs: Date.now(),
     });
 
     const geoIntelligence = buildGeoIntelligence({

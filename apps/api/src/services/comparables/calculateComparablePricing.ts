@@ -15,6 +15,16 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
+function percentile(sorted: number[], p: number): number {
+  if (sorted.length === 0) return 0;
+  const idx = (sorted.length - 1) * p;
+  const lower = Math.floor(idx);
+  const upper = Math.ceil(idx);
+  if (lower === upper) return sorted[lower];
+  const weight = idx - lower;
+  return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+}
+
 export function calculateComparablePricing(input: { subjectPricePerM2: number; comparables: ComparableParcel[] }): ComparablePricingResult {
   const values = input.comparables.map((c) => c.normalizedPricePerM2).filter((v) => v > 0);
   const comparableCount = values.length;
@@ -30,13 +40,22 @@ export function calculateComparablePricing(input: { subjectPricePerM2: number; c
     };
   }
 
-  const avg = Math.round(values.reduce((sum, v) => sum + v, 0) / comparableCount);
   const sorted = [...values].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
   const median =
     sorted.length % 2 === 0 ? Math.round((sorted[middle - 1] + sorted[middle]) / 2) : sorted[middle];
 
-  const baseline = Math.max(1, avg);
+  // Trim outliers for average (deterministic) using IQR bounds.
+  const q1 = percentile(sorted, 0.25);
+  const q3 = percentile(sorted, 0.75);
+  const iqr = Math.max(1, q3 - q1);
+  const low = q1 - 1.5 * iqr;
+  const high = q3 + 1.5 * iqr;
+  const trimmed = sorted.filter((v) => v >= low && v <= high);
+  const avg = Math.round(trimmed.reduce((sum, v) => sum + v, 0) / Math.max(1, trimmed.length));
+
+  // Baseline uses median to reduce sensitivity to outliers.
+  const baseline = Math.max(1, median);
   const delta = (input.subjectPricePerM2 - baseline) / baseline;
 
   let pricingPosition: PricingPosition = 'FAIR_MARKET';

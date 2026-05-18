@@ -26,6 +26,7 @@ export type ComparableSearchInput = {
   subject: ComparableParcelRecord;
   candidates: ComparableParcelRecord[];
   maxResults?: number;
+  nowMs?: number;
 };
 
 function normalize(value?: string) {
@@ -92,11 +93,11 @@ function infrastructureSimilarity(subject: ComparableParcelRecord, candidate: Co
   return ratios.reduce((sum, v) => sum + v, 0) / ratios.length;
 }
 
-function daysSince(dateValue?: Date | string) {
+function daysSince(dateValue?: Date | string, nowMs?: number) {
   if (!dateValue) return 365;
   const dt = new Date(dateValue);
   if (Number.isNaN(dt.getTime())) return 365;
-  const diffMs = Date.now() - dt.getTime();
+  const diffMs = (typeof nowMs === 'number' ? nowMs : Date.now()) - dt.getTime();
   return Math.max(0, Math.round(diffMs / (1000 * 60 * 60 * 24)));
 }
 
@@ -121,13 +122,19 @@ function priceClusterSimilarity(subjectPpm2: number, candidatePpm2: number) {
 
 export function findComparableParcels(input: ComparableSearchInput): ComparableParcel[] {
   const maxResults = input.maxResults || 8;
+  const nowMs = typeof input.nowMs === 'number' ? input.nowMs : Date.now();
   const subjectPricePerM2 = toPricePerM2(input.subject);
   const subjectCity = normalize(input.subject.il);
   const subjectDistrict = normalize(input.subject.ilce);
   const subjectDistrictMultiplier = districtMultiplier(input.subject.ilce);
 
-  const scored = input.candidates
-    .filter((candidate) => String(candidate._id) !== String(input.subject._id))
+  const candidates = input.candidates.filter((candidate) => String(candidate._id) !== String(input.subject._id));
+
+  // Prefer same-city comparables when available (deterministic: based on provided candidate list)
+  const sameCityCandidates = subjectCity ? candidates.filter((c) => normalize(c.il) === subjectCity) : [];
+  const pool = sameCityCandidates.length >= 6 ? sameCityCandidates : candidates;
+
+  const scored = pool
     .map((candidate) => {
       const candidateCity = normalize(candidate.il);
       const candidateDistrict = normalize(candidate.ilce);
@@ -138,16 +145,19 @@ export function findComparableParcels(input: ComparableSearchInput): ComparableP
       const districtTierWeight =
         1 - Math.min(1, Math.abs(subjectDistrictMultiplier - districtMultiplier(candidate.ilce)) / 0.35);
 
+      const cityPenalty = cityWeight === 1 ? 0 : 18;
+
       const score =
         cityWeight * 35 +
         Math.max(districtExactWeight, districtTierWeight) * 22 +
         zoningSimilarity(input.subject.zoningStatus, candidate.zoningStatus) * 15 +
         areaSimilarity(input.subject.areaM2, candidate.areaM2) * 10 +
         priceClusterSimilarity(subjectPricePerM2, candidatePricePerM2) * 10 +
-        recencyWeight(daysSince(candidate.createdAt)) * 5 +
-        infrastructureSimilarity(input.subject, candidate) * 3;
+        recencyWeight(daysSince(candidate.createdAt, nowMs)) * 5 +
+        infrastructureSimilarity(input.subject, candidate) * 3 -
+        cityPenalty;
 
-      const days = daysSince(candidate.createdAt);
+      const days = daysSince(candidate.createdAt, nowMs);
       const deltaRatio = (candidatePricePerM2 - subjectPricePerM2) / Math.max(subjectPricePerM2, 1);
 
       return {
@@ -159,7 +169,13 @@ export function findComparableParcels(input: ComparableSearchInput): ComparableP
       } as ComparableParcel;
     })
     .filter((item) => item.similarityScore >= 30)
-    .sort((a, b) => b.similarityScore - a.similarityScore);
+    .sort((a, b) => {
+      if (b.similarityScore !== a.similarityScore) return b.similarityScore - a.similarityScore;
+      if (a.daysSinceCreated !== b.daysSinceCreated) return a.daysSinceCreated - b.daysSinceCreated;
+      const aId = String(a._id);
+      const bId = String(b._id);
+      return aId.localeCompare(bId);
+    });
 
   return scored.slice(0, maxResults);
 }
