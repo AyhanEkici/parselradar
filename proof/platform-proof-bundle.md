@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-18T15:34:19.698Z
+Generated at: 2026-05-18T15:40:42.646Z
 Overall status: WARN
-Git SHA: 6d852b88d931573467e1b6bb4cd271d323d10cd4
+Git SHA: b74f2f7300361cc2ccbe29ca8b5525dba02dd6e8
 Dirty working tree: false
 
 ## Summary
 
 - Sections: 12
-- Checks: 341
-- PASS: 333
+- Checks: 342
+- PASS: 334
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -313,7 +313,7 @@ Dirty working tree: false
 ## Routes
 
 - Overall: PASS
-- PASS: 92
+- PASS: 93
 - WARN: 0
 - FAIL: 0
 - SKIPPED: 0
@@ -356,6 +356,7 @@ Dirty working tree: false
 | PASS | creditRoutes default export | Route file exports default router. |  |
 | PASS | creditRoutes file exists | Mounted route file is present. |  |
 | PASS | creditRoutes mounted at /credits | Route mount found in index.ts. |  |
+| PASS | Diagnostic route GET /__buildinfo | apps/api/src/index.ts declares GET /__buildinfo and responds with JSON. |  |
 | PASS | documentRoutes default export | Route file exports default router. |  |
 | PASS | documentRoutes file exists | Mounted route file is present. |  |
 | PASS | documentRoutes mounted at /properties | Route mount found in index.ts. |  |

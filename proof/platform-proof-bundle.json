@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-18T15:34:19.698Z",
-  "gitSha": "6d852b88d931573467e1b6bb4cd271d323d10cd4",
+  "generatedAt": "2026-05-18T15:40:42.646Z",
+  "gitSha": "b74f2f7300361cc2ccbe29ca8b5525dba02dd6e8",
   "dirtyWorkingTree": false,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 341,
-    "passCount": 333,
+    "totalChecks": 342,
+    "passCount": 334,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -2260,6 +2260,12 @@
         },
         {
           "category": "Routes",
+          "name": "Diagnostic route GET /__buildinfo",
+          "status": "PASS",
+          "message": "apps/api/src/index.ts declares GET /__buildinfo and responds with JSON."
+        },
+        {
+          "category": "Routes",
           "name": "documentRoutes default export",
           "status": "PASS",
           "message": "Route file exports default router."
@@ -2642,7 +2648,7 @@
       "connectorStates": [],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 92,
+      "passCount": 93,
       "warnCount": 0,
       "failCount": 0,
       "skippedCount": 0,
@@ -4554,6 +4560,12 @@
       "name": "creditRoutes mounted at /credits",
       "status": "PASS",
       "message": "Route mount found in index.ts."
+    },
+    {
+      "category": "Routes",
+      "name": "Diagnostic route GET /__buildinfo",
+      "status": "PASS",
+      "message": "apps/api/src/index.ts declares GET /__buildinfo and responds with JSON."
     },
     {
       "category": "Routes",
