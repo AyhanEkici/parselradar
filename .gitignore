@@ -6,6 +6,11 @@ dist/
 apps/*/dist/
 packages/*/dist/
 
+# TypeScript incremental build cache (prevents stale Railway builds)
+tsconfig.tsbuildinfo
+apps/*/tsconfig.tsbuildinfo
+packages/*/tsconfig.tsbuildinfo
+
 .env
 .env.*
 !.env.example
