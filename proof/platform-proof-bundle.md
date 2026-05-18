@@ -1,15 +1,15 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-18T16:14:30.356Z
+Generated at: 2026-05-18T16:17:15.611Z
 Overall status: WARN
-Git SHA: 72464a6dc22d4b8987e9d95d9130826cfb967563
+Git SHA: 595d3381ae3b289fe38ec121593e0548845f7fd9
 Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
-- Checks: 344
-- PASS: 336
+- Checks: 345
+- PASS: 337
 - WARN: 8
 - FAIL: 0
 - SKIPPED: 0
@@ -417,7 +417,7 @@ Dirty working tree: true
 ## Runtime
 
 - Overall: PASS
-- PASS: 27
+- PASS: 28
 - WARN: 0
 - FAIL: 0
 - SKIPPED: 0
@@ -434,6 +434,7 @@ Dirty working tree: true
 | PASS | jobs exists | Required runtime surface file or directory is present. |  |
 | PASS | Nixpacks build includes apps/api build | nixpacks.toml build phase includes apps/api build. |  |
 | PASS | Nixpacks start targets apps/api | nixpacks.toml start command targets apps/api dist entrypoint. |  |
+| PASS | Procfile web command targets apps/api | Procfile web command targets apps/api start. |  |
 | PASS | queueEvents.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queueFactory.ts exists | Required runtime surface file or directory is present. |  |
 | PASS | queues truth state | queues resolved to DISABLED. | Distributed queue backend is disabled. |

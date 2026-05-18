@@ -48,8 +48,10 @@ export function verifyRuntime(): VerificationSection {
   const buildInfoGeneratorPath = repoPath('apps', 'api', 'scripts', 'generateBuildInfo.cjs');
   const railwayTomlPath = repoPath('railway.toml');
   const nixpacksTomlPath = repoPath('nixpacks.toml');
+  const procfilePath = repoPath('Procfile');
   const railwayToml = fileExists(railwayTomlPath) ? readText(railwayTomlPath) : '';
   const nixpacksToml = fileExists(nixpacksTomlPath) ? readText(nixpacksTomlPath) : '';
+  const procfile = fileExists(procfilePath) ? readText(procfilePath) : '';
   checks.push(
     makeCheck(CATEGORY, 'Root build script exists', rootPackage.includes('"build"') ? 'PASS' : 'FAIL', 'Root package build script presence verified.'),
     makeCheck(CATEGORY, 'API build script exists', apiPackage.includes('"build"') ? 'PASS' : 'FAIL', 'API package build script presence verified.'),
@@ -138,6 +140,23 @@ export function verifyRuntime(): VerificationSection {
         : nixpacksToml.includes('[phases.build]') && nixpacksToml.includes('npm run build --prefix apps/api')
           ? 'nixpacks.toml build phase includes apps/api build.'
           : 'nixpacks.toml build phase does not include apps/api build.',
+    ),
+  );
+
+  checks.push(
+    makeCheck(
+      CATEGORY,
+      'Procfile web command targets apps/api',
+      !procfile
+        ? 'SKIPPED'
+        : procfile.includes('web:') && procfile.includes('cd apps/api') && procfile.includes('npm start')
+          ? 'PASS'
+          : 'WARN',
+      !procfile
+        ? 'Procfile not present; skipping Procfile start command check.'
+        : procfile.includes('web:') && procfile.includes('cd apps/api') && procfile.includes('npm start')
+          ? 'Procfile web command targets apps/api start.'
+          : 'Procfile web command does not match expected apps/api start command.',
     ),
   );
 

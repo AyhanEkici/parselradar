@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-05-18T16:14:30.356Z",
-  "gitSha": "72464a6dc22d4b8987e9d95d9130826cfb967563",
+  "generatedAt": "2026-05-18T16:17:15.611Z",
+  "gitSha": "595d3381ae3b289fe38ec121593e0548845f7fd9",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
-    "totalChecks": 344,
-    "passCount": 336,
+    "totalChecks": 345,
+    "passCount": 337,
     "warnCount": 8,
     "failCount": 0,
     "skippedCount": 0
@@ -2721,6 +2721,12 @@
         },
         {
           "category": "Runtime",
+          "name": "Procfile web command targets apps/api",
+          "status": "PASS",
+          "message": "Procfile web command targets apps/api start."
+        },
+        {
+          "category": "Runtime",
           "name": "queueEvents.ts exists",
           "status": "PASS",
           "message": "Required runtime surface file or directory is present."
@@ -2857,7 +2863,7 @@
         }
       ],
       "notificationStates": [],
-      "passCount": 27,
+      "passCount": 28,
       "warnCount": 0,
       "failCount": 0,
       "skippedCount": 0,
@@ -4976,6 +4982,12 @@
       "name": "Nixpacks start targets apps/api",
       "status": "PASS",
       "message": "nixpacks.toml start command targets apps/api dist entrypoint."
+    },
+    {
+      "category": "Runtime",
+      "name": "Procfile web command targets apps/api",
+      "status": "PASS",
+      "message": "Procfile web command targets apps/api start."
     },
     {
       "category": "Runtime",
