@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-18T15:29:09.049Z",
-  "gitSha": "fd681f95c59e39d7a4d543ff2f15762e390eb264",
-  "dirtyWorkingTree": true,
+  "generatedAt": "2026-05-18T15:34:19.698Z",
+  "gitSha": "6d852b88d931573467e1b6bb4cd271d323d10cd4",
+  "dirtyWorkingTree": false,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,

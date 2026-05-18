@@ -1,9 +1,9 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-18T15:29:09.049Z
+Generated at: 2026-05-18T15:34:19.698Z
 Overall status: WARN
-Git SHA: fd681f95c59e39d7a4d543ff2f15762e390eb264
-Dirty working tree: true
+Git SHA: 6d852b88d931573467e1b6bb4cd271d323d10cd4
+Dirty working tree: false
 
 ## Summary
 
