@@ -64,6 +64,19 @@ export function verifyRoutes(): VerificationSection {
   const healthRoutes = indexExists ? parseAppRoutes(CATEGORY, indexPath) : [];
 
   checks.push(makeCheck(CATEGORY, 'API index file exists', fileExists(indexPath) ? 'PASS' : 'FAIL', 'apps/api/src/index.ts presence verified.'));
+  if (indexExists) {
+    const hasBuildInfoRoute = indexContent.includes("app.get('/__buildinfo'") && indexContent.includes('res.json(');
+    checks.push(
+      makeCheck(
+        CATEGORY,
+        'Diagnostic route GET /__buildinfo',
+        hasBuildInfoRoute ? 'PASS' : 'FAIL',
+        hasBuildInfoRoute
+          ? 'apps/api/src/index.ts declares GET /__buildinfo and responds with JSON.'
+          : 'apps/api/src/index.ts is missing the GET /__buildinfo diagnostic JSON route.',
+      ),
+    );
+  }
 
   const adminApiChecks = [
     { method: 'GET' as const, path: '/admin/observability' },
