@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-05-18T21:57:05.140Z",
-  "gitSha": "44325364f49321974ad160d63eaaa6d739dd381c",
+  "generatedAt": "2026-05-18T22:12:46.613Z",
+  "gitSha": "b255db50e61e68d4becafb0c645852cd69acddc0",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
     "totalChecks": 345,
-    "passCount": 336,
-    "warnCount": 9,
+    "passCount": 332,
+    "warnCount": 10,
     "failCount": 0,
-    "skippedCount": 0
+    "skippedCount": 3
   },
   "sections": [
     {
@@ -2665,6 +2665,30 @@
         },
         {
           "category": "Runtime",
+          "name": "Railway startCommand targets apps/api",
+          "status": "WARN",
+          "message": "railway.toml startCommand does not match expected apps/api start command."
+        },
+        {
+          "category": "Runtime",
+          "name": "Nixpacks build includes apps/api build",
+          "status": "SKIPPED",
+          "message": "nixpacks.toml not present; skipping Nixpacks build command check."
+        },
+        {
+          "category": "Runtime",
+          "name": "Nixpacks start targets apps/api",
+          "status": "SKIPPED",
+          "message": "nixpacks.toml not present; skipping Nixpacks start command check."
+        },
+        {
+          "category": "Runtime",
+          "name": "Procfile web command targets apps/api",
+          "status": "SKIPPED",
+          "message": "Procfile not present; skipping Procfile start command check."
+        },
+        {
+          "category": "Runtime",
           "name": "API build script exists",
           "status": "PASS",
           "message": "API package build script presence verified."
@@ -2715,24 +2739,6 @@
         },
         {
           "category": "Runtime",
-          "name": "Nixpacks build includes apps/api build",
-          "status": "PASS",
-          "message": "nixpacks.toml build phase includes apps/api build."
-        },
-        {
-          "category": "Runtime",
-          "name": "Nixpacks start targets apps/api",
-          "status": "PASS",
-          "message": "nixpacks.toml start command targets apps/api dist entrypoint."
-        },
-        {
-          "category": "Runtime",
-          "name": "Procfile web command targets apps/api",
-          "status": "PASS",
-          "message": "Procfile web command targets apps/api start."
-        },
-        {
-          "category": "Runtime",
           "name": "queueEvents.ts exists",
           "status": "PASS",
           "message": "Required runtime surface file or directory is present."
@@ -2749,12 +2755,6 @@
           "status": "PASS",
           "message": "queues resolved to DISABLED.",
           "detail": "Distributed queue backend is disabled."
-        },
-        {
-          "category": "Runtime",
-          "name": "Railway startCommand targets apps/api",
-          "status": "PASS",
-          "message": "railway.toml startCommand targets apps/api dist entrypoint."
         },
         {
           "category": "Runtime",
@@ -2863,10 +2863,10 @@
         }
       ],
       "notificationStates": [],
-      "passCount": 27,
-      "warnCount": 1,
+      "passCount": 23,
+      "warnCount": 2,
       "failCount": 0,
-      "skippedCount": 0,
+      "skippedCount": 3,
       "overallStatus": "WARN"
     },
     {
@@ -4929,6 +4929,30 @@
     },
     {
       "category": "Runtime",
+      "name": "Railway startCommand targets apps/api",
+      "status": "WARN",
+      "message": "railway.toml startCommand does not match expected apps/api start command."
+    },
+    {
+      "category": "Runtime",
+      "name": "Nixpacks build includes apps/api build",
+      "status": "SKIPPED",
+      "message": "nixpacks.toml not present; skipping Nixpacks build command check."
+    },
+    {
+      "category": "Runtime",
+      "name": "Nixpacks start targets apps/api",
+      "status": "SKIPPED",
+      "message": "nixpacks.toml not present; skipping Nixpacks start command check."
+    },
+    {
+      "category": "Runtime",
+      "name": "Procfile web command targets apps/api",
+      "status": "SKIPPED",
+      "message": "Procfile not present; skipping Procfile start command check."
+    },
+    {
+      "category": "Runtime",
       "name": "API build script exists",
       "status": "PASS",
       "message": "API package build script presence verified."
@@ -4979,24 +5003,6 @@
     },
     {
       "category": "Runtime",
-      "name": "Nixpacks build includes apps/api build",
-      "status": "PASS",
-      "message": "nixpacks.toml build phase includes apps/api build."
-    },
-    {
-      "category": "Runtime",
-      "name": "Nixpacks start targets apps/api",
-      "status": "PASS",
-      "message": "nixpacks.toml start command targets apps/api dist entrypoint."
-    },
-    {
-      "category": "Runtime",
-      "name": "Procfile web command targets apps/api",
-      "status": "PASS",
-      "message": "Procfile web command targets apps/api start."
-    },
-    {
-      "category": "Runtime",
       "name": "queueEvents.ts exists",
       "status": "PASS",
       "message": "Required runtime surface file or directory is present."
@@ -5013,12 +5019,6 @@
       "status": "PASS",
       "message": "queues resolved to DISABLED.",
       "detail": "Distributed queue backend is disabled."
-    },
-    {
-      "category": "Runtime",
-      "name": "Railway startCommand targets apps/api",
-      "status": "PASS",
-      "message": "railway.toml startCommand targets apps/api dist entrypoint."
     },
     {
       "category": "Runtime",

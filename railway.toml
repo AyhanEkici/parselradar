@@ -3,6 +3,5 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "cd apps/api && npm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
