@@ -28,6 +28,7 @@ const signals_1 = require("../services/signals");
 const trends_1 = require("../services/trends");
 const alerts_1 = require("../services/alerts");
 const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
+const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
 const COSTS = { quick: 1 };
@@ -101,6 +102,36 @@ function toResponseFromRun(run, reused) {
             opportunitySignals: full.opportunitySignals || [],
             analysisVersion: run.analysisVersion || full.analysisVersion,
         });
+    const territorialIntelligence = full.territorialIntelligence ||
+        (0, buildTerritorialIntelligence_1.buildTerritorialIntelligence)({
+            score: run.score,
+            confidence: run.confidence,
+            sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+            freshnessScore: full.freshnessScore,
+            marketHeat: full.marketHeat,
+            comparableCount: full.comparableCount,
+            opportunityScore: full.opportunityScore,
+            marketMomentum: full.marketMomentum,
+            districtHeat: full.districtHeat,
+            volatilityIndex: full.volatilityIndex,
+            trendVelocityScore: full.trendVelocity?.velocityScore,
+            liquidityTrendScore: full.liquidityTrend?.liquidityTrendScore,
+            pricingDeltaRatio: full.pricingDeltaRatio,
+            overpricingRisk: full.overpricingRisk,
+            zoningPotential: full.zoningPotential,
+            developmentSignals: full.developmentSignals,
+            strategicLocationSignals: full.strategicLocationSignals,
+            missingInputs: run.missingInputs || [],
+            staleFlags: full.staleFlags || [],
+            unsupportedAssumptionsCount: (governanceEnvelope.unsupportedAssumptions || []).length,
+            infrastructureScore: full.infrastructureScore,
+            roadAccessScore: full.roadAccessScore,
+            infrastructureDistances: full.infrastructureDistances,
+            investorSignal: full.investorSignal,
+            regionalDemandScore: full.regionalDemand?.demandScore,
+            riskFlags: run.riskFlags || [],
+            recommendations: full.recommendations || [],
+        });
     return {
         id: run._id,
         score: run.score,
@@ -169,6 +200,7 @@ function toResponseFromRun(run, reused) {
         liquidityTrend: full.liquidityTrend,
         alertSignals: full.alertSignals || [],
         governanceEnvelope,
+        territorialIntelligence,
         governanceClassification: governanceEnvelope.governanceClassification,
         trustScore: governanceEnvelope.trustScore,
         reportEvidenceSummary: governanceEnvelope.evidenceSummary,
@@ -429,6 +461,35 @@ async function runAnalysis(req, res, options) {
             opportunitySignals: comparableMarket.opportunitySignals,
             analysisVersion: 'V9',
         });
+        const territorialIntelligence = (0, buildTerritorialIntelligence_1.buildTerritorialIntelligence)({
+            score: engine.score,
+            confidence: engine.confidence,
+            sourceConfidence,
+            freshnessScore,
+            marketHeat: comparableMarket.marketHeat,
+            comparableCount: comparableMarket.comparableCount,
+            opportunityScore: signalNetwork.opportunityScore,
+            marketMomentum: signalNetwork.marketMomentum,
+            districtHeat: signalNetwork.districtHeat,
+            volatilityIndex: trendSnapshots.volatility.volatilityIndex,
+            trendVelocityScore: trendSnapshots.velocity?.velocityScore,
+            liquidityTrendScore: trendSnapshots.liquidity?.liquidityTrendScore,
+            pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+            overpricingRisk: comparableMarket.overpricingRisk,
+            zoningPotential: engine.zoningPotential,
+            developmentSignals: developmentIntelligence.developmentSignals,
+            strategicLocationSignals: geoIntelligence.strategicLocationSignals,
+            missingInputs: engine.missingInputs,
+            staleFlags: refreshPlan.staleFlags,
+            unsupportedAssumptionsCount: (governanceEnvelope.unsupportedAssumptions || []).length,
+            infrastructureScore: geoIntelligence.infrastructureScore,
+            roadAccessScore: geoIntelligence.roadAccessScore,
+            infrastructureDistances: spatialIntelligence.infrastructureDistances,
+            investorSignal: signalNetwork.investorSignal,
+            regionalDemandScore: geoIntelligence.regionalDemand?.demandScore,
+            riskFlags: engine.riskFlags,
+            recommendations: engine.recommendations,
+        });
         property.set({
             lastSpatialRefresh: new Date(),
             lastMarketRefresh: new Date(),
@@ -532,6 +593,7 @@ async function runAnalysis(req, res, options) {
                 alertSignals: alertNetwork.alertSignals,
                 investorNotifications: alertNetwork.notifications,
                 governanceEnvelope,
+                territorialIntelligence,
             },
         });
         if (options.productType === 'QUICK_SCORE') {

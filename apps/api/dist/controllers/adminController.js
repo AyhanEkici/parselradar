@@ -255,6 +255,16 @@ const getPropertyById = async (req, res) => {
             trendVelocity: full.trendVelocity,
             liquidityTrend: full.liquidityTrend,
             alertSignals: full.alertSignals || [],
+            governanceEnvelope: full.governanceEnvelope,
+            governanceClassification: full.governanceEnvelope?.governanceClassification,
+            trustScore: full.governanceEnvelope?.trustScore,
+            reportEvidenceSummary: full.governanceEnvelope?.evidenceSummary,
+            reportConfidenceSummary: full.governanceEnvelope?.confidenceSummary,
+            reportDisclosureSummary: full.governanceEnvelope?.disclosureSummary,
+            evidenceTrace: full.governanceEnvelope?.evidenceTrace || [],
+            unsupportedAssumptions: full.governanceEnvelope?.unsupportedAssumptions || [],
+            speculativeIndicators: full.governanceEnvelope?.speculativeIndicators || [],
+            territorialIntelligence: full.territorialIntelligence,
         };
     });
     const latestByType = (type, altType) => enrichedAnalyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;

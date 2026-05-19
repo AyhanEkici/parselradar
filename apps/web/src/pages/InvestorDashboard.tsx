@@ -6,6 +6,10 @@ import GovernanceBadge from '../components/governance/GovernanceBadge';
 import TrustClassificationCard from '../components/governance/TrustClassificationCard';
 import ConfidenceMeter from '../components/confidence/ConfidenceMeter';
 import DisclosurePanel from '../components/disclosure/DisclosurePanel';
+import MacroGrowthCard from '../components/intelligence/MacroGrowthCard';
+import PlanningSignalCard from '../components/planning/PlanningSignalCard';
+import LiquidityScoreCard from '../components/intelligence/LiquidityScoreCard';
+import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -22,6 +26,7 @@ export default function InvestorDashboard() {
 
   const summary = data.summary || {};
   const governanceSnapshot = data.governanceSnapshot || {};
+  const territorialSnapshot = data.territorialSnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -64,6 +69,13 @@ export default function InvestorDashboard() {
             mode={governanceSnapshot.disclosureSummary?.mode}
             lines={governanceSnapshot.disclosureSummary?.lines}
           />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <MacroGrowthCard macroDirection={territorialSnapshot.macroDirection} />
+          <PlanningSignalCard planningLayer={territorialSnapshot.planningLayer} />
+          <LiquidityScoreCard liquidity={territorialSnapshot.liquidityProfile} />
+          <DevelopmentForecastCard forecast={territorialSnapshot.developmentProbability} />
         </div>
       </div>
     </div>

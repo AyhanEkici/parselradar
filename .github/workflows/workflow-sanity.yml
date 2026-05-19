@@ -1,0 +1,34 @@
+name: workflow-sanity
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/*.yml'
+      - '.github/workflows/*.yaml'
+
+jobs:
+  validate-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: YAML syntax lint
+        run: yamllint .github/workflows
+
+      - name: Actionlint
+        uses: reviewdog/actionlint@v1

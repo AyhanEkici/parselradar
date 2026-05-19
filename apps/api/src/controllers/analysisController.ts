@@ -24,6 +24,7 @@ import { buildSignalNetwork } from '../services/signals';
 import { buildTrendSnapshots } from '../services/trends';
 import { buildAlertNetwork } from '../services/alerts';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
+import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -107,6 +108,37 @@ function toResponseFromRun(run: any, reused: boolean) {
       opportunitySignals: full.opportunitySignals || [],
       analysisVersion: run.analysisVersion || full.analysisVersion,
     });
+  const territorialIntelligence =
+    full.territorialIntelligence ||
+    buildTerritorialIntelligence({
+      score: run.score,
+      confidence: run.confidence,
+      sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+      freshnessScore: full.freshnessScore,
+      marketHeat: full.marketHeat,
+      comparableCount: full.comparableCount,
+      opportunityScore: full.opportunityScore,
+      marketMomentum: full.marketMomentum,
+      districtHeat: full.districtHeat,
+      volatilityIndex: full.volatilityIndex,
+      trendVelocityScore: full.trendVelocity?.velocityScore,
+      liquidityTrendScore: full.liquidityTrend?.liquidityTrendScore,
+      pricingDeltaRatio: full.pricingDeltaRatio,
+      overpricingRisk: full.overpricingRisk,
+      zoningPotential: full.zoningPotential,
+      developmentSignals: full.developmentSignals,
+      strategicLocationSignals: full.strategicLocationSignals,
+      missingInputs: run.missingInputs || [],
+      staleFlags: full.staleFlags || [],
+      unsupportedAssumptionsCount: (governanceEnvelope.unsupportedAssumptions || []).length,
+      infrastructureScore: full.infrastructureScore,
+      roadAccessScore: full.roadAccessScore,
+      infrastructureDistances: full.infrastructureDistances,
+      investorSignal: full.investorSignal,
+      regionalDemandScore: full.regionalDemand?.demandScore,
+      riskFlags: run.riskFlags || [],
+      recommendations: full.recommendations || [],
+    });
 
   return {
     id: run._id,
@@ -176,6 +208,7 @@ function toResponseFromRun(run: any, reused: boolean) {
     liquidityTrend: full.liquidityTrend,
     alertSignals: full.alertSignals || [],
     governanceEnvelope,
+    territorialIntelligence,
     governanceClassification: governanceEnvelope.governanceClassification,
     trustScore: governanceEnvelope.trustScore,
     reportEvidenceSummary: governanceEnvelope.evidenceSummary,
@@ -478,6 +511,36 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       analysisVersion: 'V9',
     });
 
+    const territorialIntelligence = buildTerritorialIntelligence({
+      score: engine.score,
+      confidence: engine.confidence,
+      sourceConfidence,
+      freshnessScore,
+      marketHeat: comparableMarket.marketHeat,
+      comparableCount: comparableMarket.comparableCount,
+      opportunityScore: signalNetwork.opportunityScore,
+      marketMomentum: signalNetwork.marketMomentum,
+      districtHeat: signalNetwork.districtHeat,
+      volatilityIndex: trendSnapshots.volatility.volatilityIndex,
+      trendVelocityScore: trendSnapshots.velocity?.velocityScore,
+      liquidityTrendScore: trendSnapshots.liquidity?.liquidityTrendScore,
+      pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+      overpricingRisk: comparableMarket.overpricingRisk,
+      zoningPotential: engine.zoningPotential,
+      developmentSignals: developmentIntelligence.developmentSignals,
+      strategicLocationSignals: geoIntelligence.strategicLocationSignals,
+      missingInputs: engine.missingInputs,
+      staleFlags: refreshPlan.staleFlags,
+      unsupportedAssumptionsCount: (governanceEnvelope.unsupportedAssumptions || []).length,
+      infrastructureScore: geoIntelligence.infrastructureScore,
+      roadAccessScore: geoIntelligence.roadAccessScore,
+      infrastructureDistances: spatialIntelligence.infrastructureDistances,
+      investorSignal: signalNetwork.investorSignal,
+      regionalDemandScore: geoIntelligence.regionalDemand?.demandScore,
+      riskFlags: engine.riskFlags,
+      recommendations: engine.recommendations,
+    });
+
     property.set({
       lastSpatialRefresh: new Date(),
       lastMarketRefresh: new Date(),
@@ -583,6 +646,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         alertSignals: alertNetwork.alertSignals,
         investorNotifications: alertNetwork.notifications,
         governanceEnvelope,
+        territorialIntelligence,
       },
     });
 

@@ -8,6 +8,7 @@ import { getUserCredits } from '../utils/credits';
 import CreditLedger from '../models/CreditLedger';
 import path from 'path';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
+import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 
 const PDF_COST = 5;
 
@@ -59,12 +60,45 @@ export const getReports = async (req: AuthRequest, res: Response) => {
           opportunitySignals: full.opportunitySignals || [],
           analysisVersion: run.analysisVersion || full.analysisVersion,
         });
+      const territorialIntelligence =
+        full.territorialIntelligence ||
+        buildTerritorialIntelligence({
+          score: run.score,
+          confidence: run.confidence,
+          sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+          freshnessScore: full.freshnessScore,
+          marketHeat: full.marketHeat,
+          comparableCount: full.comparableCount,
+          opportunityScore: full.opportunityScore,
+          marketMomentum: full.marketMomentum,
+          districtHeat: full.districtHeat,
+          volatilityIndex: full.volatilityIndex,
+          trendVelocityScore: full.trendVelocity?.velocityScore,
+          liquidityTrendScore: full.liquidityTrend?.liquidityTrendScore,
+          pricingDeltaRatio: full.pricingDeltaRatio,
+          overpricingRisk: full.overpricingRisk,
+          zoningPotential: full.zoningPotential,
+          developmentSignals: full.developmentSignals,
+          strategicLocationSignals: full.strategicLocationSignals,
+          missingInputs: run.missingInputs || [],
+          staleFlags: full.staleFlags || [],
+          unsupportedAssumptionsCount: (governanceEnvelope.unsupportedAssumptions || []).length,
+          infrastructureScore: full.infrastructureScore,
+          roadAccessScore: full.roadAccessScore,
+          infrastructureDistances: full.infrastructureDistances,
+          investorSignal: full.investorSignal,
+          regionalDemandScore: full.regionalDemand?.demandScore,
+          riskFlags: run.riskFlags || [],
+          recommendations: full.recommendations || [],
+        });
 
       return {
         ...report,
         governanceClassification: governanceEnvelope.governanceClassification,
         trustScore: governanceEnvelope.trustScore,
         disclosureMode: governanceEnvelope.disclosureSummary?.mode,
+        regionalOutlook: territorialIntelligence.longTermRegionalOutlook?.value,
+        developmentProbability: territorialIntelligence.developmentProbability?.value,
       };
     })
   );

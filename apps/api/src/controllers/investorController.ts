@@ -10,6 +10,7 @@ import PropertySubmission from '../models/PropertySubmission';
 import { buildInvestorDashboardSummary } from '../services/portfolio/buildInvestorDashboardSummary';
 import { calculatePortfolioOpportunityScore } from '../services/portfolio/calculatePortfolioOpportunityScore';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
+import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 
 function userObjectId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -59,6 +60,37 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
         analysisVersion: latest.analysisVersion || latest.fullAnalysis?.analysisVersion,
       })
     : null;
+  const territorialSnapshot = latest
+    ? buildTerritorialIntelligence({
+        score: latest.score,
+        confidence: latest.confidence,
+        sourceConfidence: latest.sourceConfidence || latest.fullAnalysis?.sourceConfidence,
+        freshnessScore: latest.fullAnalysis?.freshnessScore,
+        marketHeat: latest.fullAnalysis?.marketHeat,
+        comparableCount: latest.fullAnalysis?.comparableCount,
+        opportunityScore: latest.fullAnalysis?.opportunityScore,
+        marketMomentum: latest.fullAnalysis?.marketMomentum,
+        districtHeat: latest.fullAnalysis?.districtHeat,
+        volatilityIndex: latest.fullAnalysis?.volatilityIndex,
+        trendVelocityScore: latest.fullAnalysis?.trendVelocity?.velocityScore,
+        liquidityTrendScore: latest.fullAnalysis?.liquidityTrend?.liquidityTrendScore,
+        pricingDeltaRatio: latest.fullAnalysis?.pricingDeltaRatio,
+        overpricingRisk: latest.fullAnalysis?.overpricingRisk,
+        zoningPotential: latest.fullAnalysis?.zoningPotential,
+        developmentSignals: latest.fullAnalysis?.developmentSignals,
+        strategicLocationSignals: latest.fullAnalysis?.strategicLocationSignals,
+        missingInputs: latest.missingInputs || [],
+        staleFlags: latest.fullAnalysis?.staleFlags || [],
+        unsupportedAssumptionsCount: (governanceSnapshot?.unsupportedAssumptions || []).length,
+        infrastructureScore: latest.fullAnalysis?.infrastructureScore,
+        roadAccessScore: latest.fullAnalysis?.roadAccessScore,
+        infrastructureDistances: latest.fullAnalysis?.infrastructureDistances,
+        investorSignal: latest.fullAnalysis?.investorSignal,
+        regionalDemandScore: latest.fullAnalysis?.regionalDemand?.demandScore,
+        riskFlags: latest.riskFlags || [],
+        recommendations: latest.fullAnalysis?.recommendations || [],
+      })
+    : null;
 
   return res.json({
     summary,
@@ -67,6 +99,7 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
       note: 'All investor intelligence inherits existing sourceConfidence and freshnessScore fields.',
     },
     governanceSnapshot,
+    territorialSnapshot,
   });
 };
 

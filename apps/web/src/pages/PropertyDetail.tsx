@@ -65,6 +65,16 @@ import EvidenceStrengthCard from '../components/confidence/EvidenceStrengthCard'
 import MissingDataImpactCard from '../components/confidence/MissingDataImpactCard';
 import SourceProvenanceCard from '../components/provenance/SourceProvenanceCard';
 import DisclosurePanel from '../components/disclosure/DisclosurePanel';
+import PlanningSignalCard from '../components/planning/PlanningSignalCard';
+import ImarProbabilityCard from '../components/planning/ImarProbabilityCard';
+import InfrastructurePressureCard from '../components/infrastructure/InfrastructurePressureCard';
+import MacroGrowthCard from '../components/intelligence/MacroGrowthCard';
+import RegionalDemandCard from '../components/intelligence/RegionalDemandCard';
+import LiquidityScoreCard from '../components/intelligence/LiquidityScoreCard';
+import DemographicPressureCard from '../components/demographics/DemographicPressureCard';
+import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
+import TerritorialEvolutionCard from '../components/forecasting/TerritorialEvolutionCard';
+import StrategicRegionScoreCard from '../components/intelligence/StrategicRegionScoreCard';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -474,6 +484,19 @@ export default function PropertyDetail() {
       }>;
       unsupportedAssumptions?: string[];
       speculativeIndicators?: string[];
+      territorialIntelligence?: {
+        macroDirection?: any;
+        planningLayer?: any;
+        planningProbability?: any;
+        infrastructurePressure?: any;
+        demographicTrajectory?: any;
+        regionalDemand?: any;
+        liquidityProfile?: any;
+        speculativeRisk?: any;
+        developmentProbability?: any;
+        territorialEvolution?: any;
+        strategicRegionScore?: any;
+      };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -1004,6 +1027,29 @@ export default function PropertyDetail() {
                 />
               </div>
             </div>
+
+            {latestAnalysis.territorialIntelligence && (
+              <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-slate-900">Territorial Intelligence Depth</h3>
+                  <p className="text-xs text-slate-600">
+                    Real-signal deterministic synthesis with explicit provenance fields. No guaranteed planning or appreciation outcomes.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3"><MacroGrowthCard macroDirection={latestAnalysis.territorialIntelligence.macroDirection} /></div>
+                  <div className="xl:col-span-3"><PlanningSignalCard planningLayer={latestAnalysis.territorialIntelligence.planningLayer} /></div>
+                  <div className="xl:col-span-3"><ImarProbabilityCard probability={latestAnalysis.territorialIntelligence.planningProbability} /></div>
+                  <div className="xl:col-span-3"><InfrastructurePressureCard pressure={latestAnalysis.territorialIntelligence.infrastructurePressure} /></div>
+                  <div className="xl:col-span-3"><RegionalDemandCard regionalDemand={latestAnalysis.territorialIntelligence.regionalDemand} /></div>
+                  <div className="xl:col-span-3"><LiquidityScoreCard liquidity={latestAnalysis.territorialIntelligence.liquidityProfile} /></div>
+                  <div className="xl:col-span-3"><DemographicPressureCard demographic={latestAnalysis.territorialIntelligence.demographicTrajectory} /></div>
+                  <div className="xl:col-span-3"><DevelopmentForecastCard forecast={latestAnalysis.territorialIntelligence.developmentProbability} /></div>
+                  <div className="xl:col-span-3"><TerritorialEvolutionCard evolution={latestAnalysis.territorialIntelligence.territorialEvolution} /></div>
+                  <div className="xl:col-span-3"><StrategicRegionScoreCard score={latestAnalysis.territorialIntelligence.strategicRegionScore} /></div>
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
               <div className="xl:col-span-6">

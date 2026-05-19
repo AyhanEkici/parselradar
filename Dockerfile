@@ -17,6 +17,11 @@ RUN npm install --prefix apps/api
 RUN npm run build --prefix packages/shared
 RUN npm run build --prefix apps/api
 
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup /app
+
 WORKDIR /app/apps/api
+
+USER appuser
 
 CMD ["npm", "start"]

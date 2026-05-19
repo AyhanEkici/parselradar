@@ -6,6 +6,12 @@ import GovernanceBadge from '../components/governance/GovernanceBadge';
 import ConfidenceMeter from '../components/confidence/ConfidenceMeter';
 import EvidenceStrengthCard from '../components/confidence/EvidenceStrengthCard';
 import DisclosurePanel from '../components/disclosure/DisclosurePanel';
+import PlanningSignalCard from '../components/planning/PlanningSignalCard';
+import ImarProbabilityCard from '../components/planning/ImarProbabilityCard';
+import InfrastructurePressureCard from '../components/infrastructure/InfrastructurePressureCard';
+import MacroGrowthCard from '../components/intelligence/MacroGrowthCard';
+import LiquidityScoreCard from '../components/intelligence/LiquidityScoreCard';
+import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -31,6 +37,14 @@ export default function PropertyResult() {
     reportDisclosureSummary?: {
       mode?: string;
       lines?: string[];
+    };
+    territorialIntelligence?: {
+      macroDirection?: any;
+      planningLayer?: any;
+      planningProbability?: any;
+      infrastructurePressure?: any;
+      liquidityProfile?: any;
+      developmentProbability?: any;
     };
   }
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -105,6 +119,16 @@ export default function PropertyResult() {
               lines={result.reportDisclosureSummary?.lines}
             />
           </div>
+          {result.territorialIntelligence && (
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              <MacroGrowthCard macroDirection={result.territorialIntelligence.macroDirection} />
+              <PlanningSignalCard planningLayer={result.territorialIntelligence.planningLayer} />
+              <ImarProbabilityCard probability={result.territorialIntelligence.planningProbability} />
+              <InfrastructurePressureCard pressure={result.territorialIntelligence.infrastructurePressure} />
+              <LiquidityScoreCard liquidity={result.territorialIntelligence.liquidityProfile} />
+              <DevelopmentForecastCard forecast={result.territorialIntelligence.developmentProbability} />
+            </div>
+          )}
         </div>
       )}
       {analysisRunId && !pdfId && (

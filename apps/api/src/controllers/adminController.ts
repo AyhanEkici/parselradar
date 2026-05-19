@@ -251,6 +251,16 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       trendVelocity: full.trendVelocity,
       liquidityTrend: full.liquidityTrend,
       alertSignals: full.alertSignals || [],
+      governanceEnvelope: full.governanceEnvelope,
+      governanceClassification: full.governanceEnvelope?.governanceClassification,
+      trustScore: full.governanceEnvelope?.trustScore,
+      reportEvidenceSummary: full.governanceEnvelope?.evidenceSummary,
+      reportConfidenceSummary: full.governanceEnvelope?.confidenceSummary,
+      reportDisclosureSummary: full.governanceEnvelope?.disclosureSummary,
+      evidenceTrace: full.governanceEnvelope?.evidenceTrace || [],
+      unsupportedAssumptions: full.governanceEnvelope?.unsupportedAssumptions || [],
+      speculativeIndicators: full.governanceEnvelope?.speculativeIndicators || [],
+      territorialIntelligence: full.territorialIntelligence,
     };
   });
 

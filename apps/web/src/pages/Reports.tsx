@@ -7,6 +7,8 @@ interface Report {
   governanceClassification?: string;
   trustScore?: number;
   disclosureMode?: string;
+  regionalOutlook?: string;
+  developmentProbability?: string;
 }
 
 export default function Reports() {
@@ -28,6 +30,8 @@ export default function Reports() {
               <GovernanceBadge classification={r.governanceClassification} />
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Trust: {r.trustScore ?? '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Disclosure: {r.disclosureMode || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Outlook: {r.regionalOutlook || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Dev Prob: {r.developmentProbability || '-'}</span>
             </div>
           </li>
         ))}
