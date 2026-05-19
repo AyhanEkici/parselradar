@@ -13,6 +13,7 @@ const AnalysisRun_1 = __importDefault(require("../models/AnalysisRun"));
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
 const buildInvestorDashboardSummary_1 = require("../services/portfolio/buildInvestorDashboardSummary");
 const calculatePortfolioOpportunityScore_1 = require("../services/portfolio/calculatePortfolioOpportunityScore");
+const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 function userObjectId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -39,12 +40,30 @@ const getInvestorDashboard = async (req, res) => {
         staleIntelligenceCount: opportunity.staleIntelligenceCount,
         highPotentialProperties: opportunity.highPotentialCount,
     });
+    const latest = latestAnalyses[0];
+    const governanceSnapshot = latest
+        ? (0, reportGovernanceEnvelope_1.buildReportGovernanceEnvelope)({
+            score: latest.score,
+            confidence: latest.confidence,
+            summary: latest.previewSummary?.summary,
+            recommendations: latest.fullAnalysis?.recommendations || [],
+            risks: latest.riskFlags || [],
+            missingInputs: latest.missingInputs || [],
+            staleFlags: latest.fullAnalysis?.staleFlags || [],
+            sourceConfidence: latest.sourceConfidence || latest.fullAnalysis?.sourceConfidence,
+            freshnessScore: latest.fullAnalysis?.freshnessScore,
+            trendSignals: latest.fullAnalysis?.trendSignals || [],
+            opportunitySignals: latest.fullAnalysis?.opportunitySignals || [],
+            analysisVersion: latest.analysisVersion || latest.fullAnalysis?.analysisVersion,
+        })
+        : null;
     return res.json({
         summary,
         confidence: {
             inheritedFromAnalyses: true,
             note: 'All investor intelligence inherits existing sourceConfidence and freshnessScore fields.',
         },
+        governanceSnapshot,
     });
 };
 exports.getInvestorDashboard = getInvestorDashboard;

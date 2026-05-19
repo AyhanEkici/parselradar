@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import InvestorSummaryCard from '../components/investor/InvestorSummaryCard';
+import GovernanceBadge from '../components/governance/GovernanceBadge';
+import TrustClassificationCard from '../components/governance/TrustClassificationCard';
+import ConfidenceMeter from '../components/confidence/ConfidenceMeter';
+import DisclosurePanel from '../components/disclosure/DisclosurePanel';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -17,6 +21,7 @@ export default function InvestorDashboard() {
   if (!data) return <div className="p-6">Yükleniyor...</div>;
 
   const summary = data.summary || {};
+  const governanceSnapshot = data.governanceSnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -41,6 +46,24 @@ export default function InvestorDashboard() {
 
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
           Investor metrics inherit analysis confidence/freshness/version fields from the latest intelligence records.
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <GovernanceBadge classification={governanceSnapshot.governanceClassification} />
+          </div>
+          <TrustClassificationCard
+            trustScore={governanceSnapshot.trustScore}
+            compliance={governanceSnapshot.disclosureSummary?.compliance}
+          />
+          <ConfidenceMeter
+            score={governanceSnapshot.confidenceSummary?.score}
+            classification={governanceSnapshot.confidenceSummary?.classification}
+          />
+          <DisclosurePanel
+            mode={governanceSnapshot.disclosureSummary?.mode}
+            lines={governanceSnapshot.disclosureSummary?.lines}
+          />
         </div>
       </div>
     </div>

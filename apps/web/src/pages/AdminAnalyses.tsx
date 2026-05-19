@@ -16,6 +16,7 @@ import {
   AdminTh,
   AdminToolbar,
 } from '../components/admin';
+import GovernanceBadge from '../components/governance/GovernanceBadge';
 
 interface Analysis {
   _id: string;
@@ -38,6 +39,12 @@ interface Analysis {
   signal?: string;
   reused: boolean;
   createdAt: string;
+  fullAnalysis?: {
+    governanceEnvelope?: {
+      governanceClassification?: string;
+      trustScore?: number;
+    };
+  };
 }
 
 function shortenId(value?: string) {
@@ -111,6 +118,7 @@ export default function AdminAnalyses() {
                 <AdminTh>Score</AdminTh>
                 <AdminTh>Signal</AdminTh>
                 <AdminTh>Reused</AdminTh>
+                <AdminTh>Governance</AdminTh>
                 <AdminTh>Property</AdminTh>
                 <AdminTh>User</AdminTh>
                 <AdminTh>Oluşturulma</AdminTh>
@@ -131,6 +139,12 @@ export default function AdminAnalyses() {
                     <AdminStatusPill tone={a.reused ? 'success' : 'neutral'}>
                       {a.reused ? 'Evet' : 'Hayır'}
                     </AdminStatusPill>
+                  </AdminTd>
+                  <AdminTd>
+                    <div className="space-y-1">
+                      <GovernanceBadge classification={a.fullAnalysis?.governanceEnvelope?.governanceClassification} />
+                      <div className="text-xs text-slate-500">Trust: {a.fullAnalysis?.governanceEnvelope?.trustScore ?? '-'}</div>
+                    </div>
                   </AdminTd>
                   <AdminTd className="break-words">
                     {typeof a.propertySubmissionId === 'object' ? (

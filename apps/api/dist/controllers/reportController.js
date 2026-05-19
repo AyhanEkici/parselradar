@@ -11,6 +11,7 @@ const pdfService_1 = require("../services/pdfService");
 const credits_1 = require("../utils/credits");
 const CreditLedger_1 = __importDefault(require("../models/CreditLedger"));
 const path_1 = __importDefault(require("path"));
+const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const PDF_COST = 5;
 const purchasePDF = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
@@ -39,8 +40,35 @@ const purchasePDF = async (req, res) => {
 exports.purchasePDF = purchasePDF;
 const getReports = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
-    const reports = await Report_1.default.find({ userId: user._id });
-    res.json(reports);
+    const reports = await Report_1.default.find({ userId: user._id }).lean();
+    const withGovernance = await Promise.all(reports.map(async (report) => {
+        const run = await AnalysisRun_1.default.findById(report.analysisRunId).lean();
+        if (!run)
+            return report;
+        const full = (run.fullAnalysis || {});
+        const governanceEnvelope = full.governanceEnvelope ||
+            (0, reportGovernanceEnvelope_1.buildReportGovernanceEnvelope)({
+                score: run.score,
+                confidence: run.confidence,
+                summary: run.previewSummary?.summary,
+                recommendations: full.recommendations || [],
+                risks: run.riskFlags || [],
+                missingInputs: run.missingInputs || [],
+                staleFlags: full.staleFlags || [],
+                sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+                freshnessScore: full.freshnessScore,
+                trendSignals: full.trendSignals || [],
+                opportunitySignals: full.opportunitySignals || [],
+                analysisVersion: run.analysisVersion || full.analysisVersion,
+            });
+        return {
+            ...report,
+            governanceClassification: governanceEnvelope.governanceClassification,
+            trustScore: governanceEnvelope.trustScore,
+            disclosureMode: governanceEnvelope.disclosureSummary?.mode,
+        };
+    }));
+    res.json(withGovernance);
 };
 exports.getReports = getReports;
 const downloadReport = async (req, res) => {

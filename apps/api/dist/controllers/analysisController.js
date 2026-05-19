@@ -27,6 +27,7 @@ const connectors_1 = require("../services/connectors");
 const signals_1 = require("../services/signals");
 const trends_1 = require("../services/trends");
 const alerts_1 = require("../services/alerts");
+const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
 const COSTS = { quick: 1 };
@@ -85,6 +86,21 @@ async function computeEngineResult(propertyDoc, userId, productType) {
 function toResponseFromRun(run, reused) {
     const full = (run.fullAnalysis || {});
     const preview = (run.previewSummary || {});
+    const governanceEnvelope = full.governanceEnvelope ||
+        (0, reportGovernanceEnvelope_1.buildReportGovernanceEnvelope)({
+            score: run.score,
+            confidence: run.confidence,
+            summary: preview.summary || full.summary,
+            recommendations: full.recommendations || [],
+            risks: run.risks || [],
+            missingInputs: run.missingInputs || [],
+            staleFlags: full.staleFlags || [],
+            sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+            freshnessScore: full.freshnessScore,
+            trendSignals: full.trendSignals || [],
+            opportunitySignals: full.opportunitySignals || [],
+            analysisVersion: run.analysisVersion || full.analysisVersion,
+        });
     return {
         id: run._id,
         score: run.score,
@@ -152,6 +168,16 @@ function toResponseFromRun(run, reused) {
         trendVelocity: full.trendVelocity,
         liquidityTrend: full.liquidityTrend,
         alertSignals: full.alertSignals || [],
+        governanceEnvelope,
+        governanceClassification: governanceEnvelope.governanceClassification,
+        trustScore: governanceEnvelope.trustScore,
+        reportEvidenceSummary: governanceEnvelope.evidenceSummary,
+        reportConfidenceSummary: governanceEnvelope.confidenceSummary,
+        reportDisclosureSummary: governanceEnvelope.disclosureSummary,
+        evidenceTrace: governanceEnvelope.evidenceTrace,
+        verificationStates: governanceEnvelope.verificationStates,
+        unsupportedAssumptions: governanceEnvelope.unsupportedAssumptions,
+        speculativeIndicators: governanceEnvelope.speculativeIndicators,
         reused,
         summary: preview.summary || '',
         createdAt: run.createdAt,
@@ -389,6 +415,20 @@ async function runAnalysis(req, res, options) {
             ...trendSnapshots.snapshots,
             ...alertNetwork.alertSignals,
         ]));
+        const governanceEnvelope = (0, reportGovernanceEnvelope_1.buildReportGovernanceEnvelope)({
+            score: engine.score,
+            confidence: engine.confidence,
+            summary: engine.summary,
+            recommendations: engine.recommendations,
+            risks: engine.riskFlags,
+            missingInputs: engine.missingInputs,
+            staleFlags: refreshPlan.staleFlags,
+            sourceConfidence,
+            freshnessScore,
+            trendSignals,
+            opportunitySignals: comparableMarket.opportunitySignals,
+            analysisVersion: 'V9',
+        });
         property.set({
             lastSpatialRefresh: new Date(),
             lastMarketRefresh: new Date(),
@@ -491,6 +531,7 @@ async function runAnalysis(req, res, options) {
                 liquidityTrend: trendSnapshots.liquidity,
                 alertSignals: alertNetwork.alertSignals,
                 investorNotifications: alertNetwork.notifications,
+                governanceEnvelope,
             },
         });
         if (options.productType === 'QUICK_SCORE') {

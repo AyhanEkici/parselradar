@@ -23,6 +23,7 @@ import { buildConnectorNetwork } from '../services/connectors';
 import { buildSignalNetwork } from '../services/signals';
 import { buildTrendSnapshots } from '../services/trends';
 import { buildAlertNetwork } from '../services/alerts';
+import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -90,6 +91,22 @@ async function computeEngineResult(propertyDoc: any, userId: mongoose.Types.Obje
 function toResponseFromRun(run: any, reused: boolean) {
   const full = (run.fullAnalysis || {}) as Record<string, any>;
   const preview = (run.previewSummary || {}) as Record<string, any>;
+  const governanceEnvelope =
+    full.governanceEnvelope ||
+    buildReportGovernanceEnvelope({
+      score: run.score,
+      confidence: run.confidence,
+      summary: preview.summary || full.summary,
+      recommendations: full.recommendations || [],
+      risks: run.risks || [],
+      missingInputs: run.missingInputs || [],
+      staleFlags: full.staleFlags || [],
+      sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+      freshnessScore: full.freshnessScore,
+      trendSignals: full.trendSignals || [],
+      opportunitySignals: full.opportunitySignals || [],
+      analysisVersion: run.analysisVersion || full.analysisVersion,
+    });
 
   return {
     id: run._id,
@@ -158,6 +175,16 @@ function toResponseFromRun(run: any, reused: boolean) {
     trendVelocity: full.trendVelocity,
     liquidityTrend: full.liquidityTrend,
     alertSignals: full.alertSignals || [],
+    governanceEnvelope,
+    governanceClassification: governanceEnvelope.governanceClassification,
+    trustScore: governanceEnvelope.trustScore,
+    reportEvidenceSummary: governanceEnvelope.evidenceSummary,
+    reportConfidenceSummary: governanceEnvelope.confidenceSummary,
+    reportDisclosureSummary: governanceEnvelope.disclosureSummary,
+    evidenceTrace: governanceEnvelope.evidenceTrace,
+    verificationStates: governanceEnvelope.verificationStates,
+    unsupportedAssumptions: governanceEnvelope.unsupportedAssumptions,
+    speculativeIndicators: governanceEnvelope.speculativeIndicators,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -436,6 +463,21 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       ])
     );
 
+    const governanceEnvelope = buildReportGovernanceEnvelope({
+      score: engine.score,
+      confidence: engine.confidence,
+      summary: engine.summary,
+      recommendations: engine.recommendations,
+      risks: engine.riskFlags,
+      missingInputs: engine.missingInputs,
+      staleFlags: refreshPlan.staleFlags,
+      sourceConfidence,
+      freshnessScore,
+      trendSignals,
+      opportunitySignals: comparableMarket.opportunitySignals,
+      analysisVersion: 'V9',
+    });
+
     property.set({
       lastSpatialRefresh: new Date(),
       lastMarketRefresh: new Date(),
@@ -540,6 +582,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         liquidityTrend: trendSnapshots.liquidity,
         alertSignals: alertNetwork.alertSignals,
         investorNotifications: alertNetwork.notifications,
+        governanceEnvelope,
       },
     });
 

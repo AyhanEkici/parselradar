@@ -7,6 +7,7 @@ import { generateReportPDF } from '../services/pdfService';
 import { getUserCredits } from '../utils/credits';
 import CreditLedger from '../models/CreditLedger';
 import path from 'path';
+import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 
 const PDF_COST = 5;
 
@@ -35,8 +36,40 @@ export const purchasePDF = async (req: AuthRequest, res: Response) => {
 
 export const getReports = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const reports = await Report.find({ userId: user._id });
-  res.json(reports);
+  const reports = await Report.find({ userId: user._id }).lean();
+
+  const withGovernance = await Promise.all(
+    reports.map(async (report: any) => {
+      const run = await AnalysisRun.findById(report.analysisRunId).lean();
+      if (!run) return report;
+      const full = (run.fullAnalysis || {}) as Record<string, any>;
+      const governanceEnvelope =
+        full.governanceEnvelope ||
+        buildReportGovernanceEnvelope({
+          score: run.score,
+          confidence: run.confidence,
+          summary: run.previewSummary?.summary as string,
+          recommendations: full.recommendations || [],
+          risks: run.riskFlags || [],
+          missingInputs: run.missingInputs || [],
+          staleFlags: full.staleFlags || [],
+          sourceConfidence: run.sourceConfidence || full.sourceConfidence,
+          freshnessScore: full.freshnessScore,
+          trendSignals: full.trendSignals || [],
+          opportunitySignals: full.opportunitySignals || [],
+          analysisVersion: run.analysisVersion || full.analysisVersion,
+        });
+
+      return {
+        ...report,
+        governanceClassification: governanceEnvelope.governanceClassification,
+        trustScore: governanceEnvelope.trustScore,
+        disclosureMode: governanceEnvelope.disclosureSummary?.mode,
+      };
+    })
+  );
+
+  res.json(withGovernance);
 };
 
 export const downloadReport = async (req: AuthRequest, res: Response) => {

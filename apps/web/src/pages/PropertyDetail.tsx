@@ -57,6 +57,14 @@ import {
   InvestorSignalCard,
   ConnectorStatusCard,
 } from '../components/trends';
+import GovernanceBadge from '../components/governance/GovernanceBadge';
+import GovernanceWarningsPanel from '../components/governance/GovernanceWarningsPanel';
+import TrustClassificationCard from '../components/governance/TrustClassificationCard';
+import ConfidenceMeter from '../components/confidence/ConfidenceMeter';
+import EvidenceStrengthCard from '../components/confidence/EvidenceStrengthCard';
+import MissingDataImpactCard from '../components/confidence/MissingDataImpactCard';
+import SourceProvenanceCard from '../components/provenance/SourceProvenanceCard';
+import DisclosurePanel from '../components/disclosure/DisclosurePanel';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -440,6 +448,32 @@ export default function PropertyDetail() {
       trendVelocity?: { velocityScore?: number; velocityLabel?: string };
       liquidityTrend?: { liquidityTrendScore?: number; liquidityTrend?: string };
       alertSignals?: string[];
+      governanceClassification?: 'SAFE' | 'CAUTION' | 'SPECULATIVE' | 'INSUFFICIENT_DATA' | string;
+      trustScore?: number;
+      reportEvidenceSummary?: {
+        evidenceStrength?: 'VERY_WEAK' | 'WEAK' | 'MODERATE' | 'STRONG' | 'VERIFIED' | string;
+        sourcesAvailable?: number;
+        sourcesTotal?: number;
+      };
+      reportConfidenceSummary?: {
+        score?: number;
+        classification?: 'LOW' | 'MODERATE' | 'HIGH' | 'VERY_HIGH' | string;
+        missingDataImpact?: number;
+        penaltyReasons?: string[];
+      };
+      reportDisclosureSummary?: {
+        mode?: 'INTERNAL_ONLY' | 'CLIENT_VISIBLE' | 'HIGH_RISK_DISCLOSURE' | string;
+        lines?: string[];
+        compliance?: string;
+      };
+      evidenceTrace?: Array<{
+        sourceLabel?: string;
+        verificationState?: 'verified' | 'inferred' | 'estimated' | 'unavailable' | string;
+        reliability?: 'UNKNOWN' | 'UNVERIFIED' | 'PARTIAL' | 'VERIFIED_PUBLIC' | 'VERIFIED_OFFICIAL' | string;
+        freshnessDays?: number;
+      }>;
+      unsupportedAssumptions?: string[];
+      speculativeIndicators?: string[];
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -918,6 +952,57 @@ export default function PropertyDetail() {
 
             <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong>DISCLAIMER:</strong> Preliminary rule-based analysis, not a certified valuation. Uses submitted fields and document evidence only.
+            </div>
+
+            <div className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+              <div className="xl:col-span-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  <GovernanceBadge classification={latestAnalysis.governanceClassification} />
+                </div>
+              </div>
+              <div className="xl:col-span-2">
+                <TrustClassificationCard
+                  trustScore={latestAnalysis.trustScore}
+                  compliance={latestAnalysis.reportDisclosureSummary?.compliance}
+                />
+              </div>
+              <div className="xl:col-span-2">
+                <ConfidenceMeter
+                  score={latestAnalysis.reportConfidenceSummary?.score}
+                  classification={latestAnalysis.reportConfidenceSummary?.classification}
+                />
+              </div>
+              <div className="xl:col-span-2">
+                <EvidenceStrengthCard
+                  evidenceStrength={latestAnalysis.reportEvidenceSummary?.evidenceStrength}
+                  sourcesAvailable={latestAnalysis.reportEvidenceSummary?.sourcesAvailable}
+                  sourcesTotal={latestAnalysis.reportEvidenceSummary?.sourcesTotal}
+                />
+              </div>
+              <div className="xl:col-span-2">
+                <MissingDataImpactCard
+                  missingDataImpact={latestAnalysis.reportConfidenceSummary?.missingDataImpact}
+                  penaltyReasons={latestAnalysis.reportConfidenceSummary?.penaltyReasons}
+                />
+              </div>
+              <div className="xl:col-span-2">
+                <SourceProvenanceCard trace={latestAnalysis.evidenceTrace} />
+              </div>
+            </div>
+
+            <div className="mb-6 grid grid-cols-1 gap-4 xl:grid-cols-12">
+              <div className="xl:col-span-7">
+                <DisclosurePanel
+                  mode={latestAnalysis.reportDisclosureSummary?.mode}
+                  lines={latestAnalysis.reportDisclosureSummary?.lines}
+                />
+              </div>
+              <div className="xl:col-span-5">
+                <GovernanceWarningsPanel
+                  unsupportedAssumptions={latestAnalysis.unsupportedAssumptions}
+                  speculativeIndicators={latestAnalysis.speculativeIndicators}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">

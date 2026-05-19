@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useToast } from '../components/ui';
+import GovernanceBadge from '../components/governance/GovernanceBadge';
+import ConfidenceMeter from '../components/confidence/ConfidenceMeter';
+import EvidenceStrengthCard from '../components/confidence/EvidenceStrengthCard';
+import DisclosurePanel from '../components/disclosure/DisclosurePanel';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -14,6 +18,20 @@ export default function PropertyResult() {
     topRisks?: string[];
     missingDocs?: string[];
     recommendedAction?: string;
+    governanceClassification?: string;
+    reportEvidenceSummary?: {
+      evidenceStrength?: string;
+      sourcesAvailable?: number;
+      sourcesTotal?: number;
+    };
+    reportConfidenceSummary?: {
+      score?: number;
+      classification?: string;
+    };
+    reportDisclosureSummary?: {
+      mode?: string;
+      lines?: string[];
+    };
   }
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analysisRunId, setAnalysisRunId] = useState<string | null>(null);
@@ -60,6 +78,9 @@ export default function PropertyResult() {
       </div>
       {result && (
         <div className="border p-4 rounded mb-4">
+          <div className="mb-3">
+            <GovernanceBadge classification={result.governanceClassification} />
+          </div>
           <div><b>Signal:</b> {result.signal}</div>
           <div><b>Skor:</b> {result.score}</div>
           <div><b>TL/m²:</b> {result.pricePerM2 || '-'}</div>
@@ -67,6 +88,23 @@ export default function PropertyResult() {
           <div><b>Eksik belgeler:</b> {(result.missingDocs || []).join(', ')}</div>
           <div><b>Önerilen sonraki adım:</b> {result.recommendedAction || '-'}</div>
           <div className="mt-2 text-yellow-700">PDF raporun tamamı için satın alma gereklidir.</div>
+          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+            <ConfidenceMeter
+              score={result.reportConfidenceSummary?.score}
+              classification={result.reportConfidenceSummary?.classification}
+            />
+            <EvidenceStrengthCard
+              evidenceStrength={result.reportEvidenceSummary?.evidenceStrength}
+              sourcesAvailable={result.reportEvidenceSummary?.sourcesAvailable}
+              sourcesTotal={result.reportEvidenceSummary?.sourcesTotal}
+            />
+          </div>
+          <div className="mt-3">
+            <DisclosurePanel
+              mode={result.reportDisclosureSummary?.mode}
+              lines={result.reportDisclosureSummary?.lines}
+            />
+          </div>
         </div>
       )}
       {analysisRunId && !pdfId && (

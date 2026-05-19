@@ -9,6 +9,7 @@ import AnalysisRun from '../models/AnalysisRun';
 import PropertySubmission from '../models/PropertySubmission';
 import { buildInvestorDashboardSummary } from '../services/portfolio/buildInvestorDashboardSummary';
 import { calculatePortfolioOpportunityScore } from '../services/portfolio/calculatePortfolioOpportunityScore';
+import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 
 function userObjectId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -41,12 +42,31 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
     highPotentialProperties: opportunity.highPotentialCount,
   });
 
+  const latest = latestAnalyses[0] as any;
+  const governanceSnapshot = latest
+    ? buildReportGovernanceEnvelope({
+        score: latest.score,
+        confidence: latest.confidence,
+        summary: latest.previewSummary?.summary,
+        recommendations: latest.fullAnalysis?.recommendations || [],
+        risks: latest.riskFlags || [],
+        missingInputs: latest.missingInputs || [],
+        staleFlags: latest.fullAnalysis?.staleFlags || [],
+        sourceConfidence: latest.sourceConfidence || latest.fullAnalysis?.sourceConfidence,
+        freshnessScore: latest.fullAnalysis?.freshnessScore,
+        trendSignals: latest.fullAnalysis?.trendSignals || [],
+        opportunitySignals: latest.fullAnalysis?.opportunitySignals || [],
+        analysisVersion: latest.analysisVersion || latest.fullAnalysis?.analysisVersion,
+      })
+    : null;
+
   return res.json({
     summary,
     confidence: {
       inheritedFromAnalyses: true,
       note: 'All investor intelligence inherits existing sourceConfidence and freshnessScore fields.',
     },
+    governanceSnapshot,
   });
 };
 

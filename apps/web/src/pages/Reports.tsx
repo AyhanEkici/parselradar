@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
+import GovernanceBadge from '../components/governance/GovernanceBadge';
 
 interface Report {
   _id: string;
+  governanceClassification?: string;
+  trustScore?: number;
+  disclosureMode?: string;
 }
 
 export default function Reports() {
@@ -15,9 +19,16 @@ export default function Reports() {
       <h2 className="text-xl font-bold mb-4">Raporlarım</h2>
       <ul className="space-y-2">
         {reports.map(r => (
-          <li key={r._id} className="flex justify-between items-center border-b pb-2">
-            <span>Rapor: {r._id}</span>
-            <a className="bg-blue-600 text-white px-3 py-1 rounded" href={`/reports/${r._id}/download`}>İndir</a>
+          <li key={r._id} className="border-b pb-3">
+            <div className="flex flex-wrap justify-between items-center gap-2">
+              <span>Rapor: {r._id}</span>
+              <a className="bg-blue-600 text-white px-3 py-1 rounded" href={`/reports/${r._id}/download`}>İndir</a>
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+              <GovernanceBadge classification={r.governanceClassification} />
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Trust: {r.trustScore ?? '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Disclosure: {r.disclosureMode || '-'}</span>
+            </div>
           </li>
         ))}
       </ul>
