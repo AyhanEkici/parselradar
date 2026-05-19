@@ -1,6 +1,6 @@
 export const BUILD_INFO = Object.freeze({
-  gitSha: "bba46799a82f087c8e0ea031807ce18c6cccfef1",
-  buildTime: "2026-05-19T17:03:23.362Z",
+  gitSha: "2947f2eeef7b17b19a0d6d16810fe0ed90d58eab",
+  buildTime: "2026-05-19T18:05:38.639Z",
   platformVersion: "ParselRadar",
-  routeVersion: "operational_intelligence_v27",
+  routeVersion: "autonomous_intelligence_v28",
 } as const);

@@ -6,6 +6,16 @@ import PortfolioExposureCard from '../components/portfolio/PortfolioExposureCard
 import PortfolioOpportunityCard from '../components/portfolio/PortfolioOpportunityCard';
 import PortfolioHoldingsTable from '../components/portfolio/PortfolioHoldingsTable';
 import ExposureBar from '../components/portfolio/ExposureBar';
+import AutonomousMonitoringCard from '../components/autonomy/AutonomousMonitoringCard';
+import InvestorPriorityCard from '../components/autonomy/InvestorPriorityCard';
+import WatchlistActivityCard from '../components/watchlists/WatchlistActivityCard';
+import StrategicRegionCard from '../components/strategic/StrategicRegionCard';
+import IntelligenceFeedCard from '../components/feeds/IntelligenceFeedCard';
+import PortfolioExposureCard from '../components/portfolioOps/PortfolioExposureCard';
+import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillanceCard';
+import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
+import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
+import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
 
 export default function PortfolioDetail() {
   const { id } = useParams();
@@ -40,6 +50,11 @@ export default function PortfolioDetail() {
   const maxExposure = useMemo(() => {
     return exposureRows.reduce((m, row) => (row.value > m ? row.value : m), 0);
   }, [exposureRows]);
+
+  const autonomySnapshot = useMemo(() => {
+    const candidate = (data?.items || []).find((item: any) => item?.latestAnalysis?.autonomyIntelligence);
+    return candidate?.latestAnalysis?.autonomyIntelligence || null;
+  }, [data]);
 
   if (error) return <div className="p-6 text-red-600">{error}</div>;
   if (!data) return <div className="p-6">Yükleniyor...</div>;
@@ -83,6 +98,21 @@ export default function PortfolioDetail() {
         </div>
 
         <PortfolioHoldingsTable items={data.items || []} onRemove={removeItem} />
+
+        {autonomySnapshot ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <AutonomousMonitoringCard monitor={autonomySnapshot.autonomy?.autonomy} />
+            <InvestorPriorityCard priority={autonomySnapshot.watchlist?.investor} />
+            <WatchlistActivityCard watchlist={autonomySnapshot.watchlist?.aggregate} />
+            <StrategicRegionCard region={autonomySnapshot.strategic?.regionMonitor} />
+            <IntelligenceFeedCard feed={autonomySnapshot.feeds?.unified} />
+            <PortfolioExposureCard exposure={autonomySnapshot.portfolio?.exposure} />
+            <RegionalSurveillanceCard surveillance={autonomySnapshot.strategic?.surveillance} />
+            <OpportunityPriorityCard opportunity={autonomySnapshot.prioritization?.opportunityMatrix} />
+            <EscalationTimelineCard escalation={autonomySnapshot.prioritization?.governedEscalationQueue} />
+            <AutonomousReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
+          </div>
+        ) : null}
       </div>
     </div>
   );

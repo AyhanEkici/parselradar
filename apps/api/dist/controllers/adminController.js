@@ -275,6 +275,7 @@ const getPropertyById = async (req, res) => {
             ingestionFreshnessEnvelope: full.ingestionFreshnessEnvelope,
             noFakeActiveProof: full.noFakeActiveProof,
             operationalIntelligence: full.operationalIntelligence,
+            autonomyIntelligence: full.autonomyIntelligence,
         };
     });
     const latestByType = (type, altType) => enrichedAnalyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;

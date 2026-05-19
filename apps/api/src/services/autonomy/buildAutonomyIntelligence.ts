@@ -19,12 +19,21 @@ import { strategicConfidenceScoring } from '../prioritization/strategicConfidenc
 import { investorPriorityQueue } from '../prioritization/investorPriorityQueue';
 import { governedAutoEscalationQueue } from '../prioritization/governedAutoEscalationQueue';
 import { priorityDriftMonitor } from '../prioritization/priorityDriftMonitor';
+import { intelligenceImportanceScorer } from '../prioritization/intelligenceImportanceScorer';
+import { regionalCriticalityEngine } from '../prioritization/regionalCriticalityEngine';
+import { strategicUrgencyClassifier } from '../prioritization/strategicUrgencyClassifier';
+import { opportunityPriorityMatrix } from '../prioritization/opportunityPriorityMatrix';
+import { autonomousReviewQueue } from '../prioritization/autonomousReviewQueue';
 import { strategicTransformationRadar } from '../strategicMonitoring/strategicTransformationRadar';
 import { municipalDecisionMomentum } from '../strategicMonitoring/municipalDecisionMomentum';
 import { corridorGrowthDetection } from '../strategicMonitoring/corridorGrowthDetection';
 import { emergingHotspotClassifier } from '../strategicMonitoring/emergingHotspotClassifier';
 import { strategicDivergenceDetector } from '../strategicMonitoring/strategicDivergenceDetector';
-import { autonomyReviewQueue } from '../operations/autonomyReviewQueue';
+import { regionalSurveillanceEngine } from '../strategicMonitoring/regionalSurveillanceEngine';
+import { strategicRegionMonitor } from '../strategicMonitoring/strategicRegionMonitor';
+import { municipalityPressureMonitor } from '../strategicMonitoring/municipalityPressureMonitor';
+import { infrastructureMomentumMonitor } from '../strategicMonitoring/infrastructureMomentumMonitor';
+import { transformationAccelerationMonitor } from '../strategicMonitoring/transformationAccelerationMonitor';
 import { suppressionGovernanceRegistry } from '../operations/suppressionGovernanceRegistry';
 import { cadenceExecutionAudit } from '../operations/cadenceExecutionAudit';
 import { staleConnectorDegradationVisibility } from '../operations/staleConnectorDegradationVisibility';
@@ -255,6 +264,55 @@ export function buildAutonomyIntelligence(input: {
       expectedTrajectory: input.marketMomentum || 0,
       observedTrajectory: input.opportunityScore || 0,
     }),
+    surveillance: regionalSurveillanceEngine({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      corridorGrowth: input.marketMomentum || 0,
+      municipalMomentum: input.districtHeat || 0,
+    }),
+    regionMonitor: strategicRegionMonitor({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      strategicScore: input.marketMomentum || 0,
+    }),
+    municipalityPressure: municipalityPressureMonitor({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      permitBacklog: input.districtHeat || 0,
+      policyVolatility: input.volatileScore || 0,
+    }),
+    infrastructureMomentum: infrastructureMomentumMonitor({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      projectActivation: input.marketMomentum || 0,
+      fundingMomentum: input.opportunityScore || 0,
+    }),
+    transformationAcceleration: transformationAccelerationMonitor({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      baselineIndex: input.marketMomentum || 0,
+      currentIndex: input.opportunityScore || 0,
+    }),
   };
 
   const prioritization = {
@@ -299,6 +357,46 @@ export function buildAutonomyIntelligence(input: {
       evidenceLineage: input.evidenceLineage,
       expectedScore: input.marketMomentum || 0,
       observedScore: input.opportunityScore || 0,
+    }),
+    intelligenceImportance: intelligenceImportanceScorer({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      impactScore: input.opportunityScore || 0,
+      urgencyScore: input.marketMomentum || 0,
+    }),
+    regionalCriticality: regionalCriticalityEngine({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      regionalPressure: input.marketMomentum || 0,
+      infrastructureStress: input.districtHeat || 0,
+    }),
+    strategicUrgency: strategicUrgencyClassifier({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      momentum: input.marketMomentum || 0,
+      divergence: Math.abs((input.marketMomentum || 0) - (input.opportunityScore || 0)),
+    }),
+    opportunityMatrix: opportunityPriorityMatrix({
+      source: input.source,
+      timestamp: input.nowIso,
+      freshness: input.freshnessScore,
+      confidence: input.confidenceScore,
+      governanceState: input.governanceState,
+      evidenceLineage: input.evidenceLineage,
+      opportunityScore: input.opportunityScore || 0,
+      riskScore: input.volatileScore || 0,
     }),
   };
 
@@ -358,7 +456,7 @@ export function buildAutonomyIntelligence(input: {
   });
 
   const operations = {
-    reviewQueue: autonomyReviewQueue({
+    reviewQueue: autonomousReviewQueue({
       source: input.source,
       timestamp: input.nowIso,
       freshness: input.freshnessScore,
@@ -368,6 +466,7 @@ export function buildAutonomyIntelligence(input: {
       items: autonomyEnvelope.reviewRequired
         ? [{ id: 'autonomy-review', reason: 'governed_manual_review', priority: watchlist.investor.priority }]
         : [],
+      hiddenEscalationDetected: false,
     }),
     suppression: suppressionGovernanceRegistry({
       source: input.source,

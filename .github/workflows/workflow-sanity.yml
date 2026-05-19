@@ -12,9 +12,13 @@ on:
       - '.github/workflows/*.yml'
       - '.github/workflows/*.yaml'
 
+permissions:
+  contents: read
+
 jobs:
   validate-workflows:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4

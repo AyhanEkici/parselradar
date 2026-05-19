@@ -3,6 +3,7 @@
 WORKDIR /app
 
 RUN apk upgrade --no-cache
+RUN apk add --no-cache dumb-init
 
 COPY package*.json ./
 COPY packages/shared/package*.json packages/shared/
@@ -27,9 +28,12 @@ RUN chown -R appuser:appgroup /app
 WORKDIR /app/apps/api
 
 ENV NODE_ENV=production
+ENV NPM_CONFIG_FUND=false
+ENV NPM_CONFIG_AUDIT=false
 
 USER appuser
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://127.0.0.1:${PORT:-3000}/health/live > /dev/null || exit 1
 
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm", "start"]

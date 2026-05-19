@@ -31,6 +31,7 @@ const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernan
 const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
 const ingestionOrchestrator_1 = require("../services/ingestion/ingestionOrchestrator");
 const buildOperationalIntelligence_1 = require("../services/monitoring/buildOperationalIntelligence");
+const buildAutonomyIntelligence_1 = require("../services/autonomy/buildAutonomyIntelligence");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
 const COSTS = { quick: 1 };
@@ -169,6 +170,25 @@ function toResponseFromRun(run, reused) {
             municipalitySignalScore: full.territorialIntelligence?.planningLayer?.score,
             suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
         });
+    const autonomyIntelligence = full.autonomyIntelligence ||
+        (0, buildAutonomyIntelligence_1.buildAutonomyIntelligence)({
+            nowIso: run.cacheTimestamp ? new Date(run.cacheTimestamp).toISOString() : new Date().toISOString(),
+            source: 'analysis_runtime_v28',
+            freshnessScore: full.freshnessScore || 0,
+            confidenceScore: run.confidence || 0,
+            governanceState: full.ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+            evidenceLineage: full.ingestionGovernance?.provenance?.lineage || governanceEnvelope.evidenceTrace || [],
+            trendSignals: full.trendSignals || [],
+            ingestionSignals: full.ingestionSignals || [],
+            developmentSignals: full.developmentSignals || [],
+            strategicLocationSignals: full.strategicLocationSignals || [],
+            marketMomentum: full.marketMomentum || 0,
+            opportunityScore: full.opportunityScore || 0,
+            districtHeat: full.districtHeat || 0,
+            volatileScore: full.volatilityIndex || 0,
+            connectorStates: full.ingestionGovernance?.connectors || [],
+            suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+        });
     return {
         id: run._id,
         score: run.score,
@@ -257,6 +277,7 @@ function toResponseFromRun(run, reused) {
         ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
         noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
         operationalIntelligence,
+        autonomyIntelligence,
         reused,
         summary: preview.summary || '',
         createdAt: run.createdAt,
@@ -587,7 +608,26 @@ async function runAnalysis(req, res, options) {
             municipalitySignalScore: territorialIntelligence?.planningLayer?.confidence,
             suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
         });
+        const autonomyIntelligence = (0, buildAutonomyIntelligence_1.buildAutonomyIntelligence)({
+            nowIso: new Date().toISOString(),
+            source: 'analysis_runtime_v28',
+            freshnessScore,
+            confidenceScore: engine.confidence,
+            governanceState: ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+            evidenceLineage: ingestionGovernance?.provenance?.lineage || [],
+            trendSignals,
+            ingestionSignals,
+            developmentSignals: developmentIntelligence.developmentSignals || [],
+            strategicLocationSignals: geoIntelligence.strategicLocationSignals || [],
+            marketMomentum: signalNetwork.marketMomentum,
+            opportunityScore: signalNetwork.opportunityScore,
+            districtHeat: signalNetwork.districtHeat,
+            volatileScore: trendSnapshots.volatility.volatilityIndex,
+            connectorStates: ingestionGovernance?.connectors || [],
+            suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+        });
         ingestionSignals.push(`v27_monitoring_${String(operationalIntelligence.monitoring?.state || 'stable').toLowerCase()}`);
+        ingestionSignals.push(`v28_autonomy_${String(autonomyIntelligence.autonomy?.autonomy?.autonomyState || 'manual_only').toLowerCase()}`);
         property.set({
             lastSpatialRefresh: new Date(),
             lastMarketRefresh: new Date(),
@@ -702,6 +742,7 @@ async function runAnalysis(req, res, options) {
                 ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
                 noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
                 operationalIntelligence,
+                autonomyIntelligence,
             },
         });
         if (options.productType === 'QUICK_SCORE') {

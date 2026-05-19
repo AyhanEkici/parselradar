@@ -7,6 +7,10 @@ import TracingStatusCard from '../components/observability/TracingStatusCard';
 import ErrorAnalyticsCard from '../components/observability/ErrorAnalyticsCard';
 import ProductionAlertsCard from '../components/observability/ProductionAlertsCard';
 import ObservabilitySnapshotCard from '../components/observability/ObservabilitySnapshotCard';
+import InvestorPriorityCard from '../components/autonomy/InvestorPriorityCard';
+import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
+import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
+import CadenceAndDegradationCard from '../components/autonomy/CadenceAndDegradationCard';
 
 export default function AdminObservability() {
   const { user } = useAuth();
@@ -16,9 +20,19 @@ export default function AdminObservability() {
 
   useEffect(() => {
     setLoading(true);
-    apiFetch('/admin/observability')
-      .then((response) => {
-        setData(response);
+    Promise.all([apiFetch('/admin/observability'), apiFetch('/admin/analyses?page=1')])
+      .then(([response, analysesPayload]) => {
+        const first = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.autonomyIntelligence || {};
+        setData({
+          ...response,
+          autonomy: {
+            investorPriority: first.watchlist?.investor || null,
+            reviewQueue: first.operations?.reviewQueue || null,
+            escalation: first.prioritization?.governedEscalationQueue || null,
+            cadence: first.autonomy?.cadence || null,
+            degradation: first.operations?.degradation || null,
+          },
+        });
         setError('');
       })
       .catch((err) => setError(err?.error || err?.message || 'Observability data could not be loaded'))
@@ -59,6 +73,21 @@ export default function AdminObservability() {
                 </div>
                 <div className="xl:col-span-6">
                   <ProductionAlertsCard productionAlerts={data?.productionAlerts} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-3">
+                  <InvestorPriorityCard priority={data?.autonomy?.investorPriority} />
+                </div>
+                <div className="xl:col-span-3">
+                  <AutonomousReviewQueueCard queue={data?.autonomy?.reviewQueue} />
+                </div>
+                <div className="xl:col-span-3">
+                  <EscalationTimelineCard escalation={data?.autonomy?.escalation} />
+                </div>
+                <div className="xl:col-span-3">
+                  <CadenceAndDegradationCard cadence={data?.autonomy?.cadence} degradation={data?.autonomy?.degradation} />
                 </div>
               </div>
             </>

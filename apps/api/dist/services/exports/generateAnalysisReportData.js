@@ -68,6 +68,7 @@ function generateAnalysisReportData(input) {
         ingestionTrust: analysis.ingestionTrust || null,
         noFakeActiveProof: analysis.noFakeActiveProof,
         operationalIntelligence: analysis.operationalIntelligence || null,
+        autonomyIntelligence: analysis.autonomyIntelligence || null,
         recommendations: analysis.recommendations || [],
         generatedAt: new Date().toISOString(),
     };

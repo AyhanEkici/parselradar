@@ -59,6 +59,9 @@ const getPortfolioById = async (req, res) => {
                     freshnessScore: analysis.fullAnalysis?.freshnessScore,
                     sourceConfidence: analysis.sourceConfidence || analysis.fullAnalysis?.sourceConfidence,
                     analysisVersion: analysis.analysisVersion || analysis.fullAnalysis?.analysisVersion,
+                    autonomyIntelligence: analysis.fullAnalysis?.autonomyIntelligence || null,
+                    operationalIntelligence: analysis.fullAnalysis?.operationalIntelligence || null,
+                    ingestionGovernance: analysis.fullAnalysis?.ingestionGovernance || null,
                 }
                 : null,
         };

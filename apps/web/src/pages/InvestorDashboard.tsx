@@ -37,6 +37,15 @@ import RegionWatchCard from '../components/watchlists/RegionWatchCard';
 import IntelligenceFeedCard from '../components/feeds/IntelligenceFeedCard';
 import PortfolioIntelligenceCard from '../components/portfolioOps/PortfolioIntelligenceCard';
 import StrategicMonitoringCard from '../components/strategic/StrategicMonitoringCard';
+import AutonomousMonitoringCard from '../components/autonomy/AutonomousMonitoringCard';
+import InvestorPriorityCard from '../components/autonomy/InvestorPriorityCard';
+import WatchlistActivityCard from '../components/watchlists/WatchlistActivityCard';
+import StrategicRegionCard from '../components/strategic/StrategicRegionCard';
+import PortfolioExposureCard from '../components/portfolioOps/PortfolioExposureCard';
+import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillanceCard';
+import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
+import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
+import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -136,14 +145,23 @@ export default function InvestorDashboard() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <AutonomousMonitoringCard monitor={autonomySnapshot.autonomy?.autonomy} />
           <AutonomousIntelligenceCard insight={autonomySnapshot.autonomy?.autonomy} />
+          <InvestorPriorityCard priority={autonomySnapshot.watchlist?.investor} />
+          <WatchlistActivityCard watchlist={autonomySnapshot.watchlist?.aggregate} />
           <ParcelWatchlistCard watch={autonomySnapshot.watchlist?.parcel} />
           <RegionWatchCard watch={autonomySnapshot.watchlist?.region} />
           <IntelligenceFeedCard feed={autonomySnapshot.feeds?.unified} />
           <PortfolioIntelligenceCard portfolio={autonomySnapshot.portfolio?.intelligence} />
+          <PortfolioExposureCard exposure={autonomySnapshot.portfolio?.exposure} />
           <StrategicMonitoringCard strategic={autonomySnapshot.strategic?.radar} />
+          <StrategicRegionCard region={autonomySnapshot.strategic?.regionMonitor} />
+          <RegionalSurveillanceCard surveillance={autonomySnapshot.strategic?.surveillance} />
+          <OpportunityPriorityCard opportunity={autonomySnapshot.prioritization?.opportunityMatrix} />
           <GovernedEscalationCard escalation={autonomySnapshot.prioritization?.governedEscalationQueue} />
+          <EscalationTimelineCard escalation={autonomySnapshot.prioritization?.governedEscalationQueue} />
           <ReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
+          <AutonomousReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
           <SuppressionGovernanceCard suppression={autonomySnapshot.operations?.suppression} />
           <CadenceAndDegradationCard cadence={autonomySnapshot.autonomy?.cadence} degradation={autonomySnapshot.operations?.degradation} />
         </div>
