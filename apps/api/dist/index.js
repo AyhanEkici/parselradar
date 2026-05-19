@@ -1,0 +1,178 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
+const env_1 = require("./config/env");
+const logger_1 = require("./utils/logger");
+const errorHandler_1 = require("./middleware/errorHandler");
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const creditRoutes_1 = __importDefault(require("./routes/creditRoutes"));
+const stripeRoutes_1 = __importDefault(require("./routes/stripeRoutes"));
+const stripeController_1 = require("./controllers/stripeController");
+const propertyRoutes_1 = __importDefault(require("./routes/propertyRoutes"));
+const documentRoutes_1 = __importDefault(require("./routes/documentRoutes"));
+const consentRoutes_1 = __importDefault(require("./routes/consentRoutes"));
+const analysisRoutes_1 = __importDefault(require("./routes/analysisRoutes"));
+const reportRoutes_1 = __importDefault(require("./routes/reportRoutes"));
+const adminRoutes_1 = __importDefault(require("./routes/adminRoutes"));
+const auditRoutes_1 = __importDefault(require("./routes/auditRoutes"));
+const investorRoutes_1 = __importDefault(require("./routes/investorRoutes"));
+const portfolioRoutes_1 = __importDefault(require("./routes/portfolioRoutes"));
+const portfolioAnalyticsRoutes_1 = __importDefault(require("./routes/portfolioAnalyticsRoutes"));
+const exportRoutes_1 = __importDefault(require("./routes/exportRoutes"));
+const organizationRoutes_1 = __importDefault(require("./routes/organizationRoutes"));
+const workspaceRoutes_1 = __importDefault(require("./routes/workspaceRoutes"));
+const sharedAnalysisRoutes_1 = __importDefault(require("./routes/sharedAnalysisRoutes"));
+const notificationRoutes_1 = __importDefault(require("./routes/notificationRoutes"));
+const observabilityRoutes_1 = __importDefault(require("./routes/observabilityRoutes"));
+const connectorActivationRoutes_1 = __importDefault(require("./routes/connectorActivationRoutes"));
+const helmet_1 = __importDefault(require("helmet"));
+const requestId_1 = require("./middleware/requestId");
+const healthController_1 = require("./health/healthController");
+const readinessController_1 = require("./health/readinessController");
+const livenessController_1 = require("./health/livenessController");
+const workerFactory_1 = require("./runtime/workerFactory");
+const queueEvents_1 = require("./runtime/queueEvents");
+const queueFactory_1 = require("./runtime/queueFactory");
+const redisClient_1 = require("./redis/redisClient");
+const buildInfo_1 = require("./generated/buildInfo");
+const app = (0, express_1.default)();
+// Hardened CORS
+const isProd = env_1.ENV.NODE_ENV === 'production';
+const vercelProd = 'https://parselradar.vercel.app';
+// Old regex: /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/
+const vercelPreviewPattern = /^https:\/\/parselradar.*\.vercel\.app$/;
+const allowedOrigins = isProd
+    ? [env_1.ENV.CLIENT_URL, vercelProd]
+    : [env_1.ENV.CLIENT_URL, vercelProd, 'http://localhost:3001', 'http://127.0.0.1:3001'];
+// Trust proxy for production (needed for secure cookies behind proxy/load balancer)
+if (isProd) {
+    app.set('trust proxy', 1);
+}
+// Helmet for security headers
+app.use((0, helmet_1.default)());
+// Request ID middleware
+app.use(requestId_1.requestIdMiddleware);
+// Diagnostic build info endpoint (JSON only)
+app.get('/__buildinfo', (_req, res) => {
+    res.json({
+        gitSha: buildInfo_1.BUILD_INFO.gitSha,
+        buildTime: buildInfo_1.BUILD_INFO.buildTime,
+        platformVersion: buildInfo_1.BUILD_INFO.platformVersion,
+        routeVersion: buildInfo_1.BUILD_INFO.routeVersion,
+        nodeEnv: env_1.ENV.NODE_ENV,
+    });
+});
+// Mount Stripe webhook route BEFORE express.json()
+app.post('/stripe/webhook', express_1.default.raw({ type: 'application/json' }), stripeController_1.stripeWebhook);
+// CORS and options
+app.use((0, cors_1.default)({
+    origin: function (origin, callback) {
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.includes(origin))
+            return callback(null, true);
+        if (vercelPreviewPattern.test(origin))
+            return callback(null, true);
+        return callback(new Error('Not allowed by CORS: ' + origin));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    exposedHeaders: ['X-Request-Id'],
+}));
+app.options('*', (0, cors_1.default)({
+    origin: function (origin, callback) {
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.includes(origin))
+            return callback(null, true);
+        if (vercelPreviewPattern.test(origin))
+            return callback(null, true);
+        return callback(new Error('Not allowed by CORS: ' + origin));
+    },
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    exposedHeaders: ['X-Request-Id'],
+}));
+app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)());
+// Serve uploaded files for document preview/download
+app.use('/uploads', express_1.default.static(path_1.default.resolve(__dirname, 'uploads')));
+mongoose_1.default.connect(env_1.ENV.MONGODB_URI)
+    .then(() => {
+    (0, logger_1.logInfo)('MongoDB connected');
+})
+    .catch((err) => {
+    (0, logger_1.logError)('MongoDB connection error', err);
+    process.exit(1);
+});
+app.use('/auth', authRoutes_1.default);
+app.use('/credits', creditRoutes_1.default);
+// Mount remaining stripe routes (excluding webhook)
+app.use('/stripe', (req, res, next) => {
+    if (req.path === '/webhook')
+        return next();
+    return (0, stripeRoutes_1.default)(req, res, next);
+});
+app.use('/properties', propertyRoutes_1.default);
+app.use('/properties', documentRoutes_1.default);
+app.use('/properties', consentRoutes_1.default);
+app.use('/analysis', analysisRoutes_1.default);
+app.use('/reports', reportRoutes_1.default);
+app.use('/investor', investorRoutes_1.default);
+app.use('/investor', portfolioRoutes_1.default);
+app.use('/investor', portfolioAnalyticsRoutes_1.default);
+app.use('/exports', exportRoutes_1.default);
+// Workspace + organization surfaces (mounted at root)
+app.use('/', organizationRoutes_1.default);
+app.use('/', workspaceRoutes_1.default);
+app.use('/', sharedAnalysisRoutes_1.default);
+// Notification and admin observability/connectors surfaces (root-mounted with internal prefixes)
+app.use('/', notificationRoutes_1.default);
+app.use('/', observabilityRoutes_1.default);
+app.use('/', connectorActivationRoutes_1.default);
+app.use('/admin', adminRoutes_1.default);
+app.use('/', auditRoutes_1.default);
+app.get('/health', healthController_1.healthController);
+app.get('/health/live', livenessController_1.livenessController);
+app.get('/health/ready', readinessController_1.readinessController);
+// Ensure unmatched API routes return JSON (prevents HTML "Cannot GET" responses)
+app.use((req, res) => {
+    const requestId = req.requestId || '';
+    res.setHeader('X-Request-Id', requestId);
+    res.status(404).json({
+        error: 'API route not found',
+        path: req.originalUrl,
+        requestId,
+    });
+});
+app.use(errorHandler_1.errorHandler);
+const server = app.listen(Number(env_1.ENV.PORT), () => {
+    (0, logger_1.logStartup)();
+});
+async function shutdownRuntime() {
+    await Promise.allSettled([
+        (0, workerFactory_1.shutdownWorkers)(),
+        (0, queueEvents_1.closeQueueEvents)(),
+        (0, queueFactory_1.closeQueues)(),
+        (0, redisClient_1.closeRedisClient)(),
+    ]);
+}
+async function handleShutdown(signal) {
+    (0, logger_1.logInfo)(`Received ${signal}, shutting down runtime.`);
+    await shutdownRuntime();
+    server.close(() => process.exit(0));
+}
+process.on('SIGINT', () => {
+    handleShutdown('SIGINT').catch(() => process.exit(1));
+});
+process.on('SIGTERM', () => {
+    handleShutdown('SIGTERM').catch(() => process.exit(1));
+});

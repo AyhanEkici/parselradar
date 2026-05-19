@@ -1,0 +1,211 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
+const connectorRegistry_1 = require("../connectors/connectorRegistry");
+const connectorExecutionRegistry_1 = require("../connectors/connectorExecutionRegistry");
+const buildConnectorReadiness_1 = require("../services/connectorActivation/buildConnectorReadiness");
+const buildLegalSourceRegistry_1 = require("../services/connectorActivation/buildLegalSourceRegistry");
+const validateConnectorCredentials_1 = require("../services/connectorActivation/validateConnectorCredentials");
+const runConnectorHealthCheck_1 = require("../services/connectorActivation/runConnectorHealthCheck");
+const buildConnectorActivationPlan_1 = require("../services/connectorActivation/buildConnectorActivationPlan");
+const buildConnectorAuditTrail_1 = require("../services/connectorActivation/buildConnectorAuditTrail");
+const connectorStatus_1 = require("../connectors/connectorStatus");
+const sourceLegalRequirements_1 = require("../config/connectors/sourceLegalRequirements");
+const storeConnectorCredentialProfile_1 = require("../services/connectorActivation/storeConnectorCredentialProfile");
+const getConnectorActivationState_1 = require("../services/connectorActivation/getConnectorActivationState");
+const executeConnectorTestRun_1 = require("../services/connectorActivation/executeConnectorTestRun");
+const activateConnectorIfEligible_1 = require("../services/connectorActivation/activateConnectorIfEligible");
+const deactivateConnector_1 = require("../services/connectorActivation/deactivateConnector");
+const buildConnectorActivationAudit_1 = require("../services/connectorActivation/buildConnectorActivationAudit");
+const ConnectorSourceApproval_1 = __importDefault(require("../models/ConnectorSourceApproval"));
+const auditLog_1 = require("../utils/auditLog");
+const getAdminConnectors = async (_req, res) => {
+    const readiness = (0, buildConnectorReadiness_1.buildConnectorReadiness)();
+    const legalRegistry = (0, buildLegalSourceRegistry_1.buildLegalSourceRegistry)();
+    return res.json({
+        generatedAt: new Date().toISOString(),
+        connectors: readiness.connectors,
+        summary: readiness.summary,
+        legalRegistry,
+    });
+};
+exports.getAdminConnectors = getAdminConnectors;
+const getAdminConnectorByKey = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const status = (0, connectorStatus_1.connectorStatus)(connector);
+    const credentials = (0, validateConnectorCredentials_1.validateConnectorCredentials)(connector);
+    const activationPlan = (0, buildConnectorActivationPlan_1.buildConnectorActivationPlan)(connector);
+    return res.json({
+        connector: {
+            ...connector,
+            legalRequirement: sourceLegalRequirements_1.SOURCE_LEGAL_REQUIREMENTS[connector.legalRequirementKey],
+        },
+        status,
+        credentials,
+        activationPlan,
+    });
+};
+exports.getAdminConnectorByKey = getAdminConnectorByKey;
+const postAdminConnectorTest = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const healthCheck = await (0, runConnectorHealthCheck_1.runConnectorHealthCheck)(connector);
+    return res.json(healthCheck);
+};
+exports.postAdminConnectorTest = postAdminConnectorTest;
+const getAdminConnectorActivationPlan = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const plan = (0, buildConnectorActivationPlan_1.buildConnectorActivationPlan)(connector);
+    return res.json(plan);
+};
+exports.getAdminConnectorActivationPlan = getAdminConnectorActivationPlan;
+const getAdminConnectorAuditTrail = async (_req, res) => {
+    const audits = await (0, buildConnectorAuditTrail_1.buildConnectorAuditTrail)();
+    return res.json({
+        connectorsTracked: connectorRegistry_1.CONNECTOR_REGISTRY.map((c) => c.key),
+        ...audits,
+    });
+};
+exports.getAdminConnectorAuditTrail = getAdminConnectorAuditTrail;
+// V19: POST /admin/connectors/:connectorKey/credentials
+// Stores credential presence mask — never raw secrets.
+// Body: { presentKeys: string[] } — list of env var names that ARE present
+const postAdminConnectorCredentials = async (req, res) => {
+    const { connectorKey } = req.params;
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(connectorKey);
+    const execution = (0, connectorExecutionRegistry_1.findConnectorExecution)(connectorKey);
+    if (!connector || !execution)
+        return res.status(404).json({ error: 'Connector not found' });
+    const presentKeys = req.body?.presentKeys;
+    if (!Array.isArray(presentKeys) || presentKeys.some((k) => typeof k !== 'string')) {
+        return res.status(400).json({ error: 'presentKeys must be an array of strings' });
+    }
+    const result = await (0, storeConnectorCredentialProfile_1.storeConnectorCredentialProfile)({
+        connectorKey,
+        presentKeys: presentKeys,
+        allRequiredKeys: execution.requiredEnv,
+        userId: req.user._id.toString(),
+        ip: req.ip,
+    });
+    return res.json(result);
+};
+exports.postAdminConnectorCredentials = postAdminConnectorCredentials;
+// V19: GET /admin/connectors/:connectorKey — enhanced with activation state
+const getAdminConnectorActivationState = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const [activationState, credentials, activationPlan] = await Promise.all([
+        (0, getConnectorActivationState_1.getConnectorActivationState)(req.params.connectorKey),
+        (0, validateConnectorCredentials_1.validateConnectorCredentials)(connector),
+        (0, buildConnectorActivationPlan_1.buildConnectorActivationPlan)(connector),
+    ]);
+    return res.json({
+        connector: {
+            ...connector,
+            legalRequirement: sourceLegalRequirements_1.SOURCE_LEGAL_REQUIREMENTS[connector.legalRequirementKey],
+        },
+        status: (0, connectorStatus_1.connectorStatus)(connector),
+        activationState,
+        credentials,
+        activationPlan,
+    });
+};
+exports.getAdminConnectorActivationState = getAdminConnectorActivationState;
+// V19: POST /admin/connectors/:connectorKey/test
+const postAdminConnectorTestV19 = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const result = await (0, executeConnectorTestRun_1.executeConnectorTestRun)({
+        connectorKey: req.params.connectorKey,
+        userId: req.user._id.toString(),
+        ip: req.ip,
+    });
+    return res.json(result);
+};
+exports.postAdminConnectorTestV19 = postAdminConnectorTestV19;
+// V19: POST /admin/connectors/:connectorKey/activate
+const postAdminConnectorActivate = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const result = await (0, activateConnectorIfEligible_1.activateConnectorIfEligible)({
+        connectorKey: req.params.connectorKey,
+        userId: req.user._id.toString(),
+        ip: req.ip,
+    });
+    if (!result.activated) {
+        return res.status(422).json({ error: result.reason });
+    }
+    return res.json(result);
+};
+exports.postAdminConnectorActivate = postAdminConnectorActivate;
+// V19: POST /admin/connectors/:connectorKey/deactivate
+const postAdminConnectorDeactivate = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const result = await (0, deactivateConnector_1.deactivateConnector)({
+        connectorKey: req.params.connectorKey,
+        userId: req.user._id.toString(),
+        ip: req.ip,
+    });
+    if (!result.deactivated) {
+        return res.status(422).json({ error: result.reason });
+    }
+    return res.json(result);
+};
+exports.postAdminConnectorDeactivate = postAdminConnectorDeactivate;
+// V19: GET /admin/connectors/:connectorKey/audit
+const getAdminConnectorAuditByKey = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const audit = await (0, buildConnectorActivationAudit_1.buildConnectorActivationAudit)(req.params.connectorKey);
+    return res.json(audit);
+};
+exports.getAdminConnectorAuditByKey = getAdminConnectorAuditByKey;
+// V19: PATCH /admin/connectors/:connectorKey/source-approval
+// Body: { approved: boolean, note?: string }
+const patchAdminConnectorSourceApproval = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    if (!connector)
+        return res.status(404).json({ error: 'Connector not found' });
+    const { approved, note } = req.body ?? {};
+    if (typeof approved !== 'boolean') {
+        return res.status(400).json({ error: 'approved must be a boolean' });
+    }
+    const record = await ConnectorSourceApproval_1.default.findOneAndUpdate({ connectorKey: req.params.connectorKey }, {
+        connectorKey: req.params.connectorKey,
+        approved,
+        approvedByUserId: req.user._id.toString(),
+        approvedAt: approved ? new Date() : undefined,
+        note: typeof note === 'string' ? note : undefined,
+    }, { upsert: true, new: true });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'connector_source_approval_updated',
+        actorUserId: req.user._id.toString(),
+        targetType: 'Connector',
+        targetId: req.params.connectorKey,
+        message: `Source approval ${approved ? 'granted' : 'revoked'} for connector: ${req.params.connectorKey}`,
+        metadata: { connectorKey: req.params.connectorKey, approved },
+        ip: req.ip,
+        success: true,
+    });
+    return res.json({
+        connectorKey: record.connectorKey,
+        approved: record.approved,
+        approvedAt: record.approvedAt,
+        note: record.note,
+    });
+};
+exports.patchAdminConnectorSourceApproval = patchAdminConnectorSourceApproval;
