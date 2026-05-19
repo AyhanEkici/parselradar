@@ -61,8 +61,14 @@ app.use((0, helmet_1.default)());
 app.use(requestId_1.requestIdMiddleware);
 // Diagnostic build info endpoint (JSON only)
 app.get('/__buildinfo', (_req, res) => {
+    const runtimeGitSha = process.env.GIT_SHA ||
+        process.env.VERCEL_GIT_COMMIT_SHA ||
+        process.env.RAILWAY_GIT_COMMIT_SHA ||
+        process.env.GITHUB_SHA ||
+        buildInfo_1.BUILD_INFO.gitSha;
     res.json({
-        gitSha: buildInfo_1.BUILD_INFO.gitSha,
+        gitSha: runtimeGitSha,
+        buildGitSha: buildInfo_1.BUILD_INFO.gitSha,
         buildTime: buildInfo_1.BUILD_INFO.buildTime,
         platformVersion: buildInfo_1.BUILD_INFO.platformVersion,
         routeVersion: buildInfo_1.BUILD_INFO.routeVersion,

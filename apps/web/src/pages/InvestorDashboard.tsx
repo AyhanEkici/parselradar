@@ -10,6 +10,13 @@ import MacroGrowthCard from '../components/intelligence/MacroGrowthCard';
 import PlanningSignalCard from '../components/planning/PlanningSignalCard';
 import LiquidityScoreCard from '../components/intelligence/LiquidityScoreCard';
 import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
+import ConnectorGovernanceCard from '../components/connectors/ConnectorGovernanceCard';
+import ConnectorHealthCard from '../components/connectors/ConnectorHealthCard';
+import RateLimitStatusCard from '../components/connectors/RateLimitStatusCard';
+import IngestionFreshnessCard from '../components/ingestion/IngestionFreshnessCard';
+import IngestionAuditCard from '../components/ingestion/IngestionAuditCard';
+import SourceTrustCard from '../components/provenance/SourceTrustCard';
+import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -27,6 +34,7 @@ export default function InvestorDashboard() {
   const summary = data.summary || {};
   const governanceSnapshot = data.governanceSnapshot || {};
   const territorialSnapshot = data.territorialSnapshot || {};
+  const ingestionSnapshot = data.ingestionSnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -76,6 +84,20 @@ export default function InvestorDashboard() {
           <PlanningSignalCard planningLayer={territorialSnapshot.planningLayer} />
           <LiquidityScoreCard liquidity={territorialSnapshot.liquidityProfile} />
           <DevelopmentForecastCard forecast={territorialSnapshot.developmentProbability} />
+        </div>
+
+        <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-xs text-violet-900">
+          No fake ACTIVE proof: {ingestionSnapshot.noFakeActiveProof ? 'PASS' : 'FAIL'}
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <ConnectorGovernanceCard governance={ingestionSnapshot.connectorGovernance} />
+          <ConnectorHealthCard connectors={ingestionSnapshot.connectors} />
+          <RateLimitStatusCard quota={ingestionSnapshot.quota} />
+          <IngestionFreshnessCard cacheEnvelope={ingestionSnapshot.cacheEnvelope} />
+          <IngestionAuditCard auditTrail={ingestionSnapshot.auditTrail} />
+          <SourceTrustCard trust={ingestionSnapshot.trust} />
+          <GovernanceRestrictionCard compliance={ingestionSnapshot.compliance} />
         </div>
       </div>
     </div>

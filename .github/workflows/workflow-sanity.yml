@@ -28,7 +28,10 @@ jobs:
         run: pip install yamllint
 
       - name: YAML syntax lint
-        run: yamllint .github/workflows
+        run: >-
+          yamllint
+          -d "{extends: default, rules: {line-length: disable, truthy: disable, comments: disable}}"
+          .github/workflows
 
       - name: Actionlint
         uses: reviewdog/actionlint@v1

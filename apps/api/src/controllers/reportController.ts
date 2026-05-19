@@ -99,6 +99,8 @@ export const getReports = async (req: AuthRequest, res: Response) => {
         disclosureMode: governanceEnvelope.disclosureSummary?.mode,
         regionalOutlook: territorialIntelligence.longTermRegionalOutlook?.value,
         developmentProbability: territorialIntelligence.developmentProbability?.value,
+        ingestionComplianceState: full.ingestionCompliance?.complianceState,
+        noFakeActiveProof: full.noFakeActiveProof,
       };
     })
   );

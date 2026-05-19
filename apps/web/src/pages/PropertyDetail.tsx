@@ -75,6 +75,16 @@ import DemographicPressureCard from '../components/demographics/DemographicPress
 import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
 import TerritorialEvolutionCard from '../components/forecasting/TerritorialEvolutionCard';
 import StrategicRegionScoreCard from '../components/intelligence/StrategicRegionScoreCard';
+import ConnectorGovernanceCard from '../components/connectors/ConnectorGovernanceCard';
+import ConnectorHealthCard from '../components/connectors/ConnectorHealthCard';
+import ConnectorCapabilityCard from '../components/connectors/ConnectorCapabilityCard';
+import RateLimitStatusCard from '../components/connectors/RateLimitStatusCard';
+import IngestionFreshnessCard from '../components/ingestion/IngestionFreshnessCard';
+import IngestionAuditCard from '../components/ingestion/IngestionAuditCard';
+import SourceLineageCard from '../components/provenance/SourceLineageCard';
+import SourceTrustCard from '../components/provenance/SourceTrustCard';
+import LegalClassificationCard from '../components/legal/LegalClassificationCard';
+import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -496,6 +506,37 @@ export default function PropertyDetail() {
         developmentProbability?: any;
         territorialEvolution?: any;
         strategicRegionScore?: any;
+      };
+      ingestionGovernance?: {
+        connectorGovernance?: { statusCounts?: Record<string, number> };
+        connectors?: Array<{
+          connectorKey: string;
+          status: string;
+          freshnessState: string;
+          legalClassification: string;
+          governanceState: string;
+        }>;
+        provenance?: { lineage?: Array<any> };
+        trust?: {
+          trustScore?: number;
+          trustLabel?: string;
+          reliability?: { reliability?: number; label?: string };
+        };
+        disclosures?: Array<{ source: string; mode: string; lines: string[] }>;
+        compliance?: {
+          complianceState?: string;
+          allTermsAccepted?: boolean;
+          legalReviewRequired?: boolean;
+          restrictedSourceCount?: number;
+        };
+        auditTrail?: {
+          totalEvents?: number;
+          hasFailures?: boolean;
+          latestEvents?: Array<{ connectorKey: string; action: string; timestamp: string }>;
+        };
+        quota?: Array<{ connectorKey: string; used: number; quota: number; nearLimit: boolean }>;
+        cacheEnvelope?: { freshnessScore?: number; cacheState?: string; generatedAt?: string };
+        noFakeActiveProof?: boolean;
       };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
@@ -1334,6 +1375,34 @@ export default function PropertyDetail() {
                       )}
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.ingestionGovernance && (
+              <div className="mt-4 rounded-xl border border-violet-200 bg-violet-50/40 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-violet-900">Governed Ingestion Layer</h3>
+                  <p className="text-xs text-violet-700">
+                    Deterministic ingestion governance with explicit activation, legal restrictions, provenance, and freshness downgrade visibility.
+                  </p>
+                </div>
+
+                <div className="mb-3 rounded-lg border border-violet-200 bg-white px-3 py-2 text-xs text-violet-900">
+                  No fake ACTIVE proof: {latestAnalysis.ingestionGovernance.noFakeActiveProof ? 'PASS' : 'FAIL'}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3"><ConnectorGovernanceCard governance={latestAnalysis.ingestionGovernance.connectorGovernance} /></div>
+                  <div className="xl:col-span-3"><ConnectorHealthCard connectors={latestAnalysis.ingestionGovernance.connectors} /></div>
+                  <div className="xl:col-span-3"><ConnectorCapabilityCard connectors={latestAnalysis.ingestionGovernance.connectors} /></div>
+                  <div className="xl:col-span-3"><RateLimitStatusCard quota={latestAnalysis.ingestionGovernance.quota} /></div>
+                  <div className="xl:col-span-3"><IngestionFreshnessCard cacheEnvelope={latestAnalysis.ingestionGovernance.cacheEnvelope} /></div>
+                  <div className="xl:col-span-3"><IngestionAuditCard auditTrail={latestAnalysis.ingestionGovernance.auditTrail} /></div>
+                  <div className="xl:col-span-3"><SourceLineageCard lineage={latestAnalysis.ingestionGovernance.provenance?.lineage} /></div>
+                  <div className="xl:col-span-3"><SourceTrustCard trust={latestAnalysis.ingestionGovernance.trust} /></div>
+                  <div className="xl:col-span-3"><LegalClassificationCard disclosures={latestAnalysis.ingestionGovernance.disclosures} /></div>
+                  <div className="xl:col-span-3"><GovernanceRestrictionCard compliance={latestAnalysis.ingestionGovernance.compliance} /></div>
                 </div>
               </div>
             )}

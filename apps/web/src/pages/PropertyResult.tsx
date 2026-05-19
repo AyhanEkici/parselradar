@@ -12,6 +12,16 @@ import InfrastructurePressureCard from '../components/infrastructure/Infrastruct
 import MacroGrowthCard from '../components/intelligence/MacroGrowthCard';
 import LiquidityScoreCard from '../components/intelligence/LiquidityScoreCard';
 import DevelopmentForecastCard from '../components/forecasting/DevelopmentForecastCard';
+import ConnectorGovernanceCard from '../components/connectors/ConnectorGovernanceCard';
+import ConnectorHealthCard from '../components/connectors/ConnectorHealthCard';
+import ConnectorCapabilityCard from '../components/connectors/ConnectorCapabilityCard';
+import RateLimitStatusCard from '../components/connectors/RateLimitStatusCard';
+import IngestionFreshnessCard from '../components/ingestion/IngestionFreshnessCard';
+import IngestionAuditCard from '../components/ingestion/IngestionAuditCard';
+import SourceLineageCard from '../components/provenance/SourceLineageCard';
+import SourceTrustCard from '../components/provenance/SourceTrustCard';
+import LegalClassificationCard from '../components/legal/LegalClassificationCard';
+import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -45,6 +55,24 @@ export default function PropertyResult() {
       infrastructurePressure?: any;
       liquidityProfile?: any;
       developmentProbability?: any;
+    };
+    ingestionGovernance?: {
+      connectorGovernance?: { statusCounts?: Record<string, number> };
+      connectors?: Array<{
+        connectorKey: string;
+        status: string;
+        freshnessState: string;
+        legalClassification: string;
+        governanceState: string;
+      }>;
+      provenance?: { lineage?: Array<any> };
+      trust?: any;
+      disclosures?: Array<{ source: string; mode: string; lines: string[] }>;
+      compliance?: any;
+      auditTrail?: any;
+      quota?: Array<{ connectorKey: string; used: number; quota: number; nearLimit: boolean }>;
+      cacheEnvelope?: { freshnessScore?: number; cacheState?: string; generatedAt?: string };
+      noFakeActiveProof?: boolean;
     };
   }
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -127,6 +155,25 @@ export default function PropertyResult() {
               <InfrastructurePressureCard pressure={result.territorialIntelligence.infrastructurePressure} />
               <LiquidityScoreCard liquidity={result.territorialIntelligence.liquidityProfile} />
               <DevelopmentForecastCard forecast={result.territorialIntelligence.developmentProbability} />
+            </div>
+          )}
+          {result.ingestionGovernance && (
+            <div className="mt-3 space-y-3">
+              <div className="rounded border border-violet-200 bg-violet-50 px-3 py-2 text-xs text-violet-900">
+                No fake ACTIVE proof: {result.ingestionGovernance.noFakeActiveProof ? 'PASS' : 'FAIL'}
+              </div>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <ConnectorGovernanceCard governance={result.ingestionGovernance.connectorGovernance} />
+                <ConnectorHealthCard connectors={result.ingestionGovernance.connectors} />
+                <ConnectorCapabilityCard connectors={result.ingestionGovernance.connectors} />
+                <RateLimitStatusCard quota={result.ingestionGovernance.quota} />
+                <IngestionFreshnessCard cacheEnvelope={result.ingestionGovernance.cacheEnvelope} />
+                <IngestionAuditCard auditTrail={result.ingestionGovernance.auditTrail} />
+                <SourceLineageCard lineage={result.ingestionGovernance.provenance?.lineage} />
+                <SourceTrustCard trust={result.ingestionGovernance.trust} />
+                <LegalClassificationCard disclosures={result.ingestionGovernance.disclosures} />
+                <GovernanceRestrictionCard compliance={result.ingestionGovernance.compliance} />
+              </div>
             </div>
           )}
         </div>

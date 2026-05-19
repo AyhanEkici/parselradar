@@ -29,6 +29,7 @@ const trends_1 = require("../services/trends");
 const alerts_1 = require("../services/alerts");
 const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
+const ingestionOrchestrator_1 = require("../services/ingestion/ingestionOrchestrator");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
 const COSTS = { quick: 1 };
@@ -87,6 +88,7 @@ async function computeEngineResult(propertyDoc, userId, productType) {
 function toResponseFromRun(run, reused) {
     const full = (run.fullAnalysis || {});
     const preview = (run.previewSummary || {});
+    const ingestionGovernance = full.ingestionGovernance || null;
     const governanceEnvelope = full.governanceEnvelope ||
         (0, reportGovernanceEnvelope_1.buildReportGovernanceEnvelope)({
             score: run.score,
@@ -210,6 +212,15 @@ function toResponseFromRun(run, reused) {
         verificationStates: governanceEnvelope.verificationStates,
         unsupportedAssumptions: governanceEnvelope.unsupportedAssumptions,
         speculativeIndicators: governanceEnvelope.speculativeIndicators,
+        ingestionGovernance,
+        ingestionProvenanceEnvelope: ingestionGovernance?.provenance,
+        ingestionCompliance: ingestionGovernance?.compliance,
+        ingestionTrust: ingestionGovernance?.trust,
+        ingestionAuditTrail: ingestionGovernance?.auditTrail,
+        connectorGovernance: ingestionGovernance?.connectorGovernance,
+        connectorExecutions: ingestionGovernance?.connectors,
+        ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
+        noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
         reused,
         summary: preview.summary || '',
         createdAt: run.createdAt,
@@ -385,6 +396,18 @@ async function runAnalysis(req, res, options) {
             spatialRefresh.refreshReason,
             marketRefresh.refreshReason,
         ]));
+        const ingestionGovernance = await (0, ingestionOrchestrator_1.ingestionOrchestrator)({
+            propertyId: String(property._id),
+            runId: `${String(property._id)}:${Date.now()}`,
+            city: propertyObj.il,
+            district: propertyObj.ilce,
+            ada: propertyObj.ada,
+            parsel: propertyObj.parsel,
+        });
+        if (!ingestionGovernance.noFakeActiveProof) {
+            ingestionSignals.push('v26_no_fake_active_violation_detected');
+        }
+        ingestionSignals.push(`v26_ingestion_compliance_${String(ingestionGovernance.compliance?.complianceState || 'unknown').toLowerCase()}`);
         const sourceConfidence = municipalityIngestion.matched && infrastructureIngestion.airportCount + infrastructureIngestion.industrialCount > 0
             ? 'verified'
             : listingIngestion.ingestedCount >= 3
@@ -594,6 +617,15 @@ async function runAnalysis(req, res, options) {
                 investorNotifications: alertNetwork.notifications,
                 governanceEnvelope,
                 territorialIntelligence,
+                ingestionGovernance,
+                ingestionProvenanceEnvelope: ingestionGovernance.provenance,
+                ingestionCompliance: ingestionGovernance.compliance,
+                ingestionTrust: ingestionGovernance.trust,
+                ingestionAuditTrail: ingestionGovernance.auditTrail,
+                connectorGovernance: ingestionGovernance.connectorGovernance,
+                connectorExecutions: ingestionGovernance.connectors,
+                ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
+                noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
             },
         });
         if (options.productType === 'QUICK_SCORE') {

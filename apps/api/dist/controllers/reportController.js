@@ -99,6 +99,8 @@ const getReports = async (req, res) => {
             disclosureMode: governanceEnvelope.disclosureSummary?.mode,
             regionalOutlook: territorialIntelligence.longTermRegionalOutlook?.value,
             developmentProbability: territorialIntelligence.developmentProbability?.value,
+            ingestionComplianceState: full.ingestionCompliance?.complianceState,
+            noFakeActiveProof: full.noFakeActiveProof,
         };
     }));
     res.json(withGovernance);

@@ -9,6 +9,8 @@ interface Report {
   disclosureMode?: string;
   regionalOutlook?: string;
   developmentProbability?: string;
+  ingestionComplianceState?: string;
+  noFakeActiveProof?: boolean;
 }
 
 export default function Reports() {
@@ -32,6 +34,8 @@ export default function Reports() {
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Disclosure: {r.disclosureMode || '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Outlook: {r.regionalOutlook || '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Dev Prob: {r.developmentProbability || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Ingestion: {r.ingestionComplianceState || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">No fake ACTIVE: {r.noFakeActiveProof ? 'PASS' : 'FAIL'}</span>
             </div>
           </li>
         ))}

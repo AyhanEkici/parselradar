@@ -17,7 +17,13 @@ function safeGitSha(cwd) {
 
 function main() {
   const root = repoRoot();
-  const gitSha = safeGitSha(root) || 'unavailable';
+  const envGitSha =
+    process.env.GIT_SHA ||
+    process.env.VERCEL_GIT_COMMIT_SHA ||
+    process.env.RAILWAY_GIT_COMMIT_SHA ||
+    process.env.GITHUB_SHA ||
+    null;
+  const gitSha = envGitSha || safeGitSha(root) || 'unavailable';
   const buildTime = process.env.BUILD_TIME_ISO || new Date().toISOString();
 
   const outDir = path.join(root, 'apps', 'api', 'src', 'generated');
@@ -28,7 +34,7 @@ function main() {
   gitSha: ${JSON.stringify(gitSha)},
   buildTime: ${JSON.stringify(buildTime)},
   platformVersion: "ParselRadar",
-  routeVersion: "admin_observability_v1",
+  routeVersion: "admin_observability_v2",
 } as const);
 `;
 

@@ -234,6 +234,15 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       unsupportedAssumptions: full.governanceEnvelope?.unsupportedAssumptions || [],
       speculativeIndicators: full.governanceEnvelope?.speculativeIndicators || [],
       territorialIntelligence: full.territorialIntelligence,
+      ingestionGovernance: full.ingestionGovernance,
+      ingestionProvenanceEnvelope: full.ingestionProvenanceEnvelope,
+      ingestionCompliance: full.ingestionCompliance,
+      ingestionTrust: full.ingestionTrust,
+      ingestionAuditTrail: full.ingestionAuditTrail,
+      connectorGovernance: full.connectorGovernance,
+      connectorExecutions: full.connectorExecutions || [],
+      ingestionFreshnessEnvelope: full.ingestionFreshnessEnvelope,
+      noFakeActiveProof: full.noFakeActiveProof,
     };
   });
 

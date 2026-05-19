@@ -25,6 +25,7 @@ import { buildTrendSnapshots } from '../services/trends';
 import { buildAlertNetwork } from '../services/alerts';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
+import { ingestionOrchestrator } from '../services/ingestion/ingestionOrchestrator';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -92,6 +93,7 @@ async function computeEngineResult(propertyDoc: any, userId: mongoose.Types.Obje
 function toResponseFromRun(run: any, reused: boolean) {
   const full = (run.fullAnalysis || {}) as Record<string, any>;
   const preview = (run.previewSummary || {}) as Record<string, any>;
+  const ingestionGovernance = full.ingestionGovernance || null;
   const governanceEnvelope =
     full.governanceEnvelope ||
     buildReportGovernanceEnvelope({
@@ -218,6 +220,15 @@ function toResponseFromRun(run: any, reused: boolean) {
     verificationStates: governanceEnvelope.verificationStates,
     unsupportedAssumptions: governanceEnvelope.unsupportedAssumptions,
     speculativeIndicators: governanceEnvelope.speculativeIndicators,
+    ingestionGovernance,
+    ingestionProvenanceEnvelope: ingestionGovernance?.provenance,
+    ingestionCompliance: ingestionGovernance?.compliance,
+    ingestionTrust: ingestionGovernance?.trust,
+    ingestionAuditTrail: ingestionGovernance?.auditTrail,
+    connectorGovernance: ingestionGovernance?.connectorGovernance,
+    connectorExecutions: ingestionGovernance?.connectors,
+    ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
+    noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -415,6 +426,23 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       spatialRefresh.refreshReason,
       marketRefresh.refreshReason,
     ]));
+
+    const ingestionGovernance = await ingestionOrchestrator({
+      propertyId: String(property._id),
+      runId: `${String(property._id)}:${Date.now()}`,
+      city: propertyObj.il,
+      district: propertyObj.ilce,
+      ada: propertyObj.ada,
+      parsel: propertyObj.parsel,
+    });
+
+    if (!ingestionGovernance.noFakeActiveProof) {
+      ingestionSignals.push('v26_no_fake_active_violation_detected');
+    }
+
+    ingestionSignals.push(
+      `v26_ingestion_compliance_${String(ingestionGovernance.compliance?.complianceState || 'unknown').toLowerCase()}`
+    );
 
     const sourceConfidence = municipalityIngestion.matched && infrastructureIngestion.airportCount + infrastructureIngestion.industrialCount > 0
       ? 'verified'
@@ -647,6 +675,15 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         investorNotifications: alertNetwork.notifications,
         governanceEnvelope,
         territorialIntelligence,
+        ingestionGovernance,
+        ingestionProvenanceEnvelope: ingestionGovernance.provenance,
+        ingestionCompliance: ingestionGovernance.compliance,
+        ingestionTrust: ingestionGovernance.trust,
+        ingestionAuditTrail: ingestionGovernance.auditTrail,
+        connectorGovernance: ingestionGovernance.connectorGovernance,
+        connectorExecutions: ingestionGovernance.connectors,
+        ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
+        noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
       },
     });
 

@@ -48,6 +48,10 @@ interface Analysis {
       planningProbability?: { value?: string };
       longTermRegionalOutlook?: { value?: string };
     };
+    ingestionCompliance?: {
+      complianceState?: string;
+    };
+    noFakeActiveProof?: boolean;
   };
 }
 
@@ -124,6 +128,7 @@ export default function AdminAnalyses() {
                 <AdminTh>Reused</AdminTh>
                 <AdminTh>Governance</AdminTh>
                 <AdminTh>Territorial</AdminTh>
+                <AdminTh>Ingestion</AdminTh>
                 <AdminTh>Property</AdminTh>
                 <AdminTh>User</AdminTh>
                 <AdminTh>Oluşturulma</AdminTh>
@@ -155,6 +160,12 @@ export default function AdminAnalyses() {
                     <div className="space-y-1 text-xs text-slate-600">
                       <div>Dev Prob: {a.fullAnalysis?.territorialIntelligence?.developmentProbability?.value || '-'}</div>
                       <div>Outlook: {a.fullAnalysis?.territorialIntelligence?.longTermRegionalOutlook?.value || '-'}</div>
+                    </div>
+                  </AdminTd>
+                  <AdminTd>
+                    <div className="space-y-1 text-xs text-slate-600">
+                      <div>Compliance: {a.fullAnalysis?.ingestionCompliance?.complianceState || '-'}</div>
+                      <div>No fake ACTIVE: {a.fullAnalysis?.noFakeActiveProof ? 'PASS' : 'FAIL'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd className="break-words">

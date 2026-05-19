@@ -265,6 +265,15 @@ const getPropertyById = async (req, res) => {
             unsupportedAssumptions: full.governanceEnvelope?.unsupportedAssumptions || [],
             speculativeIndicators: full.governanceEnvelope?.speculativeIndicators || [],
             territorialIntelligence: full.territorialIntelligence,
+            ingestionGovernance: full.ingestionGovernance,
+            ingestionProvenanceEnvelope: full.ingestionProvenanceEnvelope,
+            ingestionCompliance: full.ingestionCompliance,
+            ingestionTrust: full.ingestionTrust,
+            ingestionAuditTrail: full.ingestionAuditTrail,
+            connectorGovernance: full.connectorGovernance,
+            connectorExecutions: full.connectorExecutions || [],
+            ingestionFreshnessEnvelope: full.ingestionFreshnessEnvelope,
+            noFakeActiveProof: full.noFakeActiveProof,
         };
     });
     const latestByType = (type, altType) => enrichedAnalyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;

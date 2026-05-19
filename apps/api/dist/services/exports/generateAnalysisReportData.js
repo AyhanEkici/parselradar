@@ -63,6 +63,10 @@ function generateAnalysisReportData(input) {
         },
         territorialIntelligence,
         governance: governanceEnvelope,
+        ingestionGovernance: analysis.ingestionGovernance || null,
+        ingestionCompliance: analysis.ingestionCompliance || null,
+        ingestionTrust: analysis.ingestionTrust || null,
+        noFakeActiveProof: analysis.noFakeActiveProof,
         recommendations: analysis.recommendations || [],
         generatedAt: new Date().toISOString(),
     };
