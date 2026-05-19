@@ -13,6 +13,10 @@ interface Report {
   noFakeActiveProof?: boolean;
   monitoringState?: string;
   opportunityLevel?: string;
+  autonomyState?: string;
+  reviewQueueDepth?: number;
+  suppressionActiveRules?: number;
+  cadenceMinutes?: number;
 }
 
 export default function Reports() {
@@ -40,6 +44,10 @@ export default function Reports() {
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">No fake ACTIVE: {r.noFakeActiveProof ? 'PASS' : 'FAIL'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Monitoring: {r.monitoringState || '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Opportunity: {r.opportunityLevel || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Autonomy: {r.autonomyState || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Review Queue: {r.reviewQueueDepth ?? '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Suppression: {r.suppressionActiveRules ?? '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Cadence: {r.cadenceMinutes ?? '-'}</span>
             </div>
           </li>
         ))}

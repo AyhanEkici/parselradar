@@ -56,6 +56,10 @@ interface Analysis {
       monitoring?: { state?: string };
       opportunities?: { strategicOpportunity?: { level?: string } };
     };
+    autonomyIntelligence?: {
+      autonomy?: { autonomy?: { autonomyState?: string }; cadence?: { cadenceMinutes?: number } };
+      operations?: { reviewQueue?: { queueDepth?: number }; suppression?: { activeCount?: number } };
+    };
   };
 }
 
@@ -177,6 +181,10 @@ export default function AdminAnalyses() {
                     <div className="space-y-1 text-xs text-slate-600">
                       <div>Monitoring: {a.fullAnalysis?.operationalIntelligence?.monitoring?.state || '-'}</div>
                       <div>Opportunity: {a.fullAnalysis?.operationalIntelligence?.opportunities?.strategicOpportunity?.level || '-'}</div>
+                      <div>Autonomy: {a.fullAnalysis?.autonomyIntelligence?.autonomy?.autonomy?.autonomyState || '-'}</div>
+                      <div>Review Queue: {a.fullAnalysis?.autonomyIntelligence?.operations?.reviewQueue?.queueDepth ?? '-'}</div>
+                      <div>Suppression: {a.fullAnalysis?.autonomyIntelligence?.operations?.suppression?.activeCount ?? '-'}</div>
+                      <div>Cadence: {a.fullAnalysis?.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes ?? '-'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd className="break-words">

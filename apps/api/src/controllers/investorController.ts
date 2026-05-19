@@ -93,6 +93,7 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
     : null;
   const ingestionSnapshot = latest?.fullAnalysis?.ingestionGovernance || null;
   const operationalSnapshot = latest?.fullAnalysis?.operationalIntelligence || null;
+  const autonomySnapshot = latest?.fullAnalysis?.autonomyIntelligence || null;
 
   return res.json({
     summary,
@@ -104,6 +105,7 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
     territorialSnapshot,
     ingestionSnapshot,
     operationalSnapshot,
+    autonomySnapshot,
   });
 };
 

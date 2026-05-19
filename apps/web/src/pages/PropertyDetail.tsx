@@ -95,6 +95,16 @@ import InfrastructureExpansionCard from '../components/evolution/InfrastructureE
 import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
 import OperationalOpportunitySignalCard from '../components/opportunities/OpportunitySignalCard';
 import StrategicOpportunityCard from '../components/opportunities/StrategicOpportunityCard';
+import AutonomousIntelligenceCard from '../components/autonomy/AutonomousIntelligenceCard';
+import GovernedEscalationCard from '../components/autonomy/GovernedEscalationCard';
+import ReviewQueueCard from '../components/autonomy/ReviewQueueCard';
+import SuppressionGovernanceCard from '../components/autonomy/SuppressionGovernanceCard';
+import CadenceAndDegradationCard from '../components/autonomy/CadenceAndDegradationCard';
+import ParcelWatchlistCard from '../components/watchlists/ParcelWatchlistCard';
+import RegionWatchCard from '../components/watchlists/RegionWatchCard';
+import IntelligenceFeedCard from '../components/feeds/IntelligenceFeedCard';
+import PortfolioIntelligenceCard from '../components/portfolioOps/PortfolioIntelligenceCard';
+import StrategicMonitoringCard from '../components/strategic/StrategicMonitoringCard';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -581,6 +591,15 @@ export default function PropertyDetail() {
           infrastructureForecast?: any;
           municipalForecast?: any;
         };
+      };
+      autonomyIntelligence?: {
+        autonomy?: { autonomy?: any; cadence?: any };
+        watchlist?: { parcel?: any; region?: any };
+        feeds?: { unified?: any };
+        portfolio?: { intelligence?: any };
+        strategic?: { radar?: any };
+        prioritization?: { governedEscalationQueue?: any };
+        operations?: { reviewQueue?: any; suppression?: any; degradation?: any };
       };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
@@ -1470,6 +1489,29 @@ export default function PropertyDetail() {
                   <div className="xl:col-span-3"><InvestorAlertCard alert={latestAnalysis.operationalIntelligence.alerts?.investorAlert} /></div>
                   <div className="xl:col-span-3"><ForecastDirectionCard forecast={latestAnalysis.operationalIntelligence.history?.regionalForecast} /></div>
                   <div className="xl:col-span-3"><HistoricalEvidenceCard archive={latestAnalysis.operationalIntelligence.history?.archive} /></div>
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.autonomyIntelligence && (
+              <div className="mt-4 rounded-xl border border-sky-200 bg-sky-50/40 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-sky-900">Autonomous Strategic Intelligence Layer</h3>
+                  <p className="text-xs text-sky-700">
+                    Deterministic autonomous orchestration with governed escalation, review queue visibility, suppression governance, and cadence/degradation controls.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3"><AutonomousIntelligenceCard insight={latestAnalysis.autonomyIntelligence.autonomy?.autonomy} /></div>
+                  <div className="xl:col-span-3"><ParcelWatchlistCard watch={latestAnalysis.autonomyIntelligence.watchlist?.parcel} /></div>
+                  <div className="xl:col-span-3"><RegionWatchCard watch={latestAnalysis.autonomyIntelligence.watchlist?.region} /></div>
+                  <div className="xl:col-span-3"><IntelligenceFeedCard feed={latestAnalysis.autonomyIntelligence.feeds?.unified} /></div>
+                  <div className="xl:col-span-3"><PortfolioIntelligenceCard portfolio={latestAnalysis.autonomyIntelligence.portfolio?.intelligence} /></div>
+                  <div className="xl:col-span-3"><StrategicMonitoringCard strategic={latestAnalysis.autonomyIntelligence.strategic?.radar} /></div>
+                  <div className="xl:col-span-3"><GovernedEscalationCard escalation={latestAnalysis.autonomyIntelligence.prioritization?.governedEscalationQueue} /></div>
+                  <div className="xl:col-span-3"><ReviewQueueCard queue={latestAnalysis.autonomyIntelligence.operations?.reviewQueue} /></div>
+                  <div className="xl:col-span-3"><SuppressionGovernanceCard suppression={latestAnalysis.autonomyIntelligence.operations?.suppression} /></div>
+                  <div className="xl:col-span-3"><CadenceAndDegradationCard cadence={latestAnalysis.autonomyIntelligence.autonomy?.cadence} degradation={latestAnalysis.autonomyIntelligence.operations?.degradation} /></div>
                 </div>
               </div>
             )}

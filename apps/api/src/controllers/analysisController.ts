@@ -27,6 +27,7 @@ import { buildReportGovernanceEnvelope } from '../services/reporting/reportGover
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 import { ingestionOrchestrator } from '../services/ingestion/ingestionOrchestrator';
 import { buildOperationalIntelligence } from '../services/monitoring/buildOperationalIntelligence';
+import { buildAutonomyIntelligence } from '../services/autonomy/buildAutonomyIntelligence';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -177,6 +178,26 @@ function toResponseFromRun(run: any, reused: boolean) {
       municipalitySignalScore: full.territorialIntelligence?.planningLayer?.score,
       suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
     });
+  const autonomyIntelligence =
+    full.autonomyIntelligence ||
+    buildAutonomyIntelligence({
+      nowIso: run.cacheTimestamp ? new Date(run.cacheTimestamp).toISOString() : new Date().toISOString(),
+      source: 'analysis_runtime_v28',
+      freshnessScore: full.freshnessScore || 0,
+      confidenceScore: run.confidence || 0,
+      governanceState: full.ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      evidenceLineage: full.ingestionGovernance?.provenance?.lineage || governanceEnvelope.evidenceTrace || [],
+      trendSignals: full.trendSignals || [],
+      ingestionSignals: full.ingestionSignals || [],
+      developmentSignals: full.developmentSignals || [],
+      strategicLocationSignals: full.strategicLocationSignals || [],
+      marketMomentum: full.marketMomentum || 0,
+      opportunityScore: full.opportunityScore || 0,
+      districtHeat: full.districtHeat || 0,
+      volatileScore: full.volatilityIndex || 0,
+      connectorStates: full.ingestionGovernance?.connectors || [],
+      suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+    });
 
   return {
     id: run._id,
@@ -266,6 +287,7 @@ function toResponseFromRun(run: any, reused: boolean) {
     ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
     noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
     operationalIntelligence,
+    autonomyIntelligence,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -644,8 +666,27 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       municipalitySignalScore: territorialIntelligence?.planningLayer?.confidence,
       suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
     });
+    const autonomyIntelligence = buildAutonomyIntelligence({
+      nowIso: new Date().toISOString(),
+      source: 'analysis_runtime_v28',
+      freshnessScore,
+      confidenceScore: engine.confidence,
+      governanceState: ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      evidenceLineage: ingestionGovernance?.provenance?.lineage || [],
+      trendSignals,
+      ingestionSignals,
+      developmentSignals: developmentIntelligence.developmentSignals || [],
+      strategicLocationSignals: geoIntelligence.strategicLocationSignals || [],
+      marketMomentum: signalNetwork.marketMomentum,
+      opportunityScore: signalNetwork.opportunityScore,
+      districtHeat: signalNetwork.districtHeat,
+      volatileScore: trendSnapshots.volatility.volatilityIndex,
+      connectorStates: ingestionGovernance?.connectors || [],
+      suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+    });
 
     ingestionSignals.push(`v27_monitoring_${String(operationalIntelligence.monitoring?.state || 'stable').toLowerCase()}`);
+    ingestionSignals.push(`v28_autonomy_${String(autonomyIntelligence.autonomy?.autonomy?.autonomyState || 'manual_only').toLowerCase()}`);
 
     property.set({
       lastSpatialRefresh: new Date(),
@@ -763,6 +804,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
         noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
         operationalIntelligence,
+        autonomyIntelligence,
       },
     });
 

@@ -271,6 +271,7 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       ingestionFreshnessEnvelope: full.ingestionFreshnessEnvelope,
       noFakeActiveProof: full.noFakeActiveProof,
       operationalIntelligence: full.operationalIntelligence,
+      autonomyIntelligence: full.autonomyIntelligence,
     };
   });
 

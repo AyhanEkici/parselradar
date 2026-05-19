@@ -27,6 +27,16 @@ import InfrastructureExpansionCard from '../components/evolution/InfrastructureE
 import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
 import OpportunitySignalCard from '../components/opportunities/OpportunitySignalCard';
 import StrategicOpportunityCard from '../components/opportunities/StrategicOpportunityCard';
+import AutonomousIntelligenceCard from '../components/autonomy/AutonomousIntelligenceCard';
+import GovernedEscalationCard from '../components/autonomy/GovernedEscalationCard';
+import ReviewQueueCard from '../components/autonomy/ReviewQueueCard';
+import SuppressionGovernanceCard from '../components/autonomy/SuppressionGovernanceCard';
+import CadenceAndDegradationCard from '../components/autonomy/CadenceAndDegradationCard';
+import ParcelWatchlistCard from '../components/watchlists/ParcelWatchlistCard';
+import RegionWatchCard from '../components/watchlists/RegionWatchCard';
+import IntelligenceFeedCard from '../components/feeds/IntelligenceFeedCard';
+import PortfolioIntelligenceCard from '../components/portfolioOps/PortfolioIntelligenceCard';
+import StrategicMonitoringCard from '../components/strategic/StrategicMonitoringCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -46,6 +56,7 @@ export default function InvestorDashboard() {
   const territorialSnapshot = data.territorialSnapshot || {};
   const ingestionSnapshot = data.ingestionSnapshot || {};
   const operationalSnapshot = data.operationalSnapshot || {};
+  const autonomySnapshot = data.autonomySnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -122,6 +133,19 @@ export default function InvestorDashboard() {
           <InvestorAlertCard alert={operationalSnapshot.alerts?.investorAlert} />
           <ForecastDirectionCard forecast={operationalSnapshot.history?.regionalForecast} />
           <HistoricalEvidenceCard archive={operationalSnapshot.history?.archive} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <AutonomousIntelligenceCard insight={autonomySnapshot.autonomy?.autonomy} />
+          <ParcelWatchlistCard watch={autonomySnapshot.watchlist?.parcel} />
+          <RegionWatchCard watch={autonomySnapshot.watchlist?.region} />
+          <IntelligenceFeedCard feed={autonomySnapshot.feeds?.unified} />
+          <PortfolioIntelligenceCard portfolio={autonomySnapshot.portfolio?.intelligence} />
+          <StrategicMonitoringCard strategic={autonomySnapshot.strategic?.radar} />
+          <GovernedEscalationCard escalation={autonomySnapshot.prioritization?.governedEscalationQueue} />
+          <ReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
+          <SuppressionGovernanceCard suppression={autonomySnapshot.operations?.suppression} />
+          <CadenceAndDegradationCard cadence={autonomySnapshot.autonomy?.cadence} degradation={autonomySnapshot.operations?.degradation} />
         </div>
       </div>
     </div>

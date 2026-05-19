@@ -103,6 +103,10 @@ export const getReports = async (req: AuthRequest, res: Response) => {
         noFakeActiveProof: full.noFakeActiveProof,
         monitoringState: full.operationalIntelligence?.monitoring?.state,
         opportunityLevel: full.operationalIntelligence?.opportunities?.strategicOpportunity?.level,
+        autonomyState: full.autonomyIntelligence?.autonomy?.autonomy?.autonomyState,
+        reviewQueueDepth: full.autonomyIntelligence?.operations?.reviewQueue?.queueDepth,
+        suppressionActiveRules: full.autonomyIntelligence?.operations?.suppression?.activeCount,
+        cadenceMinutes: full.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes,
       };
     })
   );
