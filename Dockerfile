@@ -6,7 +6,7 @@ COPY package*.json ./
 COPY packages/shared/package*.json packages/shared/
 COPY apps/api/package*.json apps/api/
 
-RUN npm install
+RUN npm install --ignore-scripts
 RUN npm install --prefix packages/shared
 RUN npm install --prefix apps/api
 
