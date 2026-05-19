@@ -13,6 +13,8 @@ const AnalysisRun_1 = __importDefault(require("../models/AnalysisRun"));
 const AuditEvent_1 = __importDefault(require("../models/AuditEvent"));
 const User_1 = __importDefault(require("../models/User"));
 const propertySchemas_1 = require("../validation/propertySchemas");
+const ownership_1 = require("../utils/ownership");
+const scopeFilters_1 = require("../utils/scopeFilters");
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
     downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
@@ -116,7 +118,7 @@ const createProperty = async (req, res) => {
 exports.createProperty = createProperty;
 const getMyProperties = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
-    const properties = await PropertySubmission_1.default.find({ userId: user._id }).sort({ createdAt: -1 });
+    const properties = await PropertySubmission_1.default.find((0, scopeFilters_1.propertyOwnerScope)(user, {})).sort({ createdAt: -1 });
     res.json(properties);
 };
 exports.getMyProperties = getMyProperties;
@@ -130,12 +132,11 @@ const getPropertyById = async (req, res) => {
     if (!property) {
         return res.status(404).json({ error: 'Mülk bulunamadı' });
     }
-    const ownerId = String(property.userId);
-    const currentUserId = String(user._id);
-    const isOwner = ownerId === currentUserId;
-    const isAdmin = user.role === 'ADMIN';
-    if (!isOwner && !isAdmin) {
-        return res.status(403).json({ error: 'Yetkisiz erişim' });
+    try {
+        (0, ownership_1.assertOwnerOrAdmin)({ userId: property.userId }, user);
+    }
+    catch {
+        return res.status(404).json({ error: 'Mülk bulunamadı' });
     }
     const [owner, documents, analyses, audits] = await Promise.all([
         User_1.default.findById(property.userId).select('email name role').lean(),

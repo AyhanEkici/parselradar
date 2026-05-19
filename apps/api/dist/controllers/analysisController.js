@@ -35,6 +35,7 @@ const buildAutonomyIntelligence_1 = require("../services/autonomy/buildAutonomyI
 const territorialOperatingSystem_1 = require("../services/operatingSystem/territorialOperatingSystem");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
+const scopeFilters_1 = require("../utils/scopeFilters");
 const COSTS = { quick: 1 };
 async function deductCredits(userId, amount) {
     const credits = await (0, credits_1.getUserCredits)(userId);
@@ -318,16 +319,14 @@ async function runAnalysis(req, res, options) {
         return res.status(401).json({ error: 'Unauthorized' });
     const normalizedUserId = normalizeUserId(userId);
     const property = await PropertySubmission_1.default.findOne({
-        _id: req.params.propertyId,
-        userId: normalizedUserId,
+        ...(0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: req.params.propertyId }),
     });
     if (!property) {
         return res.status(404).json({ error: 'Mülk bulunamadı' });
     }
     const force = req.query.force === '1' || req.query.force === 'true';
     const existingRun = await AnalysisRun_1.default.findOne({
-        propertySubmissionId: property._id,
-        userId: normalizedUserId,
+        ...(0, scopeFilters_1.analysisOwnerScope)(req.user, { propertySubmissionId: property._id }),
         productType: options.productType,
     }).sort({ createdAt: -1 });
     if (existingRun && !(options.productType === 'QUICK_SCORE' && force)) {

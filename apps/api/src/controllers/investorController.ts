@@ -11,6 +11,7 @@ import { buildInvestorDashboardSummary } from '../services/portfolio/buildInvest
 import { calculatePortfolioOpportunityScore } from '../services/portfolio/calculatePortfolioOpportunityScore';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
+import { analysisOwnerScope, portfolioOwnerScope, propertyOwnerScope, watchlistOwnerScope } from '../utils/scopeFilters';
 
 function userObjectId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -21,9 +22,9 @@ export const getInvestorDashboard = async (req: AuthRequest, res: Response) => {
 
   const [savedAnalyses, watchlist, portfolios, latestAnalyses] = await Promise.all([
     SavedAnalysis.find({ userId }).lean(),
-    Watchlist.find({ userId, status: 'ACTIVE' }).lean(),
-    Portfolio.find({ userId }).lean(),
-    AnalysisRun.find({ userId }).sort({ createdAt: -1 }).limit(100).lean(),
+    Watchlist.find(watchlistOwnerScope(req.user, { status: 'ACTIVE' })).lean(),
+    Portfolio.find(portfolioOwnerScope(req.user, {})).lean(),
+    AnalysisRun.find(analysisOwnerScope(req.user, {})).sort({ createdAt: -1 }).limit(100).lean(),
   ]);
 
   const opportunity = calculatePortfolioOpportunityScore({
@@ -126,8 +127,8 @@ export const createSavedAnalysis = async (req: AuthRequest, res: Response) => {
   }
 
   const [property, analysis] = await Promise.all([
-    PropertySubmission.findOne({ _id: propertyId, userId }).lean(),
-    AnalysisRun.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean(),
+    PropertySubmission.findOne(propertyOwnerScope(req.user, { _id: propertyId })).lean(),
+    AnalysisRun.findOne(analysisOwnerScope(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean(),
   ]);
 
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
@@ -169,14 +170,16 @@ export const deleteSavedAnalysis = async (req: AuthRequest, res: Response) => {
 
 export const getWatchlist = async (req: AuthRequest, res: Response) => {
   const userId = userObjectId(req);
-  const rows = await Watchlist.find({ userId, status: 'ACTIVE' })
+  const rows = await Watchlist.find(watchlistOwnerScope(req.user, { status: 'ACTIVE' }))
     .sort({ createdAt: -1 })
     .populate('propertySubmissionId', 'addressText il ilce status')
     .lean();
 
   const enriched = await Promise.all(
     rows.map(async (row: any) => {
-      const latest = await AnalysisRun.findOne({ propertySubmissionId: row.propertySubmissionId?._id || row.propertySubmissionId, userId })
+      const latest = await AnalysisRun.findOne(
+        analysisOwnerScope(req.user, { propertySubmissionId: row.propertySubmissionId?._id || row.propertySubmissionId })
+      )
         .sort({ createdAt: -1 })
         .lean();
       return {
@@ -206,7 +209,7 @@ export const createWatchlistItem = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'Geçersiz propertyId' });
   }
 
-  const property = await PropertySubmission.findOne({ _id: propertyId, userId }).lean();
+  const property = await PropertySubmission.findOne(propertyOwnerScope(req.user, { _id: propertyId })).lean();
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
 
   const created = await Watchlist.findOneAndUpdate(
@@ -228,7 +231,7 @@ export const deleteWatchlistItem = async (req: AuthRequest, res: Response) => {
 export const getPortfolioSummary = async (req: AuthRequest, res: Response) => {
   const userId = userObjectId(req);
   const [portfolios, items] = await Promise.all([
-    Portfolio.find({ userId }).sort({ createdAt: -1 }).lean(),
+    Portfolio.find(portfolioOwnerScope(req.user, {})).sort({ createdAt: -1 }).lean(),
     PortfolioItem.find({ userId }).lean(),
   ]);
 

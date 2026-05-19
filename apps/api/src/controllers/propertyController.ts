@@ -9,6 +9,8 @@ import AnalysisRun from '../models/AnalysisRun';
 import AuditEvent from '../models/AuditEvent';
 import User from '../models/User';
 import { PropertySubmissionCreateInputSchema } from '../validation/propertySchemas';
+import { assertOwnerOrAdmin } from '../utils/ownership';
+import { propertyOwnerScope } from '../utils/scopeFilters';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -112,7 +114,7 @@ export const createProperty = async (req: AuthRequest, res: Response) => {
 
 export const getMyProperties = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const properties = await PropertySubmission.find({ userId: user._id }).sort({ createdAt: -1 });
+  const properties = await PropertySubmission.find(propertyOwnerScope(user, {})).sort({ createdAt: -1 });
   res.json(properties);
 };
 
@@ -128,13 +130,10 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
   if (!property) {
     return res.status(404).json({ error: 'Mülk bulunamadı' });
   }
-
-  const ownerId = String(property.userId);
-  const currentUserId = String(user._id);
-  const isOwner = ownerId === currentUserId;
-  const isAdmin = user.role === 'ADMIN';
-  if (!isOwner && !isAdmin) {
-    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  try {
+    assertOwnerOrAdmin({ userId: property.userId }, user);
+  } catch {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
   }
 
   const [owner, documents, analyses, audits] = await Promise.all([

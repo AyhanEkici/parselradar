@@ -11,6 +11,7 @@ import { buildNotificationDigest } from '../services/notifications/buildNotifica
 import { createNotificationEvent } from '../services/notifications/createNotificationEvent';
 import NotificationDelivery from '../models/NotificationDelivery';
 import { processNotificationDelivery } from '../services/notifications/processNotificationDelivery';
+import { notificationOwnerScope } from '../utils/scopeFilters';
 
 function requestUserId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -24,7 +25,7 @@ export const getNotifications = async (req: AuthRequest, res: Response) => {
 
 export const getNotificationPreferences = async (req: AuthRequest, res: Response) => {
   const userId = requestUserId(req);
-  const pref = await NotificationPreference.findOne({ userId }).lean();
+  const pref = await NotificationPreference.findOne(notificationOwnerScope(req.user, {})).lean();
   const providers = resolveDeliveryProviders();
 
   return res.json({
@@ -61,7 +62,7 @@ export const patchNotificationPreferences = async (req: AuthRequest, res: Respon
   };
 
   const updated = await NotificationPreference.findOneAndUpdate(
-    { userId },
+    notificationOwnerScope(req.user, {}),
     {
       $set: {
         ...(typeof emailEnabled === 'boolean' ? { emailEnabled } : {}),
@@ -84,7 +85,7 @@ export const patchNotificationPreferences = async (req: AuthRequest, res: Respon
 export const markNotificationRead = async (req: AuthRequest, res: Response) => {
   const userId = requestUserId(req);
   const event = await NotificationEvent.findOneAndUpdate(
-    { _id: req.params.id, userId },
+    notificationOwnerScope(req.user, { _id: req.params.id }),
     { readAt: new Date() },
     { new: true }
   ).lean();
@@ -96,7 +97,7 @@ export const markNotificationRead = async (req: AuthRequest, res: Response) => {
 export const archiveNotification = async (req: AuthRequest, res: Response) => {
   const userId = requestUserId(req);
   const event = await NotificationEvent.findOneAndUpdate(
-    { _id: req.params.id, userId },
+    notificationOwnerScope(req.user, { _id: req.params.id }),
     { archivedAt: new Date() },
     { new: true }
   ).lean();
@@ -107,7 +108,7 @@ export const archiveNotification = async (req: AuthRequest, res: Response) => {
 
 export const getNotificationDigests = async (req: AuthRequest, res: Response) => {
   const userId = requestUserId(req);
-  const digests = await NotificationDigest.find({ userId }).sort({ createdAt: -1 }).limit(50).lean();
+  const digests = await NotificationDigest.find(notificationOwnerScope(req.user, {})).sort({ createdAt: -1 }).limit(50).lean();
 
   if (digests.length > 0) {
     return res.json(digests);

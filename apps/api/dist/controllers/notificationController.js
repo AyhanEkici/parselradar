@@ -15,6 +15,7 @@ const buildNotificationDigest_1 = require("../services/notifications/buildNotifi
 const createNotificationEvent_1 = require("../services/notifications/createNotificationEvent");
 const NotificationDelivery_1 = __importDefault(require("../models/NotificationDelivery"));
 const processNotificationDelivery_1 = require("../services/notifications/processNotificationDelivery");
+const scopeFilters_1 = require("../utils/scopeFilters");
 function requestUserId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -26,7 +27,7 @@ const getNotifications = async (req, res) => {
 exports.getNotifications = getNotifications;
 const getNotificationPreferences = async (req, res) => {
     const userId = requestUserId(req);
-    const pref = await NotificationPreference_1.default.findOne({ userId }).lean();
+    const pref = await NotificationPreference_1.default.findOne((0, scopeFilters_1.notificationOwnerScope)(req.user, {})).lean();
     const providers = (0, deliveryProviders_1.resolveDeliveryProviders)();
     return res.json({
         preferences: pref || {
@@ -48,7 +49,7 @@ exports.getNotificationPreferences = getNotificationPreferences;
 const patchNotificationPreferences = async (req, res) => {
     const userId = requestUserId(req);
     const { emailEnabled, inAppEnabled, digestEnabled, digestSchedule, mutedTypes, } = req.body;
-    const updated = await NotificationPreference_1.default.findOneAndUpdate({ userId }, {
+    const updated = await NotificationPreference_1.default.findOneAndUpdate((0, scopeFilters_1.notificationOwnerScope)(req.user, {}), {
         $set: {
             ...(typeof emailEnabled === 'boolean' ? { emailEnabled } : {}),
             ...(typeof inAppEnabled === 'boolean' ? { inAppEnabled } : {}),
@@ -66,7 +67,7 @@ const patchNotificationPreferences = async (req, res) => {
 exports.patchNotificationPreferences = patchNotificationPreferences;
 const markNotificationRead = async (req, res) => {
     const userId = requestUserId(req);
-    const event = await NotificationEvent_1.default.findOneAndUpdate({ _id: req.params.id, userId }, { readAt: new Date() }, { new: true }).lean();
+    const event = await NotificationEvent_1.default.findOneAndUpdate((0, scopeFilters_1.notificationOwnerScope)(req.user, { _id: req.params.id }), { readAt: new Date() }, { new: true }).lean();
     if (!event)
         return res.status(404).json({ error: 'Notification bulunamadı' });
     return res.json(event);
@@ -74,7 +75,7 @@ const markNotificationRead = async (req, res) => {
 exports.markNotificationRead = markNotificationRead;
 const archiveNotification = async (req, res) => {
     const userId = requestUserId(req);
-    const event = await NotificationEvent_1.default.findOneAndUpdate({ _id: req.params.id, userId }, { archivedAt: new Date() }, { new: true }).lean();
+    const event = await NotificationEvent_1.default.findOneAndUpdate((0, scopeFilters_1.notificationOwnerScope)(req.user, { _id: req.params.id }), { archivedAt: new Date() }, { new: true }).lean();
     if (!event)
         return res.status(404).json({ error: 'Notification bulunamadı' });
     return res.json(event);
@@ -82,7 +83,7 @@ const archiveNotification = async (req, res) => {
 exports.archiveNotification = archiveNotification;
 const getNotificationDigests = async (req, res) => {
     const userId = requestUserId(req);
-    const digests = await NotificationDigest_1.default.find({ userId }).sort({ createdAt: -1 }).limit(50).lean();
+    const digests = await NotificationDigest_1.default.find((0, scopeFilters_1.notificationOwnerScope)(req.user, {})).sort({ createdAt: -1 }).limit(50).lean();
     if (digests.length > 0) {
         return res.json(digests);
     }

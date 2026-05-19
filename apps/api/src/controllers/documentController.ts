@@ -6,6 +6,7 @@ import { requireAuthUser } from '../utils/authUser';
 import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 import { logAuditEvent } from '../utils/auditLog';
+import { propertyOwnerScope } from '../utils/scopeFilters';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -20,8 +21,7 @@ const getBucket = () => {
 
 const canAccessProperty = async (user: AuthRequest['user'], propertyId: string) => {
   if (!user) return null;
-  if (user.role === 'ADMIN') return PropertySubmission.findById(propertyId);
-  return PropertySubmission.findOne({ _id: propertyId, userId: user._id });
+  return PropertySubmission.findOne(propertyOwnerScope(user, { _id: propertyId }));
 };
 
 export const uploadDocument = async (req: AuthRequest, res: Response) => {

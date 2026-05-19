@@ -1,0 +1,301 @@
+{
+  "generatedAt": "2026-05-19T23:37:14.111Z",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 57,
+    "pass": 57,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "id": "admin_file_/admin/properties",
+      "status": "PASS",
+      "message": "Route file exists for /admin/properties"
+    },
+    {
+      "id": "admin_declared_/admin/properties",
+      "status": "PASS",
+      "message": "/admin/properties is declared"
+    },
+    {
+      "id": "admin_guarded_/admin/properties",
+      "status": "PASS",
+      "message": "/admin/properties enforces auth+admin middleware"
+    },
+    {
+      "id": "admin_file_/admin/observability",
+      "status": "PASS",
+      "message": "Route file exists for /admin/observability"
+    },
+    {
+      "id": "admin_declared_/admin/observability",
+      "status": "PASS",
+      "message": "/admin/observability is declared"
+    },
+    {
+      "id": "admin_guarded_/admin/observability",
+      "status": "PASS",
+      "message": "/admin/observability enforces auth+admin middleware"
+    },
+    {
+      "id": "admin_file_/admin/analytics",
+      "status": "PASS",
+      "message": "Route file exists for /admin/analytics"
+    },
+    {
+      "id": "admin_declared_/admin/analytics",
+      "status": "PASS",
+      "message": "/admin/analytics is declared"
+    },
+    {
+      "id": "admin_guarded_/admin/analytics",
+      "status": "PASS",
+      "message": "/admin/analytics enforces auth+admin middleware"
+    },
+    {
+      "id": "admin_file_/admin/connectors",
+      "status": "PASS",
+      "message": "Route file exists for /admin/connectors"
+    },
+    {
+      "id": "admin_declared_/admin/connectors",
+      "status": "PASS",
+      "message": "/admin/connectors is declared"
+    },
+    {
+      "id": "admin_guarded_/admin/connectors",
+      "status": "PASS",
+      "message": "/admin/connectors enforces auth+admin middleware"
+    },
+    {
+      "id": "route_file_propertyRoutes.ts",
+      "status": "PASS",
+      "message": "propertyRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_propertyRoutes.ts",
+      "status": "PASS",
+      "message": "propertyRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_analysisRoutes.ts",
+      "status": "PASS",
+      "message": "analysisRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_analysisRoutes.ts",
+      "status": "PASS",
+      "message": "analysisRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_reportRoutes.ts",
+      "status": "PASS",
+      "message": "reportRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_reportRoutes.ts",
+      "status": "PASS",
+      "message": "reportRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_documentRoutes.ts",
+      "status": "PASS",
+      "message": "documentRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_documentRoutes.ts",
+      "status": "PASS",
+      "message": "documentRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_portfolioRoutes.ts",
+      "status": "PASS",
+      "message": "portfolioRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_portfolioRoutes.ts",
+      "status": "PASS",
+      "message": "portfolioRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_investorRoutes.ts",
+      "status": "PASS",
+      "message": "investorRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_investorRoutes.ts",
+      "status": "PASS",
+      "message": "investorRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_notificationRoutes.ts",
+      "status": "PASS",
+      "message": "notificationRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_notificationRoutes.ts",
+      "status": "PASS",
+      "message": "notificationRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_workspaceRoutes.ts",
+      "status": "PASS",
+      "message": "workspaceRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_workspaceRoutes.ts",
+      "status": "PASS",
+      "message": "workspaceRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "route_file_exportRoutes.ts",
+      "status": "PASS",
+      "message": "exportRoutes.ts exists"
+    },
+    {
+      "id": "route_auth_exportRoutes.ts",
+      "status": "PASS",
+      "message": "exportRoutes.ts routes are auth-guarded"
+    },
+    {
+      "id": "controller_exists_propertyController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\propertyController.ts exists"
+    },
+    {
+      "id": "scope_helper_propertyController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_propertyController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_analysisController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\analysisController.ts exists"
+    },
+    {
+      "id": "scope_helper_analysisController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_analysisController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_reportController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\reportController.ts exists"
+    },
+    {
+      "id": "scope_helper_reportController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_reportController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_documentController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\documentController.ts exists"
+    },
+    {
+      "id": "scope_helper_documentController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_documentController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_portfolioController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\portfolioController.ts exists"
+    },
+    {
+      "id": "scope_helper_portfolioController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_portfolioController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_investorController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\investorController.ts exists"
+    },
+    {
+      "id": "scope_helper_investorController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_investorController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_notificationController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\notificationController.ts exists"
+    },
+    {
+      "id": "scope_helper_notificationController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_notificationController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_workspaceController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\workspaceController.ts exists"
+    },
+    {
+      "id": "scope_helper_workspaceController.ts",
+      "status": "PASS",
+      "message": "Membership-based scope guard usage detected"
+    },
+    {
+      "id": "owner_guard_workspaceController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    },
+    {
+      "id": "controller_exists_exportController.ts",
+      "status": "PASS",
+      "message": "C:\\parselradar\\apps\\api\\src\\controllers\\exportController.ts exists"
+    },
+    {
+      "id": "scope_helper_exportController.ts",
+      "status": "PASS",
+      "message": "Owner scope helper usage detected"
+    },
+    {
+      "id": "owner_guard_exportController.ts",
+      "status": "PASS",
+      "message": "Owner guard patterns detected"
+    }
+  ],
+  "scenarios": [
+    "Admin login: admin tabs visible; global admin/connector/observability/deployment routes accessible.",
+    "Normal user (Mahir): admin menu hidden; /admin/* resolves to access denied; only own properties/reports/portfolios/documents visible.",
+    "Another normal user: cannot read Mahir-owned records by list, detail, export, or direct ID route."
+  ]
+}

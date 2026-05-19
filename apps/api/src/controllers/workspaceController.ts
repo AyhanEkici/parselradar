@@ -13,6 +13,7 @@ import { buildWorkspaceActivityFeed } from '../services/workspace/buildWorkspace
 import { calculateWorkspaceSignals } from '../services/workspace/calculateWorkspaceSignals';
 import { buildSharedPortfolioSummary } from '../services/workspace/buildSharedPortfolioSummary';
 import { buildSharedWatchlistSummary } from '../services/workspace/buildSharedWatchlistSummary';
+import { isAdmin } from '../utils/ownership';
 
 function requestUserId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -147,6 +148,9 @@ export const addWorkspacePortfolioProperty = async (req: AuthRequest, res: Respo
 
   const property = await PropertySubmission.findById(propertyId).lean();
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+  if (!isAdmin(req.user) && String(property.userId) !== String(userId)) {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
+  }
 
   const row = await WorkspacePortfolio.findOneAndUpdate(
     {
@@ -194,6 +198,9 @@ export const addWorkspaceWatchlistProperty = async (req: AuthRequest, res: Respo
 
   const property = await PropertySubmission.findById(propertyId).lean();
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
+  if (!isAdmin(req.user) && String(property.userId) !== String(userId)) {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
+  }
 
   const row = await WorkspaceWatchlist.findOneAndUpdate(
     { organizationId, propertySubmissionId: property._id },

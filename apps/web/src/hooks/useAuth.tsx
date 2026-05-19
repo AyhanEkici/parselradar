@@ -3,11 +3,12 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { getMe } from '../lib/auth';
 
 type User = { id: string; email: string; name: string; role: string } | null;
-type AuthContextType = { user: User };
-const AuthContext = createContext<AuthContextType>({ user: null });
+type AuthContextType = { user: User; isAdmin: boolean };
+const AuthContext = createContext<AuthContextType>({ user: null, isAdmin: false });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User>(null);
+	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
 	useEffect(() => {
 		getMe().then(u => setUser(u)).catch(() => setUser(null));
 	}, []);
@@ -20,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return () => window.removeEventListener('storage', handler);
 	}, []);
 	return (
-		<AuthContext.Provider value={{ user }}>
+		<AuthContext.Provider value={{ user, isAdmin }}>
 			{children}
 		</AuthContext.Provider>
 	);

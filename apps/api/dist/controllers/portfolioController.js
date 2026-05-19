@@ -12,12 +12,12 @@ const AnalysisRun_1 = __importDefault(require("../models/AnalysisRun"));
 const createPortfolioSnapshot_1 = require("../services/portfolio/createPortfolioSnapshot");
 const calculatePortfolioExposure_1 = require("../services/portfolio/calculatePortfolioExposure");
 const calculatePortfolioOpportunityScore_1 = require("../services/portfolio/calculatePortfolioOpportunityScore");
+const scopeFilters_1 = require("../utils/scopeFilters");
 function userObjectId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
 const getPortfolios = async (req, res) => {
-    const userId = userObjectId(req);
-    const portfolios = await Portfolio_1.default.find({ userId }).sort({ createdAt: -1 }).lean();
+    const portfolios = await Portfolio_1.default.find((0, scopeFilters_1.portfolioOwnerScope)(req.user, {})).sort({ createdAt: -1 }).lean();
     return res.json(portfolios);
 };
 exports.getPortfolios = getPortfolios;
@@ -32,13 +32,13 @@ const createPortfolio = async (req, res) => {
 exports.createPortfolio = createPortfolio;
 const getPortfolioById = async (req, res) => {
     const userId = userObjectId(req);
-    const portfolio = await Portfolio_1.default.findOne({ _id: req.params.id, userId }).lean();
+    const portfolio = await Portfolio_1.default.findOne((0, scopeFilters_1.portfolioOwnerScope)(req.user, { _id: req.params.id })).lean();
     if (!portfolio)
         return res.status(404).json({ error: 'Portfolio bulunamadı' });
     const items = await PortfolioItem_1.default.find({ portfolioId: portfolio._id, userId }).lean();
     const propertyIds = items.map((i) => i.propertySubmissionId);
-    const properties = await PropertySubmission_1.default.find({ _id: { $in: propertyIds } }).lean();
-    const latestAnalyses = await Promise.all(propertyIds.map(async (propertyId) => AnalysisRun_1.default.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean()));
+    const properties = await PropertySubmission_1.default.find((0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: { $in: propertyIds } })).lean();
+    const latestAnalyses = await Promise.all(propertyIds.map(async (propertyId) => AnalysisRun_1.default.findOne((0, scopeFilters_1.analysisOwnerScope)(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean()));
     const analysisByProperty = {};
     latestAnalyses.forEach((analysis) => {
         if (!analysis)
@@ -96,14 +96,14 @@ const getPortfolioById = async (req, res) => {
 exports.getPortfolioById = getPortfolioById;
 const addPortfolioItem = async (req, res) => {
     const userId = userObjectId(req);
-    const portfolio = await Portfolio_1.default.findOne({ _id: req.params.id, userId }).lean();
+    const portfolio = await Portfolio_1.default.findOne((0, scopeFilters_1.portfolioOwnerScope)(req.user, { _id: req.params.id })).lean();
     if (!portfolio)
         return res.status(404).json({ error: 'Portfolio bulunamadı' });
     const { propertyId, allocationWeight, thesis } = req.body;
     if (!propertyId || !mongoose_1.default.Types.ObjectId.isValid(propertyId)) {
         return res.status(400).json({ error: 'Geçersiz propertyId' });
     }
-    const property = await PropertySubmission_1.default.findOne({ _id: propertyId, userId }).lean();
+    const property = await PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: propertyId })).lean();
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });
     const item = await PortfolioItem_1.default.findOneAndUpdate({ userId, portfolioId: portfolio._id, propertySubmissionId: property._id }, {
@@ -122,7 +122,7 @@ const addPortfolioItem = async (req, res) => {
 exports.addPortfolioItem = addPortfolioItem;
 const deletePortfolioItem = async (req, res) => {
     const userId = userObjectId(req);
-    const portfolio = await Portfolio_1.default.findOne({ _id: req.params.id, userId }).lean();
+    const portfolio = await Portfolio_1.default.findOne((0, scopeFilters_1.portfolioOwnerScope)(req.user, { _id: req.params.id })).lean();
     if (!portfolio)
         return res.status(404).json({ error: 'Portfolio bulunamadı' });
     const deleted = await PortfolioItem_1.default.findOneAndDelete({

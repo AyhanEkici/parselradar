@@ -17,6 +17,7 @@ const buildWorkspaceActivityFeed_1 = require("../services/workspace/buildWorkspa
 const calculateWorkspaceSignals_1 = require("../services/workspace/calculateWorkspaceSignals");
 const buildSharedPortfolioSummary_1 = require("../services/workspace/buildSharedPortfolioSummary");
 const buildSharedWatchlistSummary_1 = require("../services/workspace/buildSharedWatchlistSummary");
+const ownership_1 = require("../utils/ownership");
 function requestUserId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -124,6 +125,9 @@ const addWorkspacePortfolioProperty = async (req, res) => {
     const property = await PropertySubmission_1.default.findById(propertyId).lean();
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });
+    if (!(0, ownership_1.isAdmin)(req.user) && String(property.userId) !== String(userId)) {
+        return res.status(404).json({ error: 'Mülk bulunamadı' });
+    }
     const row = await WorkspacePortfolio_1.default.findOneAndUpdate({
         organizationId,
         title: title || 'Shared Portfolio',
@@ -162,6 +166,9 @@ const addWorkspaceWatchlistProperty = async (req, res) => {
     const property = await PropertySubmission_1.default.findById(propertyId).lean();
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });
+    if (!(0, ownership_1.isAdmin)(req.user) && String(property.userId) !== String(userId)) {
+        return res.status(404).json({ error: 'Mülk bulunamadı' });
+    }
     const row = await WorkspaceWatchlist_1.default.findOneAndUpdate({ organizationId, propertySubmissionId: property._id }, {
         $set: { status: 'ACTIVE', note: note || '' },
         $setOnInsert: {

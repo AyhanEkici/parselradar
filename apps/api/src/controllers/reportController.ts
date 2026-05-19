@@ -9,12 +9,13 @@ import CreditLedger from '../models/CreditLedger';
 import path from 'path';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
+import { analysisOwnerScope, reportOwnerScope } from '../utils/scopeFilters';
 
 const PDF_COST = 5;
 
 export const purchasePDF = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const run = await AnalysisRun.findOne({ _id: req.params.analysisRunId, userId: user._id });
+  const run = await AnalysisRun.findOne(analysisOwnerScope(user, { _id: req.params.analysisRunId }));
   if (!run) return res.status(404).json({ error: 'Analiz bulunamadı' });
   const credits = await getUserCredits(user._id);
   if (credits < PDF_COST) return res.status(400).json({ error: 'Yetersiz kredi' });
@@ -37,7 +38,7 @@ export const purchasePDF = async (req: AuthRequest, res: Response) => {
 
 export const getReports = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const reports = await Report.find({ userId: user._id }).lean();
+  const reports = await Report.find(reportOwnerScope(user, {})).lean();
 
   const withGovernance = await Promise.all(
     reports.map(async (report: any) => {
@@ -119,7 +120,7 @@ export const getReports = async (req: AuthRequest, res: Response) => {
 
 export const downloadReport = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
-  const report = await Report.findOne({ _id: req.params.id, userId: user._id });
+  const report = await Report.findOne(reportOwnerScope(user, { _id: req.params.id }));
   if (!report) return res.status(404).json({ error: 'Rapor bulunamadı' });
   res.download(report.pdfPath);
 };

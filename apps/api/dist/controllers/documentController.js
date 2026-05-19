@@ -10,6 +10,7 @@ const authUser_1 = require("../utils/authUser");
 const DocumentUpload_1 = __importDefault(require("../models/DocumentUpload"));
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
 const auditLog_1 = require("../utils/auditLog");
+const scopeFilters_1 = require("../utils/scopeFilters");
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
     downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
@@ -23,9 +24,7 @@ const getBucket = () => {
 const canAccessProperty = async (user, propertyId) => {
     if (!user)
         return null;
-    if (user.role === 'ADMIN')
-        return PropertySubmission_1.default.findById(propertyId);
-    return PropertySubmission_1.default.findOne({ _id: propertyId, userId: user._id });
+    return PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(user, { _id: propertyId }));
 };
 const uploadDocument = async (req, res) => {
     const requestId = req.requestId || '';

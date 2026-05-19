@@ -6,6 +6,7 @@ import AnalysisRun from '../models/AnalysisRun';
 import AnalysisExport from '../models/AnalysisExport';
 import { buildAnalysisExportPayload } from '../services/exports/buildAnalysisExportPayload';
 import { generateAnalysisReportData } from '../services/exports/generateAnalysisReportData';
+import { analysisOwnerScope, propertyOwnerScope } from '../utils/scopeFilters';
 
 function userObjectId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -20,8 +21,8 @@ export const exportAnalysisByProperty = async (req: AuthRequest, res: Response) 
   }
 
   const [property, analysis] = await Promise.all([
-    PropertySubmission.findOne({ _id: propertyId, userId }).lean(),
-    AnalysisRun.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean(),
+    PropertySubmission.findOne(propertyOwnerScope(req.user, { _id: propertyId })).lean(),
+    AnalysisRun.findOne(analysisOwnerScope(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean(),
   ]);
 
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });

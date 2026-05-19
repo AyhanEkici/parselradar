@@ -40,24 +40,28 @@ import NotificationInbox from './pages/NotificationInbox';
 import NotificationPreferences from './pages/NotificationPreferences';
 import NotFound from './pages/NotFound';
 import { ToastProvider } from './components/ui';
+import { useAuth } from './hooks/useAuth';
+import AccessDenied from './pages/AccessDenied';
+import AdminOnly from './components/AdminOnly';
 
 export default function App() {
+  const { isAdmin } = useAuth();
   return (
     <ToastProvider>
       <BrowserRouter>
         <div className="w-full bg-gray-100 border-b mb-4">
           <nav className="max-w-5xl mx-auto flex flex-wrap gap-2 py-2 px-4 text-xs">
-            <a href="/admin/audit-timeline" className="hover:underline">Audit</a>
-            <a href="/admin/users" className="hover:underline">Users</a>
-            <a href="/admin/analyses" className="hover:underline">Analyses</a>
-            <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a>
-            <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a>
-            <a href="/admin/properties" className="hover:underline">Properties</a>
-            <a href="/admin/runtime" className="hover:underline">Runtime</a>
-            <a href="/admin/deployment" className="hover:underline">Deployment</a>
-            <a href="/admin/observability" className="hover:underline">Observability</a>
-            <a href="/admin/analytics" className="hover:underline">Analytics</a>
-            <a href="/admin/connectors" className="hover:underline">Connectors</a>
+            {isAdmin ? <a href="/admin/audit-timeline" className="hover:underline">Audit</a> : null}
+            {isAdmin ? <a href="/admin/users" className="hover:underline">Users</a> : null}
+            {isAdmin ? <a href="/admin/analyses" className="hover:underline">Analyses</a> : null}
+            {isAdmin ? <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a> : null}
+            {isAdmin ? <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a> : null}
+            {isAdmin ? <a href="/admin/properties" className="hover:underline">Properties</a> : null}
+            {isAdmin ? <a href="/admin/runtime" className="hover:underline">Runtime</a> : null}
+            {isAdmin ? <a href="/admin/deployment" className="hover:underline">Deployment</a> : null}
+            {isAdmin ? <a href="/admin/observability" className="hover:underline">Observability</a> : null}
+            {isAdmin ? <a href="/admin/analytics" className="hover:underline">Analytics</a> : null}
+            {isAdmin ? <a href="/admin/connectors" className="hover:underline">Connectors</a> : null}
             <a href="/investor" className="hover:underline">Investor</a>
             <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
             <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
@@ -70,24 +74,25 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/access-denied" element={<AccessDenied />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/credits" element={<Credits />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/admin/properties" element={<AdminProperties />} />
-          <Route path="/admin/properties/:propertyId" element={<PropertyDetail />} />
-          <Route path="/admin/properties/:propertyId/documents" element={<AdminPropertyDocuments />} />
-          <Route path="/admin/deal-pool" element={<AdminDealPool />} />
-          <Route path="/admin/audit-timeline" element={<AdminAuditTimeline />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/analyses" element={<AdminAnalyses />} />
-          <Route path="/admin/credit-ledger" element={<AdminCreditLedger />} />
-          <Route path="/admin/stripe-sessions" element={<AdminStripeSessions />} />
-          <Route path="/admin/runtime" element={<AdminSystemRuntime />} />
-          <Route path="/admin/deployment" element={<AdminDeploymentOverview />} />
-          <Route path="/admin/observability" element={<AdminObservability />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/connectors" element={<AdminConnectors />} />
-          <Route path="/admin/connectors/:connectorKey" element={<AdminConnectorDetail />} />
+          <Route path="/admin/properties" element={<AdminOnly><AdminProperties /></AdminOnly>} />
+          <Route path="/admin/properties/:propertyId" element={<AdminOnly><PropertyDetail /></AdminOnly>} />
+          <Route path="/admin/properties/:propertyId/documents" element={<AdminOnly><AdminPropertyDocuments /></AdminOnly>} />
+          <Route path="/admin/deal-pool" element={<AdminOnly><AdminDealPool /></AdminOnly>} />
+          <Route path="/admin/audit-timeline" element={<AdminOnly><AdminAuditTimeline /></AdminOnly>} />
+          <Route path="/admin/users" element={<AdminOnly><AdminUsers /></AdminOnly>} />
+          <Route path="/admin/analyses" element={<AdminOnly><AdminAnalyses /></AdminOnly>} />
+          <Route path="/admin/credit-ledger" element={<AdminOnly><AdminCreditLedger /></AdminOnly>} />
+          <Route path="/admin/stripe-sessions" element={<AdminOnly><AdminStripeSessions /></AdminOnly>} />
+          <Route path="/admin/runtime" element={<AdminOnly><AdminSystemRuntime /></AdminOnly>} />
+          <Route path="/admin/deployment" element={<AdminOnly><AdminDeploymentOverview /></AdminOnly>} />
+          <Route path="/admin/observability" element={<AdminOnly><AdminObservability /></AdminOnly>} />
+          <Route path="/admin/analytics" element={<AdminOnly><AdminAnalytics /></AdminOnly>} />
+          <Route path="/admin/connectors" element={<AdminOnly><AdminConnectors /></AdminOnly>} />
+          <Route path="/admin/connectors/:connectorKey" element={<AdminOnly><AdminConnectorDetail /></AdminOnly>} />
           <Route path="/properties/new" element={<NewProperty />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/properties/:id/documents" element={<PropertyDocuments />} />

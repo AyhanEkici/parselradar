@@ -15,6 +15,7 @@ const buildInvestorDashboardSummary_1 = require("../services/portfolio/buildInve
 const calculatePortfolioOpportunityScore_1 = require("../services/portfolio/calculatePortfolioOpportunityScore");
 const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
+const scopeFilters_1 = require("../utils/scopeFilters");
 function userObjectId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -22,9 +23,9 @@ const getInvestorDashboard = async (req, res) => {
     const userId = userObjectId(req);
     const [savedAnalyses, watchlist, portfolios, latestAnalyses] = await Promise.all([
         SavedAnalysis_1.default.find({ userId }).lean(),
-        Watchlist_1.default.find({ userId, status: 'ACTIVE' }).lean(),
-        Portfolio_1.default.find({ userId }).lean(),
-        AnalysisRun_1.default.find({ userId }).sort({ createdAt: -1 }).limit(100).lean(),
+        Watchlist_1.default.find((0, scopeFilters_1.watchlistOwnerScope)(req.user, { status: 'ACTIVE' })).lean(),
+        Portfolio_1.default.find((0, scopeFilters_1.portfolioOwnerScope)(req.user, {})).lean(),
+        AnalysisRun_1.default.find((0, scopeFilters_1.analysisOwnerScope)(req.user, {})).sort({ createdAt: -1 }).limit(100).lean(),
     ]);
     const opportunity = (0, calculatePortfolioOpportunityScore_1.calculatePortfolioOpportunityScore)({
         analyses: latestAnalyses.map((a) => ({
@@ -121,8 +122,8 @@ const createSavedAnalysis = async (req, res) => {
         return res.status(400).json({ error: 'Geçersiz propertyId' });
     }
     const [property, analysis] = await Promise.all([
-        PropertySubmission_1.default.findOne({ _id: propertyId, userId }).lean(),
-        AnalysisRun_1.default.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean(),
+        PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: propertyId })).lean(),
+        AnalysisRun_1.default.findOne((0, scopeFilters_1.analysisOwnerScope)(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean(),
     ]);
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });
@@ -160,12 +161,12 @@ const deleteSavedAnalysis = async (req, res) => {
 exports.deleteSavedAnalysis = deleteSavedAnalysis;
 const getWatchlist = async (req, res) => {
     const userId = userObjectId(req);
-    const rows = await Watchlist_1.default.find({ userId, status: 'ACTIVE' })
+    const rows = await Watchlist_1.default.find((0, scopeFilters_1.watchlistOwnerScope)(req.user, { status: 'ACTIVE' }))
         .sort({ createdAt: -1 })
         .populate('propertySubmissionId', 'addressText il ilce status')
         .lean();
     const enriched = await Promise.all(rows.map(async (row) => {
-        const latest = await AnalysisRun_1.default.findOne({ propertySubmissionId: row.propertySubmissionId?._id || row.propertySubmissionId, userId })
+        const latest = await AnalysisRun_1.default.findOne((0, scopeFilters_1.analysisOwnerScope)(req.user, { propertySubmissionId: row.propertySubmissionId?._id || row.propertySubmissionId }))
             .sort({ createdAt: -1 })
             .lean();
         return {
@@ -191,7 +192,7 @@ const createWatchlistItem = async (req, res) => {
     if (!propertyId || !mongoose_1.default.Types.ObjectId.isValid(propertyId)) {
         return res.status(400).json({ error: 'Geçersiz propertyId' });
     }
-    const property = await PropertySubmission_1.default.findOne({ _id: propertyId, userId }).lean();
+    const property = await PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: propertyId })).lean();
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });
     const created = await Watchlist_1.default.findOneAndUpdate({ userId, propertySubmissionId: property._id }, { $set: { status: 'ACTIVE' }, $setOnInsert: { userId, propertySubmissionId: property._id } }, { new: true, upsert: true }).lean();
@@ -209,7 +210,7 @@ exports.deleteWatchlistItem = deleteWatchlistItem;
 const getPortfolioSummary = async (req, res) => {
     const userId = userObjectId(req);
     const [portfolios, items] = await Promise.all([
-        Portfolio_1.default.find({ userId }).sort({ createdAt: -1 }).lean(),
+        Portfolio_1.default.find((0, scopeFilters_1.portfolioOwnerScope)(req.user, {})).sort({ createdAt: -1 }).lean(),
         PortfolioItem_1.default.find({ userId }).lean(),
     ]);
     const counts = {};

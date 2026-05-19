@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import GovernanceBadge from '../components/governance/GovernanceBadge';
+import UserScopedNotice from '../components/UserScopedNotice';
 
 interface Report {
   _id: string;
@@ -27,6 +28,7 @@ export default function Reports() {
   return (
     <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Raporlarım</h2>
+      <div className="mb-4"><UserScopedNotice /></div>
       <ul className="space-y-2">
         {reports.map(r => (
           <li key={r._id} className="border-b pb-3">

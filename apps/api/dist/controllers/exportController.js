@@ -10,6 +10,7 @@ const AnalysisRun_1 = __importDefault(require("../models/AnalysisRun"));
 const AnalysisExport_1 = __importDefault(require("../models/AnalysisExport"));
 const buildAnalysisExportPayload_1 = require("../services/exports/buildAnalysisExportPayload");
 const generateAnalysisReportData_1 = require("../services/exports/generateAnalysisReportData");
+const scopeFilters_1 = require("../utils/scopeFilters");
 function userObjectId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -20,8 +21,8 @@ const exportAnalysisByProperty = async (req, res) => {
         return res.status(400).json({ error: 'Geçersiz propertyId' });
     }
     const [property, analysis] = await Promise.all([
-        PropertySubmission_1.default.findOne({ _id: propertyId, userId }).lean(),
-        AnalysisRun_1.default.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean(),
+        PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(req.user, { _id: propertyId })).lean(),
+        AnalysisRun_1.default.findOne((0, scopeFilters_1.analysisOwnerScope)(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean(),
     ]);
     if (!property)
         return res.status(404).json({ error: 'Mülk bulunamadı' });

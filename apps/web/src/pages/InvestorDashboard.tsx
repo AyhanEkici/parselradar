@@ -46,6 +46,7 @@ import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillan
 import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
 import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
 import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
+import UserScopedNotice from '../components/UserScopedNotice';
 import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
 import StrategicDirectionCard from '../components/strategy/StrategicDirectionCard';
 import TerritorialRiskCard from '../components/execution/TerritorialRiskCard';
@@ -89,6 +90,8 @@ export default function InvestorDashboard() {
             <Link to="/investor/portfolio" className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-white">Portfolio</Link>
           </div>
         </div>
+
+        <UserScopedNotice />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-6">
           <InvestorSummaryCard label="Saved" value={summary.savedAnalysesCount || 0} />

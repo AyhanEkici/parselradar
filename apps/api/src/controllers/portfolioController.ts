@@ -8,14 +8,14 @@ import AnalysisRun from '../models/AnalysisRun';
 import { createPortfolioSnapshot } from '../services/portfolio/createPortfolioSnapshot';
 import { calculatePortfolioExposure } from '../services/portfolio/calculatePortfolioExposure';
 import { calculatePortfolioOpportunityScore } from '../services/portfolio/calculatePortfolioOpportunityScore';
+import { analysisOwnerScope, portfolioOwnerScope, propertyOwnerScope } from '../utils/scopeFilters';
 
 function userObjectId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
 }
 
 export const getPortfolios = async (req: AuthRequest, res: Response) => {
-  const userId = userObjectId(req);
-  const portfolios = await Portfolio.find({ userId }).sort({ createdAt: -1 }).lean();
+  const portfolios = await Portfolio.find(portfolioOwnerScope(req.user, {})).sort({ createdAt: -1 }).lean();
   return res.json(portfolios);
 };
 
@@ -30,16 +30,16 @@ export const createPortfolio = async (req: AuthRequest, res: Response) => {
 
 export const getPortfolioById = async (req: AuthRequest, res: Response) => {
   const userId = userObjectId(req);
-  const portfolio = await Portfolio.findOne({ _id: req.params.id, userId }).lean();
+  const portfolio = await Portfolio.findOne(portfolioOwnerScope(req.user, { _id: req.params.id })).lean();
   if (!portfolio) return res.status(404).json({ error: 'Portfolio bulunamadı' });
 
   const items = await PortfolioItem.find({ portfolioId: portfolio._id, userId }).lean();
   const propertyIds = items.map((i: any) => i.propertySubmissionId);
-  const properties = await PropertySubmission.find({ _id: { $in: propertyIds } }).lean();
+  const properties = await PropertySubmission.find(propertyOwnerScope(req.user, { _id: { $in: propertyIds } })).lean();
 
   const latestAnalyses = await Promise.all(
     propertyIds.map(async (propertyId: any) =>
-      AnalysisRun.findOne({ propertySubmissionId: propertyId, userId }).sort({ createdAt: -1 }).lean()
+      AnalysisRun.findOne(analysisOwnerScope(req.user, { propertySubmissionId: propertyId })).sort({ createdAt: -1 }).lean()
     )
   );
 
@@ -104,7 +104,7 @@ export const getPortfolioById = async (req: AuthRequest, res: Response) => {
 
 export const addPortfolioItem = async (req: AuthRequest, res: Response) => {
   const userId = userObjectId(req);
-  const portfolio = await Portfolio.findOne({ _id: req.params.id, userId }).lean();
+  const portfolio = await Portfolio.findOne(portfolioOwnerScope(req.user, { _id: req.params.id })).lean();
   if (!portfolio) return res.status(404).json({ error: 'Portfolio bulunamadı' });
 
   const { propertyId, allocationWeight, thesis } = req.body as {
@@ -117,7 +117,7 @@ export const addPortfolioItem = async (req: AuthRequest, res: Response) => {
     return res.status(400).json({ error: 'Geçersiz propertyId' });
   }
 
-  const property = await PropertySubmission.findOne({ _id: propertyId, userId }).lean();
+  const property = await PropertySubmission.findOne(propertyOwnerScope(req.user, { _id: propertyId })).lean();
   if (!property) return res.status(404).json({ error: 'Mülk bulunamadı' });
 
   const item = await PortfolioItem.findOneAndUpdate(
@@ -141,7 +141,7 @@ export const addPortfolioItem = async (req: AuthRequest, res: Response) => {
 
 export const deletePortfolioItem = async (req: AuthRequest, res: Response) => {
   const userId = userObjectId(req);
-  const portfolio = await Portfolio.findOne({ _id: req.params.id, userId }).lean();
+  const portfolio = await Portfolio.findOne(portfolioOwnerScope(req.user, { _id: req.params.id })).lean();
   if (!portfolio) return res.status(404).json({ error: 'Portfolio bulunamadı' });
 
   const deleted = await PortfolioItem.findOneAndDelete({

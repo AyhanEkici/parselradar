@@ -13,10 +13,11 @@ const CreditLedger_1 = __importDefault(require("../models/CreditLedger"));
 const path_1 = __importDefault(require("path"));
 const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
+const scopeFilters_1 = require("../utils/scopeFilters");
 const PDF_COST = 5;
 const purchasePDF = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
-    const run = await AnalysisRun_1.default.findOne({ _id: req.params.analysisRunId, userId: user._id });
+    const run = await AnalysisRun_1.default.findOne((0, scopeFilters_1.analysisOwnerScope)(user, { _id: req.params.analysisRunId }));
     if (!run)
         return res.status(404).json({ error: 'Analiz bulunamadı' });
     const credits = await (0, credits_1.getUserCredits)(user._id);
@@ -41,7 +42,7 @@ const purchasePDF = async (req, res) => {
 exports.purchasePDF = purchasePDF;
 const getReports = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
-    const reports = await Report_1.default.find({ userId: user._id }).lean();
+    const reports = await Report_1.default.find((0, scopeFilters_1.reportOwnerScope)(user, {})).lean();
     const withGovernance = await Promise.all(reports.map(async (report) => {
         const run = await AnalysisRun_1.default.findById(report.analysisRunId).lean();
         if (!run)
@@ -117,7 +118,7 @@ const getReports = async (req, res) => {
 exports.getReports = getReports;
 const downloadReport = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
-    const report = await Report_1.default.findOne({ _id: req.params.id, userId: user._id });
+    const report = await Report_1.default.findOne((0, scopeFilters_1.reportOwnerScope)(user, { _id: req.params.id }));
     if (!report)
         return res.status(404).json({ error: 'Rapor bulunamadı' });
     res.download(report.pdfPath);

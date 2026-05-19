@@ -31,6 +31,7 @@ import { buildAutonomyIntelligence } from '../services/autonomy/buildAutonomyInt
 import { territorialOperatingSystem } from '../services/operatingSystem/territorialOperatingSystem';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
+import { analysisOwnerScope, propertyOwnerScope } from '../utils/scopeFilters';
 
 const COSTS = { quick: 1 };
 
@@ -330,8 +331,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
 
   const normalizedUserId = normalizeUserId(userId);
   const property = await PropertySubmission.findOne({
-    _id: req.params.propertyId,
-    userId: normalizedUserId,
+    ...propertyOwnerScope(req.user, { _id: req.params.propertyId }),
   });
 
   if (!property) {
@@ -341,8 +341,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
   const force = req.query.force === '1' || req.query.force === 'true';
 
   const existingRun = await AnalysisRun.findOne({
-    propertySubmissionId: property._id,
-    userId: normalizedUserId,
+    ...analysisOwnerScope(req.user, { propertySubmissionId: property._id }),
     productType: options.productType,
   }).sort({ createdAt: -1 });
 
