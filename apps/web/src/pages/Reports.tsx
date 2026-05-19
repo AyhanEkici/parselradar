@@ -11,6 +11,8 @@ interface Report {
   developmentProbability?: string;
   ingestionComplianceState?: string;
   noFakeActiveProof?: boolean;
+  monitoringState?: string;
+  opportunityLevel?: string;
 }
 
 export default function Reports() {
@@ -36,6 +38,8 @@ export default function Reports() {
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Dev Prob: {r.developmentProbability || '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Ingestion: {r.ingestionComplianceState || '-'}</span>
               <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">No fake ACTIVE: {r.noFakeActiveProof ? 'PASS' : 'FAIL'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Monitoring: {r.monitoringState || '-'}</span>
+              <span className="rounded border border-slate-200 bg-slate-50 px-2 py-1">Opportunity: {r.opportunityLevel || '-'}</span>
             </div>
           </li>
         ))}

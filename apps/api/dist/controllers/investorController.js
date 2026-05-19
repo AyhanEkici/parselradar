@@ -90,6 +90,7 @@ const getInvestorDashboard = async (req, res) => {
         })
         : null;
     const ingestionSnapshot = latest?.fullAnalysis?.ingestionGovernance || null;
+    const operationalSnapshot = latest?.fullAnalysis?.operationalIntelligence || null;
     return res.json({
         summary,
         confidence: {
@@ -99,6 +100,7 @@ const getInvestorDashboard = async (req, res) => {
         governanceSnapshot,
         territorialSnapshot,
         ingestionSnapshot,
+        operationalSnapshot,
     });
 };
 exports.getInvestorDashboard = getInvestorDashboard;

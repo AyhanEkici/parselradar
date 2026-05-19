@@ -30,6 +30,7 @@ const alerts_1 = require("../services/alerts");
 const reportGovernanceEnvelope_1 = require("../services/reporting/reportGovernanceEnvelope");
 const buildTerritorialIntelligence_1 = require("../services/intelligence/buildTerritorialIntelligence");
 const ingestionOrchestrator_1 = require("../services/ingestion/ingestionOrchestrator");
+const buildOperationalIntelligence_1 = require("../services/monitoring/buildOperationalIntelligence");
 const auditLog_1 = require("../utils/auditLog");
 const credits_1 = require("../utils/credits");
 const COSTS = { quick: 1 };
@@ -134,6 +135,40 @@ function toResponseFromRun(run, reused) {
             riskFlags: run.riskFlags || [],
             recommendations: full.recommendations || [],
         });
+    const operationalIntelligence = full.operationalIntelligence ||
+        (0, buildOperationalIntelligence_1.buildOperationalIntelligence)({
+            nowIso: run.cacheTimestamp ? new Date(run.cacheTimestamp).toISOString() : new Date().toISOString(),
+            propertyId: String(run.propertySubmissionId || ''),
+            source: 'analysis_runtime_v27',
+            freshnessScore: full.freshnessScore,
+            confidenceScore: run.confidence,
+            evidenceLineage: full.ingestionGovernance?.provenance?.lineage || governanceEnvelope.evidenceTrace || [],
+            governanceState: full.ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+            ingestionSignals: full.ingestionSignals || [],
+            trendSignals: full.trendSignals || [],
+            staleFlags: full.staleFlags || [],
+            connectorStates: full.ingestionGovernance?.connectors || [],
+            historicalRecords: full.operationalIntelligence?.history?.archive?.records || [],
+            pricingDeltaRatio: full.pricingDeltaRatio,
+            velocityScore: full.trendVelocity?.velocityScore,
+            liquidityScore: full.liquidityTrend?.liquidityTrendScore,
+            speculativeHeat: full.territorialIntelligence?.speculativeRisk?.score,
+            planningSignals: full.developmentSignals || [],
+            demandSeries: [full.opportunityScore || 0, full.marketMomentum || 0, full.districtHeat || 0],
+            opportunityScore: full.opportunityScore,
+            clusterStrength: full.clusterStrength,
+            infrastructurePressure: full.territorialIntelligence?.infrastructurePressure?.score,
+            roadAccessScore: full.roadAccessScore,
+            municipalitySignalCount: (full.strategicLocationSignals || []).length,
+            planningProbability: full.territorialIntelligence?.planningProbability?.score,
+            developerInterest: full.developerROI?.developerInterestScore,
+            shiftScore: full.trendVelocity?.velocityScore,
+            growthScore: full.growthPotential?.score,
+            developmentProbability: full.territorialIntelligence?.developmentProbability?.score,
+            pressureScore: full.territorialIntelligence?.infrastructurePressure?.score,
+            municipalitySignalScore: full.territorialIntelligence?.planningLayer?.score,
+            suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+        });
     return {
         id: run._id,
         score: run.score,
@@ -221,6 +256,7 @@ function toResponseFromRun(run, reused) {
         connectorExecutions: ingestionGovernance?.connectors,
         ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
         noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
+        operationalIntelligence,
         reused,
         summary: preview.summary || '',
         createdAt: run.createdAt,
@@ -513,6 +549,45 @@ async function runAnalysis(req, res, options) {
             riskFlags: engine.riskFlags,
             recommendations: engine.recommendations,
         });
+        const operationalIntelligence = (0, buildOperationalIntelligence_1.buildOperationalIntelligence)({
+            nowIso: new Date().toISOString(),
+            propertyId: String(property._id),
+            source: 'analysis_runtime_v27',
+            freshnessScore,
+            confidenceScore: engine.confidence,
+            evidenceLineage: ingestionGovernance?.provenance?.lineage || [],
+            governanceState: ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+            ingestionSignals,
+            trendSignals,
+            staleFlags: refreshPlan.staleFlags,
+            connectorStates: ingestionGovernance?.connectors || [],
+            historicalRecords: (ingestionGovernance?.provenance?.lineage || []).map((item, idx) => ({
+                at: item?.observedAt || new Date(Date.now() - idx * 60 * 60 * 1000).toISOString(),
+                source: item?.source || 'unknown',
+                label: item?.status || 'unknown',
+                value: idx,
+            })),
+            pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+            velocityScore: trendSnapshots.velocity?.velocityScore,
+            liquidityScore: trendSnapshots.liquidity?.liquidityTrendScore,
+            speculativeHeat: territorialIntelligence?.speculativeRisk?.confidence,
+            planningSignals: developmentIntelligence.developmentSignals || [],
+            demandSeries: [signalNetwork.opportunityScore, signalNetwork.marketMomentum, signalNetwork.districtHeat],
+            opportunityScore: signalNetwork.opportunityScore,
+            clusterStrength: spatialIntelligence.clusterStrength,
+            infrastructurePressure: territorialIntelligence?.infrastructurePressure?.confidence,
+            roadAccessScore: geoIntelligence.roadAccessScore,
+            municipalitySignalCount: geoIntelligence.strategicLocationSignals?.length || 0,
+            planningProbability: territorialIntelligence?.planningProbability?.confidence,
+            developerInterest: developmentIntelligence.developerROI?.score,
+            shiftScore: trendSnapshots.velocity?.velocityScore,
+            growthScore: geoIntelligence.growthPotential?.growthScore,
+            developmentProbability: territorialIntelligence?.developmentProbability?.confidence,
+            pressureScore: territorialIntelligence?.infrastructurePressure?.confidence,
+            municipalitySignalScore: territorialIntelligence?.planningLayer?.confidence,
+            suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+        });
+        ingestionSignals.push(`v27_monitoring_${String(operationalIntelligence.monitoring?.state || 'stable').toLowerCase()}`);
         property.set({
             lastSpatialRefresh: new Date(),
             lastMarketRefresh: new Date(),
@@ -626,6 +701,7 @@ async function runAnalysis(req, res, options) {
                 connectorExecutions: ingestionGovernance.connectors,
                 ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
                 noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
+                operationalIntelligence,
             },
         });
         if (options.productType === 'QUICK_SCORE') {

@@ -101,6 +101,8 @@ export const getReports = async (req: AuthRequest, res: Response) => {
         developmentProbability: territorialIntelligence.developmentProbability?.value,
         ingestionComplianceState: full.ingestionCompliance?.complianceState,
         noFakeActiveProof: full.noFakeActiveProof,
+        monitoringState: full.operationalIntelligence?.monitoring?.state,
+        opportunityLevel: full.operationalIntelligence?.opportunities?.strategicOpportunity?.level,
       };
     })
   );

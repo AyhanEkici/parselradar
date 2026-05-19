@@ -67,15 +67,17 @@ app.use(requestIdMiddleware);
 
 // Diagnostic build info endpoint (JSON only)
 app.get('/__buildinfo', (_req, res) => {
-  const runtimeGitSha =
+  const runtimeGitShaCandidate =
     process.env.GIT_SHA ||
     process.env.VERCEL_GIT_COMMIT_SHA ||
     process.env.RAILWAY_GIT_COMMIT_SHA ||
-    process.env.GITHUB_SHA ||
-    BUILD_INFO.gitSha;
+    process.env.GITHUB_SHA;
+  const runtimeGitSha = runtimeGitShaCandidate || BUILD_INFO.gitSha;
+  const gitShaSource = runtimeGitShaCandidate ? 'runtime_env' : 'build_info';
 
   res.json({
     gitSha: runtimeGitSha,
+    gitShaSource,
     buildGitSha: BUILD_INFO.gitSha,
     buildTime: BUILD_INFO.buildTime,
     platformVersion: BUILD_INFO.platformVersion,

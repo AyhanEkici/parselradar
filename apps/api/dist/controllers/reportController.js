@@ -101,6 +101,8 @@ const getReports = async (req, res) => {
             developmentProbability: territorialIntelligence.developmentProbability?.value,
             ingestionComplianceState: full.ingestionCompliance?.complianceState,
             noFakeActiveProof: full.noFakeActiveProof,
+            monitoringState: full.operationalIntelligence?.monitoring?.state,
+            opportunityLevel: full.operationalIntelligence?.opportunities?.strategicOpportunity?.level,
         };
     }));
     res.json(withGovernance);

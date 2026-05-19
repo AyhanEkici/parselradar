@@ -17,6 +17,16 @@ import IngestionFreshnessCard from '../components/ingestion/IngestionFreshnessCa
 import IngestionAuditCard from '../components/ingestion/IngestionAuditCard';
 import SourceTrustCard from '../components/provenance/SourceTrustCard';
 import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
+import TerritorialMonitoringCard from '../components/monitoring/TerritorialMonitoringCard';
+import AnomalyDetectionCard from '../components/monitoring/AnomalyDetectionCard';
+import EvolutionTimelineCard from '../components/timeline/EvolutionTimelineCard';
+import ForecastDirectionCard from '../components/timeline/ForecastDirectionCard';
+import HistoricalEvidenceCard from '../components/timeline/HistoricalEvidenceCard';
+import RegionalTransformationCard from '../components/evolution/RegionalTransformationCard';
+import InfrastructureExpansionCard from '../components/evolution/InfrastructureExpansionCard';
+import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
+import OpportunitySignalCard from '../components/opportunities/OpportunitySignalCard';
+import StrategicOpportunityCard from '../components/opportunities/StrategicOpportunityCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -35,6 +45,7 @@ export default function InvestorDashboard() {
   const governanceSnapshot = data.governanceSnapshot || {};
   const territorialSnapshot = data.territorialSnapshot || {};
   const ingestionSnapshot = data.ingestionSnapshot || {};
+  const operationalSnapshot = data.operationalSnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -98,6 +109,19 @@ export default function InvestorDashboard() {
           <IngestionAuditCard auditTrail={ingestionSnapshot.auditTrail} />
           <SourceTrustCard trust={ingestionSnapshot.trust} />
           <GovernanceRestrictionCard compliance={ingestionSnapshot.compliance} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <TerritorialMonitoringCard monitoring={operationalSnapshot.monitoring} />
+          <EvolutionTimelineCard timeline={operationalSnapshot.parcelTimeline} />
+          <OpportunitySignalCard opportunity={operationalSnapshot.opportunities?.undervaluedCluster} />
+          <StrategicOpportunityCard strategic={operationalSnapshot.opportunities?.strategicOpportunity} />
+          <AnomalyDetectionCard anomaly={operationalSnapshot.anomalies?.speculativeAnomaly} />
+          <RegionalTransformationCard transformation={operationalSnapshot.regionalTransformation} />
+          <InfrastructureExpansionCard expansion={operationalSnapshot.infrastructureHistory} />
+          <InvestorAlertCard alert={operationalSnapshot.alerts?.investorAlert} />
+          <ForecastDirectionCard forecast={operationalSnapshot.history?.regionalForecast} />
+          <HistoricalEvidenceCard archive={operationalSnapshot.history?.archive} />
         </div>
       </div>
     </div>

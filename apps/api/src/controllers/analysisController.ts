@@ -26,6 +26,7 @@ import { buildAlertNetwork } from '../services/alerts';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 import { ingestionOrchestrator } from '../services/ingestion/ingestionOrchestrator';
+import { buildOperationalIntelligence } from '../services/monitoring/buildOperationalIntelligence';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -141,6 +142,41 @@ function toResponseFromRun(run: any, reused: boolean) {
       riskFlags: run.riskFlags || [],
       recommendations: full.recommendations || [],
     });
+  const operationalIntelligence =
+    full.operationalIntelligence ||
+    buildOperationalIntelligence({
+      nowIso: run.cacheTimestamp ? new Date(run.cacheTimestamp).toISOString() : new Date().toISOString(),
+      propertyId: String(run.propertySubmissionId || ''),
+      source: 'analysis_runtime_v27',
+      freshnessScore: full.freshnessScore,
+      confidenceScore: run.confidence,
+      evidenceLineage: full.ingestionGovernance?.provenance?.lineage || governanceEnvelope.evidenceTrace || [],
+      governanceState: full.ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      ingestionSignals: full.ingestionSignals || [],
+      trendSignals: full.trendSignals || [],
+      staleFlags: full.staleFlags || [],
+      connectorStates: full.ingestionGovernance?.connectors || [],
+      historicalRecords: full.operationalIntelligence?.history?.archive?.records || [],
+      pricingDeltaRatio: full.pricingDeltaRatio,
+      velocityScore: full.trendVelocity?.velocityScore,
+      liquidityScore: full.liquidityTrend?.liquidityTrendScore,
+      speculativeHeat: full.territorialIntelligence?.speculativeRisk?.score,
+      planningSignals: full.developmentSignals || [],
+      demandSeries: [full.opportunityScore || 0, full.marketMomentum || 0, full.districtHeat || 0],
+      opportunityScore: full.opportunityScore,
+      clusterStrength: full.clusterStrength,
+      infrastructurePressure: full.territorialIntelligence?.infrastructurePressure?.score,
+      roadAccessScore: full.roadAccessScore,
+      municipalitySignalCount: (full.strategicLocationSignals || []).length,
+      planningProbability: full.territorialIntelligence?.planningProbability?.score,
+      developerInterest: full.developerROI?.developerInterestScore,
+      shiftScore: full.trendVelocity?.velocityScore,
+      growthScore: full.growthPotential?.score,
+      developmentProbability: full.territorialIntelligence?.developmentProbability?.score,
+      pressureScore: full.territorialIntelligence?.infrastructurePressure?.score,
+      municipalitySignalScore: full.territorialIntelligence?.planningLayer?.score,
+      suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+    });
 
   return {
     id: run._id,
@@ -229,6 +265,7 @@ function toResponseFromRun(run: any, reused: boolean) {
     connectorExecutions: ingestionGovernance?.connectors,
     ingestionFreshnessEnvelope: ingestionGovernance?.cacheEnvelope,
     noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
+    operationalIntelligence,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -569,6 +606,47 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       recommendations: engine.recommendations,
     });
 
+    const operationalIntelligence = buildOperationalIntelligence({
+      nowIso: new Date().toISOString(),
+      propertyId: String(property._id),
+      source: 'analysis_runtime_v27',
+      freshnessScore,
+      confidenceScore: engine.confidence,
+      evidenceLineage: ingestionGovernance?.provenance?.lineage || [],
+      governanceState: ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      ingestionSignals,
+      trendSignals,
+      staleFlags: refreshPlan.staleFlags,
+      connectorStates: ingestionGovernance?.connectors || [],
+      historicalRecords: (ingestionGovernance?.provenance?.lineage || []).map((item: any, idx: number) => ({
+        at: item?.observedAt || new Date(Date.now() - idx * 60 * 60 * 1000).toISOString(),
+        source: item?.source || 'unknown',
+        label: item?.status || 'unknown',
+        value: idx,
+      })),
+      pricingDeltaRatio: comparableMarket.pricingDeltaRatio,
+      velocityScore: trendSnapshots.velocity?.velocityScore,
+      liquidityScore: trendSnapshots.liquidity?.liquidityTrendScore,
+      speculativeHeat: territorialIntelligence?.speculativeRisk?.confidence,
+      planningSignals: developmentIntelligence.developmentSignals || [],
+      demandSeries: [signalNetwork.opportunityScore, signalNetwork.marketMomentum, signalNetwork.districtHeat],
+      opportunityScore: signalNetwork.opportunityScore,
+      clusterStrength: spatialIntelligence.clusterStrength,
+      infrastructurePressure: territorialIntelligence?.infrastructurePressure?.confidence,
+      roadAccessScore: geoIntelligence.roadAccessScore,
+      municipalitySignalCount: geoIntelligence.strategicLocationSignals?.length || 0,
+      planningProbability: territorialIntelligence?.planningProbability?.confidence,
+      developerInterest: developmentIntelligence.developerROI?.score,
+      shiftScore: trendSnapshots.velocity?.velocityScore,
+      growthScore: geoIntelligence.growthPotential?.growthScore,
+      developmentProbability: territorialIntelligence?.developmentProbability?.confidence,
+      pressureScore: territorialIntelligence?.infrastructurePressure?.confidence,
+      municipalitySignalScore: territorialIntelligence?.planningLayer?.confidence,
+      suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+    });
+
+    ingestionSignals.push(`v27_monitoring_${String(operationalIntelligence.monitoring?.state || 'stable').toLowerCase()}`);
+
     property.set({
       lastSpatialRefresh: new Date(),
       lastMarketRefresh: new Date(),
@@ -684,6 +762,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         connectorExecutions: ingestionGovernance.connectors,
         ingestionFreshnessEnvelope: ingestionGovernance.cacheEnvelope,
         noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
+        operationalIntelligence,
       },
     });
 

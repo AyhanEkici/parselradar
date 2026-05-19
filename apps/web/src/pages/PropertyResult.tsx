@@ -22,6 +22,16 @@ import SourceLineageCard from '../components/provenance/SourceLineageCard';
 import SourceTrustCard from '../components/provenance/SourceTrustCard';
 import LegalClassificationCard from '../components/legal/LegalClassificationCard';
 import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
+import TerritorialMonitoringCard from '../components/monitoring/TerritorialMonitoringCard';
+import EvolutionTimelineCard from '../components/timeline/EvolutionTimelineCard';
+import OpportunitySignalCard from '../components/opportunities/OpportunitySignalCard';
+import AnomalyDetectionCard from '../components/monitoring/AnomalyDetectionCard';
+import StrategicOpportunityCard from '../components/opportunities/StrategicOpportunityCard';
+import RegionalTransformationCard from '../components/evolution/RegionalTransformationCard';
+import InfrastructureExpansionCard from '../components/evolution/InfrastructureExpansionCard';
+import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
+import ForecastDirectionCard from '../components/timeline/ForecastDirectionCard';
+import HistoricalEvidenceCard from '../components/timeline/HistoricalEvidenceCard';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -73,6 +83,16 @@ export default function PropertyResult() {
       quota?: Array<{ connectorKey: string; used: number; quota: number; nearLimit: boolean }>;
       cacheEnvelope?: { freshnessScore?: number; cacheState?: string; generatedAt?: string };
       noFakeActiveProof?: boolean;
+    };
+    operationalIntelligence?: {
+      monitoring?: any;
+      parcelTimeline?: any;
+      opportunities?: { strategicOpportunity?: any; undervaluedCluster?: any };
+      anomalies?: { speculativeAnomaly?: any };
+      alerts?: { investorAlert?: any };
+      regionalTransformation?: any;
+      infrastructureHistory?: any;
+      history?: { archive?: any; regionalForecast?: any };
     };
   }
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -174,6 +194,20 @@ export default function PropertyResult() {
                 <LegalClassificationCard disclosures={result.ingestionGovernance.disclosures} />
                 <GovernanceRestrictionCard compliance={result.ingestionGovernance.compliance} />
               </div>
+            </div>
+          )}
+          {result.operationalIntelligence && (
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              <TerritorialMonitoringCard monitoring={result.operationalIntelligence.monitoring} />
+              <EvolutionTimelineCard timeline={result.operationalIntelligence.parcelTimeline} />
+              <OpportunitySignalCard opportunity={result.operationalIntelligence.opportunities?.undervaluedCluster} />
+              <StrategicOpportunityCard strategic={result.operationalIntelligence.opportunities?.strategicOpportunity} />
+              <AnomalyDetectionCard anomaly={result.operationalIntelligence.anomalies?.speculativeAnomaly} />
+              <RegionalTransformationCard transformation={result.operationalIntelligence.regionalTransformation} />
+              <InfrastructureExpansionCard expansion={result.operationalIntelligence.infrastructureHistory} />
+              <InvestorAlertCard alert={result.operationalIntelligence.alerts?.investorAlert} />
+              <ForecastDirectionCard forecast={result.operationalIntelligence.history?.regionalForecast} />
+              <HistoricalEvidenceCard archive={result.operationalIntelligence.history?.archive} />
             </div>
           )}
         </div>

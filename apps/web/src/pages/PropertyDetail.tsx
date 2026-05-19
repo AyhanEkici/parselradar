@@ -85,6 +85,16 @@ import SourceLineageCard from '../components/provenance/SourceLineageCard';
 import SourceTrustCard from '../components/provenance/SourceTrustCard';
 import LegalClassificationCard from '../components/legal/LegalClassificationCard';
 import GovernanceRestrictionCard from '../components/legal/GovernanceRestrictionCard';
+import TerritorialMonitoringCard from '../components/monitoring/TerritorialMonitoringCard';
+import AnomalyDetectionCard from '../components/monitoring/AnomalyDetectionCard';
+import EvolutionTimelineCard from '../components/timeline/EvolutionTimelineCard';
+import ForecastDirectionCard from '../components/timeline/ForecastDirectionCard';
+import HistoricalEvidenceCard from '../components/timeline/HistoricalEvidenceCard';
+import RegionalTransformationCard from '../components/evolution/RegionalTransformationCard';
+import InfrastructureExpansionCard from '../components/evolution/InfrastructureExpansionCard';
+import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
+import OperationalOpportunitySignalCard from '../components/opportunities/OpportunitySignalCard';
+import StrategicOpportunityCard from '../components/opportunities/StrategicOpportunityCard';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -537,6 +547,40 @@ export default function PropertyDetail() {
         quota?: Array<{ connectorKey: string; used: number; quota: number; nearLimit: boolean }>;
         cacheEnvelope?: { freshnessScore?: number; cacheState?: string; generatedAt?: string };
         noFakeActiveProof?: boolean;
+      };
+      operationalIntelligence?: {
+        monitoring?: any;
+        parcelTimeline?: any;
+        opportunities?: {
+          strategicOpportunity?: any;
+          undervaluedCluster?: any;
+          infrastructureUpside?: any;
+          municipalityExpansion?: any;
+          developerPressure?: any;
+        };
+        anomalies?: {
+          speculativeAnomaly?: any;
+          pricingAnomaly?: any;
+          velocityAnomaly?: any;
+          planningAnomaly?: any;
+          demandAnomaly?: any;
+        };
+        alerts?: {
+          investorAlert?: any;
+          zoningAlert?: any;
+          infrastructureAlert?: any;
+          speculativeAlert?: any;
+          shiftAlert?: any;
+        };
+        regionalTransformation?: any;
+        infrastructureHistory?: any;
+        history?: {
+          archive?: any;
+          regionalForecast?: any;
+          parcelForecast?: any;
+          infrastructureForecast?: any;
+          municipalForecast?: any;
+        };
       };
       createdAt: string;
       previewSummary?: Record<string, unknown>;
@@ -1403,6 +1447,29 @@ export default function PropertyDetail() {
                   <div className="xl:col-span-3"><SourceTrustCard trust={latestAnalysis.ingestionGovernance.trust} /></div>
                   <div className="xl:col-span-3"><LegalClassificationCard disclosures={latestAnalysis.ingestionGovernance.disclosures} /></div>
                   <div className="xl:col-span-3"><GovernanceRestrictionCard compliance={latestAnalysis.ingestionGovernance.compliance} /></div>
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.operationalIntelligence && (
+              <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50/40 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-emerald-900">Operational Intelligence Layer</h3>
+                  <p className="text-xs text-emerald-700">
+                    Continuous monitoring, deterministic temporal tracking, governed alert routing, and strategic opportunity surfacing.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3"><TerritorialMonitoringCard monitoring={latestAnalysis.operationalIntelligence.monitoring} /></div>
+                  <div className="xl:col-span-3"><EvolutionTimelineCard timeline={latestAnalysis.operationalIntelligence.parcelTimeline} /></div>
+                  <div className="xl:col-span-3"><OperationalOpportunitySignalCard opportunity={latestAnalysis.operationalIntelligence.opportunities?.undervaluedCluster} /></div>
+                  <div className="xl:col-span-3"><StrategicOpportunityCard strategic={latestAnalysis.operationalIntelligence.opportunities?.strategicOpportunity} /></div>
+                  <div className="xl:col-span-3"><AnomalyDetectionCard anomaly={latestAnalysis.operationalIntelligence.anomalies?.speculativeAnomaly} /></div>
+                  <div className="xl:col-span-3"><RegionalTransformationCard transformation={latestAnalysis.operationalIntelligence.regionalTransformation} /></div>
+                  <div className="xl:col-span-3"><InfrastructureExpansionCard expansion={latestAnalysis.operationalIntelligence.infrastructureHistory} /></div>
+                  <div className="xl:col-span-3"><InvestorAlertCard alert={latestAnalysis.operationalIntelligence.alerts?.investorAlert} /></div>
+                  <div className="xl:col-span-3"><ForecastDirectionCard forecast={latestAnalysis.operationalIntelligence.history?.regionalForecast} /></div>
+                  <div className="xl:col-span-3"><HistoricalEvidenceCard archive={latestAnalysis.operationalIntelligence.history?.archive} /></div>
                 </div>
               </div>
             )}

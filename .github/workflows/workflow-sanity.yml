@@ -33,5 +33,10 @@ jobs:
           -d "{extends: default, rules: {line-length: disable, truthy: disable, comments: disable}}"
           .github/workflows
 
+      - name: Install actionlint
+        run: |
+          curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash
+          sudo mv ./actionlint /usr/local/bin/actionlint
+
       - name: Actionlint
-        uses: reviewdog/actionlint@v1
+        run: actionlint -color

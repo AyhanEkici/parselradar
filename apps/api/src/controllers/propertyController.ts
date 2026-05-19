@@ -243,6 +243,7 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
       connectorExecutions: full.connectorExecutions || [],
       ingestionFreshnessEnvelope: full.ingestionFreshnessEnvelope,
       noFakeActiveProof: full.noFakeActiveProof,
+      operationalIntelligence: full.operationalIntelligence,
     };
   });
 

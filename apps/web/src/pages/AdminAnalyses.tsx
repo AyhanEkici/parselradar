@@ -52,6 +52,10 @@ interface Analysis {
       complianceState?: string;
     };
     noFakeActiveProof?: boolean;
+    operationalIntelligence?: {
+      monitoring?: { state?: string };
+      opportunities?: { strategicOpportunity?: { level?: string } };
+    };
   };
 }
 
@@ -129,6 +133,7 @@ export default function AdminAnalyses() {
                 <AdminTh>Governance</AdminTh>
                 <AdminTh>Territorial</AdminTh>
                 <AdminTh>Ingestion</AdminTh>
+                <AdminTh>Operational</AdminTh>
                 <AdminTh>Property</AdminTh>
                 <AdminTh>User</AdminTh>
                 <AdminTh>Oluşturulma</AdminTh>
@@ -166,6 +171,12 @@ export default function AdminAnalyses() {
                     <div className="space-y-1 text-xs text-slate-600">
                       <div>Compliance: {a.fullAnalysis?.ingestionCompliance?.complianceState || '-'}</div>
                       <div>No fake ACTIVE: {a.fullAnalysis?.noFakeActiveProof ? 'PASS' : 'FAIL'}</div>
+                    </div>
+                  </AdminTd>
+                  <AdminTd>
+                    <div className="space-y-1 text-xs text-slate-600">
+                      <div>Monitoring: {a.fullAnalysis?.operationalIntelligence?.monitoring?.state || '-'}</div>
+                      <div>Opportunity: {a.fullAnalysis?.operationalIntelligence?.opportunities?.strategicOpportunity?.level || '-'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd className="break-words">

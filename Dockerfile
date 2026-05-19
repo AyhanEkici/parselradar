@@ -1,4 +1,4 @@
-﻿FROM node:20-alpine3.21
+﻿FROM node:20-alpine3.22
 
 WORKDIR /app
 
@@ -29,5 +29,7 @@ WORKDIR /app/apps/api
 ENV NODE_ENV=production
 
 USER appuser
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://127.0.0.1:${PORT:-3000}/health/live > /dev/null || exit 1
 
 CMD ["npm", "start"]

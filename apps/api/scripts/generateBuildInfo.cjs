@@ -34,7 +34,7 @@ function main() {
   gitSha: ${JSON.stringify(gitSha)},
   buildTime: ${JSON.stringify(buildTime)},
   platformVersion: "ParselRadar",
-  routeVersion: "admin_observability_v2",
+  routeVersion: "operational_intelligence_v27",
 } as const);
 `;
 
