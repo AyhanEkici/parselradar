@@ -61,6 +61,7 @@ const getPortfolioById = async (req, res) => {
                     analysisVersion: analysis.analysisVersion || analysis.fullAnalysis?.analysisVersion,
                     autonomyIntelligence: analysis.fullAnalysis?.autonomyIntelligence || null,
                     operationalIntelligence: analysis.fullAnalysis?.operationalIntelligence || null,
+                    executionOperatingSystem: analysis.fullAnalysis?.executionOperatingSystem || null,
                     ingestionGovernance: analysis.fullAnalysis?.ingestionGovernance || null,
                 }
                 : null,

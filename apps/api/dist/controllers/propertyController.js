@@ -242,6 +242,7 @@ const getPropertyById = async (req, res) => {
             noFakeActiveProof: full.noFakeActiveProof,
             operationalIntelligence: full.operationalIntelligence,
             autonomyIntelligence: full.autonomyIntelligence,
+            executionOperatingSystem: full.executionOperatingSystem,
         };
     });
     const latestByType = (type, altType) => enrichedAnalyses.find((a) => a.productType === type || (altType ? a.productType === altType : false)) || null;

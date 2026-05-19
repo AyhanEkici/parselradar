@@ -107,6 +107,9 @@ const getReports = async (req, res) => {
             reviewQueueDepth: full.autonomyIntelligence?.operations?.reviewQueue?.queueDepth,
             suppressionActiveRules: full.autonomyIntelligence?.operations?.suppression?.activeCount,
             cadenceMinutes: full.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes,
+            executionReadiness: full.executionOperatingSystem?.executionReadiness,
+            executionDeterministic: full.executionOperatingSystem?.deterministic,
+            executionGovernanceState: full.executionOperatingSystem?.governanceState,
         };
     }));
     res.json(withGovernance);

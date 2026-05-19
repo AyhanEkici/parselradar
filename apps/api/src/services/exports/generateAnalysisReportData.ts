@@ -73,6 +73,7 @@ export function generateAnalysisReportData(input: {
     noFakeActiveProof: analysis.noFakeActiveProof,
     operationalIntelligence: analysis.operationalIntelligence || null,
     autonomyIntelligence: analysis.autonomyIntelligence || null,
+    executionOperatingSystem: analysis.executionOperatingSystem || null,
     recommendations: analysis.recommendations || [],
     generatedAt: new Date().toISOString(),
   };

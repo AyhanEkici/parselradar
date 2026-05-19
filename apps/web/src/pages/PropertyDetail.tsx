@@ -114,6 +114,16 @@ import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillan
 import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
 import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
 import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
+import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
+import StrategicDirectionCard from '../components/strategy/StrategicDirectionCard';
+import TerritorialRiskCard from '../components/execution/TerritorialRiskCard';
+import SimulationOutcomeCard from '../components/simulation/SimulationOutcomeCard';
+import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
+import StrategicExposureCard from '../components/strategy/StrategicExposureCard';
+import ExecutionConstraintCard from '../components/execution/ExecutionConstraintCard';
+import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
+import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
+import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
 
 // Document Modal Component
 const DocumentModal = ({
@@ -610,6 +620,7 @@ export default function PropertyDetail() {
         prioritization?: { governedEscalationQueue?: any; opportunityMatrix?: any };
         operations?: { reviewQueue?: any; suppression?: any; degradation?: any; controlPanel?: any };
       };
+      executionOperatingSystem?: any;
       createdAt: string;
       previewSummary?: Record<string, unknown>;
     };
@@ -1530,6 +1541,29 @@ export default function PropertyDetail() {
                   <div className="xl:col-span-3"><AutonomousReviewQueueCard queue={latestAnalysis.autonomyIntelligence.operations?.reviewQueue} /></div>
                   <div className="xl:col-span-3"><SuppressionGovernanceCard suppression={latestAnalysis.autonomyIntelligence.operations?.suppression} /></div>
                   <div className="xl:col-span-3"><CadenceAndDegradationCard cadence={latestAnalysis.autonomyIntelligence.autonomy?.cadence} degradation={latestAnalysis.autonomyIntelligence.operations?.degradation} /></div>
+                </div>
+              </div>
+            )}
+
+            {latestAnalysis.executionOperatingSystem && (
+              <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50/40 p-4">
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-indigo-900">Execution Intelligence + Strategic Operating System</h3>
+                  <p className="text-xs text-indigo-700">
+                    Deterministic execution intelligence with governed command envelopes, readiness classification, and explicit no-autonomy policy constraints.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                  <div className="xl:col-span-3"><ExecutionReadinessCard readiness={latestAnalysis.executionOperatingSystem.readiness?.readinessEnvelope} /></div>
+                  <div className="xl:col-span-3"><StrategicDirectionCard direction={latestAnalysis.executionOperatingSystem.strategy?.direction} /></div>
+                  <div className="xl:col-span-3"><TerritorialRiskCard risk={latestAnalysis.executionOperatingSystem.readiness?.riskMatrix} /></div>
+                  <div className="xl:col-span-3"><SimulationOutcomeCard outcome={latestAnalysis.executionOperatingSystem.simulation} /></div>
+                  <div className="xl:col-span-3"><OperationalStateCard state={latestAnalysis.executionOperatingSystem.operatingSystem?.state} /></div>
+                  <div className="xl:col-span-3"><StrategicExposureCard exposure={latestAnalysis.executionOperatingSystem.readiness?.exposure} /></div>
+                  <div className="xl:col-span-3"><ExecutionConstraintCard constraint={latestAnalysis.executionOperatingSystem.execution?.constraints} /></div>
+                  <div className="xl:col-span-3"><DecisionConfidenceCard decision={latestAnalysis.executionOperatingSystem.decisioning?.confidence} /></div>
+                  <div className="xl:col-span-3"><RegionalCoordinationCard coordination={latestAnalysis.executionOperatingSystem.coordination?.regionalCoordination} /></div>
+                  <div className="xl:col-span-3"><TerritorialOperatingSystemCard tos={latestAnalysis.executionOperatingSystem} /></div>
                 </div>
               </div>
             )}

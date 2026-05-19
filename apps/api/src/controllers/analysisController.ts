@@ -28,6 +28,7 @@ import { buildTerritorialIntelligence } from '../services/intelligence/buildTerr
 import { ingestionOrchestrator } from '../services/ingestion/ingestionOrchestrator';
 import { buildOperationalIntelligence } from '../services/monitoring/buildOperationalIntelligence';
 import { buildAutonomyIntelligence } from '../services/autonomy/buildAutonomyIntelligence';
+import { territorialOperatingSystem } from '../services/operatingSystem/territorialOperatingSystem';
 import { logAuditEvent } from '../utils/auditLog';
 import { getUserCredits } from '../utils/credits';
 
@@ -198,6 +199,30 @@ function toResponseFromRun(run: any, reused: boolean) {
       connectorStates: full.ingestionGovernance?.connectors || [],
       suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
     });
+  const executionOperatingSystem =
+    full.executionOperatingSystem ||
+    territorialOperatingSystem({
+      nowIso: run.cacheTimestamp ? new Date(run.cacheTimestamp).toISOString() : new Date().toISOString(),
+      source: 'analysis_runtime_v29',
+      freshnessScore: full.freshnessScore || 0,
+      confidenceScore: run.confidence || 0,
+      governanceState: full.ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      evidenceLineage: full.ingestionGovernance?.provenance?.lineage || governanceEnvelope.evidenceTrace || [],
+      opportunityScore: full.opportunityScore || 0,
+      riskScore: full.volatilityIndex || 0,
+      pressureScore: full.marketMomentum || 0,
+      regions: [
+        { name: 'primary', score: full.marketMomentum || 0 },
+        { name: 'secondary', score: full.districtHeat || 0 },
+      ],
+      signals: full.ingestionSignals || [],
+      connectorDegradedCount: (full.ingestionGovernance?.connectors || []).filter((c: any) => c.status !== 'ACTIVE').length,
+      legalRestrictionCount: (full.ingestionGovernance?.disclosures || []).length,
+      dependencyHotspots: (full.staleFlags || []).length,
+      suppression: full.ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+      dependencies: (full.ingestionGovernance?.connectors || []).map((c: any) => ({ key: c.connectorKey || 'unknown', status: c.status || 'UNKNOWN' })),
+      bottlenecks: (full.staleFlags || []).map((flag: string, idx: number) => ({ id: `${idx}_${flag}`, severity: 65 })),
+    });
 
   return {
     id: run._id,
@@ -288,6 +313,7 @@ function toResponseFromRun(run: any, reused: boolean) {
     noFakeActiveProof: ingestionGovernance?.noFakeActiveProof,
     operationalIntelligence,
     autonomyIntelligence,
+    executionOperatingSystem,
     reused,
     summary: preview.summary || '',
     createdAt: run.createdAt,
@@ -684,9 +710,32 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
       connectorStates: ingestionGovernance?.connectors || [],
       suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
     });
+    const executionOperatingSystem = territorialOperatingSystem({
+      nowIso: new Date().toISOString(),
+      source: 'analysis_runtime_v29',
+      freshnessScore,
+      confidenceScore: engine.confidence,
+      governanceState: ingestionGovernance?.compliance?.complianceState === 'PASS' ? 'ALLOW' : 'RESTRICTED',
+      evidenceLineage: ingestionGovernance?.provenance?.lineage || [],
+      opportunityScore: signalNetwork.opportunityScore,
+      riskScore: trendSnapshots.volatility.volatilityIndex,
+      pressureScore: signalNetwork.marketMomentum,
+      regions: [
+        { name: 'primary', score: signalNetwork.marketMomentum },
+        { name: 'secondary', score: signalNetwork.districtHeat },
+      ],
+      signals: ingestionSignals,
+      connectorDegradedCount: (ingestionGovernance?.connectors || []).filter((c: any) => c.status !== 'ACTIVE').length,
+      legalRestrictionCount: (ingestionGovernance?.disclosures || []).length,
+      dependencyHotspots: refreshPlan.staleFlags.length,
+      suppression: ingestionGovernance?.compliance?.complianceState === 'BLOCKED',
+      dependencies: (ingestionGovernance?.connectors || []).map((c: any) => ({ key: c.connectorKey || 'unknown', status: c.status || 'UNKNOWN' })),
+      bottlenecks: refreshPlan.staleFlags.map((flag, idx) => ({ id: `${idx}_${flag}`, severity: 65 })),
+    });
 
     ingestionSignals.push(`v27_monitoring_${String(operationalIntelligence.monitoring?.state || 'stable').toLowerCase()}`);
     ingestionSignals.push(`v28_autonomy_${String(autonomyIntelligence.autonomy?.autonomy?.autonomyState || 'manual_only').toLowerCase()}`);
+    ingestionSignals.push(`v29_execution_${String(executionOperatingSystem.executionReadiness || 'not_ready').toLowerCase()}`);
 
     property.set({
       lastSpatialRefresh: new Date(),
@@ -805,6 +854,7 @@ async function runAnalysis(req: AuthRequest, res: Response, options: { productTy
         noFakeActiveProof: ingestionGovernance.noFakeActiveProof,
         operationalIntelligence,
         autonomyIntelligence,
+        executionOperatingSystem,
       },
     });
 

@@ -32,6 +32,16 @@ import InfrastructureExpansionCard from '../components/evolution/InfrastructureE
 import InvestorAlertCard from '../components/alerts/InvestorAlertCard';
 import ForecastDirectionCard from '../components/timeline/ForecastDirectionCard';
 import HistoricalEvidenceCard from '../components/timeline/HistoricalEvidenceCard';
+import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
+import StrategicDirectionCard from '../components/strategy/StrategicDirectionCard';
+import TerritorialRiskCard from '../components/execution/TerritorialRiskCard';
+import SimulationOutcomeCard from '../components/simulation/SimulationOutcomeCard';
+import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
+import StrategicExposureCard from '../components/strategy/StrategicExposureCard';
+import ExecutionConstraintCard from '../components/execution/ExecutionConstraintCard';
+import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
+import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
+import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -94,6 +104,7 @@ export default function PropertyResult() {
       infrastructureHistory?: any;
       history?: { archive?: any; regionalForecast?: any };
     };
+    executionOperatingSystem?: any;
   }
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analysisRunId, setAnalysisRunId] = useState<string | null>(null);
@@ -208,6 +219,20 @@ export default function PropertyResult() {
               <InvestorAlertCard alert={result.operationalIntelligence.alerts?.investorAlert} />
               <ForecastDirectionCard forecast={result.operationalIntelligence.history?.regionalForecast} />
               <HistoricalEvidenceCard archive={result.operationalIntelligence.history?.archive} />
+            </div>
+          )}
+          {result.executionOperatingSystem && (
+            <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+              <ExecutionReadinessCard readiness={result.executionOperatingSystem.readiness?.readinessEnvelope} />
+              <StrategicDirectionCard direction={result.executionOperatingSystem.strategy?.direction} />
+              <TerritorialRiskCard risk={result.executionOperatingSystem.readiness?.riskMatrix} />
+              <SimulationOutcomeCard outcome={result.executionOperatingSystem.simulation} />
+              <OperationalStateCard state={result.executionOperatingSystem.operatingSystem?.state} />
+              <StrategicExposureCard exposure={result.executionOperatingSystem.readiness?.exposure} />
+              <ExecutionConstraintCard constraint={result.executionOperatingSystem.execution?.constraints} />
+              <DecisionConfidenceCard decision={result.executionOperatingSystem.decisioning?.confidence} />
+              <RegionalCoordinationCard coordination={result.executionOperatingSystem.coordination?.regionalCoordination} />
+              <TerritorialOperatingSystemCard tos={result.executionOperatingSystem} />
             </div>
           )}
         </div>

@@ -11,11 +11,15 @@ import InvestorPriorityCard from '../components/autonomy/InvestorPriorityCard';
 import WatchlistActivityCard from '../components/watchlists/WatchlistActivityCard';
 import StrategicRegionCard from '../components/strategic/StrategicRegionCard';
 import IntelligenceFeedCard from '../components/feeds/IntelligenceFeedCard';
-import PortfolioExposureCard from '../components/portfolioOps/PortfolioExposureCard';
+import PortfolioOpsExposureCard from '../components/portfolioOps/PortfolioExposureCard';
 import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillanceCard';
 import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
 import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
 import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
+import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
+import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
+import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
+import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
 
 export default function PortfolioDetail() {
   const { id } = useParams();
@@ -54,6 +58,10 @@ export default function PortfolioDetail() {
   const autonomySnapshot = useMemo(() => {
     const candidate = (data?.items || []).find((item: any) => item?.latestAnalysis?.autonomyIntelligence);
     return candidate?.latestAnalysis?.autonomyIntelligence || null;
+  }, [data]);
+  const executionSnapshot = useMemo(() => {
+    const candidate = (data?.items || []).find((item: any) => item?.latestAnalysis?.executionOperatingSystem);
+    return candidate?.latestAnalysis?.executionOperatingSystem || null;
   }, [data]);
 
   if (error) return <div className="p-6 text-red-600">{error}</div>;
@@ -106,11 +114,20 @@ export default function PortfolioDetail() {
             <WatchlistActivityCard watchlist={autonomySnapshot.watchlist?.aggregate} />
             <StrategicRegionCard region={autonomySnapshot.strategic?.regionMonitor} />
             <IntelligenceFeedCard feed={autonomySnapshot.feeds?.unified} />
-            <PortfolioExposureCard exposure={autonomySnapshot.portfolio?.exposure} />
+            <PortfolioOpsExposureCard exposure={autonomySnapshot.portfolio?.exposure} />
             <RegionalSurveillanceCard surveillance={autonomySnapshot.strategic?.surveillance} />
             <OpportunityPriorityCard opportunity={autonomySnapshot.prioritization?.opportunityMatrix} />
             <EscalationTimelineCard escalation={autonomySnapshot.prioritization?.governedEscalationQueue} />
             <AutonomousReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
+          </div>
+        ) : null}
+
+        {executionSnapshot ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <ExecutionReadinessCard readiness={executionSnapshot.readiness?.readinessEnvelope} />
+            <OperationalStateCard state={executionSnapshot.operatingSystem?.state} />
+            <DecisionConfidenceCard decision={executionSnapshot.decisioning?.confidence} />
+            <TerritorialOperatingSystemCard tos={executionSnapshot} />
           </div>
         ) : null}
       </div>

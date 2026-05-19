@@ -107,6 +107,9 @@ export const getReports = async (req: AuthRequest, res: Response) => {
         reviewQueueDepth: full.autonomyIntelligence?.operations?.reviewQueue?.queueDepth,
         suppressionActiveRules: full.autonomyIntelligence?.operations?.suppression?.activeCount,
         cadenceMinutes: full.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes,
+        executionReadiness: full.executionOperatingSystem?.executionReadiness,
+        executionDeterministic: full.executionOperatingSystem?.deterministic,
+        executionGovernanceState: full.executionOperatingSystem?.governanceState,
       };
     })
   );

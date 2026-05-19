@@ -11,6 +11,10 @@ import InvestorPriorityCard from '../components/autonomy/InvestorPriorityCard';
 import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
 import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
 import CadenceAndDegradationCard from '../components/autonomy/CadenceAndDegradationCard';
+import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
+import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
+import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
+import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
 
 export default function AdminObservability() {
   const { user } = useAuth();
@@ -23,6 +27,7 @@ export default function AdminObservability() {
     Promise.all([apiFetch('/admin/observability'), apiFetch('/admin/analyses?page=1')])
       .then(([response, analysesPayload]) => {
         const first = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.autonomyIntelligence || {};
+        const execution = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.executionOperatingSystem || {};
         setData({
           ...response,
           autonomy: {
@@ -32,6 +37,7 @@ export default function AdminObservability() {
             cadence: first.autonomy?.cadence || null,
             degradation: first.operations?.degradation || null,
           },
+          execution,
         });
         setError('');
       })
@@ -88,6 +94,21 @@ export default function AdminObservability() {
                 </div>
                 <div className="xl:col-span-3">
                   <CadenceAndDegradationCard cadence={data?.autonomy?.cadence} degradation={data?.autonomy?.degradation} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-3">
+                  <ExecutionReadinessCard readiness={data?.execution?.readiness?.readinessEnvelope} />
+                </div>
+                <div className="xl:col-span-3">
+                  <OperationalStateCard state={data?.execution?.operatingSystem?.state} />
+                </div>
+                <div className="xl:col-span-3">
+                  <DecisionConfidenceCard decision={data?.execution?.decisioning?.confidence} />
+                </div>
+                <div className="xl:col-span-3">
+                  <TerritorialOperatingSystemCard tos={data?.execution} />
                 </div>
               </div>
             </>

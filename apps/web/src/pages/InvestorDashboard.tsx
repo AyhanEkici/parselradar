@@ -46,6 +46,16 @@ import RegionalSurveillanceCard from '../components/strategic/RegionalSurveillan
 import OpportunityPriorityCard from '../components/autonomy/OpportunityPriorityCard';
 import EscalationTimelineCard from '../components/autonomy/EscalationTimelineCard';
 import AutonomousReviewQueueCard from '../components/autonomy/AutonomousReviewQueueCard';
+import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCard';
+import StrategicDirectionCard from '../components/strategy/StrategicDirectionCard';
+import TerritorialRiskCard from '../components/execution/TerritorialRiskCard';
+import SimulationOutcomeCard from '../components/simulation/SimulationOutcomeCard';
+import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
+import StrategicExposureCard from '../components/strategy/StrategicExposureCard';
+import ExecutionConstraintCard from '../components/execution/ExecutionConstraintCard';
+import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
+import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
+import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
 
 export default function InvestorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -66,6 +76,7 @@ export default function InvestorDashboard() {
   const ingestionSnapshot = data.ingestionSnapshot || {};
   const operationalSnapshot = data.operationalSnapshot || {};
   const autonomySnapshot = data.autonomySnapshot || {};
+  const executionSnapshot = data.executionSnapshot || {};
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
@@ -164,6 +175,19 @@ export default function InvestorDashboard() {
           <AutonomousReviewQueueCard queue={autonomySnapshot.operations?.reviewQueue} />
           <SuppressionGovernanceCard suppression={autonomySnapshot.operations?.suppression} />
           <CadenceAndDegradationCard cadence={autonomySnapshot.autonomy?.cadence} degradation={autonomySnapshot.operations?.degradation} />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <ExecutionReadinessCard readiness={executionSnapshot.readiness?.readinessEnvelope} />
+          <StrategicDirectionCard direction={executionSnapshot.strategy?.direction} />
+          <TerritorialRiskCard risk={executionSnapshot.readiness?.riskMatrix} />
+          <SimulationOutcomeCard outcome={executionSnapshot.simulation} />
+          <OperationalStateCard state={executionSnapshot.operatingSystem?.state} />
+          <StrategicExposureCard exposure={executionSnapshot.readiness?.exposure} />
+          <ExecutionConstraintCard constraint={executionSnapshot.execution?.constraints} />
+          <DecisionConfidenceCard decision={executionSnapshot.decisioning?.confidence} />
+          <RegionalCoordinationCard coordination={executionSnapshot.coordination?.regionalCoordination} />
+          <TerritorialOperatingSystemCard tos={executionSnapshot} />
         </div>
       </div>
     </div>

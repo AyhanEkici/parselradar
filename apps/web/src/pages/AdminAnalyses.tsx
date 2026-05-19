@@ -60,6 +60,11 @@ interface Analysis {
       autonomy?: { autonomy?: { autonomyState?: string }; cadence?: { cadenceMinutes?: number } };
       operations?: { reviewQueue?: { queueDepth?: number }; suppression?: { activeCount?: number } };
     };
+    executionOperatingSystem?: {
+      executionReadiness?: string;
+      operatingSystem?: { state?: { operationalState?: string } };
+      decisioning?: { confidence?: { decisionConfidence?: string } };
+    };
   };
 }
 
@@ -185,6 +190,9 @@ export default function AdminAnalyses() {
                       <div>Review Queue: {a.fullAnalysis?.autonomyIntelligence?.operations?.reviewQueue?.queueDepth ?? '-'}</div>
                       <div>Suppression: {a.fullAnalysis?.autonomyIntelligence?.operations?.suppression?.activeCount ?? '-'}</div>
                       <div>Cadence: {a.fullAnalysis?.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes ?? '-'}</div>
+                      <div>Exec Readiness: {a.fullAnalysis?.executionOperatingSystem?.executionReadiness || '-'}</div>
+                      <div>Op State: {a.fullAnalysis?.executionOperatingSystem?.operatingSystem?.state?.operationalState || '-'}</div>
+                      <div>Decision Conf: {a.fullAnalysis?.executionOperatingSystem?.decisioning?.confidence?.decisionConfidence || '-'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd className="break-words">
