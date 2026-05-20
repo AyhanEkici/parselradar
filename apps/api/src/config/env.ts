@@ -5,10 +5,6 @@ const required = [
     'MONGODB_URI',
     'JWT_SECRET',
     'CLIENT_URL',
-    'STRIPE_SECRET_KEY',
-    'STRIPE_WEBHOOK_SECRET',
-    'STRIPE_PRICE_25_CREDITS',
-    'STRIPE_PRICE_50_CREDITS',
 ];
 const missing = required.filter((k) => !process.env[k]);
 if (missing.length) {
@@ -25,7 +21,7 @@ export const ENV = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
     STRIPE_LIVE_SECRET_KEY: process.env.STRIPE_LIVE_SECRET_KEY || '',
     STRIPE_TEST_SECRET_KEY: process.env.STRIPE_TEST_SECRET_KEY || '',
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET!,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || '',
     STRIPE_PRICE_25_CREDITS: process.env.STRIPE_PRICE_25_CREDITS || '',
     STRIPE_PRICE_50_CREDITS: process.env.STRIPE_PRICE_50_CREDITS || '',
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',

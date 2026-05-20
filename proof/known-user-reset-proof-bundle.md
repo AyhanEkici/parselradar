@@ -1,6 +1,6 @@
 # Known User Reset Proof Bundle
 
-Generated at: 2026-05-20T01:02:27.191Z
+Generated at: 2026-05-20T01:07:27.496Z
 Overall status: FAIL
 
 | User | ID Preserved | Email Match | Role Before | Role After | bcrypt compare | JWT issued | token verified | Updated | Reason |
@@ -18,5 +18,5 @@ Overall status: FAIL
 
 ## Commit Hash
 
-- e277ab74bea5f116fb7772a469b82e1f1b05b676
+- a61f599d5d96ae26c65ed99a1684d43989315cb3
 

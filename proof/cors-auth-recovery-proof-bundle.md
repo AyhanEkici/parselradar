@@ -1,6 +1,6 @@
 # CORS Auth Recovery Proof Bundle
 
-Generated at: 2026-05-20T01:48:14.885Z
+Generated at: 2026-05-20T02:13:59.641Z
 Overall status: FAIL
 
 | Check | Status | Detail |
@@ -24,5 +24,5 @@ Overall status: FAIL
 
 ## Commit Hash
 
-- a61f599d5d96ae26c65ed99a1684d43989315cb3
+- 2293328de35faf810db87ba67fad89fba7a24028
 

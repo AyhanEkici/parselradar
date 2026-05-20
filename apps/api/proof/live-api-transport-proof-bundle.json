@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-05-20T02:09:36.684Z",
+  "overallStatus": "FAIL",
+  "activeTarget": "https://parselradar-production.up.railway.app",
+  "commitHash": "",
+  "proofs": {
+    "railwayActiveDeploymentProof": {
+      "status": "FAIL",
+      "detail": "No candidate responded with JSON health."
+    },
+    "activeApiUrlProof": {
+      "status": "PASS",
+      "detail": "Active API URL resolved to https://parselradar-production.up.railway.app"
+    },
+    "healthProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json",
+      "url": "https://parselradar-production.up.railway.app/health",
+      "statusCode": 502,
+      "contentType": "application/json",
+      "allowOrigin": null,
+      "allowCredentials": null,
+      "allowHeaders": null,
+      "allowMethods": null,
+      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"wH75P1T3SyKmk_M_nbOCzg\"}"
+    },
+    "buildInfoProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json",
+      "url": "https://parselradar-production.up.railway.app/__buildinfo",
+      "statusCode": 502,
+      "contentType": "application/json",
+      "allowOrigin": null,
+      "allowCredentials": null,
+      "allowHeaders": null,
+      "allowMethods": null,
+      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"sXOhZDW_SAqz4F0Vm3z_FQ\"}"
+    },
+    "authLoginOptionsProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json"
+    },
+    "forgotPasswordOptionsProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json"
+    },
+    "resetPasswordOptionsProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json"
+    },
+    "accessControlAllowOriginProof": {
+      "status": "FAIL",
+      "detail": "Observed ACAO values: login=none, forgot=none, reset=none"
+    },
+    "credentialsHeaderProof": {
+      "status": "FAIL",
+      "detail": "Observed ACC values: login=none, forgot=none, reset=none"
+    },
+    "allowedHeadersProof": {
+      "status": "FAIL",
+      "detail": "Observed ACAH values: login=none, forgot=none, reset=none"
+    },
+    "allowedMethodsProof": {
+      "status": "FAIL",
+      "detail": "Observed ACAM values: login=none, forgot=none, reset=none"
+    },
+    "forgotPasswordLiveProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json"
+    },
+    "noHtmlResponseProof": {
+      "status": "PASS",
+      "detail": "Checked that API endpoints did not return HTML bodies."
+    },
+    "buildInfoVisibleProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=502, contentType=application/json"
+    },
+    "vercelViteApiUrlProof": {
+      "status": "FAIL",
+      "detail": "Frontend API client does not match the active Railway URL exactly."
+    }
+  }
+}

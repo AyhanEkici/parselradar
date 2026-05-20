@@ -11,6 +11,7 @@
     "verify:rbac": "ts-node scripts/verify-rbac.ts",
     "verify:cors": "ts-node apps/api/scripts/verifyCorsConfig.ts",
     "verify:password-reset": "ts-node apps/api/scripts/verifyPasswordResetFlow.ts",
+    "verify:live-api": "ts-node apps/api/scripts/verifyLiveApiTransport.ts",
     "auth:diagnose": "ts-node apps/api/scripts/diagnoseAuthUsers.ts",
     "auth:verify-passwordhash": "ts-node apps/api/scripts/verifyPasswordHashField.ts",
     "auth:repair": "ts-node apps/api/scripts/repairSingleUserAuth.ts",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T01:48:14.885Z",
+  "generatedAt": "2026-05-20T02:13:59.641Z",
   "overallStatus": "FAIL",
   "activeTarget": "https://parselradar-production.up.railway.app",
   "proofs": {
@@ -68,5 +68,5 @@
       "detail": "Preflight for https://parselradar-production.up.railway.app status=502, acao=none, acc=none"
     }
   },
-  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
+  "commitHash": "2293328de35faf810db87ba67fad89fba7a24028"
 }

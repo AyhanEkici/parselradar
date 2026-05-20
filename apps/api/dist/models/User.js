@@ -37,6 +37,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
+    passwordChangedAt: { type: Date, default: Date.now },
     name: { type: String, required: true },
     role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
 }, { timestamps: true });

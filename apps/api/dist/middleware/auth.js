@@ -85,6 +85,21 @@ const requireAuth = async (req, res, next) => {
             dbUserId: String(user._id),
             dbRole: user.role,
         });
+        const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
+        const tokenIssuedAt = typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined;
+        if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt < passwordChangedAt) {
+            await (0, authSessionAudit_1.authSessionAudit)({
+                userId: String(user._id),
+                role: user.role,
+                decision: 'deny',
+                reason: 'password_changed',
+                route: req.path,
+                method: req.method,
+                ip: req.ip,
+                userAgent: req.get('user-agent') || undefined,
+            });
+            return res.status(401).json({ error: 'Geçersiz oturum' });
+        }
         if (!consistency.consistent) {
             await (0, authSessionAudit_1.authSessionAudit)({
                 userId: String(user._id),

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T01:02:49.973Z",
+  "generatedAt": "2026-05-20T01:48:25.051Z",
   "overallStatus": "FAIL",
   "proofs": {
     "bcryptCompatibilityProof": {
@@ -54,6 +54,10 @@
       "status": "PASS",
       "detail": "Mongo _id values preserved; ownership/reference continuity maintained."
     },
+    "noPasswordResetProof": {
+      "status": "FAIL",
+      "detail": "passwordhash-auth proof missing"
+    },
     "buildProof": {
       "status": "PASS",
       "detail": "apps/api and apps/web build artifacts exist."
@@ -67,5 +71,5 @@
       "detail": "missing_password_env_for_compare, role_hydration_mismatch"
     }
   },
-  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
+  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T01:02:49.973Z",
+  "generatedAt": "2026-05-20T01:48:25.051Z",
   "overallStatus": "FAIL",
   "proofs": {
     "loginRouteProof": {
@@ -67,5 +67,5 @@
       "detail": "Repair could not complete for all required users (missing passwords or unresolved lookup)."
     }
   },
-  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
+  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
 }

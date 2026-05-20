@@ -32,7 +32,7 @@ const register = async (req, res) => {
     if (exists)
         return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
     const passwordHash = await bcrypt_1.default.hash(password, 10);
-    const user = await User_1.default.create({ email, passwordHash, name, role: 'USER' });
+    const user = await User_1.default.create({ email, passwordHash, passwordChangedAt: new Date(), name, role: 'USER' });
     const token = jsonwebtoken_1.default.sign({ id: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
     res.cookie('token', token, {
         httpOnly: true,
@@ -59,19 +59,29 @@ exports.register = register;
 const login = async (req, res) => {
     const { password } = req.body;
     const email = normalizeEmail(req.body?.email);
-    safeAuthDebug('login_attempt', { routeHit: '/auth/login', emailNormalized: email });
-    let user = await User_1.default.findOne({ email });
+    safeAuthDebug('login_attempt', {
+        routeHit: '/auth/login',
+        emailNormalized: email,
+        passwordLength: String(password || '').length,
+    });
+    let user = await User_1.default.findOne({ email }).select('+passwordHash');
     if (!user && email) {
         // Backward-compatible recovery for legacy mixed-case emails.
-        user = await User_1.default.findOne({ email: { $regex: `^${escapeRegExp(email)}$`, $options: 'i' } });
+        user = await User_1.default.findOne({ email: { $regex: `^${escapeRegExp(email)}$`, $options: 'i' } }).select('+passwordHash');
         if (user && user.email !== email) {
             user.email = email;
             await user.save();
         }
     }
-    safeAuthDebug('login_user_lookup', { userFound: Boolean(user), role: user?.role || 'UNKNOWN' });
+    safeAuthDebug('login_user_lookup', {
+        userFound: Boolean(user),
+        role: user?.role || 'UNKNOWN',
+        hasPasswordHash: Boolean(user?.passwordHash),
+    });
     if (!user)
         return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
+    if (!user?.passwordHash)
+        return res.status(401).json({ error: 'Şifre doğrulama alanı eksik' });
     const valid = await bcrypt_1.default.compare(password, user.passwordHash);
     safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
     if (!valid)

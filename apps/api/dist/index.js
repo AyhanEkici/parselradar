@@ -46,11 +46,33 @@ const app = (0, express_1.default)();
 // Hardened CORS
 const isProd = env_1.ENV.NODE_ENV === 'production';
 const vercelProd = 'https://parselradar.vercel.app';
+const railwayProd = 'https://parselradar-production.up.railway.app';
+const railwayOriginPattern = /^https:\/\/[a-z0-9-]+(?:-[a-z0-9-]+)*\.up\.railway\.app$/i;
+const local3000 = 'http://localhost:3000';
+const local5173 = 'http://localhost:5173';
 // Old regex: /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/
 const vercelPreviewPattern = /^https:\/\/parselradar.*\.vercel\.app$/;
-const allowedOrigins = isProd
-    ? [env_1.ENV.CLIENT_URL, vercelProd]
-    : [env_1.ENV.CLIENT_URL, vercelProd, 'http://localhost:3001', 'http://127.0.0.1:3001'];
+const allowedOrigins = [
+    env_1.ENV.CLIENT_URL,
+    env_1.ENV.API_URL,
+    vercelProd,
+    railwayProd,
+    local3000,
+    local5173,
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
+].filter((value, index, array) => Boolean(value) && array.indexOf(value) === index);
+function isOriginAllowed(origin) {
+    if (!origin)
+        return true;
+    if (allowedOrigins.includes(origin))
+        return true;
+    if (vercelPreviewPattern.test(origin))
+        return true;
+    if (railwayOriginPattern.test(origin))
+        return true;
+    return false;
+}
 // Trust proxy for production (needed for secure cookies behind proxy/load balancer)
 if (isProd) {
     app.set('trust proxy', 1);
@@ -59,6 +81,21 @@ if (isProd) {
 app.use((0, helmet_1.default)());
 // Request ID middleware
 app.use(requestId_1.requestIdMiddleware);
+// Safe CORS diagnostics (no auth/cookie/token content)
+app.use((req, _res, next) => {
+    if (process.env.CORS_SAFE_DEBUG === 'true') {
+        const requestOrigin = req.get('origin') || undefined;
+        console.info('[cors-debug]', {
+            origin: requestOrigin || 'none',
+            allowed: isOriginAllowed(requestOrigin),
+            method: req.method,
+            path: req.path,
+            nodeEnv: env_1.ENV.NODE_ENV,
+            prod: isProd,
+        });
+    }
+    next();
+});
 // Diagnostic build info endpoint (JSON only)
 app.get('/__buildinfo', (_req, res) => {
     const runtimeGitShaCandidate = [
@@ -87,11 +124,7 @@ app.post('/stripe/webhook', express_1.default.raw({ type: 'application/json' }),
 // CORS and options
 app.use((0, cors_1.default)({
     origin: function (origin, callback) {
-        if (!origin)
-            return callback(null, true);
-        if (allowedOrigins.includes(origin))
-            return callback(null, true);
-        if (vercelPreviewPattern.test(origin))
+        if (isOriginAllowed(origin))
             return callback(null, true);
         return callback(new Error('Not allowed by CORS: ' + origin));
     },
@@ -99,20 +132,19 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     exposedHeaders: ['X-Request-Id'],
+    optionsSuccessStatus: 204,
 }));
 app.options('*', (0, cors_1.default)({
     origin: function (origin, callback) {
-        if (!origin)
-            return callback(null, true);
-        if (allowedOrigins.includes(origin))
-            return callback(null, true);
-        if (vercelPreviewPattern.test(origin))
+        if (isOriginAllowed(origin))
             return callback(null, true);
         return callback(new Error('Not allowed by CORS: ' + origin));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     exposedHeaders: ['X-Request-Id'],
+    optionsSuccessStatus: 204,
 }));
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
