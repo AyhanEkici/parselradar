@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-05-20T00:23:53.833Z",
+  "overallStatus": "FAIL",
+  "loginResults": [],
+  "proofs": {
+    "loginRouteProof": {
+      "status": "FAIL",
+      "detail": "Verification halted before route verification."
+    },
+    "tokenShapeProof": {
+      "status": "FAIL",
+      "detail": "Verification halted before token shape checks."
+    },
+    "authMiddlewareCompatibilityProof": {
+      "status": "FAIL",
+      "detail": "Verification halted before middleware compatibility checks."
+    },
+    "frontendTokenStorageProof": {
+      "status": "PASS",
+      "detail": "apps/web token storage/header wiring is present by static inspection."
+    },
+    "requiredUsersEnsuredProof": {
+      "status": "FAIL",
+      "detail": "users:ensure-required could not complete due missing required SECURITY_VERIFY_* password env vars."
+    },
+    "rbacContinuityProof": {
+      "status": "PASS",
+      "detail": "rbac-proof-bundle.json overallStatus=PASS"
+    },
+    "buildProof": {
+      "status": "PASS",
+      "detail": "apps/api and apps/web build outputs exist."
+    },
+    "verifyProof": {
+      "status": "FAIL",
+      "detail": "Login verification blocked by missing required secrets."
+    }
+  },
+  "commitHash": "",
+  "blockedReason": "Missing required env var: SECURITY_VERIFY_PILOT_PASSWORD"
+}

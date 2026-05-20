@@ -60,13 +60,17 @@ const requireAuth = async (req, res, next) => {
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, env_1.JWT_SECRET);
-        const user = await User_1.default.findById(decoded.id);
+        const tokenUserId = decoded.id || decoded.userId || decoded.sub;
+        if (!tokenUserId) {
+            return res.status(401).json({ error: 'Geçersiz oturum' });
+        }
+        const user = await User_1.default.findById(tokenUserId);
         if (!user) {
             await (0, accessAudit_1.recordAccessDecision)({
-                userId: decoded.id,
+                userId: String(tokenUserId),
                 role: undefined,
                 resourceType: 'Auth',
-                resourceId: decoded.id,
+                resourceId: String(tokenUserId),
                 decision: 'deny',
                 reason: 'token_user_not_found',
                 route: req.path,
@@ -77,7 +81,7 @@ const requireAuth = async (req, res, next) => {
             return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
         }
         const consistency = (0, authConsistencyVerifier_1.authConsistencyVerifier)({
-            tokenUserId: decoded.id,
+            tokenUserId: String(tokenUserId),
             dbUserId: String(user._id),
             dbRole: user.role,
         });

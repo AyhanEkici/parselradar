@@ -66,14 +66,19 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
-    const user = await User.findById(decoded.id);
+    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; email?: string; role?: string };
+    const tokenUserId = decoded.id || decoded.userId || decoded.sub;
+    if (!tokenUserId) {
+      return res.status(401).json({ error: 'Geçersiz oturum' });
+    }
+
+    const user = await User.findById(tokenUserId);
     if (!user) {
       await recordAccessDecision({
-        userId: decoded.id,
+        userId: String(tokenUserId),
         role: undefined,
         resourceType: 'Auth',
-        resourceId: decoded.id,
+        resourceId: String(tokenUserId),
         decision: 'deny',
         reason: 'token_user_not_found',
         route: req.path,
@@ -85,7 +90,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
     }
 
     const consistency = authConsistencyVerifier({
-      tokenUserId: decoded.id,
+      tokenUserId: String(tokenUserId),
       dbUserId: String(user._id),
       dbRole: user.role,
     });

@@ -12,15 +12,25 @@ function normalizeEmail(email: unknown) {
   return String(email || '').trim().toLowerCase();
 }
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function safeAuthDebug(event: string, payload: Record<string, unknown>) {
+  if (process.env.AUTH_SAFE_DEBUG !== 'true') return;
+  console.info(`[auth-debug] ${event}`, payload);
+}
+
 export const register = async (req: Request, res: Response) => {
   const { password, name } = req.body;
   const email = normalizeEmail(req.body?.email);
+  safeAuthDebug('register_attempt', { routeHit: '/auth/register', emailNormalized: Boolean(email) });
   if (!email || !password || !name) return res.status(400).json({ error: 'Eksik bilgi' });
   const exists = await User.findOne({ email });
   if (exists) return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await User.create({ email, passwordHash, name, role: 'USER' });
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,
@@ -46,11 +56,22 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { password } = req.body;
   const email = normalizeEmail(req.body?.email);
-  const user = await User.findOne({ email });
+  safeAuthDebug('login_attempt', { routeHit: '/auth/login', emailNormalized: email });
+  let user = await User.findOne({ email });
+  if (!user && email) {
+    // Backward-compatible recovery for legacy mixed-case emails.
+    user = await User.findOne({ email: { $regex: `^${escapeRegExp(email)}$`, $options: 'i' } });
+    if (user && user.email !== email) {
+      user.email = email;
+      await user.save();
+    }
+  }
+  safeAuthDebug('login_user_lookup', { userFound: Boolean(user), role: user?.role || 'UNKNOWN' });
   if (!user) return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
   const valid = await bcrypt.compare(password, user.passwordHash);
+  safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
   if (!valid) return res.status(401).json({ error: 'Şifre hatalı' });
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+  const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,
@@ -60,6 +81,10 @@ export const login = async (req: Request, res: Response) => {
   });
   const roleState = roleHydrationVerifier(user.role);
   if (!roleState.valid) return res.status(401).json({ error: 'Geçersiz rol durumu' });
+  safeAuthDebug('login_token_issued', {
+    tokenIssued: Boolean(token),
+    role: roleState.normalizedRole,
+  });
 
   res.json({ id: user._id, email: user.email, name: user.name, role: roleState.normalizedRole, token });
   await logAuditEvent({
