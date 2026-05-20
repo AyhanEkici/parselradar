@@ -39,10 +39,21 @@ import { closeQueueEvents } from './runtime/queueEvents';
 import { closeQueues } from './runtime/queueFactory';
 import { closeRedisClient } from './redis/redisClient';
 import { BUILD_INFO } from './generated/buildInfo';
+import {
+  assessRuntimeDegradation,
+  installRuntimeProcessGuards,
+  markRequiredSystemReady,
+  recordStartupPhase,
+  getRuntimeDiagnostics,
+} from './runtime/degradedRuntime';
 
 
 
 const app = express();
+installRuntimeProcessGuards();
+recordStartupPhase('express_initialized', 'Express application created.');
+markRequiredSystemReady('express', 'Express app initialized.');
+assessRuntimeDegradation();
 
 // Hardened CORS
 const isProd = ENV.NODE_ENV === 'production';
@@ -123,6 +134,7 @@ app.get('/__buildinfo', (_req, res) => {
     platformVersion: BUILD_INFO.platformVersion,
     routeVersion: BUILD_INFO.routeVersion,
     nodeEnv: ENV.NODE_ENV,
+    runtimeDiagnostics: getRuntimeDiagnostics(),
   });
 });
 
@@ -168,14 +180,18 @@ app.use('/uploads', express.static(path.resolve(__dirname, 'uploads')));
 mongoose.connect(ENV.MONGODB_URI)
   .then(() => {
     logInfo('MongoDB connected');
+    recordStartupPhase('mongo_connected', 'MongoDB connected successfully.');
+    markRequiredSystemReady('mongo', 'MongoDB connected.');
   })
   .catch((err) => {
     logError('MongoDB connection error', err);
+    recordStartupPhase('mongo_failed', 'MongoDB connection failed.');
     process.exit(1);
   });
 
 
 app.use('/auth', authRoutes);
+markRequiredSystemReady('authRoutes', 'Auth routes registered.');
 app.use('/credits', creditRoutes);
 // Mount remaining stripe routes (excluding webhook)
 app.use('/stripe', (req, res, next) => {
@@ -204,6 +220,7 @@ app.use('/', connectorActivationRoutes);
 
 app.use('/admin', adminRoutes);
 app.use('/', auditRoutes);
+markRequiredSystemReady('coreRbac', 'Auth and admin gating routes registered.');
 
 app.get('/health', healthController);
 app.get('/health/live', livenessController);
@@ -223,6 +240,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const server = app.listen(Number(ENV.PORT), () => {
+  recordStartupPhase('server_listening', `API listening on port ${ENV.PORT}.`);
   logStartup();
 });
 

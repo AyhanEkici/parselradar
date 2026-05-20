@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-05-20T08:23:00.618Z",
+  "overallStatus": "PASS",
+  "commitHash": "",
+  "routeSummary": [
+    "/auth/register  → POST (authController.register)",
+    "/auth/login     → POST (authController.login)",
+    "/auth/logout    → POST (authController.logout)",
+    "/auth/me        → GET  (authController.getMe) [auth required]",
+    "/auth/forgot-password → POST (passwordResetController.forgotPassword) [rate limited]",
+    "/auth/reset-password  → POST (passwordResetController.resetPassword)  [rate limited]"
+  ],
+  "proofs": {
+    "indexMountsAuthRoutes": {
+      "status": "PASS",
+      "detail": "app.use('/auth', authRoutes) found in index.ts"
+    },
+    "authRoutesImportsPasswordReset": {
+      "status": "PASS",
+      "detail": "passwordResetRoutes imported in authRoutes.ts"
+    },
+    "authRoutesMountsPasswordReset": {
+      "status": "PASS",
+      "detail": "router.use('/', passwordResetRoutes) found in authRoutes.ts"
+    },
+    "passwordResetRoutesForgotPost": {
+      "status": "PASS",
+      "detail": "POST /forgot-password registered in passwordResetRoutes.ts"
+    },
+    "passwordResetRoutesResetPost": {
+      "status": "PASS",
+      "detail": "POST /reset-password registered in passwordResetRoutes.ts"
+    },
+    "forgotPasswordControllerExported": {
+      "status": "PASS",
+      "detail": "forgotPassword exported from passwordResetController.ts"
+    },
+    "resetPasswordControllerExported": {
+      "status": "PASS",
+      "detail": "resetPassword exported from passwordResetController.ts"
+    },
+    "forgotPasswordRateLimiterExists": {
+      "status": "PASS",
+      "detail": "forgotPasswordLimiter defined in passwordResetRateLimiter.ts"
+    },
+    "resetPasswordRateLimiterExists": {
+      "status": "PASS",
+      "detail": "resetPasswordLimiter defined in passwordResetRateLimiter.ts"
+    },
+    "authRouteMountBeforeJsonFallback": {
+      "status": "PASS",
+      "detail": "/auth routes mounted before 404 JSON fallback"
+    },
+    "distAuthRoutesHasPasswordReset": {
+      "status": "PASS",
+      "detail": "passwordResetRoutes present in compiled dist/routes/authRoutes.js"
+    },
+    "distPasswordResetRoutesHasForgot": {
+      "status": "PASS",
+      "detail": "forgot-password present in compiled dist/routes/passwordResetRoutes.js"
+    },
+    "distPasswordResetRoutesHasReset": {
+      "status": "PASS",
+      "detail": "reset-password present in compiled dist/routes/passwordResetRoutes.js"
+    },
+    "distIndexMountsAuthRoutes": {
+      "status": "PASS",
+      "detail": "/auth + authRoutes present in compiled dist/index.js"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
+import { getRuntimeDiagnostics } from '../runtime/degradedRuntime';
 
 export async function healthController(req: Request, res: Response) {
   const snapshot = await buildOperationalSnapshot();
@@ -14,5 +15,6 @@ export async function healthController(req: Request, res: Response) {
     securitySignals: snapshot.securitySignals,
     healthSummary: snapshot.healthSummary,
     requestId: (req as any).requestId,
+    runtimeDiagnostics: getRuntimeDiagnostics(),
   });
 }

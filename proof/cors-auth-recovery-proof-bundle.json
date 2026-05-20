@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T02:13:59.641Z",
+  "generatedAt": "2026-05-20T08:47:57.803Z",
   "overallStatus": "FAIL",
   "activeTarget": "https://parselradar-production.up.railway.app",
   "proofs": {
@@ -8,8 +8,8 @@
       "detail": "Resolved active API target: https://parselradar-production.up.railway.app"
     },
     "targetReachabilityProof": {
-      "status": "FAIL",
-      "detail": "No active API target responded to /health."
+      "status": "PASS",
+      "detail": "Health probe succeeded for https://parselradar-production.up.railway.app."
     },
     "resolvedApiTargetProof": {
       "status": "PASS",
@@ -36,8 +36,8 @@
       "detail": "credentials:true is enabled in CORS configuration."
     },
     "vercelLoginProof": {
-      "status": "FAIL",
-      "detail": "Preflight for https://parselradar.vercel.app status=502, acao=none, acc=none"
+      "status": "PASS",
+      "detail": "Preflight succeeded for https://parselradar.vercel.app with ACAO and credentials headers."
     },
     "jwtIssuanceProof": {
       "status": "FAIL",
@@ -61,12 +61,12 @@
     },
     "localPreflightProof": {
       "status": "FAIL",
-      "detail": "Preflight for http://localhost:5173 status=502, acao=none, acc=none"
+      "detail": "Preflight for http://localhost:5173 status=500, acao=none, acc=none"
     },
     "railwayPreflightProof": {
       "status": "FAIL",
-      "detail": "Preflight for https://parselradar-production.up.railway.app status=502, acao=none, acc=none"
+      "detail": "Preflight for https://parselradar-production.up.railway.app status=500, acao=none, acc=none"
     }
   },
-  "commitHash": "2293328de35faf810db87ba67fad89fba7a24028"
+  "commitHash": ""
 }

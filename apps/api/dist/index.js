@@ -42,7 +42,12 @@ const queueEvents_1 = require("./runtime/queueEvents");
 const queueFactory_1 = require("./runtime/queueFactory");
 const redisClient_1 = require("./redis/redisClient");
 const buildInfo_1 = require("./generated/buildInfo");
+const degradedRuntime_1 = require("./runtime/degradedRuntime");
 const app = (0, express_1.default)();
+(0, degradedRuntime_1.installRuntimeProcessGuards)();
+(0, degradedRuntime_1.recordStartupPhase)('express_initialized', 'Express application created.');
+(0, degradedRuntime_1.markRequiredSystemReady)('express', 'Express app initialized.');
+(0, degradedRuntime_1.assessRuntimeDegradation)();
 // Hardened CORS
 const isProd = env_1.ENV.NODE_ENV === 'production';
 const vercelProd = 'https://parselradar.vercel.app';
@@ -117,6 +122,7 @@ app.get('/__buildinfo', (_req, res) => {
         platformVersion: buildInfo_1.BUILD_INFO.platformVersion,
         routeVersion: buildInfo_1.BUILD_INFO.routeVersion,
         nodeEnv: env_1.ENV.NODE_ENV,
+        runtimeDiagnostics: (0, degradedRuntime_1.getRuntimeDiagnostics)(),
     });
 });
 // Mount Stripe webhook route BEFORE express.json()
@@ -153,12 +159,16 @@ app.use('/uploads', express_1.default.static(path_1.default.resolve(__dirname, '
 mongoose_1.default.connect(env_1.ENV.MONGODB_URI)
     .then(() => {
     (0, logger_1.logInfo)('MongoDB connected');
+    (0, degradedRuntime_1.recordStartupPhase)('mongo_connected', 'MongoDB connected successfully.');
+    (0, degradedRuntime_1.markRequiredSystemReady)('mongo', 'MongoDB connected.');
 })
     .catch((err) => {
     (0, logger_1.logError)('MongoDB connection error', err);
+    (0, degradedRuntime_1.recordStartupPhase)('mongo_failed', 'MongoDB connection failed.');
     process.exit(1);
 });
 app.use('/auth', authRoutes_1.default);
+(0, degradedRuntime_1.markRequiredSystemReady)('authRoutes', 'Auth routes registered.');
 app.use('/credits', creditRoutes_1.default);
 // Mount remaining stripe routes (excluding webhook)
 app.use('/stripe', (req, res, next) => {
@@ -185,6 +195,7 @@ app.use('/', observabilityRoutes_1.default);
 app.use('/', connectorActivationRoutes_1.default);
 app.use('/admin', adminRoutes_1.default);
 app.use('/', auditRoutes_1.default);
+(0, degradedRuntime_1.markRequiredSystemReady)('coreRbac', 'Auth and admin gating routes registered.');
 app.get('/health', healthController_1.healthController);
 app.get('/health/live', livenessController_1.livenessController);
 app.get('/health/ready', readinessController_1.readinessController);
@@ -200,6 +211,7 @@ app.use((req, res) => {
 });
 app.use(errorHandler_1.errorHandler);
 const server = app.listen(Number(env_1.ENV.PORT), () => {
+    (0, degradedRuntime_1.recordStartupPhase)('server_listening', `API listening on port ${env_1.ENV.PORT}.`);
     (0, logger_1.logStartup)();
 });
 async function shutdownRuntime() {

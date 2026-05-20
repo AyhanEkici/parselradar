@@ -1,6 +1,6 @@
 # RBAC Proof Bundle
 
-Generated at: 2026-05-20T02:14:09.090Z
+Generated at: 2026-05-20T08:24:04.635Z
 Overall status: PASS
 
 ## Summary

@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-05-20T08:47:47.418Z",
+  "overallStatus": "PASS",
+  "commitHash": "",
+  "proofs": {
+    "startupPhaseProof": {
+      "status": "PASS",
+      "detail": "Startup phase: mongo_connected"
+    },
+    "degradedRuntimeProof": {
+      "status": "PASS",
+      "detail": "Degraded runtime is visible."
+    },
+    "optionalSubsystemDisableProof": {
+      "status": "PASS",
+      "detail": "Optional subsystem states are present."
+    },
+    "stripeDegradedProof": {
+      "status": "PASS",
+      "detail": "Stripe is not configured."
+    },
+    "redisDegradedProof": {
+      "status": "PASS",
+      "detail": "REDIS_URL is not configured."
+    },
+    "bullmqDegradedProof": {
+      "status": "PASS",
+      "detail": "BullMQ distributed runtime is disabled."
+    },
+    "workerDegradedProof": {
+      "status": "PASS",
+      "detail": "Background workers disabled by configuration."
+    },
+    "healthProof": {
+      "status": "PASS",
+      "detail": "Health endpoint returned JSON."
+    },
+    "buildInfoProof": {
+      "status": "PASS",
+      "detail": "Build info endpoint returned JSON."
+    },
+    "authRouteProof": {
+      "status": "PASS",
+      "detail": "OPTIONS /auth/login returned 204."
+    },
+    "forgotPasswordRouteProof": {
+      "status": "PASS",
+      "detail": "OPTIONS /auth/forgot-password returned 204."
+    },
+    "resetPasswordRouteProof": {
+      "status": "PASS",
+      "detail": "OPTIONS /auth/reset-password returned 204."
+    },
+    "noHtmlResponseProof": {
+      "status": "PASS",
+      "detail": "Boot endpoints did not return HTML."
+    },
+    "bootFailureProof": {
+      "status": "PASS",
+      "detail": "No startup crash observed during probe window."
+    }
+  }
+}

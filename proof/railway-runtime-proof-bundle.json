@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-05-20T02:44:07.853Z",
+  "overallStatus": "FAIL",
+  "activeTarget": "https://parselradar-production.up.railway.app",
+  "commitHash": "",
+  "proofs": {
+    "activeTargetProof": {
+      "status": "PASS",
+      "detail": "Resolved active Railway target: https://parselradar-production.up.railway.app"
+    },
+    "targetHealthProof": {
+      "url": "https://parselradar-production.up.railway.app/health",
+      "status": "PASS",
+      "detail": "JSON response received.",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
+      "bodyPreview": "{\"status\":\"DISABLED\",\"runtimeStatus\":{\"state\":\"DISABLED\",\"reason\":\"Distributed runtime is disabled by configuration.\",\"mode\":\"standby\",\"redisConfigured\":false,\"bullmqConfigured\":false,\"distributedRuntimeEnabled\":false,\"c",
+      "allowOrigin": null,
+      "allowCredentials": "true",
+      "allowHeaders": null,
+      "allowMethods": null
+    },
+    "healthEndpointProof": {
+      "url": "https://parselradar-production.up.railway.app/health",
+      "status": "PASS",
+      "detail": "JSON response received.",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
+      "bodyPreview": "{\"status\":\"DISABLED\",\"runtimeStatus\":{\"state\":\"DISABLED\",\"reason\":\"Distributed runtime is disabled by configuration.\",\"mode\":\"standby\",\"redisConfigured\":false,\"bullmqConfigured\":false,\"distributedRuntimeEnabled\":false,\"c",
+      "allowOrigin": null,
+      "allowCredentials": "true",
+      "allowHeaders": null,
+      "allowMethods": null
+    },
+    "buildInfoEndpointProof": {
+      "url": "https://parselradar-production.up.railway.app/__buildinfo",
+      "status": "PASS",
+      "detail": "JSON response received.",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
+      "bodyPreview": "{\"gitSha\":\"ff6f09aba580190a1862944c788d2bbb9da7580d\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-19T18:23:37.204Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
+      "allowOrigin": null,
+      "allowCredentials": null,
+      "allowHeaders": null,
+      "allowMethods": null
+    },
+    "loginPreflightProof": {
+      "status": "PASS",
+      "detail": "Preflight returned an expected CORS status."
+    },
+    "forgotPreflightProof": {
+      "status": "PASS",
+      "detail": "Preflight returned an expected CORS status."
+    },
+    "resetPreflightProof": {
+      "status": "PASS",
+      "detail": "Preflight returned an expected CORS status."
+    },
+    "forgotPostProof": {
+      "status": "FAIL",
+      "detail": "Unexpected response status=404, contentType=application/json; charset=utf-8"
+    },
+    "runtimeBootProof": {
+      "status": "PASS",
+      "detail": "Local runtime boot proof is passing."
+    },
+    "liveApiTransportProof": {
+      "status": "WARN",
+      "detail": "Live API transport proof is missing or not passing."
+    },
+    "originHeaderProof": {
+      "status": "PASS",
+      "detail": "Observed ACAO headers: login=https://parselradar.vercel.app, forgot=https://parselradar.vercel.app, reset=https://parselradar.vercel.app"
+    },
+    "credentialsHeaderProof": {
+      "status": "PASS",
+      "detail": "Observed ACC headers: login=true, forgot=true, reset=true"
+    },
+    "allowedMethodsProof": {
+      "status": "PASS",
+      "detail": "Observed ACAM headers: login=GET,POST,PUT,PATCH,DELETE,OPTIONS, forgot=GET,POST,PUT,PATCH,DELETE,OPTIONS, reset=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    },
+    "allowedHeadersProof": {
+      "status": "PASS",
+      "detail": "Observed ACAH headers: login=Content-Type,Authorization,X-Request-Id, forgot=Content-Type,Authorization,X-Request-Id, reset=Content-Type,Authorization,X-Request-Id"
+    },
+    "noHtmlResponseProof": {
+      "status": "PASS",
+      "detail": "Checked that the runtime endpoints did not return HTML bodies."
+    }
+  }
+}

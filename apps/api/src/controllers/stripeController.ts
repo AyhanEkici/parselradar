@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
 import { logAuditEvent } from '../utils/auditLog';
-import { stripe } from '../services/stripeService';
+import { getStripeClient, getStripeRuntimeState } from '../services/stripeService';
 import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import CreditLedger from '../models/CreditLedger';
 import { STRIPE_WEBHOOK_SECRET } from '../config/env';
@@ -10,6 +10,22 @@ import { requireAuthUser } from '../utils/authUser';
 
 export const createCheckoutSession = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
+  const stripe = getStripeClient();
+  if (!stripe) {
+    await logAuditEvent({
+      type: 'stripe_checkout_create',
+      actorUserId: user._id.toString(),
+      actorRole: user.role,
+      targetType: 'User',
+      targetId: user._id.toString(),
+      message: 'Checkout disabled: Stripe unavailable',
+      metadata: { stripeState: getStripeRuntimeState().mode },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(503).json({ error: 'Stripe service unavailable' });
+  }
   const { creditAmount } = req.body;
   const allowedPackages = [25, 50];
   if (!creditAmount || !allowedPackages.includes(creditAmount)) {
@@ -86,6 +102,22 @@ export const createCheckoutSession = async (req: AuthRequest, res: Response) => 
 
 // Stripe webhook handler (raw body required)
 export const stripeWebhook = async (req: Request, res: Response) => {
+  const stripe = getStripeClient();
+  if (!stripe || !STRIPE_WEBHOOK_SECRET) {
+    await logAuditEvent({
+      type: 'stripe_webhook',
+      actorUserId: undefined,
+      actorRole: undefined,
+      targetType: 'Stripe',
+      targetId: undefined,
+      message: 'Webhook disabled: Stripe unavailable',
+      metadata: { stripeState: getStripeRuntimeState().mode },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(503).json({ error: 'Stripe service unavailable' });
+  }
   let event;
   try {
     const sig = req.headers['stripe-signature'];

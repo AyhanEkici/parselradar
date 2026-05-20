@@ -12,6 +12,22 @@ const env_1 = require("../config/env");
 const authUser_1 = require("../utils/authUser");
 const createCheckoutSession = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
+    const stripe = (0, stripeService_1.getStripeClient)();
+    if (!stripe) {
+        await (0, auditLog_1.logAuditEvent)({
+            type: 'stripe_checkout_create',
+            actorUserId: user._id.toString(),
+            actorRole: user.role,
+            targetType: 'User',
+            targetId: user._id.toString(),
+            message: 'Checkout disabled: Stripe unavailable',
+            metadata: { stripeState: (0, stripeService_1.getStripeRuntimeState)().mode },
+            ip: req.ip,
+            userAgent: req.get('user-agent'),
+            success: false,
+        });
+        return res.status(503).json({ error: 'Stripe service unavailable' });
+    }
     const { creditAmount } = req.body;
     const allowedPackages = [25, 50];
     if (!creditAmount || !allowedPackages.includes(creditAmount)) {
@@ -47,7 +63,7 @@ const createCheckoutSession = async (req, res) => {
         return res.status(500).json({ error: 'Stripe price ID not configured for requested credit amount' });
     }
     try {
-        const session = await stripeService_1.stripe.checkout.sessions.create({
+        const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'payment',
@@ -89,11 +105,27 @@ const createCheckoutSession = async (req, res) => {
 exports.createCheckoutSession = createCheckoutSession;
 // Stripe webhook handler (raw body required)
 const stripeWebhook = async (req, res) => {
+    const stripe = (0, stripeService_1.getStripeClient)();
+    if (!stripe || !env_1.STRIPE_WEBHOOK_SECRET) {
+        await (0, auditLog_1.logAuditEvent)({
+            type: 'stripe_webhook',
+            actorUserId: undefined,
+            actorRole: undefined,
+            targetType: 'Stripe',
+            targetId: undefined,
+            message: 'Webhook disabled: Stripe unavailable',
+            metadata: { stripeState: (0, stripeService_1.getStripeRuntimeState)().mode },
+            ip: req.ip,
+            userAgent: req.get('user-agent'),
+            success: false,
+        });
+        return res.status(503).json({ error: 'Stripe service unavailable' });
+    }
     let event;
     try {
         const sig = req.headers['stripe-signature'];
         const rawBody = req.rawBody || req.body;
-        event = stripeService_1.stripe.webhooks.constructEvent(rawBody, sig, env_1.STRIPE_WEBHOOK_SECRET);
+        event = stripe.webhooks.constructEvent(rawBody, sig, env_1.STRIPE_WEBHOOK_SECRET);
     }
     catch (err) {
         await (0, auditLog_1.logAuditEvent)({

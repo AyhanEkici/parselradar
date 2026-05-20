@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-05-20T02:16:24.478Z",
+  "generatedAt": "2026-05-20T02:18:45.986Z",
   "overallStatus": "FAIL",
   "activeTarget": "https://parselradar-production.up.railway.app",
-  "commitHash": "2293328de35faf810db87ba67fad89fba7a24028",
+  "commitHash": "e5b9b54f2ca42c7187e9383c815b868748fcd0b6",
   "proofs": {
     "railwayActiveDeploymentProof": {
       "status": "FAIL",
@@ -22,7 +22,7 @@
       "allowCredentials": null,
       "allowHeaders": null,
       "allowMethods": null,
-      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"1kQTad0VTCuYlRmj7fhULg\"}"
+      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"vSgbskyQRD2ajXbMvEOTxA\"}"
     },
     "buildInfoProof": {
       "status": "FAIL",
@@ -34,7 +34,7 @@
       "allowCredentials": null,
       "allowHeaders": null,
       "allowMethods": null,
-      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"UAzOIkoiTUWc5GLNEuroCg\"}"
+      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"6t6e1iNJQzSoEuFE2JZdWA\"}"
     },
     "authLoginOptionsProof": {
       "status": "FAIL",
