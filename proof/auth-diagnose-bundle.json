@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-05-20T00:44:52.163Z",
+  "overallStatus": "FAIL",
+  "userDiagnostics": [
+    {
+      "label": "pilot",
+      "expectedRole": "ADMIN",
+      "exists": true,
+      "emailInput": "not_provided",
+      "emailNormalized": "",
+      "emailExactMatch": false,
+      "emailCaseInsensitiveMatch": false,
+      "role": "ADMIN",
+      "roleHydrationValid": true,
+      "bcryptCompared": false,
+      "bcryptMatch": false,
+      "tokenIssued": false,
+      "tokenVerified": false,
+      "tokenValidationResult": "UNKNOWN",
+      "authRoutePresent": true,
+      "rootCauseHints": [
+        "missing_password_env_for_compare"
+      ],
+      "blockedReason": "Missing SECURITY_VERIFY_PILOT_PASSWORD"
+    },
+    {
+      "label": "AyhanEkici",
+      "expectedRole": "ADMIN",
+      "exists": true,
+      "emailInput": "not_provided",
+      "emailNormalized": "",
+      "emailExactMatch": false,
+      "emailCaseInsensitiveMatch": false,
+      "role": "USER",
+      "roleHydrationValid": false,
+      "bcryptCompared": false,
+      "bcryptMatch": false,
+      "tokenIssued": false,
+      "tokenVerified": false,
+      "tokenValidationResult": "UNKNOWN",
+      "authRoutePresent": true,
+      "rootCauseHints": [
+        "role_hydration_mismatch",
+        "missing_password_env_for_compare"
+      ],
+      "blockedReason": "Missing SECURITY_VERIFY_AYHAN_PASSWORD"
+    },
+    {
+      "label": "Mahir",
+      "expectedRole": "USER",
+      "exists": true,
+      "emailInput": "not_provided",
+      "emailNormalized": "",
+      "emailExactMatch": false,
+      "emailCaseInsensitiveMatch": false,
+      "role": "USER",
+      "roleHydrationValid": true,
+      "bcryptCompared": false,
+      "bcryptMatch": false,
+      "tokenIssued": false,
+      "tokenVerified": false,
+      "tokenValidationResult": "UNKNOWN",
+      "authRoutePresent": true,
+      "rootCauseHints": [
+        "missing_password_env_for_compare"
+      ],
+      "blockedReason": "Missing SECURITY_VERIFY_MAHIR_PASSWORD"
+    }
+  ],
+  "deploymentEnvProof": {
+    "status": "PASS",
+    "detail": "Core auth env present count=3/3",
+    "presentKeys": [
+      "MONGODB_URI",
+      "JWT_SECRET",
+      "CLIENT_URL"
+    ],
+    "missingKeys": []
+  },
+  "proofs": {
+    "mongoUserExistenceProof": {
+      "status": "PASS",
+      "detail": "All required users exist."
+    },
+    "bcryptVerificationProof": {
+      "status": "FAIL",
+      "detail": "bcrypt compare could not run for all users because required password env vars are missing."
+    },
+    "jwtIssuanceProof": {
+      "status": "FAIL",
+      "detail": "JWT issuance could not be validated for all users because bcrypt pre-checks did not pass."
+    },
+    "tokenVerificationProof": {
+      "status": "FAIL",
+      "detail": "Token verification failed or was not reachable for at least one required user."
+    },
+    "frontendAuthPersistenceProof": {
+      "status": "PASS",
+      "detail": "Auth context bootstrap, token persistence, bearer header injection, and invalid-token cleanup are present.",
+      "flags": {
+        "hasBootstrap": true,
+        "hasCleanup": true,
+        "hasTokenPersist": true,
+        "hasAuthHeader": true,
+        "hasLogoutCleanup": true
+      }
+    },
+    "roleHydrationProof": {
+      "status": "FAIL",
+      "detail": "Role mismatch or invalid role hydration detected."
+    },
+    "rootCauseProof": {
+      "status": "FAIL",
+      "detail": "missing_password_env_for_compare, role_hydration_mismatch"
+    }
+  },
+  "commitHash": "d996e74a7a75a0b31792c27d7a0d56c3b0a4056a"
+}

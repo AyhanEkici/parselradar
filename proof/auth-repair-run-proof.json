@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-05-20T00:44:41.595Z",
+  "overallStatus": "FAIL",
+  "results": [
+    {
+      "label": "pilot",
+      "userFound": true,
+      "emailNormalized": "",
+      "roleBefore": "ADMIN",
+      "roleAfter": "ADMIN",
+      "idPreserved": true,
+      "hashUpdated": false,
+      "ownershipSafe": true,
+      "reason": "missing_SECURITY_VERIFY_PILOT_PASSWORD"
+    },
+    {
+      "label": "AyhanEkici",
+      "userFound": true,
+      "emailNormalized": "",
+      "roleBefore": "USER",
+      "roleAfter": "USER",
+      "idPreserved": true,
+      "hashUpdated": false,
+      "ownershipSafe": true,
+      "reason": "missing_SECURITY_VERIFY_AYHAN_PASSWORD"
+    },
+    {
+      "label": "Mahir",
+      "userFound": true,
+      "emailNormalized": "",
+      "roleBefore": "USER",
+      "roleAfter": "USER",
+      "idPreserved": true,
+      "hashUpdated": false,
+      "ownershipSafe": true,
+      "reason": "missing_SECURITY_VERIFY_MAHIR_PASSWORD"
+    }
+  ],
+  "proofs": {
+    "repairedUserProof": {
+      "status": "FAIL",
+      "detail": "Repair could not complete for all required users (missing passwords or unresolved lookup)."
+    },
+    "noOwnershipCorruptionProof": {
+      "status": "PASS",
+      "detail": "Mongo _id values preserved; ownership/reference continuity maintained."
+    }
+  },
+  "commitHash": "d996e74a7a75a0b31792c27d7a0d56c3b0a4056a"
+}

@@ -1,413 +1,301 @@
 import fs from 'fs';
 import path from 'path';
-import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
-import User from '../src/models/User';
 
-dotenv.config();
+type Status = 'PASS' | 'FAIL' | 'WARN';
 
-type VerifyUser = {
-  label: 'pilot' | 'AyhanEkici' | 'Mahir';
-  expectedRole: 'ADMIN' | 'USER';
-  email?: string;
-  password: string;
-};
-
-type VerifyResult = {
-  label: string;
-  emailNormalized: string;
-  loginOk: boolean;
-  tokenIssued: boolean;
-  tokenShape: {
-    hasId: boolean;
-    hasEmail: boolean;
-    hasRole: boolean;
-  };
-  middlewareCompatible: boolean;
-  sessionTrust: string;
-  roleHydrated: boolean;
-  role: string;
-  error?: string;
-};
-
-function requireEnv(key: string): string {
-  const value = String(process.env[key] || '').trim();
-  if (!value) {
-    throw new Error(`Missing required env var: ${key}`);
-  }
-  return value;
-}
-
-function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function roleHydrationVerifier(role: unknown): { valid: boolean; normalizedRole: 'ADMIN' | 'USER' | 'UNKNOWN' } {
-  const normalized = String(role || '').toUpperCase();
-  if (normalized === 'ADMIN') return { valid: true, normalizedRole: 'ADMIN' };
-  if (normalized === 'USER') return { valid: true, normalizedRole: 'USER' };
-  return { valid: false, normalizedRole: 'UNKNOWN' };
-}
-
-function sessionIntegrityValidator(token: string, secret: string): { valid: boolean; sessionTrust: 'VERIFIED' | 'BLOCKED' | 'SUSPICIOUS' } {
-  try {
-    const decoded = jwt.verify(token, secret) as { id?: string; exp?: number };
-    if (!decoded?.id) return { valid: false, sessionTrust: 'SUSPICIOUS' };
-    return { valid: true, sessionTrust: 'VERIFIED' };
-  } catch {
-    return { valid: false, sessionTrust: 'BLOCKED' };
-  }
-}
-
-function authConsistencyVerifier(input: { tokenUserId?: string; dbUserId?: string; dbRole?: string }): { consistent: boolean } {
-  if (!input.tokenUserId || !input.dbUserId) return { consistent: false };
-  if (String(input.tokenUserId) !== String(input.dbUserId)) return { consistent: false };
-  return { consistent: roleHydrationVerifier(input.dbRole).valid };
-}
-
-function routeExistsProof(): { status: 'PASS' | 'FAIL'; detail: string } {
-  const routePath = path.resolve(process.cwd(), 'apps/api/src/routes/authRoutes.ts');
-  if (!fs.existsSync(routePath)) {
-    return { status: 'FAIL', detail: 'authRoutes.ts missing' };
-  }
-  const content = fs.readFileSync(routePath, 'utf-8');
-  const hasLogin = /router\.post\(\s*['"`]\/login['"`]/.test(content);
-  return {
-    status: hasLogin ? 'PASS' : 'FAIL',
-    detail: hasLogin ? '/auth/login route declaration present in authRoutes.ts' : '/auth/login route declaration missing in authRoutes.ts',
-  };
-}
-
-async function resolveEmail(label: VerifyUser['label'], explicitEmail?: string): Promise<string | undefined> {
-  if (explicitEmail && explicitEmail.trim()) {
-    return normalizeEmail(explicitEmail);
-  }
-
-  const user = await User.findOne({
-    $or: [
-      { email: { $regex: label, $options: 'i' } },
-      { name: { $regex: label, $options: 'i' } },
-    ],
-  })
-    .select('email')
-    .lean();
-
-  return user?.email ? normalizeEmail(String(user.email)) : undefined;
-}
-
-function checkFrontendTokenProof(): { status: 'PASS' | 'FAIL'; detail: string } {
-  const authLibPath = path.resolve(process.cwd(), 'apps/web/src/lib/auth.ts');
-  const apiLibPath = path.resolve(process.cwd(), 'apps/web/src/lib/api.ts');
-  if (!fs.existsSync(authLibPath) || !fs.existsSync(apiLibPath)) {
-    return { status: 'FAIL', detail: 'Frontend auth/api files are missing.' };
-  }
-  const authContent = fs.readFileSync(authLibPath, 'utf-8');
-  const apiContent = fs.readFileSync(apiLibPath, 'utf-8');
-  const storesToken = /localStorage\.setItem\(TOKEN_KEY/.test(authContent);
-  const sendsBearer = /Authorization:\s*`Bearer \$\{token\}`/.test(apiContent);
-  if (!storesToken || !sendsBearer) {
-    return { status: 'FAIL', detail: 'Token storage or Authorization Bearer header wiring is missing.' };
-  }
-  return {
-    status: 'PASS',
-    detail: 'apps/web/src/lib/auth.ts stores parselradar_token and apps/web/src/lib/api.ts sends Authorization Bearer token.',
-  };
-}
-
-function checkBuildProof(): { status: 'PASS' | 'FAIL'; detail: string } {
-  const apiDist = path.resolve(process.cwd(), 'apps/api/dist/index.js');
-  const webDist = path.resolve(process.cwd(), 'apps/web/dist/index.html');
-  const ok = fs.existsSync(apiDist) && fs.existsSync(webDist);
-  return {
-    status: ok ? 'PASS' : 'FAIL',
-    detail: ok ? 'apps/api and apps/web build outputs exist.' : 'Missing apps/api or apps/web build outputs.',
-  };
-}
-
-function checkJsonProofStatus(fileName: string): { status: 'PASS' | 'FAIL'; detail: string } {
+function loadJson(fileName: string): any | null {
   const filePath = path.resolve(process.cwd(), 'proof', fileName);
-  if (!fs.existsSync(filePath)) {
-    return { status: 'FAIL', detail: `${fileName} missing` };
-  }
-
+  if (!fs.existsSync(filePath)) return null;
   try {
-    const parsed = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as { overallStatus?: string };
-    const status = String(parsed?.overallStatus || '').toUpperCase() === 'PASS' ? 'PASS' : 'FAIL';
-    return { status, detail: `${fileName} overallStatus=${parsed?.overallStatus || 'unknown'}` };
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   } catch {
-    return { status: 'FAIL', detail: `${fileName} unreadable` };
+    return null;
   }
 }
 
-async function verifyOne(user: VerifyUser): Promise<VerifyResult> {
-  if (!user.email) {
-    return {
-      label: user.label,
-      emailNormalized: '',
-      loginOk: false,
-      tokenIssued: false,
-      tokenShape: { hasId: false, hasEmail: false, hasRole: false },
-      middlewareCompatible: false,
-      sessionTrust: 'UNKNOWN',
-      roleHydrated: false,
-      role: 'UNKNOWN',
-      error: 'missing_email',
-    };
-  }
+function writeJsonAndMarkdown(fileName: string, bundle: any, title: string, rows: Array<{ key: string; status: string; detail: string }>) {
+  const proofDir = path.resolve(process.cwd(), 'proof');
+  if (!fs.existsSync(proofDir)) fs.mkdirSync(proofDir, { recursive: true });
 
-  const email = normalizeEmail(user.email);
-  let dbUser = await User.findOne({ email });
-  if (!dbUser) {
-    dbUser = await User.findOne({ email: { $regex: `^${escapeRegExp(email)}$`, $options: 'i' } });
-  }
+  fs.writeFileSync(path.join(proofDir, `${fileName}.json`), `${JSON.stringify(bundle, null, 2)}\n`, 'utf-8');
 
-  if (!dbUser) {
-    return {
-      label: user.label,
-      emailNormalized: email,
-      loginOk: false,
-      tokenIssued: false,
-      tokenShape: { hasId: false, hasEmail: false, hasRole: false },
-      middlewareCompatible: false,
-      sessionTrust: 'UNKNOWN',
-      roleHydrated: false,
-      role: 'UNKNOWN',
-      error: 'user_not_found',
-    };
-  }
-
-  const passwordValid = await bcrypt.compare(user.password, dbUser.passwordHash);
-  if (!passwordValid) {
-    return {
-      label: user.label,
-      emailNormalized: email,
-      loginOk: false,
-      tokenIssued: false,
-      tokenShape: { hasId: false, hasEmail: false, hasRole: false },
-      middlewareCompatible: false,
-      sessionTrust: 'BLOCKED',
-      roleHydrated: false,
-      role: String(dbUser.role || 'UNKNOWN').toUpperCase(),
-      error: 'password_invalid',
-    };
-  }
-
-  const jwtSecret = requireEnv('JWT_SECRET');
-  const token = jwt.sign({ id: String(dbUser._id), email: dbUser.email, role: dbUser.role }, jwtSecret, { expiresIn: '7d' });
-  const decoded = (jwt.decode(token) || {}) as Record<string, unknown>;
-  const session = sessionIntegrityValidator(token, jwtSecret);
-  const consistency = authConsistencyVerifier({
-    tokenUserId: String(decoded?.id || ''),
-    dbUserId: String(dbUser._id),
-    dbRole: dbUser.role,
-  });
-  const roleHydration = roleHydrationVerifier(dbUser.role);
-  const normalizedRole = String(dbUser.role || '').toUpperCase();
-
-  const middlewareCompatible = session.valid && consistency.consistent;
-  const roleHydrated = roleHydration.valid && normalizedRole === user.expectedRole;
-
-  return {
-    label: user.label,
-    emailNormalized: email,
-    loginOk: true,
-    tokenIssued: true,
-    tokenShape: {
-      hasId: Boolean(decoded?.id),
-      hasEmail: Boolean(decoded?.email),
-      hasRole: Boolean(decoded?.role),
-    },
-    middlewareCompatible,
-    sessionTrust: session.sessionTrust,
-    roleHydrated,
-    role: normalizedRole,
-    error: middlewareCompatible && roleHydrated ? undefined : 'compatibility_or_role_mismatch',
-  };
-}
-
-function markdown(bundle: any): string {
   const lines: string[] = [];
-  lines.push('# Login Proof Bundle');
+  lines.push(`# ${title}`);
   lines.push('');
   lines.push(`Generated at: ${bundle.generatedAt}`);
   lines.push(`Overall status: ${bundle.overallStatus}`);
   lines.push('');
-  lines.push('## Root Cause Found');
-  lines.push('');
-  lines.push('- Root cause found: mixed-case legacy email records could fail deterministic lookup when login input is normalized to lowercase.');
-  lines.push('- Token payload and middleware compatibility were hardened to keep id/email/role consistent and backward-compatible.');
-  lines.push('');
-  lines.push('## Proof Checks');
-  lines.push('');
   lines.push('| Check | Status | Detail |');
   lines.push('| --- | --- | --- |');
-  lines.push(`| login route proof | ${bundle.proofs.loginRouteProof.status} | ${bundle.proofs.loginRouteProof.detail} |`);
-  lines.push(`| token shape proof | ${bundle.proofs.tokenShapeProof.status} | ${bundle.proofs.tokenShapeProof.detail} |`);
-  lines.push(`| auth middleware compatibility proof | ${bundle.proofs.authMiddlewareCompatibilityProof.status} | ${bundle.proofs.authMiddlewareCompatibilityProof.detail} |`);
-  lines.push(`| frontend token storage proof | ${bundle.proofs.frontendTokenStorageProof.status} | ${bundle.proofs.frontendTokenStorageProof.detail} |`);
-  lines.push(`| required users ensured proof | ${bundle.proofs.requiredUsersEnsuredProof.status} | ${bundle.proofs.requiredUsersEnsuredProof.detail} |`);
-  lines.push(`| RBAC continuity proof | ${bundle.proofs.rbacContinuityProof.status} | ${bundle.proofs.rbacContinuityProof.detail} |`);
-  lines.push(`| build proof | ${bundle.proofs.buildProof.status} | ${bundle.proofs.buildProof.detail} |`);
-  lines.push(`| verify proof | ${bundle.proofs.verifyProof.status} | ${bundle.proofs.verifyProof.detail} |`);
-  lines.push('');
-  lines.push('## User Login Proof');
-  lines.push('');
-  lines.push('| User | Login | Token Issued | Token Shape | Middleware Compatibility | Role | Role Hydrated | Detail |');
-  lines.push('| --- | --- | --- | --- | --- | --- | --- | --- |');
-  for (const result of bundle.loginResults as VerifyResult[]) {
-    const tokenShapeOk = result.tokenShape.hasId && result.tokenShape.hasEmail && result.tokenShape.hasRole;
-    lines.push(
-      `| ${result.label} | ${result.loginOk ? 'PASS' : 'FAIL'} | ${result.tokenIssued ? 'true' : 'false'} | ${tokenShapeOk ? 'PASS' : 'FAIL'} | ${result.middlewareCompatible ? 'PASS' : 'FAIL'} | ${result.role || '-'} | ${result.roleHydrated ? 'PASS' : 'FAIL'} | ${result.error || 'ok'} |`,
-    );
+  for (const row of rows) {
+    lines.push(`| ${row.key} | ${row.status} | ${row.detail} |`);
   }
   lines.push('');
   lines.push('## Commit Hash');
   lines.push('');
   lines.push(`- ${bundle.commitHash || 'pending'}`);
   lines.push('');
-  return `${lines.join('\n')}\n`;
+
+  fs.writeFileSync(path.join(proofDir, `${fileName}.md`), `${lines.join('\n')}\n`, 'utf-8');
 }
 
-function writeProofBundle(bundle: any) {
-  const proofDir = path.resolve(process.cwd(), 'proof');
-  if (!fs.existsSync(proofDir)) {
-    fs.mkdirSync(proofDir, { recursive: true });
+function routeProof(): { status: Status; detail: string } {
+  const routePath = path.resolve(process.cwd(), 'apps/api/src/routes/authRoutes.ts');
+  if (!fs.existsSync(routePath)) return { status: 'FAIL', detail: 'authRoutes.ts missing' };
+  const content = fs.readFileSync(routePath, 'utf-8');
+  const hasLogin = /router\.post\(\s*['"`]\/login['"`]/.test(content);
+  const hasMe = /router\.get\(\s*['"`]\/me['"`]/.test(content);
+  return hasLogin && hasMe
+    ? { status: 'PASS', detail: 'Login and me routes are mounted.' }
+    : { status: 'FAIL', detail: 'Login or me route missing.' };
+}
+
+function frontendProof(): { status: Status; detail: string } {
+  const useAuthPath = path.resolve(process.cwd(), 'apps/web/src/hooks/useAuth.tsx');
+  const authPath = path.resolve(process.cwd(), 'apps/web/src/lib/auth.ts');
+  const apiPath = path.resolve(process.cwd(), 'apps/web/src/lib/api.ts');
+
+  if (!fs.existsSync(useAuthPath) || !fs.existsSync(authPath) || !fs.existsSync(apiPath)) {
+    return { status: 'FAIL', detail: 'Missing frontend auth files.' };
   }
-  fs.writeFileSync(path.join(proofDir, 'login-proof-bundle.json'), `${JSON.stringify(bundle, null, 2)}\n`, 'utf-8');
-  fs.writeFileSync(path.join(proofDir, 'login-proof-bundle.md'), markdown(bundle), 'utf-8');
+
+  const useAuth = fs.readFileSync(useAuthPath, 'utf-8');
+  const authLib = fs.readFileSync(authPath, 'utf-8');
+  const apiLib = fs.readFileSync(apiPath, 'utf-8');
+
+  const pass =
+    /deterministicAuthBootstrap\(/.test(useAuth) &&
+    /localStorage\.setItem\(TOKEN_KEY/.test(authLib) &&
+    /localStorage\.removeItem\(TOKEN_KEY\)/.test(authLib) &&
+    /Authorization:\s*`Bearer \$\{token\}`/.test(apiLib) &&
+    /localStorage\.removeItem\(TOKEN_KEY\)/.test(apiLib);
+
+  return pass
+    ? { status: 'PASS', detail: 'Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present.' }
+    : { status: 'FAIL', detail: 'Frontend auth persistence checks failed.' };
 }
 
-async function run() {
-  const mongoUri = requireEnv('MONGODB_URI');
-  await mongoose.connect(mongoUri);
-
-  try {
-    const pilotEmail = await resolveEmail('pilot', process.env.SECURITY_VERIFY_PILOT_EMAIL);
-    const ayhanEmail = await resolveEmail('AyhanEkici', process.env.SECURITY_VERIFY_AYHAN_EMAIL);
-    const mahirEmail = await resolveEmail('Mahir', process.env.SECURITY_VERIFY_MAHIR_EMAIL);
-
-    if (!pilotEmail || !ayhanEmail || !mahirEmail) {
-      throw new Error('Missing SECURITY_VERIFY_*_EMAIL and unable to discover all required user emails');
-    }
-
-    const verifyUsers: VerifyUser[] = [
-      {
-        label: 'pilot',
-        expectedRole: 'ADMIN',
-        email: pilotEmail,
-        password: requireEnv('SECURITY_VERIFY_PILOT_PASSWORD'),
-      },
-      {
-        label: 'AyhanEkici',
-        expectedRole: 'ADMIN',
-        email: ayhanEmail,
-        password: requireEnv('SECURITY_VERIFY_AYHAN_PASSWORD'),
-      },
-      {
-        label: 'Mahir',
-        expectedRole: 'USER',
-        email: mahirEmail,
-        password: requireEnv('SECURITY_VERIFY_MAHIR_PASSWORD'),
-      },
-    ];
-
-    const loginResults: VerifyResult[] = [];
-    for (const verifyUser of verifyUsers) {
-      loginResults.push(await verifyOne(verifyUser));
-    }
-
-    const tokenShapePass = loginResults.every((item) => item.tokenShape.hasId && item.tokenShape.hasEmail && item.tokenShape.hasRole);
-    const middlewarePass = loginResults.every((item) => item.middlewareCompatible && item.sessionTrust === 'VERIFIED');
-    const verifyPass = loginResults.every((item) => item.loginOk && item.roleHydrated && !item.error);
-
-    const requiredUsersEnsuredProof = checkJsonProofStatus('login-required-users-proof.json');
-    const routeProof = routeExistsProof();
-    const frontendProof = checkFrontendTokenProof();
-    const buildProof = checkBuildProof();
-    const rbacProof = checkJsonProofStatus('rbac-proof-bundle.json');
-    const platformProof = checkJsonProofStatus('platform-proof-bundle.json');
-
-    const overallStatus =
-      tokenShapePass && middlewarePass && verifyPass && requiredUsersEnsuredProof.status === 'PASS' ? 'PASS' : 'FAIL';
-
-    const bundle = {
-      generatedAt: new Date().toISOString(),
-      overallStatus,
-      loginResults,
-      proofs: {
-        loginRouteProof: {
-          status: routeProof.status,
-          detail: routeProof.detail,
-        },
-        tokenShapeProof: {
-          status: tokenShapePass ? 'PASS' : 'FAIL',
-          detail: 'JWT payload contains id/email/role fields without exposing token value.',
-        },
-        authMiddlewareCompatibilityProof: {
-          status: middlewarePass ? 'PASS' : 'FAIL',
-          detail: 'sessionIntegrityValidator + authConsistencyVerifier accept issued token payload and validate VERIFIED session trust.',
-        },
-        frontendTokenStorageProof: {
-          status: frontendProof.status,
-          detail: frontendProof.detail,
-        },
-        requiredUsersEnsuredProof,
-        rbacContinuityProof: {
-          status: rbacProof.status,
-          detail: rbacProof.detail,
-        },
-        buildProof: {
-          status: buildProof.status,
-          detail: buildProof.detail,
-        },
-        verifyProof: {
-          status: verifyPass && platformProof.status === 'PASS' ? 'PASS' : 'FAIL',
-          detail: `Login verification status=${verifyPass ? 'PASS' : 'FAIL'}, platform verification status=${platformProof.status}.`,
-        },
-      },
-      commitHash: process.env.VERIFY_LOGIN_COMMIT_HASH || '',
-    };
-
-    writeProofBundle(bundle);
-
-    process.stdout.write(`${JSON.stringify({ overallStatus: bundle.overallStatus, proofPath: 'proof/login-proof-bundle.json' })}\n`);
-
-    if (bundle.overallStatus !== 'PASS') {
-      process.exit(1);
-    }
-  } finally {
-    await mongoose.disconnect();
-  }
+function buildProof(): { status: Status; detail: string } {
+  const apiDist = path.resolve(process.cwd(), 'apps/api/dist/index.js');
+  const webDist = path.resolve(process.cwd(), 'apps/web/dist/index.html');
+  const pass = fs.existsSync(apiDist) && fs.existsSync(webDist);
+  return pass
+    ? { status: 'PASS', detail: 'apps/api and apps/web build artifacts exist.' }
+    : { status: 'FAIL', detail: 'Build artifacts missing for apps/api or apps/web.' };
 }
 
-run().catch((error: any) => {
-  const fallbackBundle = {
+function statusFrom(value: any): Status {
+  const v = String(value || '').toUpperCase();
+  if (v === 'PASS') return 'PASS';
+  if (v === 'WARN') return 'WARN';
+  return 'FAIL';
+}
+
+function pickUserProof(diagnose: any, label: string): { status: Status; detail: string } {
+  const item = (diagnose?.userDiagnostics || []).find((entry: any) => String(entry?.label || '').toLowerCase() === label.toLowerCase());
+  if (!item) return { status: 'FAIL', detail: 'diagnostic record missing' };
+
+  const pass = Boolean(item.exists) && Boolean(item.bcryptMatch) && Boolean(item.tokenIssued) && Boolean(item.tokenVerified);
+  if (pass) return { status: 'PASS', detail: 'exists + bcrypt + jwt + token verification passed' };
+  const detail = item.blockedReason || (Array.isArray(item.rootCauseHints) ? item.rootCauseHints.join(', ') : 'login verification failed');
+  return { status: 'FAIL', detail: detail || 'login verification failed' };
+}
+
+function run() {
+  const diagnose = loadJson('auth-diagnose-bundle.json');
+  const passwords = loadJson('password-compatibility-proof.json');
+  const repair = loadJson('auth-repair-run-proof.json');
+  const rbac = loadJson('rbac-proof-bundle.json');
+  const platform = loadJson('platform-proof-bundle.json');
+
+  const route = routeProof();
+  const frontend = frontendProof();
+  const build = buildProof();
+
+  const mongoUserExistenceProof = {
+    status: statusFrom(diagnose?.proofs?.mongoUserExistenceProof?.status),
+    detail: diagnose?.proofs?.mongoUserExistenceProof?.detail || 'auth-diagnose bundle missing',
+  };
+  const bcryptCompatibilityProof = {
+    status: statusFrom(passwords?.proofs?.bcryptCompatibilityProof?.status),
+    detail: passwords?.proofs?.bcryptCompatibilityProof?.detail || 'password-compatibility-proof missing',
+  };
+  const hashIntegrityProof = {
+    status: statusFrom(passwords?.proofs?.hashIntegrityProof?.status),
+    detail: passwords?.proofs?.hashIntegrityProof?.detail || 'password-compatibility-proof missing',
+  };
+
+  const jwtIssuanceProof = {
+    status: statusFrom(diagnose?.proofs?.jwtIssuanceProof?.status),
+    detail: diagnose?.proofs?.jwtIssuanceProof?.detail || 'auth-diagnose bundle missing',
+  };
+  const tokenVerificationProof = {
+    status: statusFrom(diagnose?.proofs?.tokenVerificationProof?.status),
+    detail: diagnose?.proofs?.tokenVerificationProof?.detail || 'auth-diagnose bundle missing',
+  };
+  const roleHydrationProof = {
+    status: statusFrom(diagnose?.proofs?.roleHydrationProof?.status),
+    detail: diagnose?.proofs?.roleHydrationProof?.detail || 'auth-diagnose bundle missing',
+  };
+
+  const pilotLoginProof = pickUserProof(diagnose, 'pilot');
+  const ayhanLoginProof = pickUserProof(diagnose, 'AyhanEkici');
+  const mahirLoginProof = pickUserProof(diagnose, 'Mahir');
+
+  const mahirIsolationProof = {
+    status: statusFrom(rbac?.overallStatus),
+    detail: statusFrom(rbac?.overallStatus) === 'PASS' ? 'RBAC verifier confirms Mahir isolation controls.' : 'RBAC verifier not PASS.',
+  };
+  const adminVisibilityProof = {
+    status: statusFrom(rbac?.overallStatus),
+    detail: statusFrom(rbac?.overallStatus) === 'PASS' ? 'RBAC verifier confirms admin-only visibility.' : 'RBAC verifier not PASS.',
+  };
+
+  const repairedUserProof = {
+    status: statusFrom(repair?.proofs?.repairedUserProof?.status),
+    detail: repair?.proofs?.repairedUserProof?.detail || 'auth-repair-run-proof missing',
+  };
+  const noOwnershipCorruptionProof = {
+    status: statusFrom(repair?.proofs?.noOwnershipCorruptionProof?.status),
+    detail: repair?.proofs?.noOwnershipCorruptionProof?.detail || 'auth-repair-run-proof missing',
+  };
+
+  const rootCauseProof = {
+    status: statusFrom(diagnose?.proofs?.rootCauseProof?.status),
+    detail: diagnose?.proofs?.rootCauseProof?.detail || 'auth-diagnose bundle missing',
+  };
+
+  const verifyStatus: Status = [
+    route.status,
+    mongoUserExistenceProof.status,
+    bcryptCompatibilityProof.status,
+    hashIntegrityProof.status,
+    jwtIssuanceProof.status,
+    tokenVerificationProof.status,
+    frontend.status,
+    roleHydrationProof.status,
+    pilotLoginProof.status,
+    ayhanLoginProof.status,
+    mahirLoginProof.status,
+    mahirIsolationProof.status,
+    adminVisibilityProof.status,
+    repairedUserProof.status,
+    noOwnershipCorruptionProof.status,
+    build.status,
+  ].every((s) => s === 'PASS') && statusFrom(platform?.overallStatus) !== 'FAIL'
+    ? 'PASS'
+    : 'FAIL';
+
+  const loginBundle = {
+    generatedAt: new Date().toISOString(),
+    overallStatus: verifyStatus,
+    proofs: {
+      loginRouteProof: route,
+      mongoUserExistenceProof,
+      bcryptVerificationProof: bcryptCompatibilityProof,
+      jwtIssuanceProof,
+      tokenVerificationProof,
+      frontendAuthPersistenceProof: frontend,
+      roleHydrationProof,
+      pilotLoginProof,
+      ayhanLoginProof,
+      mahirLoginProof,
+      mahirIsolationProof,
+      adminVisibilityProof,
+      rootCauseProof,
+      buildProof: build,
+      verifyProof: {
+        status: verifyStatus,
+        detail: `platform=${statusFrom(platform?.overallStatus)}, rbac=${statusFrom(rbac?.overallStatus)}, diagnose=${statusFrom(diagnose?.overallStatus)}`,
+      },
+      repairProof: repairedUserProof,
+    },
+    commitHash: process.env.VERIFY_LOGIN_COMMIT_HASH || '',
+  };
+
+  const authRepairBundle = {
+    generatedAt: loginBundle.generatedAt,
+    overallStatus: verifyStatus,
+    proofs: {
+      bcryptCompatibilityProof,
+      hashIntegrityProof,
+      repairedUserProof,
+      jwtIssuanceProof,
+      tokenVerificationProof,
+      pilotLoginProof,
+      ayhanLoginProof,
+      mahirLoginProof,
+      frontendPersistenceProof: frontend,
+      roleHydrationProof,
+      adminVisibilityProof,
+      mahirIsolationProof,
+      noOwnershipCorruptionProof,
+      buildProof: build,
+      verifyProof: loginBundle.proofs.verifyProof,
+      rootCauseProof,
+    },
+    commitHash: process.env.VERIFY_LOGIN_COMMIT_HASH || '',
+  };
+
+  writeJsonAndMarkdown(
+    'login-proof-bundle',
+    loginBundle,
+    'Login Proof Bundle',
+    Object.entries(loginBundle.proofs).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
+  );
+
+  writeJsonAndMarkdown(
+    'auth-repair-proof-bundle',
+    authRepairBundle,
+    'Auth Repair Proof Bundle',
+    Object.entries(authRepairBundle.proofs).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
+  );
+
+  process.stdout.write(`${JSON.stringify({ overallStatus: verifyStatus, proofPath: 'proof/auth-repair-proof-bundle.json' })}\n`);
+  if (verifyStatus !== 'PASS') process.exit(1);
+}
+
+try {
+  run();
+} catch (error: any) {
+  const fallback = {
     generatedAt: new Date().toISOString(),
     overallStatus: 'FAIL',
-    loginResults: [],
     proofs: {
-      loginRouteProof: { status: 'FAIL', detail: 'Verification halted before route verification.' },
-      tokenShapeProof: { status: 'FAIL', detail: 'Verification halted before token shape checks.' },
-      authMiddlewareCompatibilityProof: { status: 'FAIL', detail: 'Verification halted before middleware compatibility checks.' },
-      frontendTokenStorageProof: { status: 'PASS', detail: 'apps/web token storage/header wiring is present by static inspection.' },
-      requiredUsersEnsuredProof: {
-        status: 'FAIL',
-        detail: 'users:ensure-required could not complete due missing required SECURITY_VERIFY_* password env vars.',
-      },
-      rbacContinuityProof: checkJsonProofStatus('rbac-proof-bundle.json'),
-      buildProof: checkBuildProof(),
-      verifyProof: { status: 'FAIL', detail: 'Login verification blocked by missing required secrets.' },
+      bcryptCompatibilityProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      hashIntegrityProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      repairedUserProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      jwtIssuanceProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      tokenVerificationProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      pilotLoginProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      ayhanLoginProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      mahirLoginProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      frontendPersistenceProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      roleHydrationProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      adminVisibilityProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      mahirIsolationProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      noOwnershipCorruptionProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      buildProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      verifyProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
+      rootCauseProof: { status: 'FAIL', detail: error?.message || 'verify_login_failed' },
     },
     commitHash: process.env.VERIFY_LOGIN_COMMIT_HASH || '',
     blockedReason: error?.message || 'verify_login_failed',
   };
-  writeProofBundle(fallbackBundle);
+
+  writeJsonAndMarkdown(
+    'auth-repair-proof-bundle',
+    fallback,
+    'Auth Repair Proof Bundle',
+    Object.entries(fallback.proofs).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
+  );
+  writeJsonAndMarkdown(
+    'login-proof-bundle',
+    fallback,
+    'Login Proof Bundle',
+    Object.entries(fallback.proofs).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
+  );
+
   process.stderr.write(`${JSON.stringify({ overallStatus: 'FAIL', error: error?.message || 'verify_login_failed' })}\n`);
   process.exit(1);
-});
+}

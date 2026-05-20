@@ -1,32 +1,28 @@
 # Login Proof Bundle
 
-Generated at: 2026-05-20T00:25:31.104Z
+Generated at: 2026-05-20T00:44:58.772Z
 Overall status: FAIL
-
-## Root Cause Found
-
-- Root cause found: mixed-case legacy email records could fail deterministic lookup when login input is normalized to lowercase.
-- Token payload and middleware compatibility were hardened to keep id/email/role consistent and backward-compatible.
-
-## Proof Checks
 
 | Check | Status | Detail |
 | --- | --- | --- |
-| login route proof | FAIL | Verification halted before route verification. |
-| token shape proof | FAIL | Verification halted before token shape checks. |
-| auth middleware compatibility proof | FAIL | Verification halted before middleware compatibility checks. |
-| frontend token storage proof | PASS | apps/web token storage/header wiring is present by static inspection. |
-| required users ensured proof | FAIL | users:ensure-required could not complete due missing required SECURITY_VERIFY_* password env vars. |
-| RBAC continuity proof | PASS | rbac-proof-bundle.json overallStatus=PASS |
-| build proof | PASS | apps/api and apps/web build outputs exist. |
-| verify proof | FAIL | Login verification blocked by missing required secrets. |
-
-## User Login Proof
-
-| User | Login | Token Issued | Token Shape | Middleware Compatibility | Role | Role Hydrated | Detail |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| loginRouteProof | PASS | Login and me routes are mounted. |
+| mongoUserExistenceProof | PASS | All required users exist. |
+| bcryptVerificationProof | FAIL | bcrypt compare failed for at least one required user. |
+| jwtIssuanceProof | FAIL | JWT issuance could not be validated for all users because bcrypt pre-checks did not pass. |
+| tokenVerificationProof | FAIL | Token verification failed or was not reachable for at least one required user. |
+| frontendAuthPersistenceProof | PASS | Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
+| roleHydrationProof | FAIL | Role mismatch or invalid role hydration detected. |
+| pilotLoginProof | FAIL | Missing SECURITY_VERIFY_PILOT_PASSWORD |
+| ayhanLoginProof | FAIL | Missing SECURITY_VERIFY_AYHAN_PASSWORD |
+| mahirLoginProof | FAIL | Missing SECURITY_VERIFY_MAHIR_PASSWORD |
+| mahirIsolationProof | PASS | RBAC verifier confirms Mahir isolation controls. |
+| adminVisibilityProof | PASS | RBAC verifier confirms admin-only visibility. |
+| rootCauseProof | FAIL | missing_password_env_for_compare, role_hydration_mismatch |
+| buildProof | PASS | apps/api and apps/web build artifacts exist. |
+| verifyProof | FAIL | platform=WARN, rbac=PASS, diagnose=FAIL |
+| repairProof | FAIL | Repair could not complete for all required users (missing passwords or unresolved lookup). |
 
 ## Commit Hash
 
-- f5ba44ecfdddea1691f09fb008baaff46838c3cb
+- d996e74a7a75a0b31792c27d7a0d56c3b0a4056a
 
