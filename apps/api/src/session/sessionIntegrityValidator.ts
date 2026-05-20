@@ -14,19 +14,11 @@ export type SessionIntegrityResult = {
 
 export function sessionIntegrityValidator(token?: string | null): SessionIntegrityResult {
   if (!token) {
-    console.error('[sessionIntegrityValidator] NO TOKEN PROVIDED');
     return { valid: false, sessionTrust: 'UNKNOWN', reason: 'MISSING_TOKEN' };
   }
 
   try {
-    console.log('[sessionIntegrityValidator] ATTEMPTING VERIFICATION', {
-      tokenLength: token.length,
-      tokenStart: token.substring(0, 20),
-      jwtSecretLength: JWT_SECRET?.length,
-      jwtSecretStart: JWT_SECRET?.substring(0, 5),
-    });
     const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; exp?: number; iat?: number };
-    console.log('[sessionIntegrityValidator] VERIFICATION SUCCESS');
     const tokenUserId = decoded?.id || decoded?.userId || decoded?.sub;
     if (!tokenUserId) {
       return { valid: false, sessionTrust: 'SUSPICIOUS', reason: 'TOKEN_PAYLOAD_MISSING_SUBJECT' };
@@ -54,19 +46,10 @@ export function sessionIntegrityValidator(token?: string | null): SessionIntegri
   } catch (error) {
     if (process.env.AUTH_SAFE_DEBUG === 'true') {
       console.error('[sessionIntegrityValidator-error]', {
-        tokenLength: token?.length || 0,
-        jwtSecretLength: JWT_SECRET?.length || 0,
+        category: 'token_verification_failed',
         errorMessage: (error as any)?.message,
       });
     }
-      (global as any).lastJwtDebug = {
-        timestamp: new Date().toISOString(),
-        type: 'verification_error',
-        tokenLength: token?.length || 0,
-        jwtSecretLength: JWT_SECRET?.length || 0,
-        jwtSecretStart: JWT_SECRET?.substring(0, 5),
-        errorMessage: (error as any)?.message,
-      };
     return { valid: false, sessionTrust: 'BLOCKED', reason: 'INVALID_SIGNATURE' };
   }
 }

@@ -47,7 +47,6 @@ import {
   recordStartupPhase,
   getRuntimeDiagnostics,
 } from './runtime/degradedRuntime';
-import jwt from 'jsonwebtoken';
 
 
 
@@ -227,88 +226,6 @@ markRequiredSystemReady('coreRbac', 'Auth and admin gating routes registered.');
 app.get('/health', healthController);
 app.get('/health/live', livenessController);
 app.get('/health/ready', readinessController);
-// Debug endpoint: inspect Authorization header and verify token
-app.get('/__auth-debug', (req, res) => {
-  const authHeader = req.headers['authorization'] || '';
-  const hasBearerPrefix = String(authHeader).startsWith('Bearer ');
-  const rawTokenSlice7 = hasBearerPrefix ? String(authHeader).slice(7) : '';
-  const rawTokenTrimmed = rawTokenSlice7.trim();
-  const firstChar = rawTokenSlice7.charCodeAt(0);
-  const firstCharTrimmed = rawTokenTrimmed.charCodeAt(0);
-
-  let verifyResult: any = null;
-  if (rawTokenSlice7) {
-    try {
-      const decoded = jwt.verify(rawTokenSlice7, ENV.JWT_SECRET) as { id?: string };
-      verifyResult = { success: true, usedTrimmed: false, decodedId: decoded.id };
-    } catch (e1: any) {
-      // try trimmed
-      try {
-        const decoded = jwt.verify(rawTokenTrimmed, ENV.JWT_SECRET) as { id?: string };
-        verifyResult = { success: true, usedTrimmed: true, decodedId: decoded.id, note: 'needed trim' };
-      } catch (e2: any) {
-        verifyResult = { success: false, errorWithRaw: e1.message, errorWithTrimmed: e2.message };
-      }
-    }
-  }
-
-  res.json({
-    authHeaderPresent: Boolean(authHeader),
-    authHeaderLength: String(authHeader).length,
-    hasBearerPrefix,
-    tokenLengthAfterSlice7: rawTokenSlice7.length,
-    tokenLengthAfterTrim: rawTokenTrimmed.length,
-    firstCharCode: firstChar,
-    firstCharCodeTrimmed: firstCharTrimmed,
-    tokenStart: rawTokenSlice7.substring(0, 10),
-    tokenStartTrimmed: rawTokenTrimmed.substring(0, 10),
-    verifyResult,
-  });
-});
-
-app.get('/__jwt-diagnostics', (req, res) => {
-  const jwtSecretPresent = Boolean(ENV.JWT_SECRET);
-  const jwtSecretLength = ENV.JWT_SECRET?.length || 0;
-  const jwtSecretSample = ENV.JWT_SECRET 
-    ? `${ENV.JWT_SECRET.substring(0, 5)}...${ENV.JWT_SECRET.substring(Math.max(0, ENV.JWT_SECRET.length - 5))}`
-    : 'MISSING';
-
-  // Live sign/verify test
-  let signVerifyResult: any = {};
-  try {
-    const testPayload = { id: 'test-user-id', email: 'test@test.com', role: 'USER' };
-    const testToken = jwt.sign(testPayload, ENV.JWT_SECRET, { expiresIn: '1h' });
-    try {
-      const decoded = jwt.verify(testToken, ENV.JWT_SECRET) as { id?: string };
-      signVerifyResult = { success: true, tokenLength: testToken.length, decodedId: decoded.id };
-    } catch (verifyErr: any) {
-      signVerifyResult = { success: false, phase: 'verify', error: verifyErr.message, tokenLength: testToken.length };
-    }
-  } catch (signErr: any) {
-    signVerifyResult = { success: false, phase: 'sign', error: signErr.message };
-  }
-
-  // Test with a real user token if provided in query
-  let externalTokenResult: any = null;
-  const testToken = req.query.token as string;
-  if (testToken) {
-    try {
-      const decoded = jwt.verify(testToken, ENV.JWT_SECRET);
-      externalTokenResult = { success: true, decoded };
-    } catch (err: any) {
-      externalTokenResult = { success: false, error: err.message };
-    }
-  }
-
-  res.json({
-    jwtSecretPresent,
-    jwtSecretLength,
-    jwtSecretSample,
-    nodeEnv: ENV.NODE_ENV,
-    signVerifyTest: signVerifyResult,
-    externalTokenTest: externalTokenResult,
-  });
-});
 
 // Ensure unmatched API routes return JSON (prevents HTML "Cannot GET" responses)
 app.use((req, res) => {

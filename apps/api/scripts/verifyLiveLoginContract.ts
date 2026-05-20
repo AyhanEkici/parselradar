@@ -23,8 +23,6 @@ type MeResponse = {
 const BASE_URL = 'https://parselradar-production.up.railway.app';
 const LOGIN_URL = `${BASE_URL}/auth/login`;
 const ME_URL = `${BASE_URL}/auth/me`;
-const JWT_DIAGNOSTICS_URL = `${BASE_URL}/__jwt-diagnostics`;
-const AUTH_DEBUG_URL = `${BASE_URL}/__auth-debug`;
 const EXPECTED_EMAIL = 'pilot@test.com';
 
 function fail(reason: string, details: Record<string, unknown> = {}): never {
@@ -123,25 +121,6 @@ async function main() {
   const meText = await meResponse.text();
   const meJson = parseJson(meText) as MeResponse | null;
 
-  const jwtDiagnosticsResponse = await fetch(`${JWT_DIAGNOSTICS_URL}?token=${encodeURIComponent(token)}`, {
-    method: 'GET',
-    headers: { accept: 'application/json' },
-    redirect: 'manual',
-  });
-  const jwtDiagnosticsText = await jwtDiagnosticsResponse.text();
-  const jwtDiagnosticsJson = parseJson(jwtDiagnosticsText);
-
-  const authDebugResponse = await fetch(AUTH_DEBUG_URL, {
-    method: 'GET',
-    headers: {
-      authorization: `Bearer ${token}`,
-      accept: 'application/json',
-    },
-    redirect: 'manual',
-  });
-  const authDebugText = await authDebugResponse.text();
-  const authDebugJson = parseJson(authDebugText);
-
   if (meResponse.status !== 200) {
     const reason = normalizeError(meJson?.error || meText, token, meJson?.code || null);
     fail('/auth/me did not return 200', {
@@ -150,8 +129,6 @@ async function main() {
       backendCode: meJson?.code || null,
       body: meJson || meText,
       loginUser,
-      jwtDiagnostics: jwtDiagnosticsJson || jwtDiagnosticsText,
-      authDebug: authDebugJson || authDebugText,
     });
   }
 
@@ -169,9 +146,6 @@ async function main() {
     meStatus: meResponse.status,
     loginUser,
     meUser,
-    jwtDiagnostics: jwtDiagnosticsJson,
-    authDebug: authDebugJson,
-    tokenPreview: `${token.slice(0, 12)}…`,
   });
 }
 
