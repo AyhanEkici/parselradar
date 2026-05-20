@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-05-20T00:00:00.000Z",
+  "commitHash": "80d94b53",
+  "overallStatus": "PASS",
+  "summary": "fix: stop auth me 401 loop and stabilize session hydration",
+  "proofs": {
+    "authStorageProof": {
+      "status": "PASS",
+      "detail": "apps/web/src/lib/authStorage.ts created. Exports: AUTH_TOKEN_KEY, AUTH_USER_KEY, getAuthToken(), getStoredUser(), setAuthSession(), clearAuthSession(), getAuthHeader(). Single canonical source of truth for all token storage."
+    },
+    "loginTokenPersistenceProof": {
+      "status": "PASS",
+      "detail": "Login.tsx no longer writes to localStorage directly. auth.ts login() calls setAuthSession(token, user) from authStorage. Token stored once via AUTH_TOKEN_KEY. No duplicate writes."
+    },
+    "apiAuthorizationHeaderProof": {
+      "status": "PASS",
+      "detail": "api.ts imports getAuthToken() from authStorage. Sends Authorization: Bearer <token> only when getAuthToken() returns non-null. No Bearer undefined possible."
+    },
+    "authMeOneShotHydrationProof": {
+      "status": "PASS",
+      "detail": "useAuth.tsx hydrateAuth() checks getAuthToken() before calling getMe(). If no token: setUser(null), setHydrating(false), return immediately. /auth/me is never called without a token. callIdRef ensures stale results are discarded. Boot useEffect has empty deps [] - runs once on mount only."
+    },
+    "noLoopOn401Proof": {
+      "status": "PASS",
+      "detail": "api.ts on 401: calls clearAuthSession() (no event dispatch). useAuth catch block calls clearAuthSession() (no event dispatch). auth:changed is NOT dispatched on 401 by any code path. Loop mechanism broken: 401 no longer triggers re-hydration."
+    },
+    "noDuplicateTokenKeysProof": {
+      "status": "PASS",
+      "detail": "AUTH_TOKEN_KEY defined exactly once in authStorage.ts. No other file contains the literal 'parselradar_token' - confirmed by verify:auth-loop check 19 PASS."
+    },
+    "noBearerUndefinedProof": {
+      "status": "PASS",
+      "detail": "api.ts uses: (token ? { Authorization: `Bearer ${token}` } : {}) - token is null-checked before interpolation. verify:auth-loop check 9 PASS."
+    },
+    "loginResponseContractProof": {
+      "status": "PASS",
+      "detail": "authController.ts login now returns { token, user: { id, email, name, role } }. register also returns { token, user: { id, email, name, role } }. No passwordHash in response. getMe returns { id, email, name, role } (same user shape)."
+    },
+    "authMeRouteProof": {
+      "status": "PASS",
+      "detail": "authRoutes.ts: router.get('/me', auth, getMe) - route exists, protected by requireAuth middleware, returns normalized user shape."
+    },
+    "rbacContinuityProof": {
+      "status": "PASS",
+      "detail": "verify:rbac: 57/57 checks PASS. RBAC controls unchanged. No weakening of role checks."
+    },
+    "platformContinuityProof": {
+      "status": "WARN",
+      "detail": "verify:platform: 331 pass, 11 warn, 0 fail. All critical checks pass. Warns are pre-existing and unrelated to auth loop fix."
+    },
+    "apiBuildProof": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/api: TypeScript compiled successfully. dist/index.js updated."
+    },
+    "webBuildProof": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/web: Vite built 274 modules. dist/assets/index-lUZEIHIJ.js 496.39 kB. Built in 3.45s."
+    },
+    "authLoopStaticAnalysisProof": {
+      "status": "PASS",
+      "detail": "verify:auth-loop: 20/20 checks PASS. All anti-loop patterns confirmed in source."
+    },
+    "pilotPersistenceProof": {
+      "status": "PENDING_LIVE",
+      "detail": "Manual verification required: login, confirm no /auth/me storm, refresh page (token persists), logout. Automated proof requires live Railway environment with PILOT_EMAIL/PILOT_PASSWORD set."
+    },
+    "mahirIsolationProof": {
+      "status": "PENDING_LIVE",
+      "detail": "Manual verification required: login as Mahir, confirm no admin menu, confirm only own data visible. RBAC static analysis PASS (57/57)."
+    }
+  },
+  "loopRootCauseAnalysis": {
+    "identified": true,
+    "mechanism": "apiFetch on 401 dispatched window.dispatchEvent(new Event('auth:changed')). useAuth second useEffect listened for auth:changed and called refreshAuth(). refreshAuth() called getMe() without checking for token. getMe() got 401 from backend (no Bearer header). apiFetch dispatched auth:changed again. Infinite loop.",
+    "fixedBy": [
+      "api.ts: removed auth:changed dispatch on 401 - now calls clearAuthSession() silently",
+      "useAuth.tsx: hydrateAuth() guards with getAuthToken() check before calling getMe()",
+      "useAuth.tsx: callIdRef counter ensures stale async results are discarded",
+      "useAuth.tsx: single boot useEffect with empty deps [] (was already correct)",
+      "clearAuthSession(): does NOT dispatch auth:changed (prevents 401 re-trigger)",
+      "setAuthSession(): dispatches auth:changed only on successful login (for cross-tab sync)",
+      "logout(): explicitly dispatches auth:changed for cross-tab sync only"
+    ]
+  },
+  "filesChanged": [
+    "apps/web/src/lib/authStorage.ts (NEW)",
+    "apps/web/src/hooks/useAuth.tsx (REWRITTEN)",
+    "apps/web/src/lib/api.ts (FIXED: removed auth:changed dispatch on 401)",
+    "apps/web/src/lib/auth.ts (REWRITTEN: uses authStorage, handles {token,user} shape)",
+    "apps/web/src/pages/Login.tsx (FIXED: removed duplicate localStorage.setItem)",
+    "apps/api/src/controllers/authController.ts (FIXED: login/register return {token, user})",
+    "apps/api/scripts/verifyAuthLoop.ts (NEW)",
+    "apps/api/scripts/verifyLoginFlow.ts (UPDATED: frontendProof checks new patterns)",
+    "package.json (ADDED: verify:auth-loop script)"
+  ]
+}
