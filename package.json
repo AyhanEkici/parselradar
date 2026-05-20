@@ -27,6 +27,7 @@
     "verify:login": "ts-node apps/api/scripts/verifyLoginFlow.ts",
     "verify:auth-loop": "ts-node apps/api/scripts/verifyAuthLoop.ts",
     "verify:post-login-api": "ts-node apps/api/scripts/verifyPostLoginApiStability.ts",
+    "verify:session-persistence": "ts-node apps/api/scripts/verifySessionPersistence.ts",
     "verify:security": "ts-node scripts/verify-security.ts",
     "users:ensure-required": "ts-node apps/api/scripts/ensureRequiredUsers.ts",
     "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",

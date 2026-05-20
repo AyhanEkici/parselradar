@@ -4,7 +4,7 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, clearAuthSession } from '../lib/authStorage';
+import { getAuthToken, clearAuthSession, setAuthHydrating } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
 type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean };
@@ -32,14 +32,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 		if (callIdRef.current === callId) setHydrating(true);
 
+		// Signal to apiFetch that it must NOT wipe the token on a transient 401.
+		// We own the clear decision here, below.
+		setAuthHydrating(true);
 		try {
 			const u = await getMe();
 			if (callIdRef.current === callId) setUser(u as User);
-		} catch {
-			// 401 or network error: clear session silently (no event dispatch → no loop).
-			clearAuthSession();
+		} catch (err: unknown) {
+			// Only clear the stored token on a CONFIRMED 401 from the server.
+			// Network errors (err.status undefined) or 5xx during cold-start
+			// must NOT wipe a valid token — the user would be signed out
+			// incorrectly after a hard refresh.
+			const status = (err as { status?: number })?.status;
+			if (status === 401) {
+				clearAuthSession();
+			}
 			if (callIdRef.current === callId) setUser(null);
 		} finally {
+			setAuthHydrating(false);
 			if (callIdRef.current === callId) setHydrating(false);
 		}
 	}

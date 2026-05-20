@@ -56,3 +56,20 @@ export function getAuthHeader(): string | null {
   const token = getAuthToken();
   return token ? `Bearer ${token}` : null;
 }
+
+// ---------------------------------------------------------------------------
+// Hydration guard — prevents apiFetch from wiping a valid token when
+// a transient 401 occurs during the initial /auth/me call on page load.
+// Set to true by useAuth before calling getMe(), false in the finally block.
+// ---------------------------------------------------------------------------
+let _authHydrating = false;
+
+/** Mark the auth hydration phase as active/inactive. */
+export function setAuthHydrating(value: boolean): void {
+  _authHydrating = value;
+}
+
+/** Returns true while useAuth is in its initial /auth/me hydration pass. */
+export function isAuthHydrating(): boolean {
+  return _authHydrating;
+}

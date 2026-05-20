@@ -1,4 +1,4 @@
-import { getAuthToken, clearAuthSession } from './authStorage';
+import { getAuthToken, clearAuthSession, isAuthHydrating } from './authStorage';
 
 const LOCAL_API_URL = 'http://localhost:4000';
 const PRODUCTION_API_URL = 'https://parselradar-production.up.railway.app';
@@ -85,9 +85,10 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   }
 
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 && !isAuthHydrating()) {
       // Clear token ONCE and stop — do NOT dispatch auth:changed here.
-      // Dispatching auth:changed would cause useAuth to re-call /auth/me → 401 loop.
+      // Skip during hydration: useAuth's hydrateAuth handles clearing on its own
+      // after confirming the 401 is definitive (not a transient cold-start failure).
       clearAuthSession();
     }
     if (data) {
