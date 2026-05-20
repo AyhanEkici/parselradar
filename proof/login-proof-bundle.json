@@ -36,6 +36,6 @@
       "detail": "Login verification blocked by missing required secrets."
     }
   },
-  "commitHash": "3e5a2347923543d699db5d873f5d00e2586ab98a",
+  "commitHash": "f5ba44ecfdddea1691f09fb008baaff46838c3cb",
   "blockedReason": "Missing required env var: SECURITY_VERIFY_PILOT_PASSWORD"
 }
