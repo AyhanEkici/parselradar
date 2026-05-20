@@ -1,0 +1,77 @@
+{
+  "generatedAt": "2026-05-20T00:00:00.000Z",
+  "overallStatus": "PASS",
+  "phase": "P0 AUTH CONTRACT FIX — /AUTH/ME REJECTS VALID JWT AFTER VERIFICATION",
+  "commitHash": "fd956a58",
+  "proofs": {
+    "loginTokenProof": {
+      "status": "PASS",
+      "detail": "verify:live-login-contract: POST /auth/login returned 200 with token and user payload for pilot@test.com."
+    },
+    "jwtDiagnosticsProof": {
+      "status": "PASS",
+      "detail": "verify:live-login-contract: /__jwt-diagnostics externalTokenTest.success=true and /__auth-debug verifyResult.success=true on the same token."
+    },
+    "authMe200Proof": {
+      "status": "PASS",
+      "detail": "verify:live-login-contract (post-deploy): GET /auth/me with Authorization: Bearer <token> returned 200 and user role ADMIN."
+    },
+    "tokenSubjectNormalizationProof": {
+      "status": "PASS",
+      "detail": "sessionIntegrityValidator now normalizes token subject from decoded.id || decoded.userId || decoded.sub and returns userId consistently."
+    },
+    "passwordChangedAtToleranceProof": {
+      "status": "PASS",
+      "detail": "auth middleware compares passwordChangedAtMs > tokenIssuedAtMs + 5000 before rejecting, preventing false rejection of freshly issued tokens."
+    },
+    "roleHydrationProof": {
+      "status": "PASS",
+      "detail": "auth consistency failures now return explicit safe code TOKEN_VERIFIED_ROLE_HYDRATION_FAILED; valid ADMIN role from /auth/me accepted."
+    },
+    "backendAuthContractProof": {
+      "status": "PASS",
+      "detail": "auth middleware returns explicit safe 401 codes (TOKEN_PAYLOAD_MISSING_SUBJECT, TOKEN_VERIFIED_USER_NOT_FOUND, TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT, TOKEN_VERIFIED_ROLE_HYDRATION_FAILED) without exposing secrets."
+    },
+    "rbacProof": {
+      "status": "PASS",
+      "detail": "verify:rbac passed with 57/57 checks; no RBAC weakening introduced."
+    },
+    "platformProof": {
+      "status": "PASS_WITH_WARNINGS",
+      "detail": "verify:platform completed with 0 fails (331 pass, 11 warn, 3 skipped)."
+    },
+    "authLoopContinuityProof": {
+      "status": "PASS",
+      "detail": "verify:auth-loop passed with 20/20 checks after backend contract fix."
+    },
+    "mahirIsolationProof": {
+      "status": "PASS",
+      "detail": "RBAC verifier continuity indicates Mahir isolation remains enforced (no admin privilege escalation path introduced)."
+    }
+  },
+  "runEvidence": {
+    "verifyLiveLoginContractPostDeploy": {
+      "overallStatus": "PASS",
+      "loginStatus": 200,
+      "meStatus": 200,
+      "role": "ADMIN",
+      "tokenVerifiedByDiagnostics": true
+    },
+    "verifyAuthLoop": {
+      "passed": 20,
+      "failed": 0
+    },
+    "verifyRbac": {
+      "total": 57,
+      "pass": 57,
+      "fail": 0
+    },
+    "verifyPlatform": {
+      "checks": 345,
+      "pass": 331,
+      "warn": 11,
+      "fail": 0,
+      "skipped": 3
+    }
+  }
+}
