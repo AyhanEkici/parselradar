@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-20T02:44:07.853Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-20T09:01:34.046Z",
+  "overallStatus": "PASS",
   "activeTarget": "https://parselradar-production.up.railway.app",
   "commitHash": "",
   "proofs": {
@@ -38,7 +38,7 @@
       "detail": "JSON response received.",
       "statusCode": 200,
       "contentType": "application/json; charset=utf-8",
-      "bodyPreview": "{\"gitSha\":\"ff6f09aba580190a1862944c788d2bbb9da7580d\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-19T18:23:37.204Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
+      "bodyPreview": "{\"gitSha\":\"e257993431b65b4f294d9e5f0456caabb8462abc\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T08:52:02.296Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
       "allowOrigin": null,
       "allowCredentials": null,
       "allowHeaders": null,
@@ -57,8 +57,12 @@
       "detail": "Preflight returned an expected CORS status."
     },
     "forgotPostProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=404, contentType=application/json; charset=utf-8"
+      "status": "PASS",
+      "detail": "POST /auth/forgot-password returned 200 (route is mounted)"
+    },
+    "resetPostProof": {
+      "status": "PASS",
+      "detail": "POST /auth/reset-password returned 400 (route is mounted)"
     },
     "runtimeBootProof": {
       "status": "PASS",

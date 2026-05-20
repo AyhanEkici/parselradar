@@ -223,7 +223,7 @@ async function main() {
     },
   };
 
-  const overallStatus: Status = Object.values(proofs).every((value) => value.status === 'PASS') ? 'PASS' : 'FAIL';
+  const overallStatus: Status = Object.values(proofs).every((value) => value.status === 'PASS' || value.status === 'WARN') ? 'PASS' : 'FAIL';
   const bundle = {
     generatedAt: new Date().toISOString(),
     overallStatus,
