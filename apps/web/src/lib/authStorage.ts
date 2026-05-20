@@ -49,6 +49,30 @@ export function clearAuthSession(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(AUTH_USER_KEY);
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(AUTH_USER_KEY);
+}
+
+/** True only when BOTH token + user exist in localStorage. */
+export function hasAuthSession(): boolean {
+  if (typeof window === 'undefined') return false;
+  return Boolean(getAuthToken() && getStoredUser());
+}
+
+/**
+ * Repairs split-brain auth storage (token without user or user without token).
+ * Returns true when storage is internally consistent after reconciliation.
+ */
+export function assertStorageConsistency(): boolean {
+  if (typeof window === 'undefined') return true;
+  const token = getAuthToken();
+  const user = getStoredUser();
+
+  if (!token && !user) return true;
+  if (token && user) return true;
+
+  clearAuthSession();
+  return false;
 }
 
 /** Returns the Authorization header value or null if no token. */

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { login } from '../lib/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui';
 import ForgotPasswordLink from '../components/auth/ForgotPasswordLink';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -10,6 +11,21 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+  const { authState, user, hydrating } = useAuth();
+
+  useEffect(() => {
+    if (!hydrating && authState === 'authenticated' && user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [hydrating, authState, user, navigate]);
+
+  if (hydrating || authState === 'authenticated') {
+    return (
+      <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
+        Oturum doğrulanıyor...
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

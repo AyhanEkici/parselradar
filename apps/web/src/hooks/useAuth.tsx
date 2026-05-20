@@ -4,7 +4,7 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, clearAuthSession, setAuthHydrating } from '../lib/authStorage';
+import { getAuthToken, clearAuthSession, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
 type AuthState = 'hydrating' | 'authenticated' | 'unauthenticated';
@@ -26,6 +26,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	async function hydrateAuth() {
 		const callId = ++callIdRef.current;
+
+		// Always reconcile split storage before auth checks.
+		assertStorageConsistency();
 
 		// Guard: no token → clear state and stop. Do NOT call /auth/me.
 		const token = getAuthToken();
@@ -82,9 +85,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		const handler = () => hydrateAuth();
 		window.addEventListener('auth:changed', handler);
-		return () => window.removeEventListener('auth:changed', handler);
+		window.addEventListener('storage', handler);
+		return () => {
+			window.removeEventListener('auth:changed', handler);
+			window.removeEventListener('storage', handler);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	// Final in-memory safety net: if storage has no complete session,
+	// force user state to unauthenticated to avoid stale navbar/login mismatches.
+	useEffect(() => {
+		if (hydrating) return;
+		if (user && !hasAuthSession()) {
+			setUser(null);
+			setAuthState('unauthenticated');
+		}
+	}, [hydrating, user]);
 
 	return (
 		<AuthContext.Provider value={{ user, isAdmin, hydrating, authState }}>

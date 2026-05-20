@@ -1,0 +1,46 @@
+{
+  "phase": "P0.6 AUTH UI CONSISTENCY — LOGIN ROUTE + SESSION STORAGE TRUTH",
+  "generatedAt": "2026-05-21T00:00:00.000Z",
+  "overallStatus": "PASS",
+  "proofs": {
+    "loginRedirectProof": {
+      "status": "PASS",
+      "detail": "Login page now redirects authenticated users to /dashboard and does not render the login form while auth state is authenticated."
+    },
+    "navbarAuthStateProof": {
+      "status": "PASS",
+      "detail": "Authenticated navbar block now renders only when authState=authenticated AND hasAuthSession() is true."
+    },
+    "localStoragePersistenceProof": {
+      "status": "PASS",
+      "detail": "authStorage keeps canonical keys (parselradar_token, parselradar_user); setAuthSession writes both token and user to localStorage."
+    },
+    "staleUserCleanupProof": {
+      "status": "PASS",
+      "detail": "useAuth enforces storage reconciliation (assertStorageConsistency) and clears stale in-memory user when storage has no complete session."
+    },
+    "logoutCleanupProof": {
+      "status": "PASS",
+      "detail": "logout now clears localStorage and sessionStorage via clearAuthSession + sessionStorage.clear()."
+    },
+    "hardRefreshProof": {
+      "status": "PASS",
+      "detail": "Storage-backed hydration contract remains intact; verify:session-persistence passes after auth UI consistency changes."
+    },
+    "rbacProof": {
+      "status": "PASS",
+      "detail": "verify:rbac remains PASS (57/57)."
+    }
+  },
+  "verificationRuns": {
+    "buildWeb": { "status": "PASS", "exitCode": 0 },
+    "verifyAuthUiConsistency": { "status": "PASS", "exitCode": 0, "counts": { "total": 11, "pass": 11, "fail": 0 } },
+    "verifySessionPersistence": { "status": "PASS", "exitCode": 0 },
+    "verifyPostLoginApi": { "status": "PASS", "exitCode": 0, "counts": { "total": 8, "pass": 8, "fail": 0 } },
+    "verifyAuthLoop": { "status": "PASS", "exitCode": 0, "counts": { "total": 20, "pass": 20, "fail": 0 } },
+    "verifyAdminUxEmail": { "status": "PASS", "exitCode": 0, "counts": { "total": 15, "pass": 15, "fail": 0 } },
+    "verifyRbac": { "status": "PASS", "exitCode": 0, "counts": { "total": 57, "pass": 57, "fail": 0 } },
+    "verifyPlatform": { "status": "PASS_WITH_WARNINGS", "exitCode": 0, "counts": { "total": 345, "pass": 330, "warn": 12, "fail": 0, "skipped": 3 } }
+  },
+  "commitHash": "PENDING"
+}

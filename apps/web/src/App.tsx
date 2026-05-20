@@ -46,9 +46,10 @@ import { useAuth } from './hooks/useAuth';
 import AccessDenied from './pages/AccessDenied';
 import AdminOnly from './components/AdminOnly';
 import { logout } from './lib/auth';
+import { hasAuthSession } from './lib/authStorage';
 
 function AppShell() {
-  const { isAdmin, user, hydrating } = useAuth();
+  const { isAdmin, user, hydrating, authState } = useAuth();
   const navigate = useNavigate();
 
   const roleLabel = String(user?.role || '').toUpperCase() || 'USER';
@@ -58,7 +59,7 @@ function AppShell() {
     navigate('/login', { replace: true });
   };
 
-  const showAuthenticatedNav = !hydrating && Boolean(user);
+  const showAuthenticatedNav = !hydrating && authState === 'authenticated' && Boolean(user) && hasAuthSession();
 
   return (
     <>
