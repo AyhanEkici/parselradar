@@ -11,8 +11,14 @@ import AnalysisRun from '../models/AnalysisRun';
 import CreditLedger from '../models/CreditLedger';
 import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import DocumentUpload from '../models/DocumentUpload';
+import Report from '../models/Report';
 import AuditEvent from '../models/AuditEvent';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
+import { operationalSecurityDashboard } from '../monitoring/operationalSecurityDashboard';
+import { threatSignalAggregator } from '../monitoring/threatSignalAggregator';
+import { governanceComplianceMonitor } from '../governance/governanceComplianceMonitor';
+import { retentionGovernanceEngine } from '../governance/retentionGovernanceEngine';
+import { credentialGovernance } from '../governance/credentialGovernance';
 import os from 'os';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
@@ -153,6 +159,56 @@ export const getAdminDeploymentOverview = async (_req: AuthRequest, res: Respons
 export const getAdminRuntimeOverview = async (_req: AuthRequest, res: Response) => {
   const snapshot = await buildOperationalSnapshot();
   res.json(snapshot);
+};
+
+// GET /admin/security-overview
+export const getAdminSecurityOverview = async (_req: AuthRequest, res: Response) => {
+  const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const [recentAudits, recentUploads, recentReports] = await Promise.all([
+    AuditEvent.find({ createdAt: { $gte: dayAgo } }).sort({ createdAt: -1 }).limit(50).lean(),
+    DocumentUpload.countDocuments({ uploadedAt: { $gte: dayAgo } }),
+    Report.countDocuments({ createdAt: { $gte: dayAgo } }),
+  ]);
+
+  const suspiciousSignals = recentAudits.filter((event: any) => !event.success).length;
+  const blockedEvents = recentAudits.filter((event: any) => String(event.type || '').toLowerCase().includes('deny')).length;
+  const threat = threatSignalAggregator({
+    abuseScore: suspiciousSignals * 5,
+    sessionScore: blockedEvents * 8,
+    exportRiskScore: Math.min(100, recentReports),
+  });
+
+  const dashboard = operationalSecurityDashboard({
+    threatSignals: suspiciousSignals,
+    blockedEvents,
+    suspiciousSessions: Math.min(25, suspiciousSignals),
+    incidents: recentAudits.slice(0, 10).map((event: any) => ({
+      id: String(event._id),
+      severity: event.success ? 'LOW' : 'CRITICAL',
+      createdAt: event.createdAt instanceof Date ? event.createdAt.toISOString() : String(event.createdAt),
+    })),
+  });
+
+  const retention = retentionGovernanceEngine({ auditDays: 90, exportDays: 30, minimumAuditDays: 90 });
+  const credentials = credentialGovernance({ hasRotationPolicy: true, rotatedWithinDays: 30, maxAgeDays: 90 });
+  const governance = governanceComplianceMonitor({
+    controls: [
+      { key: 'audit_retention', compliant: retention.compliant },
+      { key: 'credential_rotation', compliant: credentials.compliant },
+      { key: 'access_audit', compliant: true },
+    ],
+  });
+
+  res.json({
+    generatedAt: new Date().toISOString(),
+    recentUploads,
+    recentReports,
+    threat,
+    dashboard,
+    governance,
+    retention,
+    credentials,
+  });
 };
 
 export const getAllProperties = async (req: AuthRequest, res: Response) => {

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-19T23:37:04.962Z",
-  "gitSha": "6d4ed5ed5fc22de08d7e1037987c55508eaf9c40",
+  "generatedAt": "2026-05-20T00:01:26.902Z",
+  "gitSha": "6d73630cadcd50cf7b496a2ead8aecd5615baf7a",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
@@ -180,6 +180,14 @@
           "category": "Admin",
           "routeFile": "apps/api/src/routes/adminRoutes.ts",
           "method": "GET",
+          "path": "/admin/security-overview",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
           "path": "/admin/stripe-sessions",
           "requiresAuth": true,
           "requiresAdmin": true
@@ -307,6 +315,14 @@
           "method": "POST",
           "path": "/auth/register",
           "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Auth",
+          "routeFile": "apps/api/src/routes/authRoutes.ts",
+          "method": "GET",
+          "path": "/auth/session-diagnostics",
+          "requiresAuth": true,
           "requiresAdmin": false
         }
       ],
@@ -5447,6 +5463,14 @@
       "category": "Admin",
       "routeFile": "apps/api/src/routes/adminRoutes.ts",
       "method": "GET",
+      "path": "/admin/security-overview",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
       "path": "/admin/stripe-sessions",
       "requiresAuth": true,
       "requiresAdmin": true
@@ -5497,6 +5521,14 @@
       "method": "POST",
       "path": "/auth/register",
       "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Auth",
+      "routeFile": "apps/api/src/routes/authRoutes.ts",
+      "method": "GET",
+      "path": "/auth/session-diagnostics",
+      "requiresAuth": true,
       "requiresAdmin": false
     },
     {

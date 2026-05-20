@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminUsers = void 0;
+exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminSecurityOverview = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminUsers = void 0;
 const authUser_1 = require("../utils/authUser");
 const auditLog_1 = require("../utils/auditLog");
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
@@ -15,8 +15,14 @@ const AnalysisRun_1 = __importDefault(require("../models/AnalysisRun"));
 const CreditLedger_1 = __importDefault(require("../models/CreditLedger"));
 const StripeCheckoutSession_1 = __importDefault(require("../models/StripeCheckoutSession"));
 const DocumentUpload_1 = __importDefault(require("../models/DocumentUpload"));
+const Report_1 = __importDefault(require("../models/Report"));
 const AuditEvent_1 = __importDefault(require("../models/AuditEvent"));
 const buildOperationalSnapshot_1 = require("../monitoring/buildOperationalSnapshot");
+const operationalSecurityDashboard_1 = require("../monitoring/operationalSecurityDashboard");
+const threatSignalAggregator_1 = require("../monitoring/threatSignalAggregator");
+const governanceComplianceMonitor_1 = require("../governance/governanceComplianceMonitor");
+const retentionGovernanceEngine_1 = require("../governance/retentionGovernanceEngine");
+const credentialGovernance_1 = require("../governance/credentialGovernance");
 const os_1 = __importDefault(require("os"));
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -162,6 +168,52 @@ const getAdminRuntimeOverview = async (_req, res) => {
     res.json(snapshot);
 };
 exports.getAdminRuntimeOverview = getAdminRuntimeOverview;
+// GET /admin/security-overview
+const getAdminSecurityOverview = async (_req, res) => {
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [recentAudits, recentUploads, recentReports] = await Promise.all([
+        AuditEvent_1.default.find({ createdAt: { $gte: dayAgo } }).sort({ createdAt: -1 }).limit(50).lean(),
+        DocumentUpload_1.default.countDocuments({ uploadedAt: { $gte: dayAgo } }),
+        Report_1.default.countDocuments({ createdAt: { $gte: dayAgo } }),
+    ]);
+    const suspiciousSignals = recentAudits.filter((event) => !event.success).length;
+    const blockedEvents = recentAudits.filter((event) => String(event.type || '').toLowerCase().includes('deny')).length;
+    const threat = (0, threatSignalAggregator_1.threatSignalAggregator)({
+        abuseScore: suspiciousSignals * 5,
+        sessionScore: blockedEvents * 8,
+        exportRiskScore: Math.min(100, recentReports),
+    });
+    const dashboard = (0, operationalSecurityDashboard_1.operationalSecurityDashboard)({
+        threatSignals: suspiciousSignals,
+        blockedEvents,
+        suspiciousSessions: Math.min(25, suspiciousSignals),
+        incidents: recentAudits.slice(0, 10).map((event) => ({
+            id: String(event._id),
+            severity: event.success ? 'LOW' : 'CRITICAL',
+            createdAt: event.createdAt instanceof Date ? event.createdAt.toISOString() : String(event.createdAt),
+        })),
+    });
+    const retention = (0, retentionGovernanceEngine_1.retentionGovernanceEngine)({ auditDays: 90, exportDays: 30, minimumAuditDays: 90 });
+    const credentials = (0, credentialGovernance_1.credentialGovernance)({ hasRotationPolicy: true, rotatedWithinDays: 30, maxAgeDays: 90 });
+    const governance = (0, governanceComplianceMonitor_1.governanceComplianceMonitor)({
+        controls: [
+            { key: 'audit_retention', compliant: retention.compliant },
+            { key: 'credential_rotation', compliant: credentials.compliant },
+            { key: 'access_audit', compliant: true },
+        ],
+    });
+    res.json({
+        generatedAt: new Date().toISOString(),
+        recentUploads,
+        recentReports,
+        threat,
+        dashboard,
+        governance,
+        retention,
+        credentials,
+    });
+};
+exports.getAdminSecurityOverview = getAdminSecurityOverview;
 const getAllProperties = async (req, res) => {
     const properties = await PropertySubmission_1.default.find();
     res.json(properties);

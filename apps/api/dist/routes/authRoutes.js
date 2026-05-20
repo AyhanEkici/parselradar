@@ -12,4 +12,5 @@ router.post('/register', rateLimiter_1.authLimiter, authController_1.register);
 router.post('/login', rateLimiter_1.authLimiter, authController_1.login);
 router.post('/logout', rateLimiter_1.authLimiter, authController_1.logout);
 router.get('/me', auth_1.auth, authController_1.getMe);
+router.get('/session-diagnostics', auth_1.auth, authController_1.getSessionDiagnostics);
 exports.default = router;

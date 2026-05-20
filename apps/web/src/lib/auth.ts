@@ -14,6 +14,9 @@ const TOKEN_KEY = 'parselradar_token';
 function persistToken(response: AuthResponse) {
   if (response?.token && typeof response.token === 'string') {
     localStorage.setItem(TOKEN_KEY, response.token);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth:changed'));
+    }
   }
 }
 
@@ -52,6 +55,9 @@ export async function register(email: string, password: string, name: string) {
 
 export async function logout() {
   localStorage.removeItem(TOKEN_KEY);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('auth:changed'));
+  }
 
   return apiFetch('/auth/logout', {
     method: 'POST',

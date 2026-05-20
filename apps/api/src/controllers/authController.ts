@@ -5,9 +5,16 @@ import User from '../models/User';
 import { logAuditEvent } from '../utils/auditLog';
 import { JWT_SECRET } from '../config/env';
 import { AuthRequest } from '../middleware/auth';
+import { roleHydrationVerifier } from '../session/roleHydrationVerifier';
+import { sessionIntegrityValidator } from '../session/sessionIntegrityValidator';
+
+function normalizeEmail(email: unknown) {
+  return String(email || '').trim().toLowerCase();
+}
 
 export const register = async (req: Request, res: Response) => {
-  const { email, password, name } = req.body;
+  const { password, name } = req.body;
+  const email = normalizeEmail(req.body?.email);
   if (!email || !password || !name) return res.status(400).json({ error: 'Eksik bilgi' });
   const exists = await User.findOne({ email });
   if (exists) return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
@@ -37,7 +44,8 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  const email = normalizeEmail(req.body?.email);
   const user = await User.findOne({ email });
   if (!user) return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
   const valid = await bcrypt.compare(password, user.passwordHash);
@@ -50,7 +58,10 @@ export const login = async (req: Request, res: Response) => {
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 7
   });
-  res.json({ id: user._id, email: user.email, name: user.name, role: user.role, token });
+  const roleState = roleHydrationVerifier(user.role);
+  if (!roleState.valid) return res.status(401).json({ error: 'Geçersiz rol durumu' });
+
+  res.json({ id: user._id, email: user.email, name: user.name, role: roleState.normalizedRole, token });
   await logAuditEvent({
     type: 'auth_login',
     actorUserId: user._id.toString(),
@@ -91,4 +102,25 @@ export const getMe = (req: AuthRequest, res: Response) => {
   const user = req.user;
   if (!user) return res.status(401).json({ error: 'Yetkisiz' });
   res.json({ id: user._id, email: user.email, name: user.name, role: user.role });
+};
+
+export const getSessionDiagnostics = (req: AuthRequest, res: Response) => {
+  const authHeader = req.headers['authorization'];
+  const bearer = typeof authHeader === 'string' && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
+  const cookieToken = req.cookies?.token;
+  const token = bearer || cookieToken;
+  const integrity = sessionIntegrityValidator(token);
+  const roleState = roleHydrationVerifier(req.user?.role);
+
+  return res.json({
+    authenticated: Boolean(req.user),
+    tokenPresent: Boolean(token),
+    tokenSource: bearer ? 'bearer' : cookieToken ? 'cookie' : 'none',
+    sessionTrust: integrity.sessionTrust,
+    tokenReason: integrity.reason,
+    roleHydrated: roleState.valid,
+    role: req.user?.role || 'UNKNOWN',
+    roleReason: roleState.reason,
+    userId: req.user?._id || null,
+  });
 };

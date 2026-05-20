@@ -1,0 +1,113 @@
+{
+  "generatedAt": "2026-05-20T00:01:47.725Z",
+  "overallStatus": "SKIPPED",
+  "checks": [
+    {
+      "category": "Security Hardening",
+      "name": "Upload governance engine exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/security/uploadGovernanceEngine.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Export governance engine exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/security/exportGovernanceEngine.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Token integrity validator exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/session/tokenIntegrityValidator.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Brute force defense exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/abuse/bruteForceDefense.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Security operations engine exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/monitoring/securityOperationsEngine.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Governance compliance monitor exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/api/src/governance/governanceComplianceMonitor.ts"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Security audit card exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/web/src/components/security/SecurityAuditCard.tsx"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Upload governance card exists",
+      "status": "PASS",
+      "message": "Required V31 module is present.",
+      "detail": "apps/web/src/components/security/UploadGovernanceCard.tsx"
+    },
+    {
+      "category": "Security Hardening",
+      "name": "Session diagnostics route mounted",
+      "status": "PASS",
+      "message": "Session diagnostics endpoint is present on auth routes.",
+      "detail": "apps/api/src/routes/authRoutes.ts"
+    },
+    {
+      "category": "Auth Reliability",
+      "name": "Auth flow pilot@",
+      "status": "SKIPPED",
+      "message": "Missing SECURITY_VERIFY_PILOT_EMAIL or SECURITY_VERIFY_PILOT_PASSWORD"
+    },
+    {
+      "category": "Auth Reliability",
+      "name": "Auth flow AyhanEkici@",
+      "status": "SKIPPED",
+      "message": "Missing SECURITY_VERIFY_AYHAN_EMAIL or SECURITY_VERIFY_AYHAN_PASSWORD"
+    },
+    {
+      "category": "Auth Reliability",
+      "name": "Auth flow Mahir",
+      "status": "SKIPPED",
+      "message": "Missing SECURITY_VERIFY_MAHIR_EMAIL or SECURITY_VERIFY_MAHIR_PASSWORD"
+    }
+  ],
+  "authReliability": [
+    {
+      "userLabel": "pilot@",
+      "emailPresent": false,
+      "passwordPresent": false,
+      "loginStatus": "SKIPPED",
+      "meStatus": "SKIPPED",
+      "detail": "Missing SECURITY_VERIFY_PILOT_EMAIL or SECURITY_VERIFY_PILOT_PASSWORD"
+    },
+    {
+      "userLabel": "AyhanEkici@",
+      "emailPresent": false,
+      "passwordPresent": false,
+      "loginStatus": "SKIPPED",
+      "meStatus": "SKIPPED",
+      "detail": "Missing SECURITY_VERIFY_AYHAN_EMAIL or SECURITY_VERIFY_AYHAN_PASSWORD"
+    },
+    {
+      "userLabel": "Mahir",
+      "emailPresent": false,
+      "passwordPresent": false,
+      "loginStatus": "SKIPPED",
+      "meStatus": "SKIPPED",
+      "detail": "Missing SECURITY_VERIFY_MAHIR_EMAIL or SECURITY_VERIFY_MAHIR_PASSWORD"
+    }
+  ]
+}

@@ -13,7 +13,8 @@ import {
 	getAdminCreditLedger,
 	getAdminStripeSessions,
 	getAdminDeploymentOverview,
-	getAdminRuntimeOverview
+	getAdminRuntimeOverview,
+	getAdminSecurityOverview
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -32,5 +33,6 @@ router.get('/credit-ledger', auth, admin, getAdminCreditLedger);
 router.get('/stripe-sessions', auth, admin, getAdminStripeSessions);
 router.get('/deployment', auth, admin, getAdminDeploymentOverview);
 router.get('/runtime', auth, admin, getAdminRuntimeOverview);
+router.get('/security-overview', auth, admin, getAdminSecurityOverview);
 
 export default router;

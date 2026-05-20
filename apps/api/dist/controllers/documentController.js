@@ -11,6 +11,9 @@ const DocumentUpload_1 = __importDefault(require("../models/DocumentUpload"));
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
 const auditLog_1 = require("../utils/auditLog");
 const scopeFilters_1 = require("../utils/scopeFilters");
+const uploadGovernanceEngine_1 = require("../security/uploadGovernanceEngine");
+const maliciousUploadDetector_1 = require("../security/maliciousUploadDetector");
+const downloadAccessAudit_1 = require("../security/downloadAccessAudit");
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
     downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
@@ -43,6 +46,37 @@ const uploadDocument = async (req, res) => {
         const { documentType } = req.body;
         if (!documentType || !String(documentType).trim()) {
             return res.status(400).json({ error: 'Belge türü gerekli', requestId });
+        }
+        const signature = file.buffer?.subarray(0, 4)?.toString('hex') || '';
+        const malicious = (0, maliciousUploadDetector_1.maliciousUploadDetector)({
+            filename: file.originalname,
+            mimeType: file.mimetype,
+            byteSignature: signature,
+        });
+        const uploadPolicy = (0, uploadGovernanceEngine_1.uploadGovernanceEngine)({
+            mimeType: file.mimetype,
+            sizeBytes: file.size,
+            extension: file.originalname.split('.').pop() || '',
+            malwareSignals: malicious.suspicious ? 1 : 0,
+        });
+        if (uploadPolicy.blocked) {
+            await (0, auditLog_1.logAuditEvent)({
+                type: 'upload_governance_blocked',
+                actorUserId: user._id.toString(),
+                actorRole: user.role,
+                targetType: 'DocumentUpload',
+                targetId: String(property._id),
+                message: 'Upload blocked by governance policy',
+                metadata: {
+                    filename: file.originalname,
+                    mimeType: file.mimetype,
+                    flags: malicious.flags,
+                },
+                ip: req.ip,
+                userAgent: req.get('user-agent'),
+                success: false,
+            });
+            return res.status(400).json({ error: 'Dosya güvenlik politikası tarafından engellendi', requestId });
         }
         const existing = await DocumentUpload_1.default.findOne({
             propertySubmissionId: property._id,
@@ -128,6 +162,24 @@ const viewDocument = async (req, res) => {
         return res.status(404).json({ error: 'Belge bulunamadı' });
     if (!doc.gridFsFileId)
         return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
+    const accessAudit = (0, downloadAccessAudit_1.downloadAccessAudit)({
+        userId: user._id.toString(),
+        resourceType: 'DocumentUpload',
+        resourceId: String(doc._id),
+        allowed: true,
+    });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'document_view_access',
+        actorUserId: user._id.toString(),
+        actorRole: user.role,
+        targetType: 'DocumentUpload',
+        targetId: String(doc._id),
+        message: 'Document inline view accessed',
+        metadata: accessAudit,
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     const bucket = getBucket();
     const fileId = new mongodb_1.ObjectId(String(doc.gridFsFileId));
     res.setHeader('Content-Type', doc.mimeType || 'application/octet-stream');
@@ -156,6 +208,24 @@ const downloadDocument = async (req, res) => {
         return res.status(404).json({ error: 'Belge bulunamadı' });
     if (!doc.gridFsFileId)
         return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
+    const accessAudit = (0, downloadAccessAudit_1.downloadAccessAudit)({
+        userId: user._id.toString(),
+        resourceType: 'DocumentUpload',
+        resourceId: String(doc._id),
+        allowed: true,
+    });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'document_download_access',
+        actorUserId: user._id.toString(),
+        actorRole: user.role,
+        targetType: 'DocumentUpload',
+        targetId: String(doc._id),
+        message: 'Document download accessed',
+        metadata: accessAudit,
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     const bucket = getBucket();
     const fileId = new mongodb_1.ObjectId(String(doc.gridFsFileId));
     res.setHeader('Content-Type', doc.mimeType || 'application/octet-stream');

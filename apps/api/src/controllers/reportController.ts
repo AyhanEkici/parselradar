@@ -10,6 +10,10 @@ import path from 'path';
 import { buildReportGovernanceEnvelope } from '../services/reporting/reportGovernanceEnvelope';
 import { buildTerritorialIntelligence } from '../services/intelligence/buildTerritorialIntelligence';
 import { analysisOwnerScope, reportOwnerScope } from '../utils/scopeFilters';
+import { sensitiveDataScanner } from '../security/sensitiveDataScanner';
+import { exportGovernanceEngine } from '../security/exportGovernanceEngine';
+import { exportAuditEngine } from '../audit/exportAuditEngine';
+import { logAuditEvent } from '../utils/auditLog';
 
 const PDF_COST = 5;
 
@@ -39,6 +43,14 @@ export const purchasePDF = async (req: AuthRequest, res: Response) => {
 export const getReports = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const reports = await Report.find(reportOwnerScope(user, {})).lean();
+  const fieldScan = sensitiveDataScanner({
+    fields: reports.length > 0 ? Object.keys(reports[0] || {}) : [],
+  });
+  const exportPolicy = exportGovernanceEngine({
+    recordCount: reports.length,
+    includesSensitiveFields: fieldScan.hasSensitiveData,
+    requesterIsAdmin: user.role === 'ADMIN',
+  });
 
   const withGovernance = await Promise.all(
     reports.map(async (report: any) => {
@@ -115,6 +127,26 @@ export const getReports = async (req: AuthRequest, res: Response) => {
     })
   );
 
+  const auditPayload = exportAuditEngine({
+    userId: user._id.toString(),
+    format: 'json',
+    recordCount: withGovernance.length,
+    blocked: !exportPolicy.allowed,
+  });
+  await logAuditEvent({
+    type: 'report_list_export_access',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'Report',
+    targetId: user._id.toString(),
+    message: 'Report list accessed',
+    metadata: auditPayload,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: exportPolicy.allowed,
+  });
+
+  res.setHeader('X-Export-Policy', exportPolicy.exportRisk);
   res.json(withGovernance);
 };
 
@@ -122,5 +154,30 @@ export const downloadReport = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const report = await Report.findOne(reportOwnerScope(user, { _id: req.params.id }));
   if (!report) return res.status(404).json({ error: 'Rapor bulunamadı' });
+
+  const exportPolicy = exportGovernanceEngine({
+    recordCount: 1,
+    includesSensitiveFields: false,
+    requesterIsAdmin: user.role === 'ADMIN',
+  });
+  await logAuditEvent({
+    type: 'report_download_access',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'Report',
+    targetId: String(report._id),
+    message: 'Report download accessed',
+    metadata: {
+      allowed: exportPolicy.allowed,
+      exportRisk: exportPolicy.exportRisk,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: exportPolicy.allowed,
+  });
+
+  if (!exportPolicy.allowed) {
+    return res.status(403).json({ error: 'Rapor dışa aktarma politikası tarafından engellendi' });
+  }
   res.download(report.pdfPath);
 };

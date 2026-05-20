@@ -7,6 +7,9 @@ import DocumentUpload from '../models/DocumentUpload';
 import PropertySubmission from '../models/PropertySubmission';
 import { logAuditEvent } from '../utils/auditLog';
 import { propertyOwnerScope } from '../utils/scopeFilters';
+import { uploadGovernanceEngine } from '../security/uploadGovernanceEngine';
+import { maliciousUploadDetector } from '../security/maliciousUploadDetector';
+import { downloadAccessAudit } from '../security/downloadAccessAudit';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -41,6 +44,38 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
     const { documentType } = req.body as { documentType?: string };
     if (!documentType || !String(documentType).trim()) {
       return res.status(400).json({ error: 'Belge türü gerekli', requestId });
+    }
+
+    const signature = file.buffer?.subarray(0, 4)?.toString('hex') || '';
+    const malicious = maliciousUploadDetector({
+      filename: file.originalname,
+      mimeType: file.mimetype,
+      byteSignature: signature,
+    });
+    const uploadPolicy = uploadGovernanceEngine({
+      mimeType: file.mimetype,
+      sizeBytes: file.size,
+      extension: file.originalname.split('.').pop() || '',
+      malwareSignals: malicious.suspicious ? 1 : 0,
+    });
+    if (uploadPolicy.blocked) {
+      await logAuditEvent({
+        type: 'upload_governance_blocked',
+        actorUserId: user._id.toString(),
+        actorRole: user.role,
+        targetType: 'DocumentUpload',
+        targetId: String(property._id),
+        message: 'Upload blocked by governance policy',
+        metadata: {
+          filename: file.originalname,
+          mimeType: file.mimetype,
+          flags: malicious.flags,
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: false,
+      });
+      return res.status(400).json({ error: 'Dosya güvenlik politikası tarafından engellendi', requestId });
     }
 
     const existing = await DocumentUpload.findOne({
@@ -126,6 +161,25 @@ export const viewDocument = async (req: AuthRequest, res: Response) => {
   if (!doc) return res.status(404).json({ error: 'Belge bulunamadı' });
   if (!doc.gridFsFileId) return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
 
+  const accessAudit = downloadAccessAudit({
+    userId: user._id.toString(),
+    resourceType: 'DocumentUpload',
+    resourceId: String(doc._id),
+    allowed: true,
+  });
+  await logAuditEvent({
+    type: 'document_view_access',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'DocumentUpload',
+    targetId: String(doc._id),
+    message: 'Document inline view accessed',
+    metadata: accessAudit,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   const bucket = getBucket();
   const fileId = new ObjectId(String(doc.gridFsFileId));
   res.setHeader('Content-Type', doc.mimeType || 'application/octet-stream');
@@ -151,6 +205,25 @@ export const downloadDocument = async (req: AuthRequest, res: Response) => {
   const doc = await DocumentUpload.findOne({ _id: documentId, propertySubmissionId: property._id });
   if (!doc) return res.status(404).json({ error: 'Belge bulunamadı' });
   if (!doc.gridFsFileId) return res.status(410).json({ error: 'Legacy file missing - re-upload required' });
+
+  const accessAudit = downloadAccessAudit({
+    userId: user._id.toString(),
+    resourceType: 'DocumentUpload',
+    resourceId: String(doc._id),
+    allowed: true,
+  });
+  await logAuditEvent({
+    type: 'document_download_access',
+    actorUserId: user._id.toString(),
+    actorRole: user.role,
+    targetType: 'DocumentUpload',
+    targetId: String(doc._id),
+    message: 'Document download accessed',
+    metadata: accessAudit,
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
 
   const bucket = getBucket();
   const fileId = new ObjectId(String(doc.gridFsFileId));

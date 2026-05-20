@@ -187,6 +187,14 @@
     "category": "Admin",
     "routeFile": "apps/api/src/routes/adminRoutes.ts",
     "method": "GET",
+    "path": "/admin/security-overview",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
     "path": "/admin/stripe-sessions",
     "requiresAuth": true,
     "requiresAdmin": true
@@ -237,6 +245,14 @@
     "method": "POST",
     "path": "/auth/register",
     "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Auth",
+    "routeFile": "apps/api/src/routes/authRoutes.ts",
+    "method": "GET",
+    "path": "/auth/session-diagnostics",
+    "requiresAuth": true,
     "requiresAdmin": false
   },
   {

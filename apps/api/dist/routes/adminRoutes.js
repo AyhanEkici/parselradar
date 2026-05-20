@@ -21,4 +21,5 @@ router.get('/credit-ledger', auth_1.auth, admin_1.admin, adminController_1.getAd
 router.get('/stripe-sessions', auth_1.auth, admin_1.admin, adminController_1.getAdminStripeSessions);
 router.get('/deployment', auth_1.auth, admin_1.admin, adminController_1.getAdminDeploymentOverview);
 router.get('/runtime', auth_1.auth, admin_1.admin, adminController_1.getAdminRuntimeOverview);
+router.get('/security-overview', auth_1.auth, admin_1.admin, adminController_1.getAdminSecurityOverview);
 exports.default = router;
