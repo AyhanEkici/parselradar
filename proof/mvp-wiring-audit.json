@@ -1,0 +1,699 @@
+{
+  "generatedAt": "2026-05-20T22:01:05.008Z",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 44,
+    "pass": 41,
+    "warn": 3,
+    "fail": 0
+  },
+  "rows": [
+    {
+      "navLabel": "-",
+      "route": "/",
+      "component": "Navigate",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "WARN",
+      "issue": "No explicit apiFetch endpoint detected in component (might be static or child-driven).",
+      "fixRequired": "Confirm child components or hooks handle API calls safely."
+    },
+    {
+      "navLabel": "-",
+      "route": "/login",
+      "component": "Login",
+      "requiredRole": "PUBLIC",
+      "backendEndpoints": [],
+      "adminExpected": "NO",
+      "userExpected": "YES",
+      "authHeaderRequired": "NO",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/forgot-password",
+      "component": "ForgotPassword",
+      "requiredRole": "PUBLIC",
+      "backendEndpoints": [],
+      "adminExpected": "NO",
+      "userExpected": "YES",
+      "authHeaderRequired": "NO",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/reset-password",
+      "component": "ResetPassword",
+      "requiredRole": "PUBLIC",
+      "backendEndpoints": [],
+      "adminExpected": "NO",
+      "userExpected": "YES",
+      "authHeaderRequired": "NO",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/register",
+      "component": "Register",
+      "requiredRole": "PUBLIC",
+      "backendEndpoints": [],
+      "adminExpected": "NO",
+      "userExpected": "YES",
+      "authHeaderRequired": "NO",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/access-denied",
+      "component": "AccessDenied",
+      "requiredRole": "PUBLIC",
+      "backendEndpoints": [],
+      "adminExpected": "NO",
+      "userExpected": "YES",
+      "authHeaderRequired": "NO",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/dashboard",
+      "component": "Dashboard",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "credits"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/credits",
+      "component": "Credits",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "credits",
+        "credits/dev-add",
+        "stripe/create-checkout-session"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/reports",
+      "component": "Reports",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "reports"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Properties",
+      "route": "/admin/properties",
+      "component": "AdminProperties",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "admin/properties"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/admin/properties/:propertyId",
+      "component": "PropertyDetail",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "admin/properties/${resolvedId}/status",
+        "analysis/${resolvedId}/quick-score?force=1",
+        "exports/analysis/${resolvedId}",
+        "investor/portfolio/${portfolioId}/items",
+        "investor/saved-analyses",
+        "investor/watchlist",
+        "workspace/${organizationId}/portfolios",
+        "workspace/${organizationId}/shared-analysis",
+        "workspace/${organizationId}/watchlist"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/admin/properties/:propertyId/documents",
+      "component": "AdminPropertyDocuments",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "admin/properties/${propertyId}",
+        "properties/${propertyId}/documents/${documentId}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/admin/deal-pool",
+      "component": "AdminDealPool",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "WARN",
+      "issue": "No explicit apiFetch endpoint detected in component (might be static or child-driven).",
+      "fixRequired": "Confirm child components or hooks handle API calls safely."
+    },
+    {
+      "navLabel": "Audit",
+      "route": "/admin/audit-timeline",
+      "component": "AdminAuditTimeline",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/audit-events?${params.toString()}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Users",
+      "route": "/admin/users",
+      "component": "AdminUsers",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/email-delivery-state",
+        "/admin/users/${targetUserId}/role",
+        "/admin/users?${params.toString()}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Analyses",
+      "route": "/admin/analyses",
+      "component": "AdminAnalyses",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/analyses?${params.toString()}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Credit Ledger",
+      "route": "/admin/credit-ledger",
+      "component": "AdminCreditLedger",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/credit-ledger?${params.toString()}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Stripe Sessions",
+      "route": "/admin/stripe-sessions",
+      "component": "AdminStripeSessions",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/stripe-sessions?${params.toString()}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Runtime",
+      "route": "/admin/runtime",
+      "component": "AdminSystemRuntime",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/runtime"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Deployment",
+      "route": "/admin/deployment",
+      "component": "AdminDeploymentOverview",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/deployment"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Observability",
+      "route": "/admin/observability",
+      "component": "AdminObservability",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/analyses?page=1",
+        "/admin/observability"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Analytics",
+      "route": "/admin/analytics",
+      "component": "AdminAnalytics",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/analytics"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Connectors",
+      "route": "/admin/connectors",
+      "component": "AdminConnectors",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/connectors",
+        "/admin/connectors/audit-trail"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/admin/connectors/:connectorKey",
+      "component": "AdminConnectorDetail",
+      "requiredRole": "ADMIN",
+      "backendEndpoints": [
+        "/admin/connectors/${connectorKey}",
+        "/admin/connectors/${connectorKey}/activation-plan"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "NO",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/properties/new",
+      "component": "NewProperty",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "properties"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/properties/:id",
+      "component": "PropertyDetail",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "admin/properties/${resolvedId}/status",
+        "analysis/${resolvedId}/quick-score?force=1",
+        "exports/analysis/${resolvedId}",
+        "investor/portfolio/${portfolioId}/items",
+        "investor/saved-analyses",
+        "investor/watchlist",
+        "workspace/${organizationId}/portfolios",
+        "workspace/${organizationId}/shared-analysis",
+        "workspace/${organizationId}/watchlist"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/properties/:id/documents",
+      "component": "PropertyDocuments",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "properties/${id}",
+        "properties/${id}/documents/${documentId}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/properties/:id/consent",
+      "component": "PropertyConsent",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "properties/${id}/consent"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/properties/:id/result",
+      "component": "PropertyResult",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "analysis/${id}/${type}",
+        "reports/${analysisRunId}/purchase-pdf"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Investor",
+      "route": "/investor",
+      "component": "InvestorDashboard",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/dashboard"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Saved",
+      "route": "/investor/saved-analyses",
+      "component": "SavedAnalyses",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/saved-analyses",
+        "investor/saved-analyses/${id}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Watchlist",
+      "route": "/investor/watchlist",
+      "component": "Watchlist",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/watchlist",
+        "investor/watchlist/${id}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Portfolio",
+      "route": "/investor/portfolio",
+      "component": "PortfolioDashboard",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/portfolio"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/investor/portfolio/:id",
+      "component": "PortfolioDetail",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/portfolio/${id}",
+        "investor/portfolio/${id}/items/${itemId}"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/investor/portfolio/:id/analytics",
+      "component": "PortfolioAnalytics",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "investor/portfolio/${id}/analytics",
+        "investor/portfolio/${id}/benchmark",
+        "investor/portfolio/${id}/exposure",
+        "investor/portfolio/${id}/performance",
+        "investor/portfolio/${id}/scenarios"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Organizations",
+      "route": "/organizations",
+      "component": "Organizations",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "organizations"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/organizations/:id",
+      "component": "OrganizationDetail",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "organizations/${id}",
+        "organizations/${id}/members"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/workspace/:organizationId/dashboard",
+      "component": "WorkspaceDashboard",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "workspace/${organizationId}/dashboard"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/workspace/:organizationId/portfolio",
+      "component": "WorkspacePortfolio",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "workspace/${organizationId}/portfolios"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/workspace/:organizationId/watchlist",
+      "component": "WorkspaceWatchlist",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "workspace/${organizationId}/watchlist"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/workspace/:organizationId/activity",
+      "component": "WorkspaceActivity",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "workspace/${organizationId}/activity",
+        "workspace/${organizationId}/shared-analysis"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "Notifications",
+      "route": "/notifications",
+      "component": "NotificationInbox",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "notifications",
+        "notifications/${id}/archive",
+        "notifications/${id}/read",
+        "notifications/digests",
+        "notifications/test-event"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "/notifications/preferences",
+      "component": "NotificationPreferences",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [
+        "notifications/preferences"
+      ],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "PASS",
+      "issue": "None",
+      "fixRequired": "None"
+    },
+    {
+      "navLabel": "-",
+      "route": "*",
+      "component": "NotFound",
+      "requiredRole": "AUTHENTICATED",
+      "backendEndpoints": [],
+      "adminExpected": "YES",
+      "userExpected": "YES",
+      "authHeaderRequired": "YES",
+      "currentStatus": "WARN",
+      "issue": "No explicit apiFetch endpoint detected in component (might be static or child-driven).",
+      "fixRequired": "Confirm child components or hooks handle API calls safely."
+    }
+  ],
+  "notes": [
+    "Audit is static wiring + contract inspection (route/nav/component/apiFetch extraction).",
+    "Use verify scripts + live checks to validate runtime behavior after fixes."
+  ]
+}

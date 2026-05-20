@@ -4,7 +4,7 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, clearAuthSession, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
+import { getAuthToken, getStoredUser, clearAuthSession, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
 type AuthState = 'hydrating' | 'authenticated' | 'unauthenticated';
@@ -65,8 +65,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				clearAuthSession();
 			}
 			if (callIdRef.current === callId) {
-				setUser(null);
-				setAuthState('unauthenticated');
+				if (status === 401) {
+					setUser(null);
+					setAuthState('unauthenticated');
+				} else {
+					const storedUser = getStoredUser();
+					if (storedUser && getAuthToken()) {
+						setUser(storedUser as User);
+						setAuthState('authenticated');
+					} else {
+						setUser(null);
+						setAuthState('unauthenticated');
+					}
+				}
 			}
 		} finally {
 			setAuthHydrating(false);

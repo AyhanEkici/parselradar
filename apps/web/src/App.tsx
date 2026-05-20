@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -67,23 +67,23 @@ function AppShell() {
         <div className="w-full bg-gray-100 border-b mb-4">
           <div className="max-w-5xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
             <nav className="flex flex-wrap gap-2 text-xs">
-              {isAdmin ? <a href="/admin/audit-timeline" className="hover:underline">Audit</a> : null}
-              {isAdmin ? <a href="/admin/users" className="hover:underline">Users</a> : null}
-              {isAdmin ? <a href="/admin/analyses" className="hover:underline">Analyses</a> : null}
-              {isAdmin ? <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a> : null}
-              {isAdmin ? <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a> : null}
-              {isAdmin ? <a href="/admin/properties" className="hover:underline">Properties</a> : null}
-              {isAdmin ? <a href="/admin/runtime" className="hover:underline">Runtime</a> : null}
-              {isAdmin ? <a href="/admin/deployment" className="hover:underline">Deployment</a> : null}
-              {isAdmin ? <a href="/admin/observability" className="hover:underline">Observability</a> : null}
-              {isAdmin ? <a href="/admin/analytics" className="hover:underline">Analytics</a> : null}
-              {isAdmin ? <a href="/admin/connectors" className="hover:underline">Connectors</a> : null}
-              <a href="/investor" className="hover:underline">Investor</a>
-              <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
-              <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
-              <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
-              <a href="/organizations" className="hover:underline">Organizations</a>
-              <a href="/notifications" className="hover:underline">Notifications</a>
+              {isAdmin ? <Link to="/admin/audit-timeline" className="hover:underline">Audit</Link> : null}
+              {isAdmin ? <Link to="/admin/users" className="hover:underline">Users</Link> : null}
+              {isAdmin ? <Link to="/admin/analyses" className="hover:underline">Analyses</Link> : null}
+              {isAdmin ? <Link to="/admin/credit-ledger" className="hover:underline">Credit Ledger</Link> : null}
+              {isAdmin ? <Link to="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</Link> : null}
+              {isAdmin ? <Link to="/admin/properties" className="hover:underline">Properties</Link> : null}
+              {isAdmin ? <Link to="/admin/runtime" className="hover:underline">Runtime</Link> : null}
+              {isAdmin ? <Link to="/admin/deployment" className="hover:underline">Deployment</Link> : null}
+              {isAdmin ? <Link to="/admin/observability" className="hover:underline">Observability</Link> : null}
+              {isAdmin ? <Link to="/admin/analytics" className="hover:underline">Analytics</Link> : null}
+              {isAdmin ? <Link to="/admin/connectors" className="hover:underline">Connectors</Link> : null}
+              <Link to="/investor" className="hover:underline">Investor</Link>
+              <Link to="/investor/saved-analyses" className="hover:underline">Saved</Link>
+              <Link to="/investor/watchlist" className="hover:underline">Watchlist</Link>
+              <Link to="/investor/portfolio" className="hover:underline">Portfolio</Link>
+              <Link to="/organizations" className="hover:underline">Organizations</Link>
+              <Link to="/notifications" className="hover:underline">Notifications</Link>
             </nav>
 
             <div className="ml-auto flex items-center gap-2 text-xs">

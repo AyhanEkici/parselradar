@@ -229,7 +229,7 @@ async function main() {
       checks.push(
         check(
           'Role proof for ayhanekici is ADMIN',
-          usersResponse.status === 200 && Boolean(ayhan),
+          usersResponse.status === 200 && Boolean(ayhan) && String(ayhan?.role || '').toUpperCase() === 'ADMIN',
           `adminUsersStatus=${usersResponse.status} ayhanRole=${ayhan?.role || 'NOT_FOUND'}`,
         ),
       );
@@ -237,7 +237,7 @@ async function main() {
       checks.push(
         check(
           'Role proof for Mahir is USER',
-          usersResponse.status === 200 && Boolean(mahir),
+          usersResponse.status === 200 && Boolean(mahir) && String(mahir?.role || '').toUpperCase() === 'USER',
           `adminUsersStatus=${usersResponse.status} mahirRole=${mahir?.role || 'NOT_FOUND'}`,
         ),
       );

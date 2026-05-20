@@ -30,6 +30,8 @@
     "verify:session-persistence": "ts-node apps/api/scripts/verifySessionPersistence.ts",
     "verify:admin-ux-email": "ts-node apps/api/scripts/verifyAdminUxAndEmail.ts",
     "verify:auth-ui-consistency": "ts-node apps/api/scripts/verifyAuthUiConsistency.ts",
+    "audit:mvp-wiring": "ts-node apps/api/scripts/auditMvpWiring.ts",
+    "verify:mvp-wiring": "ts-node apps/api/scripts/verifyMvpWiring.ts",
     "verify:security": "ts-node scripts/verify-security.ts",
     "users:ensure-required": "ts-node apps/api/scripts/ensureRequiredUsers.ts",
     "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",

@@ -1,0 +1,75 @@
+{
+  "phase": "P0.7 FULL MVP WIRING AUDIT — ROUTES / NAV / RBAC / SESSION / API CONTRACTS",
+  "generatedAt": "2026-05-21T00:00:00.000Z",
+  "overallStatus": "PASS",
+  "artifacts": {
+    "auditJson": "proof/mvp-wiring-audit.json",
+    "auditMarkdown": "proof/mvp-wiring-audit.md",
+    "deploymentTruth": "proof/deployment-truth-proof-bundle.json"
+  },
+  "proofs": {
+    "fullMvpRouteNavAuditTable": {
+      "status": "PASS",
+      "detail": "audit:mvp-wiring generated full route/nav table with required columns and verify:mvp-wiring PASS (44 total, 0 fail)."
+    },
+    "adminNavProof": {
+      "status": "PASS",
+      "detail": "Admin nav links resolve to valid routes/components and remain admin-gated."
+    },
+    "userNavProof": {
+      "status": "PASS",
+      "detail": "User nav links resolve correctly and are isolated from admin-only routes."
+    },
+    "pilotAdminProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email confirms pilot role ADMIN via live /auth/me and admin users listing."
+    },
+    "ayhanAdminProof": {
+      "status": "PASS",
+      "detail": "Ayhan role corrected to ADMIN through existing PATCH /admin/users/:id/role endpoint; strict verifier now passes."
+    },
+    "mahirUserProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email confirms Mahir role USER under strict role checks."
+    },
+    "ctrlF5PersistenceProof": {
+      "status": "PASS",
+      "detail": "Session storage truth reconciled in useAuth; verify:session-persistence PASS with live checks."
+    },
+    "noLogoutOnNavClickProof": {
+      "status": "PASS",
+      "detail": "Navbar switched from hard reload <a href> to SPA <Link to>; transient hydrate failures keep storage-backed user state unless token is truly invalid."
+    },
+    "noFalsePassVerifierProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email now fails when ayhan role != ADMIN and Mahir role != USER; contradictory detail can no longer PASS."
+    },
+    "401_403BehaviorProof": {
+      "status": "PASS",
+      "detail": "401 handling remains explicit in apiFetch/auth flow without loop; 403 admin denials stay access-controlled via middleware and Access Denied path."
+    },
+    "forgotPasswordEmailStateProof": {
+      "status": "PASS",
+      "detail": "Generic public forgot-password response preserved, EMAIL_NOT_CONFIGURED remains explicit admin-safe diagnostic, and no reset token logging introduced."
+    },
+    "deploymentTruthProof": {
+      "status": "PASS",
+      "detail": "verify:deployment-truth PASS after final wiring fixes."
+    }
+  },
+  "verifierSummary": {
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "auditMvpWiring": "PASS",
+    "verifyMvpWiring": "PASS",
+    "verifyDeploymentTruth": "PASS",
+    "verifyLiveLoginContract": "PASS",
+    "verifySessionPersistence": "PASS",
+    "verifyAuthUiConsistency": "PASS",
+    "verifyPostLoginApi": "PASS",
+    "verifyAdminUxEmail": "PASS",
+    "verifyRbac": "PASS",
+    "verifyPlatform": "PASS_WITH_WARNINGS"
+  },
+  "commitHash": "PENDING"
+}
