@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T00:23:53.833Z",
+  "generatedAt": "2026-05-20T00:25:31.104Z",
   "overallStatus": "FAIL",
   "loginResults": [],
   "proofs": {
@@ -36,6 +36,6 @@
       "detail": "Login verification blocked by missing required secrets."
     }
   },
-  "commitHash": "",
+  "commitHash": "3e5a2347923543d699db5d873f5d00e2586ab98a",
   "blockedReason": "Missing required env var: SECURITY_VERIFY_PILOT_PASSWORD"
 }
