@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-05-20T18:46:05.042Z",
+  "overallStatus": "FAIL",
+  "proofs": {
+    "localHeadProof": {
+      "status": "PASS",
+      "detail": "local HEAD = ce3d58db78ade49d1373547f2162e03cdc1ba51f"
+    },
+    "originMainProof": {
+      "status": "PASS",
+      "detail": "origin/main HEAD = ce3d58db78ade49d1373547f2162e03cdc1ba51f"
+    },
+    "railwayHealthProof": {
+      "status": "PASS",
+      "detail": "/health reachable with status 200."
+    },
+    "railwayGitShaProof": {
+      "status": "PASS",
+      "detail": "Railway /__buildinfo gitSha = fd403486e4a3ac87a35efb8aef9629f80e0bf269"
+    },
+    "commitAlignmentProof": {
+      "status": "FAIL",
+      "detail": "Mismatch: local=ce3d58db78ade49d1373547f2162e03cdc1ba51f, origin/main=ce3d58db78ade49d1373547f2162e03cdc1ba51f, railway=fd403486e4a3ac87a35efb8aef9629f80e0bf269"
+    },
+    "requiredCommit_fd956a58_Proof": {
+      "status": "WARN",
+      "detail": "Could not prove ancestry for fd956a58 -> fd403486e4a3ac87a35efb8aef9629f80e0bf269 (missing commit locally)."
+    },
+    "requiredCommit_80d94b53_Proof": {
+      "status": "PASS",
+      "detail": "80d94b53 is reachable in Railway gitSha fd403486e4a3ac87a35efb8aef9629f80e0bf269."
+    },
+    "requiredCommit_ce3d58db_Proof": {
+      "status": "WARN",
+      "detail": "Could not prove ancestry for ce3d58db -> fd403486e4a3ac87a35efb8aef9629f80e0bf269 (missing commit locally)."
+    },
+    "vercelLoginReachableProof": {
+      "status": "PASS",
+      "detail": "/login reachable on Vercel with status 200."
+    },
+    "vercelActiveBundleProof": {
+      "status": "PASS",
+      "detail": "Active Vercel JS bundle = https://parselradar.vercel.app/assets/index-CH6d1mVW.js"
+    },
+    "vercelBundleAuthMarkerProof": {
+      "status": "PASS",
+      "detail": "Bundle fetched (status=200) and contains auth markers: parselradar_token, auth:changed, /auth/me, /credits"
+    },
+    "backendHealthReachableProof": {
+      "status": "PASS",
+      "detail": "Backend /health reachable."
+    },
+    "liveAuthContractProof": {
+      "status": "FAIL",
+      "detail": "verify:live-login-contract returned 401 on /auth/me with backendReason=TOKEN_VERIFIED_POST_CHECK_FAILED while Railway gitSha is behind origin/main."
+    },
+    "postLoginStabilityProof": {
+      "status": "PASS",
+      "detail": "verify:post-login-api passed (8/8)."
+    },
+    "rbacContinuityProof": {
+      "status": "PASS",
+      "detail": "verify:rbac passed (57/57)."
+    }
+  },
+  "commitHash": "ce3d58db",
+  "nextAction": "Alignment FAIL: local/origin=ce3d58db and Railway=fd403486. Force Railway redeploy and wait until /__buildinfo gitSha matches origin/main before interpreting runtime auth failures."
+}

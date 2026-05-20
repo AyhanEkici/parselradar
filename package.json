@@ -16,6 +16,7 @@
     "verify:live-browser-auth": "ts-node apps/api/scripts/verifyLiveBrowserAuth.ts",
     "verify:runtime-boot": "ts-node apps/api/scripts/verifyRuntimeBoot.ts",
     "verify:railway-runtime": "ts-node apps/api/scripts/verifyRailwayRuntimeHealth.ts",
+    "verify:deployment-truth": "ts-node apps/api/scripts/verifyDeploymentTruth.ts",
     "check:auth-routes": "ts-node apps/api/scripts/check-auth-routes.ts",
     "auth:diagnose": "ts-node apps/api/scripts/diagnoseAuthUsers.ts",
     "auth:verify-passwordhash": "ts-node apps/api/scripts/verifyPasswordHashField.ts",
