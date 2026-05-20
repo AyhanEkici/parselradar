@@ -23,7 +23,8 @@ async function jsonRateLimitHandler(req, res) {
 }
 exports.authLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5,
+    max: 20,
+    skipSuccessfulRequests: true,
     handler: jsonRateLimitHandler,
     standardHeaders: true,
     legacyHeaders: false,

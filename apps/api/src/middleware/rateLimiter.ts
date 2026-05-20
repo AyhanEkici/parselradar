@@ -20,7 +20,8 @@ async function jsonRateLimitHandler(req: Request, res: Response) {
 
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5,
+  max: 20,
+  skipSuccessfulRequests: true,
   handler: jsonRateLimitHandler,
   standardHeaders: true,
   legacyHeaders: false,
