@@ -22,6 +22,7 @@
     "auth:repair-safe": "ts-node apps/api/scripts/repairAuthHashes.ts",
     "auth:reset-known-users": "ts-node apps/api/scripts/resetKnownUserPasswords.ts",
     "verify:login": "ts-node apps/api/scripts/verifyLoginFlow.ts",
+    "verify:auth-loop": "ts-node apps/api/scripts/verifyAuthLoop.ts",
     "verify:security": "ts-node scripts/verify-security.ts",
     "users:ensure-required": "ts-node apps/api/scripts/ensureRequiredUsers.ts",
     "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",

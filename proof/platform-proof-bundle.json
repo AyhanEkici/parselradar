@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-20T02:20:50.604Z",
-  "gitSha": "e5b9b54f2ca42c7187e9383c815b868748fcd0b6",
+  "generatedAt": "2026-05-20T14:05:12.995Z",
+  "gitSha": "7b4ebe36c78c8374b6d7cbddcb0e974d7d0db0a0",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
     "totalChecks": 345,
-    "passCount": 332,
-    "warnCount": 10,
+    "passCount": 331,
+    "warnCount": 11,
     "failCount": 0,
     "skippedCount": 3
   },
@@ -217,6 +217,12 @@
       "checks": [
         {
           "category": "Auth",
+          "name": "Auth middleware validates JWT and user lookup",
+          "status": "WARN",
+          "message": "Auth middleware structure does not clearly prove JWT verification and user lookup."
+        },
+        {
+          "category": "Auth",
           "name": "Auth limiter on register/login/logout",
           "status": "PASS",
           "message": "Register, login, and logout routes are rate limited."
@@ -226,12 +232,6 @@
           "name": "auth middleware file exists",
           "status": "PASS",
           "message": "Auth middleware file presence verified."
-        },
-        {
-          "category": "Auth",
-          "name": "Auth middleware validates JWT and user lookup",
-          "status": "PASS",
-          "message": "Auth middleware verifies JWT and resolves the user record."
         },
         {
           "category": "Auth",
@@ -331,11 +331,11 @@
       "connectorStates": [],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 11,
-      "warnCount": 0,
+      "passCount": 10,
+      "warnCount": 1,
       "failCount": 0,
       "skippedCount": 0,
-      "overallStatus": "PASS"
+      "overallStatus": "WARN"
     },
     {
       "category": "Connectors",
@@ -2622,7 +2622,23 @@
           "category": "Routes",
           "routeFile": "apps/api/src/index.ts",
           "method": "GET",
+          "path": "/__auth-debug",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "GET",
           "path": "/__buildinfo",
+          "requiresAuth": false,
+          "requiresAdmin": false
+        },
+        {
+          "category": "Routes",
+          "routeFile": "apps/api/src/index.ts",
+          "method": "GET",
+          "path": "/__jwt-diagnostics",
           "requiresAuth": false,
           "requiresAdmin": false
         },
@@ -3266,6 +3282,12 @@
     },
     {
       "category": "Auth",
+      "name": "Auth middleware validates JWT and user lookup",
+      "status": "WARN",
+      "message": "Auth middleware structure does not clearly prove JWT verification and user lookup."
+    },
+    {
+      "category": "Auth",
       "name": "Auth limiter on register/login/logout",
       "status": "PASS",
       "message": "Register, login, and logout routes are rate limited."
@@ -3275,12 +3297,6 @@
       "name": "auth middleware file exists",
       "status": "PASS",
       "message": "Auth middleware file presence verified."
-    },
-    {
-      "category": "Auth",
-      "name": "Auth middleware validates JWT and user lookup",
-      "status": "PASS",
-      "message": "Auth middleware verifies JWT and resolves the user record."
     },
     {
       "category": "Auth",
@@ -5279,7 +5295,23 @@
       "category": "Routes",
       "routeFile": "apps/api/src/index.ts",
       "method": "GET",
+      "path": "/__auth-debug",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "GET",
       "path": "/__buildinfo",
+      "requiresAuth": false,
+      "requiresAdmin": false
+    },
+    {
+      "category": "Routes",
+      "routeFile": "apps/api/src/index.ts",
+      "method": "GET",
+      "path": "/__jwt-diagnostics",
       "requiresAuth": false,
       "requiresAdmin": false
     },

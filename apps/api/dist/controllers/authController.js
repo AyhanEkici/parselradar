@@ -60,7 +60,7 @@ const register = async (req, res) => {
         path: '/',
         maxAge: 1000 * 60 * 60 * 24 * 7
     });
-    res.json({ id: user._id, email: user.email, name: user.name, role: user.role, token });
+    res.json({ token, user: { id: String(user._id), email: user.email, name: user.name, role: user.role } });
     await (0, auditLog_1.logAuditEvent)({
         type: 'auth_register',
         actorUserId: user._id.toString(),
@@ -136,7 +136,7 @@ const login = async (req, res) => {
         tokenIssued: Boolean(token),
         role: roleState.normalizedRole,
     });
-    res.json({ id: user._id, email: user.email, name: user.name, role: roleState.normalizedRole, token });
+    res.json({ token, user: { id: String(user._id), email: user.email, name: user.name, role: roleState.normalizedRole } });
     await (0, auditLog_1.logAuditEvent)({
         type: 'auth_login',
         actorUserId: user._id.toString(),

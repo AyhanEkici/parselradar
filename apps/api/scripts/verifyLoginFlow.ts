@@ -54,25 +54,32 @@ function frontendProof(): { status: Status; detail: string } {
   const useAuthPath = path.resolve(process.cwd(), 'apps/web/src/hooks/useAuth.tsx');
   const authPath = path.resolve(process.cwd(), 'apps/web/src/lib/auth.ts');
   const apiPath = path.resolve(process.cwd(), 'apps/web/src/lib/api.ts');
+  const authStoragePath = path.resolve(process.cwd(), 'apps/web/src/lib/authStorage.ts');
 
-  if (!fs.existsSync(useAuthPath) || !fs.existsSync(authPath) || !fs.existsSync(apiPath)) {
+  if (!fs.existsSync(useAuthPath) || !fs.existsSync(authPath) || !fs.existsSync(apiPath) || !fs.existsSync(authStoragePath)) {
     return { status: 'FAIL', detail: 'Missing frontend auth files.' };
   }
 
   const useAuth = fs.readFileSync(useAuthPath, 'utf-8');
   const authLib = fs.readFileSync(authPath, 'utf-8');
   const apiLib = fs.readFileSync(apiPath, 'utf-8');
+  const authStorage = fs.readFileSync(authStoragePath, 'utf-8');
 
+  // New authStorage-based patterns (post-auth-loop fix)
   const pass =
-    /deterministicAuthBootstrap\(/.test(useAuth) &&
-    /localStorage\.setItem\(TOKEN_KEY/.test(authLib) &&
-    /localStorage\.removeItem\(TOKEN_KEY\)/.test(authLib) &&
-    /Authorization:\s*`Bearer \$\{token\}`/.test(apiLib) &&
-    /localStorage\.removeItem\(TOKEN_KEY\)/.test(apiLib);
+    /getAuthToken\(\)/.test(useAuth) &&            // useAuth uses authStorage
+    /clearAuthSession\(\)/.test(useAuth) &&         // useAuth clears via authStorage
+    /hydrating/.test(useAuth) &&                    // hydrating state present
+    /setAuthSession\(/.test(authLib) &&             // auth.ts persists via authStorage
+    /clearAuthSession\(\)/.test(authLib) &&         // auth.ts clears via authStorage
+    /getAuthToken\(\)/.test(apiLib) &&              // api.ts reads token via authStorage
+    /clearAuthSession\(\)/.test(apiLib) &&          // api.ts clears via authStorage
+    /AUTH_TOKEN_KEY/.test(authStorage) &&           // authStorage defines canonical key
+    /AUTH_USER_KEY/.test(authStorage);              // authStorage defines user key
 
   return pass
-    ? { status: 'PASS', detail: 'Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present.' }
-    : { status: 'FAIL', detail: 'Frontend auth persistence checks failed.' };
+    ? { status: 'PASS', detail: 'authStorage-based auth hydration, persistence, stale-token cleanup, and Authorization header injection are present.' }
+    : { status: 'FAIL', detail: 'Frontend auth persistence checks failed. Ensure authStorage.ts is the single source of truth.' };
 }
 
 function buildProof(): { status: Status; detail: string } {

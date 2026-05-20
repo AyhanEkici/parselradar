@@ -1,41 +1,66 @@
-// useAuth.tsx: now contains the AuthProvider and useAuth hooks with JSX support
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+// useAuth.tsx — deterministic, loop-free auth hydration.
+// Hydration runs ONCE on mount. The auth:changed event is only fired by
+// setAuthSession (login) and explicit logout — never by 401 handling —
+// so cross-tab sync cannot re-trigger a 401 storm.
+import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { cleanupInvalidAuthState, deterministicAuthBootstrap } from '../security/deterministicAuthBootstrap';
+import { getAuthToken, clearAuthSession } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
-type AuthContextType = { user: User; isAdmin: boolean };
-const AuthContext = createContext<AuthContextType>({ user: null, isAdmin: false });
+type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean };
+const AuthContext = createContext<AuthContextType>({ user: null, isAdmin: false, hydrating: true });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User>(null);
+	const [hydrating, setHydrating] = useState(true);
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
-	const refreshAuth = () => {
-		getMe()
-			.then((u) => setUser(u))
-			.catch(() => {
-				cleanupInvalidAuthState();
+	// Incremented on every hydrateAuth call; stale async results are ignored.
+	const callIdRef = useRef(0);
+
+	async function hydrateAuth() {
+		const callId = ++callIdRef.current;
+
+		// Guard: no token → clear state and stop. Do NOT call /auth/me.
+		const token = getAuthToken();
+		if (!token) {
+			if (callIdRef.current === callId) {
 				setUser(null);
-			});
-	};
+				setHydrating(false);
+			}
+			return;
+		}
+
+		if (callIdRef.current === callId) setHydrating(true);
+
+		try {
+			const u = await getMe();
+			if (callIdRef.current === callId) setUser(u as User);
+		} catch {
+			// 401 or network error: clear session silently (no event dispatch → no loop).
+			clearAuthSession();
+			if (callIdRef.current === callId) setUser(null);
+		} finally {
+			if (callIdRef.current === callId) setHydrating(false);
+		}
+	}
+
+	// Boot hydration — runs once on mount.
 	useEffect(() => {
-		deterministicAuthBootstrap();
-		refreshAuth();
+		hydrateAuth();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-	// Listen for login/logout in other tabs
+
+	// Cross-tab login/logout sync. auth:changed is NEVER dispatched by 401
+	// handling, so this cannot create a retry loop.
 	useEffect(() => {
-		const handler = () => {
-			refreshAuth();
-		};
-		window.addEventListener('storage', handler);
-		window.addEventListener('auth:changed', handler as EventListener);
-		return () => {
-			window.removeEventListener('storage', handler);
-			window.removeEventListener('auth:changed', handler as EventListener);
-		};
+		const handler = () => hydrateAuth();
+		window.addEventListener('auth:changed', handler);
+		return () => window.removeEventListener('auth:changed', handler);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
 	return (
-		<AuthContext.Provider value={{ user, isAdmin }}>
+		<AuthContext.Provider value={{ user, isAdmin, hydrating }}>
 			{children}
 		</AuthContext.Provider>
 	);

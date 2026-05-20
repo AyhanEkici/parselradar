@@ -1,67 +1,51 @@
 import { apiFetch } from './api';
+import { setAuthSession, clearAuthSession, StoredUser } from './authStorage';
 
-type AuthResponse = {
-  id?: string;
-  email?: string;
-  name?: string;
-  role?: string;
-  token?: string;
-  error?: string;
-};
+type AuthSuccessResponse = { token: string; user: StoredUser };
+type AuthErrorResponse = { error: string };
+type AuthResponse = AuthSuccessResponse | AuthErrorResponse;
 
-const TOKEN_KEY = 'parselradar_token';
-
-function persistToken(response: AuthResponse) {
-  if (response?.token && typeof response.token === 'string') {
-    localStorage.setItem(TOKEN_KEY, response.token);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('auth:changed'));
-    }
-  }
+export async function getMe(): Promise<StoredUser> {
+  return apiFetch('/auth/me') as Promise<StoredUser>;
 }
 
-export async function getMe() {
-  return apiFetch('/auth/me');
-}
-
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string): Promise<AuthResponse> {
   const response = (await apiFetch('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({
-      email,
-      password,
-    }),
+    body: JSON.stringify({ email, password }),
   })) as AuthResponse;
 
-  persistToken(response);
+  if ('token' in response && response.token && response.user) {
+    setAuthSession(response.token, response.user);
+  }
 
   return response;
 }
 
-export async function register(email: string, password: string, name: string) {
+export async function register(email: string, password: string, name: string): Promise<AuthResponse> {
   const response = (await apiFetch('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({
-      email,
-      password,
-      name,
-    }),
+    body: JSON.stringify({ email, password, name }),
   })) as AuthResponse;
 
-  persistToken(response);
+  if ('token' in response && response.token && response.user) {
+    setAuthSession(response.token, response.user);
+  }
 
   return response;
 }
 
-export async function logout() {
-  localStorage.removeItem(TOKEN_KEY);
+export async function logout(): Promise<void> {
+  clearAuthSession();
+  // Dispatch for cross-tab sync — this is the ONLY place auth:changed fires on logout.
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('auth:changed'));
   }
-
-  return apiFetch('/auth/logout', {
-    method: 'POST',
-  });
+  try {
+    await apiFetch('/auth/logout', { method: 'POST' });
+  } catch {
+    // Ignore server-side logout errors; local session is already cleared.
+  }
 }
 
 export async function forgotPassword(email: string) {

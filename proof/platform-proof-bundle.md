@@ -1,16 +1,16 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-20T02:20:50.604Z
+Generated at: 2026-05-20T14:05:12.995Z
 Overall status: WARN
-Git SHA: e5b9b54f2ca42c7187e9383c815b868748fcd0b6
+Git SHA: 7b4ebe36c78c8374b6d7cbddcb0e974d7d0db0a0
 Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
 - Checks: 345
-- PASS: 332
-- WARN: 10
+- PASS: 331
+- WARN: 11
 - FAIL: 0
 - SKIPPED: 3
 
@@ -40,17 +40,17 @@ Dirty working tree: true
 
 ## Auth
 
-- Overall: PASS
-- PASS: 11
-- WARN: 0
+- Overall: WARN
+- PASS: 10
+- WARN: 1
 - FAIL: 0
 - SKIPPED: 0
 
 | Status | Check | Message | Detail |
 | --- | --- | --- | --- |
+| WARN | Auth middleware validates JWT and user lookup | Auth middleware structure does not clearly prove JWT verification and user lookup. |  |
 | PASS | Auth limiter on register/login/logout | Register, login, and logout routes are rate limited. |  |
 | PASS | auth middleware file exists | Auth middleware file presence verified. |  |
-| PASS | Auth middleware validates JWT and user lookup | Auth middleware verifies JWT and resolves the user record. |  |
 | PASS | authController file exists | Auth controller file presence verified. |  |
 | PASS | authRoutes file exists | Auth route file presence verified. |  |
 | PASS | CLIENT_URL readiness | CLIENT_URL is present. | CLIENT_URL=PRESENT |

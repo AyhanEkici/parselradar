@@ -1,6 +1,7 @@
+import { getAuthToken, clearAuthSession } from './authStorage';
+
 const LOCAL_API_URL = 'http://localhost:4000';
 const PRODUCTION_API_URL = 'https://parselradar-production.up.railway.app';
-const TOKEN_KEY = 'parselradar_token';
 
 function normalizeBaseUrl(value: string) {
   return value.replace(/\/+$/, '');
@@ -45,10 +46,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   const cleanPath = '/' + String(path).replace(/^\/+/, '');
   const url = getApiBaseUrl() + cleanPath;
 
-  const token =
-    typeof window !== 'undefined'
-      ? localStorage.getItem('parselradar_token')
-      : null;
+  const token = getAuthToken();
 
   const response = await fetch(url, {
     ...options,
@@ -87,9 +85,10 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   }
 
   if (!response.ok) {
-    if (response.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem(TOKEN_KEY);
-      window.dispatchEvent(new Event('auth:changed'));
+    if (response.status === 401) {
+      // Clear token ONCE and stop — do NOT dispatch auth:changed here.
+      // Dispatching auth:changed would cause useAuth to re-call /auth/me → 401 loop.
+      clearAuthSession();
     }
     if (data) {
       throw { ...data, status: response.status, url };

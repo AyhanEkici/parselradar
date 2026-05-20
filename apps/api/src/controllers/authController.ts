@@ -57,7 +57,7 @@ export const register = async (req: Request, res: Response) => {
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 7
   });
-  res.json({ id: user._id, email: user.email, name: user.name, role: user.role, token });
+  res.json({ token, user: { id: String(user._id), email: user.email, name: user.name, role: user.role } });
   await logAuditEvent({
     type: 'auth_register',
     actorUserId: user._id.toString(),
@@ -129,7 +129,7 @@ export const login = async (req: Request, res: Response) => {
     role: roleState.normalizedRole,
   });
 
-  res.json({ id: user._id, email: user.email, name: user.name, role: roleState.normalizedRole, token });
+  res.json({ token, user: { id: String(user._id), email: user.email, name: user.name, role: roleState.normalizedRole } });
   await logAuditEvent({
     type: 'auth_login',
     actorUserId: user._id.toString(),

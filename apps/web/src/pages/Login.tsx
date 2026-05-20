@@ -4,15 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui';
 import ForgotPasswordLink from '../components/auth/ForgotPasswordLink';
 
-type LoginResponse = {
-  id?: string;
-  email?: string;
-  name?: string;
-  role?: string;
-  token?: string;
-  error?: string;
-};
-
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,16 +17,22 @@ export default function Login() {
     const loadingToastId = toast.loading('Giriş yapılıyor...');
 
     try {
-      const res = (await login(email.trim(), password)) as LoginResponse;
+      // login() calls setAuthSession internally on success (via auth.ts).
+      // Do NOT write to localStorage here — that would create a duplicate.
+      const res = await login(email.trim(), password);
 
-      if (!res?.id || !res?.email || !res?.role || !res?.token) {
+      if ('error' in res) {
         toast.dismiss(loadingToastId);
-        toast.error(res?.error || 'Giriş başarısız');
+        toast.error(res.error || 'Giriş başarısız');
         return;
       }
 
-      localStorage.setItem('parselradar_token', res.token);
-      window.dispatchEvent(new Event('storage'));
+      if (!res.token || !res.user?.id) {
+        toast.dismiss(loadingToastId);
+        toast.error('Giriş başarısız');
+        return;
+      }
+
       toast.dismiss(loadingToastId);
       toast.success('Giriş başarılı');
       navigate('/dashboard', { replace: true });

@@ -3,7 +3,23 @@
     "category": "Routes",
     "routeFile": "apps/api/src/index.ts",
     "method": "GET",
+    "path": "/__auth-debug",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
     "path": "/__buildinfo",
+    "requiresAuth": false,
+    "requiresAdmin": false
+  },
+  {
+    "category": "Routes",
+    "routeFile": "apps/api/src/index.ts",
+    "method": "GET",
+    "path": "/__jwt-diagnostics",
     "requiresAuth": false,
     "requiresAdmin": false
   },
