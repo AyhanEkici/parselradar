@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-20T01:02:27.191Z",
+  "overallStatus": "FAIL",
+  "results": [],
+  "proofs": {
+    "knownUserResetProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "userIdsPreservedProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "roleRepairProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "bcryptCompareProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "jwtIssuanceProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "tokenVerificationProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    },
+    "noOwnershipCorruptionProof": {
+      "status": "FAIL",
+      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+    }
+  },
+  "blockedReason": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD",
+  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
+}

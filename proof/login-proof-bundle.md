@@ -1,6 +1,6 @@
 # Login Proof Bundle
 
-Generated at: 2026-05-20T00:44:58.772Z
+Generated at: 2026-05-20T01:02:49.973Z
 Overall status: FAIL
 
 | Check | Status | Detail |
@@ -12,9 +12,9 @@ Overall status: FAIL
 | tokenVerificationProof | FAIL | Token verification failed or was not reachable for at least one required user. |
 | frontendAuthPersistenceProof | PASS | Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
 | roleHydrationProof | FAIL | Role mismatch or invalid role hydration detected. |
-| pilotLoginProof | FAIL | Missing SECURITY_VERIFY_PILOT_PASSWORD |
-| ayhanLoginProof | FAIL | Missing SECURITY_VERIFY_AYHAN_PASSWORD |
-| mahirLoginProof | FAIL | Missing SECURITY_VERIFY_MAHIR_PASSWORD |
+| pilotLoginProof | FAIL | Missing AUTH_RESET_PILOT_PASSWORD |
+| ayhanLoginProof | FAIL | Missing AUTH_RESET_AYHAN_PASSWORD |
+| mahirLoginProof | FAIL | Missing AUTH_RESET_MAHIR_PASSWORD |
 | mahirIsolationProof | PASS | RBAC verifier confirms Mahir isolation controls. |
 | adminVisibilityProof | PASS | RBAC verifier confirms admin-only visibility. |
 | rootCauseProof | FAIL | missing_password_env_for_compare, role_hydration_mismatch |
@@ -24,5 +24,5 @@ Overall status: FAIL
 
 ## Commit Hash
 
-- d996e74a7a75a0b31792c27d7a0d56c3b0a4056a
+- e277ab74bea5f116fb7772a469b82e1f1b05b676
 

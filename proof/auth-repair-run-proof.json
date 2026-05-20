@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T00:44:41.595Z",
+  "generatedAt": "2026-05-20T00:46:02.461Z",
   "overallStatus": "FAIL",
   "results": [
     {
@@ -46,5 +46,5 @@
       "detail": "Mongo _id values preserved; ownership/reference continuity maintained."
     }
   },
-  "commitHash": "d996e74a7a75a0b31792c27d7a0d56c3b0a4056a"
+  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
 }

@@ -9,9 +9,10 @@ import User from '../src/models/User';
 dotenv.config();
 
 type TargetUser = {
+  id: string;
   label: 'pilot' | 'AyhanEkici' | 'Mahir';
+  email: string;
   expectedRole: 'ADMIN' | 'USER';
-  emailEnv: string;
   passwordEnv: string;
 };
 
@@ -75,27 +76,23 @@ function safeDebug(event: string, payload: Record<string, unknown>) {
   console.info(`[auth-debug] ${event}`, payload);
 }
 
-async function findUser(label: string, configuredEmail: string) {
-  const normalized = normalizeEmail(configuredEmail);
-  if (normalized) {
-    let user = await User.findOne({ email: normalized });
-    if (user) return { user, emailNormalized: normalized };
-    user = await User.findOne({ email: { $regex: `^${escapeRegExp(normalized)}$`, $options: 'i' } });
-    if (user) return { user, emailNormalized: normalized };
+async function findUser(target: TargetUser) {
+  const normalized = normalizeEmail(target.email);
+  const byId = await User.findById(target.id);
+  if (!byId) {
+    return { user: null, emailNormalized: normalized };
   }
-
-  const byLabel = await User.findOne({
-    $or: [{ email: { $regex: label, $options: 'i' } }, { name: { $regex: label, $options: 'i' } }],
-  });
-  return { user: byLabel, emailNormalized: normalized };
+  if (normalizeEmail(String(byId.email || '')) !== normalized) {
+    return { user: null, emailNormalized: normalized };
+  }
+  return { user: byId, emailNormalized: normalized };
 }
 
 async function verifyOne(target: TargetUser): Promise<CompatibilityResult> {
-  const configuredEmail = String(process.env[target.emailEnv] || '');
   const configuredPasswordRaw = String(process.env[target.passwordEnv] || '');
   const configuredPassword = normalizePassword(configuredPasswordRaw);
 
-  const { user, emailNormalized } = await findUser(target.label, configuredEmail);
+  const { user, emailNormalized } = await findUser(target);
   if (!user) {
     safeDebug('password_compat_user_lookup', { label: target.label, emailNormalized, userFound: false });
     return {
@@ -236,9 +233,9 @@ async function run() {
 
   try {
     const targets: TargetUser[] = [
-      { label: 'pilot', expectedRole: 'ADMIN', emailEnv: 'SECURITY_VERIFY_PILOT_EMAIL', passwordEnv: 'SECURITY_VERIFY_PILOT_PASSWORD' },
-      { label: 'AyhanEkici', expectedRole: 'ADMIN', emailEnv: 'SECURITY_VERIFY_AYHAN_EMAIL', passwordEnv: 'SECURITY_VERIFY_AYHAN_PASSWORD' },
-      { label: 'Mahir', expectedRole: 'USER', emailEnv: 'SECURITY_VERIFY_MAHIR_EMAIL', passwordEnv: 'SECURITY_VERIFY_MAHIR_PASSWORD' },
+      { id: '6a09018a44118543aaab28bd', label: 'pilot', email: 'pilot@test.com', expectedRole: 'ADMIN', passwordEnv: 'AUTH_RESET_PILOT_PASSWORD' },
+      { id: '6a08fad07081b1a50805bce7', label: 'AyhanEkici', email: 'ayhanekici@gmail.com', expectedRole: 'ADMIN', passwordEnv: 'AUTH_RESET_AYHAN_PASSWORD' },
+      { id: '6a0caabed2e06f38b152f9d0', label: 'Mahir', email: 'mmahir38@gmail.com', expectedRole: 'USER', passwordEnv: 'AUTH_RESET_MAHIR_PASSWORD' },
     ];
 
     const results: CompatibilityResult[] = [];

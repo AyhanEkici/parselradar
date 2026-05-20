@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-05-20T00:44:52.163Z",
+  "generatedAt": "2026-05-20T01:02:45.596Z",
   "overallStatus": "FAIL",
   "userDiagnostics": [
     {
       "label": "pilot",
       "expectedRole": "ADMIN",
       "exists": true,
-      "emailInput": "not_provided",
-      "emailNormalized": "",
-      "emailExactMatch": false,
-      "emailCaseInsensitiveMatch": false,
+      "emailInput": "provided",
+      "emailNormalized": "pilot@test.com",
+      "emailExactMatch": true,
+      "emailCaseInsensitiveMatch": true,
       "role": "ADMIN",
       "roleHydrationValid": true,
       "bcryptCompared": false,
@@ -21,16 +21,16 @@
       "rootCauseHints": [
         "missing_password_env_for_compare"
       ],
-      "blockedReason": "Missing SECURITY_VERIFY_PILOT_PASSWORD"
+      "blockedReason": "Missing AUTH_RESET_PILOT_PASSWORD"
     },
     {
       "label": "AyhanEkici",
       "expectedRole": "ADMIN",
       "exists": true,
-      "emailInput": "not_provided",
-      "emailNormalized": "",
-      "emailExactMatch": false,
-      "emailCaseInsensitiveMatch": false,
+      "emailInput": "provided",
+      "emailNormalized": "ayhanekici@gmail.com",
+      "emailExactMatch": true,
+      "emailCaseInsensitiveMatch": true,
       "role": "USER",
       "roleHydrationValid": false,
       "bcryptCompared": false,
@@ -43,16 +43,16 @@
         "role_hydration_mismatch",
         "missing_password_env_for_compare"
       ],
-      "blockedReason": "Missing SECURITY_VERIFY_AYHAN_PASSWORD"
+      "blockedReason": "Missing AUTH_RESET_AYHAN_PASSWORD"
     },
     {
       "label": "Mahir",
       "expectedRole": "USER",
       "exists": true,
-      "emailInput": "not_provided",
-      "emailNormalized": "",
-      "emailExactMatch": false,
-      "emailCaseInsensitiveMatch": false,
+      "emailInput": "provided",
+      "emailNormalized": "mmahir38@gmail.com",
+      "emailExactMatch": true,
+      "emailCaseInsensitiveMatch": true,
       "role": "USER",
       "roleHydrationValid": true,
       "bcryptCompared": false,
@@ -64,7 +64,7 @@
       "rootCauseHints": [
         "missing_password_env_for_compare"
       ],
-      "blockedReason": "Missing SECURITY_VERIFY_MAHIR_PASSWORD"
+      "blockedReason": "Missing AUTH_RESET_MAHIR_PASSWORD"
     }
   ],
   "deploymentEnvProof": {
@@ -114,5 +114,5 @@
       "detail": "missing_password_env_for_compare, role_hydration_mismatch"
     }
   },
-  "commitHash": "d996e74a7a75a0b31792c27d7a0d56c3b0a4056a"
+  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
 }

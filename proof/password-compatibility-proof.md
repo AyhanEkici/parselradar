@@ -1,6 +1,6 @@
 # Password Compatibility Proof
 
-Generated at: 2026-05-20T00:44:31.862Z
+Generated at: 2026-05-20T01:02:37.185Z
 Overall status: FAIL
 
 | User | Exists | Role | Hash Prefix | Hash Format | bcrypt async | bcrypt sync | JWT issued | JWT verified | Hints |

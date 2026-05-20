@@ -9,9 +9,10 @@ import User from '../src/models/User';
 dotenv.config();
 
 type TargetUser = {
+  id: string;
   label: 'pilot' | 'AyhanEkici' | 'Mahir';
+  email: string;
   expectedRole: 'ADMIN' | 'USER';
-  emailEnv: string;
   passwordEnv: string;
 };
 
@@ -107,30 +108,19 @@ function deploymentEnvProof() {
 }
 
 async function diagnoseOne(target: TargetUser, authRoutePresent: boolean): Promise<UserDiagnosis> {
-  const configuredEmail = String(process.env[target.emailEnv] || '').trim();
-  const emailNormalized = normalizeEmail(configuredEmail);
+  const configuredEmail = target.email;
+  const emailNormalized = normalizeEmail(target.email);
   const configuredPassword = String(process.env[target.passwordEnv] || '');
 
   let user: any = null;
   let emailExactMatch = false;
   let emailCaseInsensitiveMatch = false;
 
-  if (configuredEmail) {
-    user = await User.findOne({ email: emailNormalized });
-    emailExactMatch = Boolean(user);
-    if (!user) {
-      user = await User.findOne({ email: { $regex: `^${escapeRegExp(emailNormalized)}$`, $options: 'i' } });
-      emailCaseInsensitiveMatch = Boolean(user);
-    }
-  }
-
-  if (!user) {
-    user = await User.findOne({
-      $or: [
-        { email: { $regex: target.label, $options: 'i' } },
-        { name: { $regex: target.label, $options: 'i' } },
-      ],
-    });
+  user = await User.findById(target.id);
+  emailExactMatch = Boolean(user) && normalizeEmail(String(user.email || '')) === emailNormalized;
+  emailCaseInsensitiveMatch = emailExactMatch;
+  if (user && !emailExactMatch) {
+    user = null;
   }
 
   const exists = Boolean(user);
@@ -250,22 +240,25 @@ async function run() {
   try {
     const targets: TargetUser[] = [
       {
+        id: '6a09018a44118543aaab28bd',
         label: 'pilot',
+        email: 'pilot@test.com',
         expectedRole: 'ADMIN',
-        emailEnv: 'SECURITY_VERIFY_PILOT_EMAIL',
-        passwordEnv: 'SECURITY_VERIFY_PILOT_PASSWORD',
+        passwordEnv: 'AUTH_RESET_PILOT_PASSWORD',
       },
       {
+        id: '6a08fad07081b1a50805bce7',
         label: 'AyhanEkici',
+        email: 'ayhanekici@gmail.com',
         expectedRole: 'ADMIN',
-        emailEnv: 'SECURITY_VERIFY_AYHAN_EMAIL',
-        passwordEnv: 'SECURITY_VERIFY_AYHAN_PASSWORD',
+        passwordEnv: 'AUTH_RESET_AYHAN_PASSWORD',
       },
       {
+        id: '6a0caabed2e06f38b152f9d0',
         label: 'Mahir',
+        email: 'mmahir38@gmail.com',
         expectedRole: 'USER',
-        emailEnv: 'SECURITY_VERIFY_MAHIR_EMAIL',
-        passwordEnv: 'SECURITY_VERIFY_MAHIR_PASSWORD',
+        passwordEnv: 'AUTH_RESET_MAHIR_PASSWORD',
       },
     ];
 

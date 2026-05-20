@@ -13,6 +13,7 @@
     "auth:repair": "ts-node apps/api/scripts/repairSingleUserAuth.ts",
     "verify:passwords": "ts-node apps/api/scripts/verifyPasswordCompatibility.ts",
     "auth:repair-safe": "ts-node apps/api/scripts/repairAuthHashes.ts",
+    "auth:reset-known-users": "ts-node apps/api/scripts/resetKnownUserPasswords.ts",
     "verify:login": "ts-node apps/api/scripts/verifyLoginFlow.ts",
     "verify:security": "ts-node scripts/verify-security.ts",
     "users:ensure-required": "ts-node apps/api/scripts/ensureRequiredUsers.ts",

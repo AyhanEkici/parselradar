@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T00:44:58.772Z",
+  "generatedAt": "2026-05-20T01:02:49.973Z",
   "overallStatus": "FAIL",
   "proofs": {
     "loginRouteProof": {
@@ -32,15 +32,15 @@
     },
     "pilotLoginProof": {
       "status": "FAIL",
-      "detail": "Missing SECURITY_VERIFY_PILOT_PASSWORD"
+      "detail": "Missing AUTH_RESET_PILOT_PASSWORD"
     },
     "ayhanLoginProof": {
       "status": "FAIL",
-      "detail": "Missing SECURITY_VERIFY_AYHAN_PASSWORD"
+      "detail": "Missing AUTH_RESET_AYHAN_PASSWORD"
     },
     "mahirLoginProof": {
       "status": "FAIL",
-      "detail": "Missing SECURITY_VERIFY_MAHIR_PASSWORD"
+      "detail": "Missing AUTH_RESET_MAHIR_PASSWORD"
     },
     "mahirIsolationProof": {
       "status": "PASS",
@@ -67,5 +67,5 @@
       "detail": "Repair could not complete for all required users (missing passwords or unresolved lookup)."
     }
   },
-  "commitHash": "d996e74a7a75a0b31792c27d7a0d56c3b0a4056a"
+  "commitHash": "e277ab74bea5f116fb7772a469b82e1f1b05b676"
 }

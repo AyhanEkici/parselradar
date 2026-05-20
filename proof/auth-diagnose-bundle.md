@@ -1,6 +1,6 @@
 # Auth Diagnose Bundle
 
-Generated at: 2026-05-20T00:44:52.163Z
+Generated at: 2026-05-20T01:02:45.596Z
 Overall status: FAIL
 
 ## Proof Checks
