@@ -59,6 +59,7 @@ assessRuntimeDegradation();
 const isProd = ENV.NODE_ENV === 'production';
 const vercelProd = 'https://parselradar.vercel.app';
 const railwayProd = 'https://parselradar-production.up.railway.app';
+import jwt from 'jsonwebtoken';
 const railwayOriginPattern = /^https:\/\/[a-z0-9-]+(?:-[a-z0-9-]+)*\.up\.railway\.app$/i;
 const local3000 = 'http://localhost:3000';
 const local5173 = 'http://localhost:5173';
@@ -241,11 +242,10 @@ app.get('/__jwt-diagnostics', (req, res) => {
   // Live sign/verify test
   let signVerifyResult: any = {};
   try {
-    const jwt = require('jsonwebtoken');
     const testPayload = { id: 'test-user-id', email: 'test@test.com', role: 'USER' };
     const testToken = jwt.sign(testPayload, ENV.JWT_SECRET, { expiresIn: '1h' });
     try {
-      const decoded = jwt.verify(testToken, ENV.JWT_SECRET);
+      const decoded = jwt.verify(testToken, ENV.JWT_SECRET) as { id?: string };
       signVerifyResult = { success: true, tokenLength: testToken.length, decodedId: decoded.id };
     } catch (verifyErr: any) {
       signVerifyResult = { success: false, phase: 'verify', error: verifyErr.message, tokenLength: testToken.length };
@@ -259,7 +259,6 @@ app.get('/__jwt-diagnostics', (req, res) => {
   const testToken = req.query.token as string;
   if (testToken) {
     try {
-      const jwt = require('jsonwebtoken');
       const decoded = jwt.verify(testToken, ENV.JWT_SECRET);
       externalTokenResult = { success: true, decoded };
     } catch (err: any) {
