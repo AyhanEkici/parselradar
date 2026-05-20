@@ -12,6 +12,8 @@
     "verify:cors": "ts-node apps/api/scripts/verifyCorsConfig.ts",
     "verify:password-reset": "ts-node apps/api/scripts/verifyPasswordResetFlow.ts",
     "verify:live-api": "ts-node apps/api/scripts/verifyLiveApiTransport.ts",
+    "verify:live-login-contract": "ts-node apps/api/scripts/verifyLiveLoginContract.ts",
+    "verify:live-browser-auth": "ts-node apps/api/scripts/verifyLiveBrowserAuth.ts",
     "verify:runtime-boot": "ts-node apps/api/scripts/verifyRuntimeBoot.ts",
     "verify:railway-runtime": "ts-node apps/api/scripts/verifyRailwayRuntimeHealth.ts",
     "check:auth-routes": "ts-node apps/api/scripts/check-auth-routes.ts",

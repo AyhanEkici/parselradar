@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/env';
 import User from '../models/User';
 import { recordAccessDecision } from '../utils/accessAudit';
 import { sessionIntegrityValidator } from '../session/sessionIntegrityValidator';
@@ -18,6 +16,20 @@ export interface AuthRequest extends Request {
 }
 
 export const requireAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  const deny = async (reason: string, userId?: string) => {
+    await authSessionAudit({
+      userId,
+      role: undefined,
+      decision: 'deny',
+      reason,
+      route: req.path,
+      method: req.method,
+      ip: req.ip,
+      userAgent: req.get('user-agent') || undefined,
+    });
+    return res.status(401).json({ error: 'Geçersiz oturum', code: reason });
+  };
+
   let token: string | undefined;
   const authHeader = req.headers['authorization'];
   if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -26,16 +38,6 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
     token = req.cookies.token;
   }
   if (!token) {
-    await authSessionAudit({
-      userId: undefined,
-      role: undefined,
-      decision: 'deny',
-      reason: 'missing_token',
-      route: req.path,
-      method: req.method,
-      ip: req.ip,
-      userAgent: req.get('user-agent') || undefined,
-    });
     await recordAccessDecision({
       userId: undefined,
       role: undefined,
@@ -47,31 +49,19 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
       ip: req.ip,
       userAgent: req.get('user-agent') || undefined,
     });
-    return res.status(401).json({ error: 'Yetkisiz' });
+    return deny('MISSING_AUTH_TOKEN');
   }
 
   const integrity = sessionIntegrityValidator(token);
   if (!integrity.valid) {
-    await authSessionAudit({
-      userId: integrity.userId,
-      role: undefined,
-      decision: 'deny',
-      reason: integrity.reason,
-      route: req.path,
-      method: req.method,
-      ip: req.ip,
-      userAgent: req.get('user-agent') || undefined,
-    });
-    return res.status(401).json({ error: 'Geçersiz oturum' });
+    return deny(integrity.reason || 'TOKEN_VERIFICATION_FAILED', integrity.userId ? String(integrity.userId) : undefined);
   }
 
   try {
     const tokenUserId = integrity.userId;
     if (!tokenUserId) {
-      return res.status(401).json({ error: 'Geçersiz oturum' });
+      return deny('TOKEN_PAYLOAD_MISSING_SUBJECT');
     }
-
-    const decoded = jwt.decode(token) as { iat?: number } | null;
 
     const user = await User.findById(tokenUserId);
     if (!user) {
@@ -87,7 +77,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
         ip: req.ip,
         userAgent: req.get('user-agent') || undefined,
       });
-      return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
+      return deny('TOKEN_VERIFIED_USER_NOT_FOUND', String(tokenUserId));
     }
 
     const consistency = authConsistencyVerifier({
@@ -96,36 +86,39 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
       dbRole: user.role,
     });
 
-    const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
-    const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
-    // JWT iat is second-level precision; passwordChangedAt is millisecond precision.
-    // Keep the skew window narrow so a just-issued token is not rejected by same-second drift.
-    if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt + 1000 < passwordChangedAt) {
+    const passwordChangedAtMs = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
+    const tokenIssuedAtMs = integrity.issuedAt;
+    // JWT iat is second precision while passwordChangedAt is milliseconds.
+    // Accept tokens issued in the same login window with a strict 5-second tolerance.
+    if (typeof passwordChangedAtMs === 'number' && typeof tokenIssuedAtMs === 'number' && passwordChangedAtMs > tokenIssuedAtMs + 5000) {
       await authSessionAudit({
         userId: String(user._id),
         role: user.role,
         decision: 'deny',
-        reason: 'password_changed',
+        reason: 'TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT',
         route: req.path,
         method: req.method,
         ip: req.ip,
         userAgent: req.get('user-agent') || undefined,
       });
-      return res.status(401).json({ error: 'Geçersiz oturum' });
+      return res.status(401).json({ error: 'Geçersiz oturum', code: 'TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT' });
     }
 
     if (!consistency.consistent) {
+      const consistencyCode = consistency.reason === 'invalid_role_hydration'
+        ? 'TOKEN_VERIFIED_ROLE_HYDRATION_FAILED'
+        : 'TOKEN_VERIFIED_CONSISTENCY_FAILED';
       await authSessionAudit({
         userId: String(user._id),
         role: user.role,
         decision: 'deny',
-        reason: consistency.reason,
+        reason: consistencyCode,
         route: req.path,
         method: req.method,
         ip: req.ip,
         userAgent: req.get('user-agent') || undefined,
       });
-      return res.status(401).json({ error: 'Geçersiz oturum' });
+      return res.status(401).json({ error: 'Geçersiz oturum', code: consistencyCode });
     }
 
     req.user = {
@@ -152,13 +145,13 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
       role: undefined,
       resourceType: 'Auth',
       decision: 'deny',
-      reason: 'invalid_token',
+      reason: 'TOKEN_VERIFY_EXCEPTION',
       route: req.path,
       method: req.method,
       ip: req.ip,
       userAgent: req.get('user-agent') || undefined,
     });
-    return res.status(401).json({ error: 'Geçersiz oturum' });
+    return res.status(401).json({ error: 'Geçersiz oturum', code: 'TOKEN_VERIFY_EXCEPTION' });
   }
 };
 

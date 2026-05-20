@@ -9,12 +9,13 @@ export type SessionIntegrityResult = {
   reason: string;
   userId?: string;
   expiresAt?: number;
+  issuedAt?: number;
 };
 
 export function sessionIntegrityValidator(token?: string | null): SessionIntegrityResult {
   if (!token) {
     console.error('[sessionIntegrityValidator] NO TOKEN PROVIDED');
-    return { valid: false, sessionTrust: 'UNKNOWN', reason: 'missing_token' };
+    return { valid: false, sessionTrust: 'UNKNOWN', reason: 'MISSING_TOKEN' };
   }
 
   try {
@@ -24,28 +25,31 @@ export function sessionIntegrityValidator(token?: string | null): SessionIntegri
       jwtSecretLength: JWT_SECRET?.length,
       jwtSecretStart: JWT_SECRET?.substring(0, 5),
     });
-    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; exp?: number };
+    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; exp?: number; iat?: number };
     console.log('[sessionIntegrityValidator] VERIFICATION SUCCESS');
-    if (!decoded?.id) {
-      return { valid: false, sessionTrust: 'SUSPICIOUS', reason: 'missing_subject' };
+    const tokenUserId = decoded?.id || decoded?.userId || decoded?.sub;
+    if (!tokenUserId) {
+      return { valid: false, sessionTrust: 'SUSPICIOUS', reason: 'TOKEN_PAYLOAD_MISSING_SUBJECT' };
     }
 
     if (decoded.exp && decoded.exp * 1000 < Date.now()) {
       return {
         valid: false,
         sessionTrust: 'BLOCKED',
-        reason: 'expired_token',
-        userId: String(decoded.id),
+        reason: 'EXPIRED_TOKEN',
+        userId: String(tokenUserId),
         expiresAt: decoded.exp * 1000,
+        issuedAt: typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined,
       };
     }
 
     return {
       valid: true,
       sessionTrust: 'VERIFIED',
-      reason: 'token_verified',
-      userId: String(decoded.id),
+      reason: 'TOKEN_VERIFIED',
+      userId: String(tokenUserId),
       expiresAt: decoded.exp ? decoded.exp * 1000 : undefined,
+      issuedAt: typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined,
     };
   } catch (error) {
     if (process.env.AUTH_SAFE_DEBUG === 'true') {
@@ -63,6 +67,6 @@ export function sessionIntegrityValidator(token?: string | null): SessionIntegri
         jwtSecretStart: JWT_SECRET?.substring(0, 5),
         errorMessage: (error as any)?.message,
       };
-    return { valid: false, sessionTrust: 'BLOCKED', reason: 'invalid_signature' };
+    return { valid: false, sessionTrust: 'BLOCKED', reason: 'INVALID_SIGNATURE' };
   }
 }
