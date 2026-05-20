@@ -66,11 +66,12 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; email?: string; role?: string; iat?: number };
-    const tokenUserId = decoded.id || decoded.userId || decoded.sub;
+    const tokenUserId = integrity.userId;
     if (!tokenUserId) {
       return res.status(401).json({ error: 'Geçersiz oturum' });
     }
+
+    const decoded = jwt.decode(token) as { iat?: number } | null;
 
     const user = await User.findById(tokenUserId);
     if (!user) {
@@ -96,7 +97,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
     });
 
     const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
-    const tokenIssuedAt = typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined;
+    const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
     if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt < passwordChangedAt) {
       await authSessionAudit({
         userId: String(user._id),
