@@ -4,13 +4,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = exports.requireAuth = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
 const accessAudit_1 = require("../utils/accessAudit");
 const sessionIntegrityValidator_1 = require("../session/sessionIntegrityValidator");
 const authConsistencyVerifier_1 = require("../session/authConsistencyVerifier");
 const authSessionAudit_1 = require("../session/authSessionAudit");
 const requireAuth = async (req, res, next) => {
+    const deny = async (reason, userId) => {
+        await (0, authSessionAudit_1.authSessionAudit)({
+            userId,
+            role: undefined,
+            decision: 'deny',
+            reason,
+            route: req.path,
+            method: req.method,
+            ip: req.ip,
+            userAgent: req.get('user-agent') || undefined,
+        });
+        return res.status(401).json({ error: 'Geçersiz oturum', code: reason });
+    };
     let token;
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -20,16 +32,6 @@ const requireAuth = async (req, res, next) => {
         token = req.cookies.token;
     }
     if (!token) {
-        await (0, authSessionAudit_1.authSessionAudit)({
-            userId: undefined,
-            role: undefined,
-            decision: 'deny',
-            reason: 'missing_token',
-            route: req.path,
-            method: req.method,
-            ip: req.ip,
-            userAgent: req.get('user-agent') || undefined,
-        });
         await (0, accessAudit_1.recordAccessDecision)({
             userId: undefined,
             role: undefined,
@@ -41,28 +43,17 @@ const requireAuth = async (req, res, next) => {
             ip: req.ip,
             userAgent: req.get('user-agent') || undefined,
         });
-        return res.status(401).json({ error: 'Yetkisiz' });
+        return deny('MISSING_AUTH_TOKEN');
     }
     const integrity = (0, sessionIntegrityValidator_1.sessionIntegrityValidator)(token);
     if (!integrity.valid) {
-        await (0, authSessionAudit_1.authSessionAudit)({
-            userId: integrity.userId,
-            role: undefined,
-            decision: 'deny',
-            reason: integrity.reason,
-            route: req.path,
-            method: req.method,
-            ip: req.ip,
-            userAgent: req.get('user-agent') || undefined,
-        });
-        return res.status(401).json({ error: 'Geçersiz oturum' });
+        return deny(integrity.reason || 'TOKEN_VERIFICATION_FAILED', integrity.userId ? String(integrity.userId) : undefined);
     }
     try {
         const tokenUserId = integrity.userId;
         if (!tokenUserId) {
-            return res.status(401).json({ error: 'Geçersiz oturum' });
+            return deny('TOKEN_PAYLOAD_MISSING_SUBJECT');
         }
-        const decoded = jsonwebtoken_1.default.decode(token);
         const user = await User_1.default.findById(tokenUserId);
         if (!user) {
             await (0, accessAudit_1.recordAccessDecision)({
@@ -77,40 +68,45 @@ const requireAuth = async (req, res, next) => {
                 ip: req.ip,
                 userAgent: req.get('user-agent') || undefined,
             });
-            return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
+            return deny('TOKEN_VERIFIED_USER_NOT_FOUND', String(tokenUserId));
         }
         const consistency = (0, authConsistencyVerifier_1.authConsistencyVerifier)({
             tokenUserId: String(tokenUserId),
             dbUserId: String(user._id),
             dbRole: user.role,
         });
-        const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
-        const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
-        if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt < passwordChangedAt) {
+        const passwordChangedAtMs = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
+        const tokenIssuedAtMs = integrity.issuedAt;
+        // JWT iat is second precision while passwordChangedAt is milliseconds.
+        // Accept tokens issued in the same login window with a strict 5-second tolerance.
+        if (typeof passwordChangedAtMs === 'number' && typeof tokenIssuedAtMs === 'number' && passwordChangedAtMs > tokenIssuedAtMs + 5000) {
             await (0, authSessionAudit_1.authSessionAudit)({
                 userId: String(user._id),
                 role: user.role,
                 decision: 'deny',
-                reason: 'password_changed',
+                reason: 'TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT',
                 route: req.path,
                 method: req.method,
                 ip: req.ip,
                 userAgent: req.get('user-agent') || undefined,
             });
-            return res.status(401).json({ error: 'Geçersiz oturum' });
+            return res.status(401).json({ error: 'Geçersiz oturum', code: 'TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT' });
         }
         if (!consistency.consistent) {
+            const consistencyCode = consistency.reason === 'invalid_role_hydration'
+                ? 'TOKEN_VERIFIED_ROLE_HYDRATION_FAILED'
+                : 'TOKEN_VERIFIED_CONSISTENCY_FAILED';
             await (0, authSessionAudit_1.authSessionAudit)({
                 userId: String(user._id),
                 role: user.role,
                 decision: 'deny',
-                reason: consistency.reason,
+                reason: consistencyCode,
                 route: req.path,
                 method: req.method,
                 ip: req.ip,
                 userAgent: req.get('user-agent') || undefined,
             });
-            return res.status(401).json({ error: 'Geçersiz oturum' });
+            return res.status(401).json({ error: 'Geçersiz oturum', code: consistencyCode });
         }
         req.user = {
             _id: String(user._id),
@@ -136,13 +132,13 @@ const requireAuth = async (req, res, next) => {
             role: undefined,
             resourceType: 'Auth',
             decision: 'deny',
-            reason: 'invalid_token',
+            reason: 'TOKEN_VERIFY_EXCEPTION',
             route: req.path,
             method: req.method,
             ip: req.ip,
             userAgent: req.get('user-agent') || undefined,
         });
-        return res.status(401).json({ error: 'Geçersiz oturum' });
+        return res.status(401).json({ error: 'Geçersiz oturum', code: 'TOKEN_VERIFY_EXCEPTION' });
     }
 };
 exports.requireAuth = requireAuth;

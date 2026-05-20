@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T01:48:25.051Z",
+  "generatedAt": "2026-05-20T14:04:16.787Z",
   "overallStatus": "FAIL",
   "proofs": {
     "loginRouteProof": {
@@ -24,7 +24,7 @@
     },
     "frontendAuthPersistenceProof": {
       "status": "PASS",
-      "detail": "Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present."
+      "detail": "authStorage-based auth hydration, persistence, stale-token cleanup, and Authorization header injection are present."
     },
     "roleHydrationProof": {
       "status": "FAIL",
@@ -67,5 +67,5 @@
       "detail": "Repair could not complete for all required users (missing passwords or unresolved lookup)."
     }
   },
-  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
+  "commitHash": ""
 }

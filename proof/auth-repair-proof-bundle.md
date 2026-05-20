@@ -1,6 +1,6 @@
 # Auth Repair Proof Bundle
 
-Generated at: 2026-05-20T01:48:25.051Z
+Generated at: 2026-05-20T14:04:16.787Z
 Overall status: FAIL
 
 | Check | Status | Detail |
@@ -13,7 +13,7 @@ Overall status: FAIL
 | pilotLoginProof | FAIL | Missing AUTH_RESET_PILOT_PASSWORD |
 | ayhanLoginProof | FAIL | Missing AUTH_RESET_AYHAN_PASSWORD |
 | mahirLoginProof | FAIL | Missing AUTH_RESET_MAHIR_PASSWORD |
-| frontendPersistenceProof | PASS | Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
+| frontendPersistenceProof | PASS | authStorage-based auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
 | roleHydrationProof | FAIL | Role mismatch or invalid role hydration detected. |
 | adminVisibilityProof | PASS | RBAC verifier confirms admin-only visibility. |
 | mahirIsolationProof | PASS | RBAC verifier confirms Mahir isolation controls. |
@@ -25,5 +25,5 @@ Overall status: FAIL
 
 ## Commit Hash
 
-- a61f599d5d96ae26c65ed99a1684d43989315cb3
+- pending
 

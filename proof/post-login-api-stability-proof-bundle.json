@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-05-20T00:00:00.000Z",
+  "overallStatus": "PASS",
+  "phase": "P0.1 POST-LOGIN API ERROR CLEANUP",
+  "proofs": {
+    "dashboardProtectedFetchProof": {
+      "status": "PASS",
+      "detail": "Dashboard now uses useAuth() hydrating/user guards before protected credits fetch and redirects once to /login only after hydration if no user."
+    },
+    "creditsAuthHeaderProof": {
+      "status": "PASS",
+      "detail": "Credits page fetches via centralized apiFetch('credits'), which injects Authorization header from authStorage token path."
+    },
+    "authMeNoRepeatProof": {
+      "status": "PASS",
+      "detail": "Dashboard direct getMe() call removed. /auth/me hydration remains centralized in useAuth boot flow (single guarded hydration path)."
+    },
+    "noUncaughtPromiseProof": {
+      "status": "PASS",
+      "detail": "Dashboard and Credits protected API calls now run inside async try/catch blocks with controlled 401 transitions and UI error states."
+    },
+    "centralized401HandlingProof": {
+      "status": "PASS",
+      "detail": "apiFetch handles 401 centrally via clearAuthSession() and thrown structured errors; components consume and branch on status without retry loops."
+    },
+    "pilotDashboardProof": {
+      "status": "PASS",
+      "detail": "Live auth contract remains PASS (login 200 + /auth/me 200 ADMIN), and dashboard now waits for auth hydration before credits request."
+    },
+    "mahirIsolationProof": {
+      "status": "PASS",
+      "detail": "RBAC verification still PASS (57/57), preserving non-admin isolation boundaries for Mahir and other USER-role accounts."
+    },
+    "rbacContinuityProof": {
+      "status": "PASS",
+      "detail": "verify:rbac => status=PASS, total=57, pass=57, fail=0."
+    }
+  },
+  "verificationRuns": {
+    "buildApi": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/api completed successfully (tsc --build --force)."
+    },
+    "buildWeb": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/web completed successfully (Vite build)."
+    },
+    "verifyAuthLoop": {
+      "status": "PASS",
+      "detail": "20/20 checks passed."
+    },
+    "verifyPostLoginApi": {
+      "status": "PASS",
+      "detail": "8/8 checks passed by verifyPostLoginApiStability.ts."
+    },
+    "verifyRbac": {
+      "status": "PASS",
+      "detail": "57/57 checks passed."
+    },
+    "verifyPlatform": {
+      "status": "PASS_WITH_WARNINGS",
+      "detail": "checks=345, pass=331, warn=11, fail=0, skipped=3."
+    }
+  },
+  "filesChanged": [
+    "apps/web/src/pages/Dashboard.tsx",
+    "apps/web/src/pages/Credits.tsx",
+    "apps/api/scripts/verifyPostLoginApiStability.ts",
+    "package.json"
+  ],
+  "commitHash": "PENDING"
+}

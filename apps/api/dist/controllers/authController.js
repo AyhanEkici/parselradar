@@ -43,7 +43,7 @@ const register = async (req, res) => {
         jwtSecretLength: env_1.JWT_SECRET?.length,
         jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
     });
-    const token = jsonwebtoken_1.default.sign({ id: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
+    const token = jsonwebtoken_1.default.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
     global.lastJwtDebug = {
         timestamp: new Date().toISOString(),
         type: 'token_signed_register',
@@ -112,7 +112,7 @@ const login = async (req, res) => {
         jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
         userId: String(user._id),
     });
-    const token = jsonwebtoken_1.default.sign({ id: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
+    const token = jsonwebtoken_1.default.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
     global.lastJwtDebug = {
         timestamp: new Date().toISOString(),
         type: 'token_signed_login',

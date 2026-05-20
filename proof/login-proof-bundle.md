@@ -1,6 +1,6 @@
 # Login Proof Bundle
 
-Generated at: 2026-05-20T01:48:25.051Z
+Generated at: 2026-05-20T14:04:16.787Z
 Overall status: FAIL
 
 | Check | Status | Detail |
@@ -10,7 +10,7 @@ Overall status: FAIL
 | bcryptVerificationProof | FAIL | bcrypt compare failed for at least one required user. |
 | jwtIssuanceProof | FAIL | JWT issuance could not be validated for all users because bcrypt pre-checks did not pass. |
 | tokenVerificationProof | FAIL | Token verification failed or was not reachable for at least one required user. |
-| frontendAuthPersistenceProof | PASS | Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
+| frontendAuthPersistenceProof | PASS | authStorage-based auth hydration, persistence, stale-token cleanup, and Authorization header injection are present. |
 | roleHydrationProof | FAIL | Role mismatch or invalid role hydration detected. |
 | pilotLoginProof | FAIL | Missing AUTH_RESET_PILOT_PASSWORD |
 | ayhanLoginProof | FAIL | Missing AUTH_RESET_AYHAN_PASSWORD |
@@ -24,5 +24,5 @@ Overall status: FAIL
 
 ## Commit Hash
 
-- a61f599d5d96ae26c65ed99a1684d43989315cb3
+- pending
 
