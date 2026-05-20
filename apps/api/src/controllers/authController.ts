@@ -35,6 +35,14 @@ export const register = async (req: Request, res: Response) => {
       jwtSecretStart: JWT_SECRET?.substring(0, 5),
     });
     const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+  (global as any).lastJwtDebug = {
+    timestamp: new Date().toISOString(),
+    type: 'token_signed_register',
+    jwtSecretLength: JWT_SECRET?.length,
+    jwtSecretStart: JWT_SECRET?.substring(0, 5),
+    tokenLength: token.length,
+    userId: String(user._id),
+  };
     console.log('[authController register] TOKEN SIGNED', { tokenLength: token.length });
   res.cookie('token', token, {
     httpOnly: true,
@@ -91,6 +99,14 @@ export const login = async (req: Request, res: Response) => {
       userId: String(user._id),
     });
     const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+  (global as any).lastJwtDebug = {
+    timestamp: new Date().toISOString(),
+    type: 'token_signed_login',
+    jwtSecretLength: JWT_SECRET?.length,
+    jwtSecretStart: JWT_SECRET?.substring(0, 5),
+    tokenLength: token.length,
+    userId: String(user._id),
+  };
     console.log('[authController login] TOKEN SIGNED', { tokenLength: token.length });
   res.cookie('token', token, {
     httpOnly: true,

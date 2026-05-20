@@ -85,6 +85,12 @@ function isOriginAllowed(origin?: string) {
 
 // Trust proxy for production (needed for secure cookies behind proxy/load balancer)
 if (isProd) {
+
+let lastJwtDebug: any = null;
+
+app.get('/__jwt-debug-log', (req, res) => {
+  res.json(lastJwtDebug || { message: 'No JWT debug data captured yet' });
+});
   app.set('trust proxy', 1);
 }
 

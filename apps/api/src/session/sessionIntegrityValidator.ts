@@ -55,6 +55,14 @@ export function sessionIntegrityValidator(token?: string | null): SessionIntegri
         errorMessage: (error as any)?.message,
       });
     }
+      (global as any).lastJwtDebug = {
+        timestamp: new Date().toISOString(),
+        type: 'verification_error',
+        tokenLength: token?.length || 0,
+        jwtSecretLength: JWT_SECRET?.length || 0,
+        jwtSecretStart: JWT_SECRET?.substring(0, 5),
+        errorMessage: (error as any)?.message,
+      };
     return { valid: false, sessionTrust: 'BLOCKED', reason: 'invalid_signature' };
   }
 }
