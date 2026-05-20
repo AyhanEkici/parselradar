@@ -30,7 +30,12 @@ export const register = async (req: Request, res: Response) => {
   if (exists) return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await User.create({ email, passwordHash, passwordChangedAt: new Date(), name, role: 'USER' });
-  const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[authController register] SIGNING TOKEN', {
+      jwtSecretLength: JWT_SECRET?.length,
+      jwtSecretStart: JWT_SECRET?.substring(0, 5),
+    });
+    const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[authController register] TOKEN SIGNED', { tokenLength: token.length });
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,
@@ -80,7 +85,13 @@ export const login = async (req: Request, res: Response) => {
   const valid = await bcrypt.compare(password, user.passwordHash);
   safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
   if (!valid) return res.status(401).json({ error: 'Şifre hatalı' });
-  const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[authController login] SIGNING TOKEN', {
+      jwtSecretLength: JWT_SECRET?.length,
+      jwtSecretStart: JWT_SECRET?.substring(0, 5),
+      userId: String(user._id),
+    });
+    const token = jwt.sign({ id: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[authController login] TOKEN SIGNED', { tokenLength: token.length });
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,

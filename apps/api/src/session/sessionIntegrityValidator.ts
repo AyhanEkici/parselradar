@@ -13,11 +13,19 @@ export type SessionIntegrityResult = {
 
 export function sessionIntegrityValidator(token?: string | null): SessionIntegrityResult {
   if (!token) {
+    console.error('[sessionIntegrityValidator] NO TOKEN PROVIDED');
     return { valid: false, sessionTrust: 'UNKNOWN', reason: 'missing_token' };
   }
 
   try {
+    console.log('[sessionIntegrityValidator] ATTEMPTING VERIFICATION', {
+      tokenLength: token.length,
+      tokenStart: token.substring(0, 20),
+      jwtSecretLength: JWT_SECRET?.length,
+      jwtSecretStart: JWT_SECRET?.substring(0, 5),
+    });
     const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; exp?: number };
+    console.log('[sessionIntegrityValidator] VERIFICATION SUCCESS');
     if (!decoded?.id) {
       return { valid: false, sessionTrust: 'SUSPICIOUS', reason: 'missing_subject' };
     }
