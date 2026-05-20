@@ -99,7 +99,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
     const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
     const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
     // JWT iat is second-level precision; passwordChangedAt is millisecond precision.
-    // Allow a small skew so a just-issued token is not rejected by same-second drift.
+    // Keep the skew window narrow so a just-issued token is not rejected by same-second drift.
     if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt + 1000 < passwordChangedAt) {
       await authSessionAudit({
         userId: String(user._id),
