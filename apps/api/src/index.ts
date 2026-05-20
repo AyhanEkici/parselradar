@@ -225,6 +225,19 @@ markRequiredSystemReady('coreRbac', 'Auth and admin gating routes registered.');
 app.get('/health', healthController);
 app.get('/health/live', livenessController);
 app.get('/health/ready', readinessController);
+app.get('/__jwt-diagnostics', (req, res) => {
+  const jwtSecretPresent = Boolean(ENV.JWT_SECRET);
+  const jwtSecretLength = ENV.JWT_SECRET?.length || 0;
+  const jwtSecretSample = ENV.JWT_SECRET 
+    ? `${ENV.JWT_SECRET.substring(0, 5)}...${ENV.JWT_SECRET.substring(Math.max(0, ENV.JWT_SECRET.length - 5))}`
+    : 'MISSING';
+  res.json({
+    jwtSecretPresent,
+    jwtSecretLength,
+    jwtSecretSample,
+    nodeEnv: ENV.NODE_ENV,
+  });
+});
 
 // Ensure unmatched API routes return JSON (prevents HTML "Cannot GET" responses)
 app.use((req, res) => {
