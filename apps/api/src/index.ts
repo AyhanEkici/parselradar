@@ -38,6 +38,7 @@ import { shutdownWorkers } from './runtime/workerFactory';
 import { closeQueueEvents } from './runtime/queueEvents';
 import { closeQueues } from './runtime/queueFactory';
 import { closeRedisClient } from './redis/redisClient';
+import User from './models/User';
 import { BUILD_INFO } from './generated/buildInfo';
 import {
   assessRuntimeDegradation,
@@ -46,6 +47,8 @@ import {
   recordStartupPhase,
   getRuntimeDiagnostics,
 } from './runtime/degradedRuntime';
+import { authConsistencyVerifier } from './session/authConsistencyVerifier';
+import { sessionIntegrityValidator } from './session/sessionIntegrityValidator';
 
 
 
@@ -312,6 +315,70 @@ app.get('/__jwt-diagnostics', (req, res) => {
     nodeEnv: ENV.NODE_ENV,
     signVerifyTest: signVerifyResult,
     externalTokenTest: externalTokenResult,
+  });
+});
+
+app.get('/__auth-diagnostics', async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const bearerToken = typeof authHeader === 'string' && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
+  const queryToken = typeof req.query.token === 'string' ? req.query.token : undefined;
+  const cookieToken = req.cookies?.token;
+  const token = bearerToken || queryToken || cookieToken;
+
+  if (!token) {
+    return res.json({
+      tokenPresent: false,
+      tokenSource: 'none',
+      integrity: { valid: false, reason: 'missing_token' },
+    });
+  }
+
+  const integrity = sessionIntegrityValidator(token);
+  let decoded: { id?: string; userId?: string; sub?: string; iat?: number } | null = null;
+  let user: any = null;
+  let consistency: { consistent: boolean; reason: string } | null = null;
+  let passwordCheck: { triggered: boolean; tokenIssuedAt?: number; passwordChangedAt?: number } | null = null;
+  let errorMessage: string | null = null;
+
+  if (integrity.valid) {
+    try {
+      decoded = jwt.decode(token) as { id?: string; userId?: string; sub?: string; iat?: number } | null;
+      const tokenUserId = integrity.userId || decoded?.id || decoded?.userId || decoded?.sub;
+      if (tokenUserId) {
+        user = await User.findById(tokenUserId);
+        if (user) {
+          consistency = authConsistencyVerifier({
+            tokenUserId: String(tokenUserId),
+            dbUserId: String(user._id),
+            dbRole: user.role,
+          });
+          const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
+          const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
+          passwordCheck = {
+            triggered: Boolean(passwordChangedAt && tokenIssuedAt),
+            tokenIssuedAt,
+            passwordChangedAt,
+          };
+        }
+      }
+    } catch (err: any) {
+      errorMessage = err?.message || String(err);
+    }
+  }
+
+  res.json({
+    tokenPresent: true,
+    tokenSource: bearerToken ? 'bearer' : queryToken ? 'query' : 'cookie',
+    tokenLength: token.length,
+    integrity,
+    decoded,
+    userFound: Boolean(user),
+    userId: user?._id ? String(user._id) : null,
+    userEmail: user?.email || null,
+    userRole: user?.role || null,
+    consistency,
+    passwordCheck,
+    errorMessage,
   });
 });
 
