@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-05-20T00:00:00.000Z",
+  "overallStatus": "PASS",
+  "phase": "P0.3 PRODUCTION AUTH LOG CLEANUP + FINAL LIVE BROWSER VERIFY",
+  "proofs": {
+    "unsafeAuthLogRemovalProof": {
+      "status": "PASS",
+      "detail": "Sensitive debug patterns removed from API source: jwtSecretStart, jwtSecretLength, tokenStart, tokenLength, SIGNING TOKEN, TOKEN SIGNED, ATTEMPTING VERIFICATION, VERIFICATION SUCCESS, lastJwtDebug."
+    },
+    "noJwtSecretOrTokenLoggingProof": {
+      "status": "PASS",
+      "detail": "Public debug routes /__jwt-diagnostics and /__auth-debug removed from server; session verifier now logs only safe category-level error metadata under AUTH_SAFE_DEBUG."
+    },
+    "duplicateIndexWarningFixedProof": {
+      "status": "PASS",
+      "detail": "PasswordResetToken model now keeps expiresAt TTL index exactly once via schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }) and removed inline expiresAt index flag."
+    },
+    "liveLoginContractStillPassProof": {
+      "status": "PASS",
+      "detail": "Post-cleanup verify:live-login-contract PASS: /auth/login 200, /auth/me 200, role ADMIN."
+    },
+    "postLoginApiStabilityStillPassProof": {
+      "status": "PASS",
+      "detail": "verify:post-login-api PASS (8/8)."
+    },
+    "rbacStillPassProof": {
+      "status": "PASS",
+      "detail": "verify:rbac PASS (57/57)."
+    }
+  },
+  "verificationRuns": {
+    "buildApi": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/api succeeded."
+    },
+    "buildWeb": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/web succeeded."
+    },
+    "verifyLiveLoginContract": {
+      "status": "PASS",
+      "detail": "loginStatus=200, meStatus=200, role=ADMIN."
+    },
+    "verifyAuthLoop": {
+      "status": "PASS",
+      "detail": "20 passed, 0 failed."
+    },
+    "verifyPostLoginApi": {
+      "status": "PASS",
+      "detail": "8 passed, 0 failed."
+    },
+    "verifyRbac": {
+      "status": "PASS",
+      "detail": "57 passed, 0 failed."
+    },
+    "verifyPlatform": {
+      "status": "PASS_WITH_WARNINGS",
+      "detail": "checks=345, pass=331, warn=11, fail=0, skipped=3."
+    }
+  },
+  "filesChanged": [
+    "apps/api/src/index.ts",
+    "apps/api/src/controllers/authController.ts",
+    "apps/api/src/session/sessionIntegrityValidator.ts",
+    "apps/api/src/models/PasswordResetToken.ts",
+    "apps/api/scripts/verifyLiveLoginContract.ts"
+  ],
+  "commitHash": "269aa38b"
+}
