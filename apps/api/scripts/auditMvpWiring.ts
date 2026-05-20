@@ -19,6 +19,7 @@ type AuditRow = {
 
 const ROOT = process.cwd();
 const APP_PATH = path.join(ROOT, 'apps/web/src/App.tsx');
+const APP_SHELL_PATH = path.join(ROOT, 'apps/web/src/components/AppShell.tsx');
 const WEB_SRC = path.join(ROOT, 'apps/web/src');
 const PROOF_JSON = path.join(ROOT, 'proof/mvp-wiring-audit.json');
 const PROOF_MD = path.join(ROOT, 'proof/mvp-wiring-audit.md');
@@ -141,7 +142,8 @@ function markdownTable(rows: AuditRow[]): string {
 
 function main() {
   const appText = read(APP_PATH);
-  const nav = parseTopNav(appText);
+  const navSource = fs.existsSync(APP_SHELL_PATH) ? read(APP_SHELL_PATH) : appText;
+  const nav = parseTopNav(navSource);
   const routes = parseRoutes(appText);
 
   const navByRoute = new Map<string, string>();

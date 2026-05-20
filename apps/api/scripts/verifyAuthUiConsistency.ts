@@ -16,6 +16,7 @@ function check(name: string, pass: boolean, detail: string): Check {
 function run() {
   const login = read('apps/web/src/pages/Login.tsx');
   const app = read('apps/web/src/App.tsx');
+  const appShell = read('apps/web/src/components/AppShell.tsx');
   const useAuth = read('apps/web/src/hooks/useAuth.tsx');
   const authStorage = read('apps/web/src/lib/authStorage.ts');
   const auth = read('apps/web/src/lib/auth.ts');
@@ -41,7 +42,9 @@ function run() {
   checks.push(
     check(
       'Navbar auth block requires authenticated auth state and storage session',
-      app.includes("authState === 'authenticated'") && app.includes('hasAuthSession()') && app.includes('showAuthenticatedNav'),
+      (app.includes("authState === 'authenticated'") || appShell.includes("authState === 'authenticated'")) &&
+        (app.includes('hasAuthSession()') || appShell.includes('hasAuthSession()')) &&
+        (app.includes('showAuthenticatedNav') || appShell.includes('showAuthenticatedNav')),
       'Navbar visibility is gated by both auth state and storage truth.',
     ),
   );

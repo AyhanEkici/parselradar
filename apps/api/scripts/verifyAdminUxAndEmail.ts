@@ -58,6 +58,7 @@ async function main() {
   const checks: Check[] = [];
 
   const app = read('apps/web/src/App.tsx');
+  const appShell = read('apps/web/src/components/AppShell.tsx');
   const adminOnly = read('apps/web/src/components/AdminOnly.tsx');
   const roleGate = read('apps/web/src/components/RoleGate.tsx');
   const adminUsersPage = read('apps/web/src/pages/AdminUsers.tsx');
@@ -70,12 +71,12 @@ async function main() {
   checks.push(
     check(
       'Admin nav components exist',
-      app.includes('/admin/users') &&
-        app.includes('/admin/connectors') &&
-        app.includes('/admin/observability') &&
-        app.includes('/admin/runtime') &&
-        app.includes('/admin/deployment') &&
-        app.includes('/admin/audit-timeline'),
+      (app.includes('/admin/users') || appShell.includes('/admin/users')) &&
+        (app.includes('/admin/connectors') || appShell.includes('/admin/connectors')) &&
+        (app.includes('/admin/observability') || appShell.includes('/admin/observability')) &&
+        (app.includes('/admin/runtime') || appShell.includes('/admin/runtime')) &&
+        (app.includes('/admin/deployment') || appShell.includes('/admin/deployment')) &&
+        (app.includes('/admin/audit-timeline') || appShell.includes('/admin/audit-timeline')),
       'App shell contains admin navigation links and routes.',
     ),
   );
@@ -124,7 +125,9 @@ async function main() {
   checks.push(
     check(
       'Logout button exists in authenticated navbar',
-      app.includes('Logout') && app.includes('handleLogout') && app.includes('user?.name || user?.email'),
+      (app.includes('Logout') || appShell.includes('Logout')) &&
+        (app.includes('handleLogout') || appShell.includes('handleLogout')) &&
+        (app.includes('user?.name || user?.email') || appShell.includes('user?.name || user?.email')),
       'Authenticated navbar renders user identity, role badge, and logout button.',
     ),
   );

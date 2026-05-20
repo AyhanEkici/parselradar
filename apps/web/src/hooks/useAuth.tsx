@@ -23,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
 	// Incremented on every hydrateAuth call; stale async results are ignored.
 	const callIdRef = useRef(0);
+	const consecutive401Ref = useRef(0);
 
 	async function hydrateAuth() {
 		const callId = ++callIdRef.current;
@@ -32,13 +33,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 		// Guard: no token → clear state and stop. Do NOT call /auth/me.
 		const token = getAuthToken();
+		const storedUser = getStoredUser();
 		if (!token) {
+			consecutive401Ref.current = 0;
 			if (callIdRef.current === callId) {
 				setUser(null);
 				setHydrating(false);
 				setAuthState('unauthenticated');
 			}
 			return;
+		}
+
+		// If local storage already has a full session, keep UI authenticated while
+		// /auth/me confirms server-side validity in the background.
+		if (callIdRef.current === callId && storedUser) {
+			setUser(storedUser as User);
+			setAuthState('authenticated');
 		}
 
 		if (callIdRef.current === callId) {
@@ -51,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setAuthHydrating(true);
 		try {
 			const u = await getMe();
+			consecutive401Ref.current = 0;
 			if (callIdRef.current === callId) {
 				setUser(u as User);
 				setAuthState('authenticated');
@@ -61,15 +72,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			// must NOT wipe a valid token — the user would be signed out
 			// incorrectly after a hard refresh.
 			const status = (err as { status?: number })?.status;
-			if (status === 401) {
-				clearAuthSession();
-			}
 			if (callIdRef.current === callId) {
 				if (status === 401) {
-					setUser(null);
-					setAuthState('unauthenticated');
+					consecutive401Ref.current += 1;
+
+					// Only clear after repeated 401s to avoid transient reload lockouts.
+					// This preserves session continuity on hard-refresh/back-forward races.
+					if (consecutive401Ref.current >= 2 || !storedUser) {
+						clearAuthSession();
+						setUser(null);
+						setAuthState('unauthenticated');
+					} else {
+						setUser(storedUser as User);
+						setAuthState('authenticated');
+						setTimeout(() => {
+							if (getAuthToken()) {
+								hydrateAuth();
+							}
+						}, 700);
+					}
 				} else {
-					const storedUser = getStoredUser();
 					if (storedUser && getAuthToken()) {
 						setUser(storedUser as User);
 						setAuthState('authenticated');
