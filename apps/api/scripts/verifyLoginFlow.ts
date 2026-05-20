@@ -102,6 +102,7 @@ function pickUserProof(diagnose: any, label: string): { status: Status; detail: 
 }
 
 function run() {
+  const passwordHashBundle = loadJson('passwordhash-auth-proof-bundle.json');
   const diagnose = loadJson('auth-diagnose-bundle.json');
   const passwords = loadJson('password-compatibility-proof.json');
   const repair = loadJson('auth-repair-run-proof.json');
@@ -163,6 +164,11 @@ function run() {
   const rootCauseProof = {
     status: statusFrom(diagnose?.proofs?.rootCauseProof?.status),
     detail: diagnose?.proofs?.rootCauseProof?.detail || 'auth-diagnose bundle missing',
+  };
+
+  const noPasswordResetProof = {
+    status: statusFrom(passwordHashBundle?.proofs?.noPasswordResetProof?.status),
+    detail: passwordHashBundle?.proofs?.noPasswordResetProof?.detail || 'passwordhash-auth proof missing',
   };
 
   const verifyStatus: Status = [
@@ -230,6 +236,7 @@ function run() {
       adminVisibilityProof,
       mahirIsolationProof,
       noOwnershipCorruptionProof,
+      noPasswordResetProof,
       buildProof: build,
       verifyProof: loginBundle.proofs.verifyProof,
       rootCauseProof,
@@ -249,6 +256,58 @@ function run() {
     authRepairBundle,
     'Auth Repair Proof Bundle',
     Object.entries(authRepairBundle.proofs).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
+  );
+
+  writeJsonAndMarkdown(
+    'passwordhash-auth-proof-bundle',
+    {
+      generatedAt: authRepairBundle.generatedAt,
+      overallStatus: authRepairBundle.overallStatus,
+      proofs: {
+        passwordHashFieldProof: {
+          status: statusFrom(passwordHashBundle?.proofs?.passwordHashFieldProof?.status),
+          detail: passwordHashBundle?.proofs?.passwordHashFieldProof?.detail || 'passwordhash field proof missing',
+        },
+        userSchemaProof: {
+          status: statusFrom(passwordHashBundle?.proofs?.userSchemaProof?.status),
+          detail: passwordHashBundle?.proofs?.userSchemaProof?.detail || 'user schema proof missing',
+        },
+        authControllerPasswordHashProof: {
+          status: statusFrom(passwordHashBundle?.proofs?.authControllerPasswordHashProof?.status),
+          detail: passwordHashBundle?.proofs?.authControllerPasswordHashProof?.detail || 'authController path proof missing',
+        },
+        noPasswordResetProof,
+        bcryptComparePathProof: bcryptCompatibilityProof,
+        existingPasswordPreservationProof: noPasswordResetProof,
+        pilotLoginProof,
+        ayhanLoginProof,
+        mahirLoginProof,
+        rbacContinuityProof: adminVisibilityProof,
+      },
+      commitHash: process.env.VERIFY_LOGIN_COMMIT_HASH || '',
+    },
+    'PasswordHash Auth Proof Bundle',
+    Object.entries({
+      passwordHashFieldProof: {
+        status: statusFrom(passwordHashBundle?.proofs?.passwordHashFieldProof?.status),
+        detail: passwordHashBundle?.proofs?.passwordHashFieldProof?.detail || 'passwordhash field proof missing',
+      },
+      userSchemaProof: {
+        status: statusFrom(passwordHashBundle?.proofs?.userSchemaProof?.status),
+        detail: passwordHashBundle?.proofs?.userSchemaProof?.detail || 'user schema proof missing',
+      },
+      authControllerPasswordHashProof: {
+        status: statusFrom(passwordHashBundle?.proofs?.authControllerPasswordHashProof?.status),
+        detail: passwordHashBundle?.proofs?.authControllerPasswordHashProof?.detail || 'authController path proof missing',
+      },
+      noPasswordResetProof,
+      bcryptComparePathProof: bcryptCompatibilityProof,
+      existingPasswordPreservationProof: noPasswordResetProof,
+      pilotLoginProof,
+      ayhanLoginProof,
+      mahirLoginProof,
+      rbacContinuityProof: adminVisibilityProof,
+    }).map(([key, value]: [string, any]) => ({ key, status: value.status || 'N/A', detail: value.detail || '' })),
   );
 
   process.stdout.write(`${JSON.stringify({ overallStatus: verifyStatus, proofPath: 'proof/auth-repair-proof-bundle.json' })}\n`);

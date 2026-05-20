@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { login } from '../lib/auth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui';
+import ForgotPasswordLink from '../components/auth/ForgotPasswordLink';
 
 type LoginResponse = {
   id?: string;
@@ -78,9 +79,14 @@ export default function Login() {
       </form>
 
       <div className="mt-4 text-center">
-        <a href="/register" className="text-blue-600">
-          Kayıt Ol
-        </a>
+        <div className="space-y-2">
+          <ForgotPasswordLink />
+          <div>
+            <Link to="/register" className="text-blue-600">
+              Kayıt Ol
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -66,7 +66,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; email?: string; role?: string };
+    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; userId?: string; sub?: string; email?: string; role?: string; iat?: number };
     const tokenUserId = decoded.id || decoded.userId || decoded.sub;
     if (!tokenUserId) {
       return res.status(401).json({ error: 'Geçersiz oturum' });
@@ -94,6 +94,22 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
       dbUserId: String(user._id),
       dbRole: user.role,
     });
+
+    const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
+    const tokenIssuedAt = typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined;
+    if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt < passwordChangedAt) {
+      await authSessionAudit({
+        userId: String(user._id),
+        role: user.role,
+        decision: 'deny',
+        reason: 'password_changed',
+        route: req.path,
+        method: req.method,
+        ip: req.ip,
+        userAgent: req.get('user-agent') || undefined,
+      });
+      return res.status(401).json({ error: 'Geçersiz oturum' });
+    }
 
     if (!consistency.consistent) {
       await authSessionAudit({

@@ -47,11 +47,30 @@ const app = express();
 // Hardened CORS
 const isProd = ENV.NODE_ENV === 'production';
 const vercelProd = 'https://parselradar.vercel.app';
+const railwayProd = 'https://parselradar-production.up.railway.app';
+const railwayOriginPattern = /^https:\/\/[a-z0-9-]+(?:-[a-z0-9-]+)*\.up\.railway\.app$/i;
+const local3000 = 'http://localhost:3000';
+const local5173 = 'http://localhost:5173';
 // Old regex: /^https:\/\/parselradar-[a-z0-9-]+\.vercel\.app$/
 const vercelPreviewPattern = /^https:\/\/parselradar.*\.vercel\.app$/;
-const allowedOrigins = isProd
-  ? [ENV.CLIENT_URL, vercelProd]
-  : [ENV.CLIENT_URL, vercelProd, 'http://localhost:3001', 'http://127.0.0.1:3001'];
+const allowedOrigins = [
+  ENV.CLIENT_URL,
+  ENV.API_URL,
+  vercelProd,
+  railwayProd,
+  local3000,
+  local5173,
+  'http://localhost:3001',
+  'http://127.0.0.1:3001',
+].filter((value, index, array) => Boolean(value) && array.indexOf(value) === index);
+
+function isOriginAllowed(origin?: string) {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (vercelPreviewPattern.test(origin)) return true;
+  if (railwayOriginPattern.test(origin)) return true;
+  return false;
+}
 
 // Trust proxy for production (needed for secure cookies behind proxy/load balancer)
 if (isProd) {
@@ -64,6 +83,22 @@ app.use(helmet());
 
 // Request ID middleware
 app.use(requestIdMiddleware);
+
+// Safe CORS diagnostics (no auth/cookie/token content)
+app.use((req, _res, next) => {
+  if (process.env.CORS_SAFE_DEBUG === 'true') {
+    const requestOrigin = req.get('origin') || undefined;
+    console.info('[cors-debug]', {
+      origin: requestOrigin || 'none',
+      allowed: isOriginAllowed(requestOrigin),
+      method: req.method,
+      path: req.path,
+      nodeEnv: ENV.NODE_ENV,
+      prod: isProd,
+    });
+  }
+  next();
+});
 
 // Diagnostic build info endpoint (JSON only)
 app.get('/__buildinfo', (_req, res) => {
@@ -98,29 +133,28 @@ app.post('/stripe/webhook', express.raw({ type: 'application/json' }), stripeWeb
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      if (vercelPreviewPattern.test(origin)) return callback(null, true);
+      if (isOriginAllowed(origin)) return callback(null, true);
       return callback(new Error('Not allowed by CORS: ' + origin));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     exposedHeaders: ['X-Request-Id'],
+    optionsSuccessStatus: 204,
   })
 );
 app.options(
   '*',
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      if (vercelPreviewPattern.test(origin)) return callback(null, true);
+      if (isOriginAllowed(origin)) return callback(null, true);
       return callback(new Error('Not allowed by CORS: ' + origin));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
     exposedHeaders: ['X-Request-Id'],
+    optionsSuccessStatus: 204,
   })
 );
 

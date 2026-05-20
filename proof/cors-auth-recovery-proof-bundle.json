@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-05-20T01:48:14.885Z",
+  "overallStatus": "FAIL",
+  "activeTarget": "https://parselradar-production.up.railway.app",
+  "proofs": {
+    "activeApiTargetProof": {
+      "status": "PASS",
+      "detail": "Resolved active API target: https://parselradar-production.up.railway.app"
+    },
+    "targetReachabilityProof": {
+      "status": "FAIL",
+      "detail": "No active API target responded to /health."
+    },
+    "resolvedApiTargetProof": {
+      "status": "PASS",
+      "detail": "Resolved active API target: https://parselradar-production.up.railway.app"
+    },
+    "corsConfigProof": {
+      "status": "PASS",
+      "detail": "CORS middleware uses explicit allow-logic and origin callback."
+    },
+    "allowedOriginsProof": {
+      "status": "PASS",
+      "detail": "All required origins are explicitly whitelisted in API CORS config."
+    },
+    "optionsPreflightProof": {
+      "status": "PASS",
+      "detail": "OPTIONS wildcard preflight handler with 204 success status is configured."
+    },
+    "accessControlAllowOriginProof": {
+      "status": "PASS",
+      "detail": "CORS headers/methods config set for preflight and request flow."
+    },
+    "credentialsTrueProof": {
+      "status": "PASS",
+      "detail": "credentials:true is enabled in CORS configuration."
+    },
+    "vercelLoginProof": {
+      "status": "FAIL",
+      "detail": "Preflight for https://parselradar.vercel.app status=502, acao=none, acc=none"
+    },
+    "jwtIssuanceProof": {
+      "status": "FAIL",
+      "detail": "JWT issuance could not be validated for all users because bcrypt pre-checks did not pass."
+    },
+    "sessionPersistenceProof": {
+      "status": "PASS",
+      "detail": "Auth hydration, persistence, stale-token cleanup, and Authorization header injection are present."
+    },
+    "mahirIsolationProof": {
+      "status": "PASS",
+      "detail": "RBAC verifier confirms Mahir isolation controls."
+    },
+    "adminVisibilityProof": {
+      "status": "PASS",
+      "detail": "RBAC verifier confirms admin-only visibility."
+    },
+    "noPasswordResetProof": {
+      "status": "PASS",
+      "detail": "No known-user reset run detected in current proof set."
+    },
+    "localPreflightProof": {
+      "status": "FAIL",
+      "detail": "Preflight for http://localhost:5173 status=502, acao=none, acc=none"
+    },
+    "railwayPreflightProof": {
+      "status": "FAIL",
+      "detail": "Preflight for https://parselradar-production.up.railway.app status=502, acao=none, acc=none"
+    }
+  },
+  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
+}

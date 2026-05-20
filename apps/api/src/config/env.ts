@@ -31,6 +31,7 @@ export const ENV = {
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || '',
     PORT: process.env.PORT || '4000',
+    API_URL: process.env.API_URL || '',
 };
 
 export const {
@@ -38,6 +39,7 @@ export const {
     JWT_SECRET,
     MONGODB_URI,
     CLIENT_URL,
+    API_URL,
     STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET,
     ADMIN_EMAIL,

@@ -63,3 +63,17 @@ export async function logout() {
     method: 'POST',
   });
 }
+
+export async function forgotPassword(email: string) {
+  return apiFetch('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, password: string) {
+  return apiFetch('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ token, password }),
+  });
+}
