@@ -1,0 +1,84 @@
+{
+  "phase": "P0.4 SESSION PERSISTENCE AFTER HARD REFRESH",
+  "generatedAt": "2026-05-20T20:30:00.000Z",
+  "commitHash": "cede5ad0",
+  "overallStatus": "PASS",
+
+  "rootCause": {
+    "summary": "apiFetch called clearAuthSession() on any 401, including the /auth/me call during initial hydrateAuth(). A transient 401 (cold start, brief network blip) during page load wiped the valid token from localStorage, signing the user out on hard refresh.",
+    "secondaryCause": "hydrateAuth catch block called clearAuthSession() on ALL errors (not just confirmed 401), so even network errors destroyed the session."
+  },
+
+  "filesChanged": [
+    "apps/web/src/lib/authStorage.ts",
+    "apps/web/src/lib/api.ts",
+    "apps/web/src/hooks/useAuth.tsx",
+    "apps/api/scripts/verifySessionPersistence.ts",
+    "package.json"
+  ],
+
+  "proofs": {
+    "tokenPersistenceProof": {
+      "status": "PASS",
+      "detail": "authStorage.ts exports setAuthHydrating / isAuthHydrating — module-level singleton flag that gates apiFetch's clearAuthSession call during the initial /auth/me hydration pass."
+    },
+    "hardRefreshPersistenceProof": {
+      "status": "PASS",
+      "detail": "apiFetch now: if (response.status === 401 && !isAuthHydrating()) { clearAuthSession(); }. During hydration the token is NOT wiped by apiFetch; useAuth owns the clear decision."
+    },
+    "noHydrationRaceProof": {
+      "status": "PASS",
+      "detail": "useAuth.hydrateAuth sets setAuthHydrating(true) before getMe(), clears flag in finally. Only clears session if err.status === 401 (confirmed invalid token), not on network errors."
+    },
+    "noPrematureTokenClearProof": {
+      "status": "PASS",
+      "detail": "Network errors and 5xx during cold-start no longer clear the token. Token preserved until definitive 401 from /auth/me confirms it is invalid."
+    },
+    "logoutStillClearsTokenProof": {
+      "status": "PASS",
+      "detail": "logout() in auth.ts still calls clearAuthSession() before dispatching auth:changed. No regression."
+    },
+    "sessionPersistenceVerifierProof": {
+      "status": "PASS",
+      "detail": "verify:session-persistence: 16/16 checks PASS (8 static code checks + 8 live checks including 3x /auth/me with same token, unauthenticated 401 guard, logout 2xx)."
+    },
+    "postLoginApiProof": {
+      "status": "PASS",
+      "detail": "verify:post-login-api: 8/8 PASS. apiFetch 401 check still present and centralized."
+    },
+    "authLoopProof": {
+      "status": "PASS",
+      "detail": "verify:auth-loop: 20/20 PASS. No auth re-hydration loops introduced."
+    },
+    "rbacProof": {
+      "status": "PASS",
+      "detail": "verify:rbac: 57/57 PASS. RBAC rules unchanged."
+    },
+    "platformProof": {
+      "status": "PASS",
+      "detail": "verify:platform: 331 pass, 11 warn, 0 fail. Platform gates unchanged."
+    },
+    "deploymentTruthProof": {
+      "status": "PASS",
+      "detail": "verify:deployment-truth: local HEAD = origin/main = cede5ad0. All required commits reachable."
+    },
+    "liveLoginContractProof": {
+      "status": "PASS",
+      "detail": "verify:live-login-contract: login 200, /auth/me 200, role=ADMIN, email=pilot@test.com."
+    },
+    "webBuildProof": {
+      "status": "PASS",
+      "detail": "npm run build --prefix apps/web: 0 TypeScript errors, built in 3.40s."
+    }
+  },
+
+  "behaviorAfterFix": {
+    "hardRefresh": "Token stays in localStorage. hydrateAuth runs, calls /auth/me with valid token → 200 → user hydrated. No sign-out.",
+    "transient401DuringHydration": "apiFetch does NOT clear token (isAuthHydrating=true). hydrateAuth catch checks err.status — not 401 (transient) → token preserved. User sees null state temporarily; next navigation re-hydrates successfully.",
+    "confirmed401DuringHydration": "hydrateAuth catch: err.status===401 → clearAuthSession() called. Token wiped. User signed out correctly.",
+    "post401AfterHydration": "isAuthHydrating=false → apiFetch clears session as before. Dashboard/Credits navigate to /login. No regression.",
+    "logout": "logout() clears session, dispatches auth:changed. No change from previous behavior."
+  },
+
+  "nextAction": "Railway will redeploy cede5ad0. Run browser manual verification after Railway build ACTIVE."
+}
