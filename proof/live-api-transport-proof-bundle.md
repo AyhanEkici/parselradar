@@ -1,28 +1,28 @@
 # Live API Transport Proof Bundle
 
-Generated at: 2026-05-20T02:18:45.986Z
-Overall status: FAIL
+Generated at: 2026-05-20T12:56:59.718Z
+Overall status: PASS
 Active target: https://parselradar-production.up.railway.app
 
 | Check | Status | Detail |
 | --- | --- | --- |
-| railwayActiveDeploymentProof | FAIL | No candidate responded with JSON health. |
+| railwayActiveDeploymentProof | PASS | JSON response received. |
 | activeApiUrlProof | PASS | Active API URL resolved to https://parselradar-production.up.railway.app |
-| healthProof | FAIL | Unexpected response status=502, contentType=application/json |
-| buildInfoProof | FAIL | Unexpected response status=502, contentType=application/json |
-| authLoginOptionsProof | FAIL | Unexpected response status=502, contentType=application/json |
-| forgotPasswordOptionsProof | FAIL | Unexpected response status=502, contentType=application/json |
-| resetPasswordOptionsProof | FAIL | Unexpected response status=502, contentType=application/json |
-| accessControlAllowOriginProof | FAIL | Observed ACAO values: login=none, forgot=none, reset=none |
-| credentialsHeaderProof | FAIL | Observed ACC values: login=none, forgot=none, reset=none |
-| allowedHeadersProof | FAIL | Observed ACAH values: login=none, forgot=none, reset=none |
-| allowedMethodsProof | FAIL | Observed ACAM values: login=none, forgot=none, reset=none |
-| forgotPasswordLiveProof | FAIL | Unexpected response status=502, contentType=application/json |
+| healthProof | PASS | JSON response received. |
+| buildInfoProof | PASS | JSON response received. |
+| authLoginOptionsProof | PASS | OPTIONS /auth/login returned JSON-capable preflight headers. |
+| forgotPasswordOptionsProof | PASS | OPTIONS /auth/forgot-password returned JSON-capable preflight headers. |
+| resetPasswordOptionsProof | PASS | OPTIONS /auth/reset-password returned JSON-capable preflight headers. |
+| accessControlAllowOriginProof | PASS | Observed ACAO values: login=https://parselradar.vercel.app, forgot=https://parselradar.vercel.app, reset=https://parselradar.vercel.app |
+| credentialsHeaderProof | PASS | Observed ACC values: login=true, forgot=true, reset=true |
+| allowedHeadersProof | PASS | Observed ACAH values: login=Content-Type,Authorization,X-Request-Id, forgot=Content-Type,Authorization,X-Request-Id, reset=Content-Type,Authorization,X-Request-Id |
+| allowedMethodsProof | PASS | Observed ACAM values: login=GET,POST,PUT,PATCH,DELETE,OPTIONS, forgot=GET,POST,PUT,PATCH,DELETE,OPTIONS, reset=GET,POST,PUT,PATCH,DELETE,OPTIONS |
+| forgotPasswordLiveProof | PASS | POST /auth/forgot-password returned a JSON response with Vercel origin. |
 | noHtmlResponseProof | PASS | Checked that API endpoints did not return HTML bodies. |
-| buildInfoVisibleProof | FAIL | Unexpected response status=502, contentType=application/json |
+| buildInfoVisibleProof | PASS | Build info endpoint responded with JSON. |
 | vercelViteApiUrlProof | PASS | Frontend API client points to the active Railway URL without a trailing slash. |
 
 ## Commit Hash
 
-- e5b9b54f2ca42c7187e9383c815b868748fcd0b6
+- pending
 

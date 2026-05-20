@@ -66,11 +66,19 @@ function noteRequired(name: string, state: RuntimeSystemState, reason: string) {
 
 export function installRuntimeProcessGuards() {
 	process.on('unhandledRejection', (reason) => {
-		logError('Unhandled promise rejection', { reason: String(reason) });
+		logError('Unhandled promise rejection', {
+			bootPhase: process.env.BOOT_PHASE || diagnostics.startupPhase,
+			diagnostics: getRuntimeDiagnostics(),
+			reason: String(reason),
+		});
 	});
 
 	process.on('uncaughtException', (error) => {
-		logError('Uncaught exception', { error: error?.message || String(error) });
+		logError('Uncaught exception', {
+			bootPhase: process.env.BOOT_PHASE || diagnostics.startupPhase,
+			diagnostics: getRuntimeDiagnostics(),
+			error: error?.message || String(error),
+		});
 	});
 }
 

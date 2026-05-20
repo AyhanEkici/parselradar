@@ -43,6 +43,7 @@ const queueFactory_1 = require("./runtime/queueFactory");
 const redisClient_1 = require("./redis/redisClient");
 const buildInfo_1 = require("./generated/buildInfo");
 const degradedRuntime_1 = require("./runtime/degradedRuntime");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const app = (0, express_1.default)();
 (0, degradedRuntime_1.installRuntimeProcessGuards)();
 (0, degradedRuntime_1.recordStartupPhase)('express_initialized', 'Express application created.');
@@ -165,7 +166,7 @@ mongoose_1.default.connect(env_1.ENV.MONGODB_URI)
     .catch((err) => {
     (0, logger_1.logError)('MongoDB connection error', err);
     (0, degradedRuntime_1.recordStartupPhase)('mongo_failed', 'MongoDB connection failed.');
-    process.exit(1);
+    (0, degradedRuntime_1.recordRequiredSystem)('mongo', 'failed', `MongoDB connection failed: ${String(err?.message || err)}`);
 });
 app.use('/auth', authRoutes_1.default);
 (0, degradedRuntime_1.markRequiredSystemReady)('authRoutes', 'Auth routes registered.');
@@ -199,6 +200,87 @@ app.use('/', auditRoutes_1.default);
 app.get('/health', healthController_1.healthController);
 app.get('/health/live', livenessController_1.livenessController);
 app.get('/health/ready', readinessController_1.readinessController);
+// Debug endpoint: inspect Authorization header and verify token
+app.get('/__auth-debug', (req, res) => {
+    const authHeader = req.headers['authorization'] || '';
+    const hasBearerPrefix = String(authHeader).startsWith('Bearer ');
+    const rawTokenSlice7 = hasBearerPrefix ? String(authHeader).slice(7) : '';
+    const rawTokenTrimmed = rawTokenSlice7.trim();
+    const firstChar = rawTokenSlice7.charCodeAt(0);
+    const firstCharTrimmed = rawTokenTrimmed.charCodeAt(0);
+    let verifyResult = null;
+    if (rawTokenSlice7) {
+        try {
+            const decoded = jsonwebtoken_1.default.verify(rawTokenSlice7, env_1.ENV.JWT_SECRET);
+            verifyResult = { success: true, usedTrimmed: false, decodedId: decoded.id };
+        }
+        catch (e1) {
+            // try trimmed
+            try {
+                const decoded = jsonwebtoken_1.default.verify(rawTokenTrimmed, env_1.ENV.JWT_SECRET);
+                verifyResult = { success: true, usedTrimmed: true, decodedId: decoded.id, note: 'needed trim' };
+            }
+            catch (e2) {
+                verifyResult = { success: false, errorWithRaw: e1.message, errorWithTrimmed: e2.message };
+            }
+        }
+    }
+    res.json({
+        authHeaderPresent: Boolean(authHeader),
+        authHeaderLength: String(authHeader).length,
+        hasBearerPrefix,
+        tokenLengthAfterSlice7: rawTokenSlice7.length,
+        tokenLengthAfterTrim: rawTokenTrimmed.length,
+        firstCharCode: firstChar,
+        firstCharCodeTrimmed: firstCharTrimmed,
+        tokenStart: rawTokenSlice7.substring(0, 10),
+        tokenStartTrimmed: rawTokenTrimmed.substring(0, 10),
+        verifyResult,
+    });
+});
+app.get('/__jwt-diagnostics', (req, res) => {
+    const jwtSecretPresent = Boolean(env_1.ENV.JWT_SECRET);
+    const jwtSecretLength = env_1.ENV.JWT_SECRET?.length || 0;
+    const jwtSecretSample = env_1.ENV.JWT_SECRET
+        ? `${env_1.ENV.JWT_SECRET.substring(0, 5)}...${env_1.ENV.JWT_SECRET.substring(Math.max(0, env_1.ENV.JWT_SECRET.length - 5))}`
+        : 'MISSING';
+    // Live sign/verify test
+    let signVerifyResult = {};
+    try {
+        const testPayload = { id: 'test-user-id', email: 'test@test.com', role: 'USER' };
+        const testToken = jsonwebtoken_1.default.sign(testPayload, env_1.ENV.JWT_SECRET, { expiresIn: '1h' });
+        try {
+            const decoded = jsonwebtoken_1.default.verify(testToken, env_1.ENV.JWT_SECRET);
+            signVerifyResult = { success: true, tokenLength: testToken.length, decodedId: decoded.id };
+        }
+        catch (verifyErr) {
+            signVerifyResult = { success: false, phase: 'verify', error: verifyErr.message, tokenLength: testToken.length };
+        }
+    }
+    catch (signErr) {
+        signVerifyResult = { success: false, phase: 'sign', error: signErr.message };
+    }
+    // Test with a real user token if provided in query
+    let externalTokenResult = null;
+    const testToken = req.query.token;
+    if (testToken) {
+        try {
+            const decoded = jsonwebtoken_1.default.verify(testToken, env_1.ENV.JWT_SECRET);
+            externalTokenResult = { success: true, decoded };
+        }
+        catch (err) {
+            externalTokenResult = { success: false, error: err.message };
+        }
+    }
+    res.json({
+        jwtSecretPresent,
+        jwtSecretLength,
+        jwtSecretSample,
+        nodeEnv: env_1.ENV.NODE_ENV,
+        signVerifyTest: signVerifyResult,
+        externalTokenTest: externalTokenResult,
+    });
+});
 // Ensure unmatched API routes return JSON (prevents HTML "Cannot GET" responses)
 app.use((req, res) => {
     const requestId = req.requestId || '';

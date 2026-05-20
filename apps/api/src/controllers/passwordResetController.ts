@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import User from '../models/User';
 import { CLIENT_URL } from '../config/env';
@@ -33,9 +34,17 @@ function buildResetLink(rawToken: string) {
   return `${baseUrl}/reset-password?token=${encodeURIComponent(rawToken)}`;
 }
 
+function isMongoReady() {
+  return mongoose.connection.readyState === 1;
+}
+
 export async function forgotPassword(req: Request, res: Response) {
   const email = normalizeEmail(req.body?.email);
   const providerState = getPasswordResetEmailProviderState();
+
+  if (!isMongoReady()) {
+    return res.status(503).json(GENERIC_FORGOT_SUCCESS);
+  }
 
   await auditPasswordResetEvent({
     action: 'forgot_password',
@@ -79,6 +88,10 @@ export async function forgotPassword(req: Request, res: Response) {
 export async function resetPassword(req: Request, res: Response) {
   const rawToken = String(req.body?.token || '').trim();
   const password = String(req.body?.password || '');
+
+  if (!isMongoReady()) {
+    return res.status(503).json(GENERIC_RESET_FAILURE);
+  }
 
   if (!rawToken || !isStrongPassword(password)) {
     await auditPasswordResetEvent({

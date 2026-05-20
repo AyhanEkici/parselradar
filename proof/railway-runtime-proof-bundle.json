@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T09:01:34.046Z",
+  "generatedAt": "2026-05-20T12:57:28.710Z",
   "overallStatus": "PASS",
   "activeTarget": "https://parselradar-production.up.railway.app",
   "commitHash": "",
@@ -38,7 +38,7 @@
       "detail": "JSON response received.",
       "statusCode": 200,
       "contentType": "application/json; charset=utf-8",
-      "bodyPreview": "{\"gitSha\":\"e257993431b65b4f294d9e5f0456caabb8462abc\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T08:52:02.296Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
+      "bodyPreview": "{\"gitSha\":\"c5193a17b64a54df5d9846f65e1300fd956e1898\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T12:48:12.996Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
       "allowOrigin": null,
       "allowCredentials": null,
       "allowHeaders": null,
@@ -69,8 +69,8 @@
       "detail": "Local runtime boot proof is passing."
     },
     "liveApiTransportProof": {
-      "status": "WARN",
-      "detail": "Live API transport proof is missing or not passing."
+      "status": "PASS",
+      "detail": "Live API transport proof is passing."
     },
     "originHeaderProof": {
       "status": "PASS",

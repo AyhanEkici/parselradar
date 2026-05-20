@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = exports.requireAuth = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const env_1 = require("../config/env");
 const User_1 = __importDefault(require("../models/User"));
 const accessAudit_1 = require("../utils/accessAudit");
 const sessionIntegrityValidator_1 = require("../session/sessionIntegrityValidator");
@@ -59,11 +58,11 @@ const requireAuth = async (req, res, next) => {
         return res.status(401).json({ error: 'Geçersiz oturum' });
     }
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, env_1.JWT_SECRET);
-        const tokenUserId = decoded.id || decoded.userId || decoded.sub;
+        const tokenUserId = integrity.userId;
         if (!tokenUserId) {
             return res.status(401).json({ error: 'Geçersiz oturum' });
         }
+        const decoded = jsonwebtoken_1.default.decode(token);
         const user = await User_1.default.findById(tokenUserId);
         if (!user) {
             await (0, accessAudit_1.recordAccessDecision)({
@@ -86,7 +85,7 @@ const requireAuth = async (req, res, next) => {
             dbRole: user.role,
         });
         const passwordChangedAt = user.passwordChangedAt ? new Date(user.passwordChangedAt).getTime() : undefined;
-        const tokenIssuedAt = typeof decoded.iat === 'number' ? decoded.iat * 1000 : undefined;
+        const tokenIssuedAt = typeof decoded?.iat === 'number' ? decoded.iat * 1000 : undefined;
         if (passwordChangedAt && tokenIssuedAt && tokenIssuedAt < passwordChangedAt) {
             await (0, authSessionAudit_1.authSessionAudit)({
                 userId: String(user._id),

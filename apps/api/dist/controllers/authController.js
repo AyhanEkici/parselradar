@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSessionDiagnostics = exports.getMe = exports.logout = exports.login = exports.register = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importDefault(require("../models/User"));
@@ -22,18 +23,36 @@ function safeAuthDebug(event, payload) {
         return;
     console.info(`[auth-debug] ${event}`, payload);
 }
+function isMongoReady() {
+    return mongoose_1.default.connection.readyState === 1;
+}
 const register = async (req, res) => {
     const { password, name } = req.body;
     const email = normalizeEmail(req.body?.email);
     safeAuthDebug('register_attempt', { routeHit: '/auth/register', emailNormalized: Boolean(email) });
     if (!email || !password || !name)
         return res.status(400).json({ error: 'Eksik bilgi' });
+    if (!isMongoReady())
+        return res.status(503).json({ error: 'Veri deposu hazır değil' });
     const exists = await User_1.default.findOne({ email });
     if (exists)
         return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
     const passwordHash = await bcrypt_1.default.hash(password, 10);
     const user = await User_1.default.create({ email, passwordHash, passwordChangedAt: new Date(), name, role: 'USER' });
+    console.log('[authController register] SIGNING TOKEN', {
+        jwtSecretLength: env_1.JWT_SECRET?.length,
+        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
+    });
     const token = jsonwebtoken_1.default.sign({ id: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
+    global.lastJwtDebug = {
+        timestamp: new Date().toISOString(),
+        type: 'token_signed_register',
+        jwtSecretLength: env_1.JWT_SECRET?.length,
+        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
+        tokenLength: token.length,
+        userId: String(user._id),
+    };
+    console.log('[authController register] TOKEN SIGNED', { tokenLength: token.length });
     res.cookie('token', token, {
         httpOnly: true,
         secure: true,
@@ -64,6 +83,8 @@ const login = async (req, res) => {
         emailNormalized: email,
         passwordLength: String(password || '').length,
     });
+    if (!isMongoReady())
+        return res.status(503).json({ error: 'Veri deposu hazır değil' });
     let user = await User_1.default.findOne({ email }).select('+passwordHash');
     if (!user && email) {
         // Backward-compatible recovery for legacy mixed-case emails.
@@ -86,7 +107,21 @@ const login = async (req, res) => {
     safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
     if (!valid)
         return res.status(401).json({ error: 'Şifre hatalı' });
+    console.log('[authController login] SIGNING TOKEN', {
+        jwtSecretLength: env_1.JWT_SECRET?.length,
+        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
+        userId: String(user._id),
+    });
     const token = jsonwebtoken_1.default.sign({ id: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
+    global.lastJwtDebug = {
+        timestamp: new Date().toISOString(),
+        type: 'token_signed_login',
+        jwtSecretLength: env_1.JWT_SECRET?.length,
+        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
+        tokenLength: token.length,
+        userId: String(user._id),
+    };
+    console.log('[authController login] TOKEN SIGNED', { tokenLength: token.length });
     res.cookie('token', token, {
         httpOnly: true,
         secure: true,

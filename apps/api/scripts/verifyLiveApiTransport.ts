@@ -82,14 +82,37 @@ async function probeJson(url: string, init?: RequestInit): Promise<Probe> {
 }
 
 async function probeOptions(url: string, origin: string): Promise<Probe> {
-  return probeJson(url, {
-    method: 'OPTIONS',
-    headers: {
-      Origin: origin,
-      'Access-Control-Request-Method': 'POST',
-      'Access-Control-Request-Headers': 'content-type,authorization',
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      method: 'OPTIONS',
+      headers: {
+        Origin: origin,
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type,authorization',
+      },
+    });
+
+    const allowOrigin = response.headers.get('access-control-allow-origin');
+    const allowCredentials = response.headers.get('access-control-allow-credentials');
+    const allowHeaders = response.headers.get('access-control-allow-headers');
+    const allowMethods = response.headers.get('access-control-allow-methods');
+    const statusOk = response.status === 200 || response.status === 204;
+
+    return {
+      status: statusOk ? 'PASS' : 'FAIL',
+      detail: statusOk ? 'Preflight returned an expected CORS status.' : `Unexpected preflight status=${response.status}`,
+      url,
+      statusCode: response.status,
+      contentType: response.headers.get('content-type'),
+      allowOrigin,
+      allowCredentials,
+      allowHeaders,
+      allowMethods,
+      bodyPreview: '',
+    };
+  } catch (error: any) {
+    return { status: 'WARN', detail: `Request failed: ${error?.message || 'network_error'}`, url };
+  }
 }
 
 async function resolveActiveTarget() {

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
@@ -21,11 +22,16 @@ function safeAuthDebug(event: string, payload: Record<string, unknown>) {
   console.info(`[auth-debug] ${event}`, payload);
 }
 
+function isMongoReady() {
+  return mongoose.connection.readyState === 1;
+}
+
 export const register = async (req: Request, res: Response) => {
   const { password, name } = req.body;
   const email = normalizeEmail(req.body?.email);
   safeAuthDebug('register_attempt', { routeHit: '/auth/register', emailNormalized: Boolean(email) });
   if (!email || !password || !name) return res.status(400).json({ error: 'Eksik bilgi' });
+  if (!isMongoReady()) return res.status(503).json({ error: 'Veri deposu hazır değil' });
   const exists = await User.findOne({ email });
   if (exists) return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
   const passwordHash = await bcrypt.hash(password, 10);
@@ -74,6 +80,7 @@ export const login = async (req: Request, res: Response) => {
     emailNormalized: email,
     passwordLength: String(password || '').length,
   });
+  if (!isMongoReady()) return res.status(503).json({ error: 'Veri deposu hazır değil' });
   let user: any = await User.findOne({ email }).select('+passwordHash');
   if (!user && email) {
     // Backward-compatible recovery for legacy mixed-case emails.

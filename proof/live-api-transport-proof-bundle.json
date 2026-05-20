@@ -1,80 +1,88 @@
 {
-  "generatedAt": "2026-05-20T02:18:45.986Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-20T12:56:59.718Z",
+  "overallStatus": "PASS",
   "activeTarget": "https://parselradar-production.up.railway.app",
-  "commitHash": "e5b9b54f2ca42c7187e9383c815b868748fcd0b6",
+  "commitHash": "",
   "proofs": {
     "railwayActiveDeploymentProof": {
-      "status": "FAIL",
-      "detail": "No candidate responded with JSON health."
+      "status": "PASS",
+      "detail": "JSON response received.",
+      "url": "https://parselradar-production.up.railway.app/health",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
+      "allowOrigin": null,
+      "allowCredentials": "true",
+      "allowHeaders": null,
+      "allowMethods": null,
+      "bodyPreview": "{\"status\":\"DISABLED\",\"runtimeStatus\":{\"state\":\"DISABLED\",\"reason\":\"Distributed runtime is disabled by configuration.\",\"mode\":\"standby\",\"redisConfigured\":false,\"bullmqConfigured\":false,\"distributedRuntimeEnabled\":false,\"checkedAt\":\"2026-05-2"
     },
     "activeApiUrlProof": {
       "status": "PASS",
       "detail": "Active API URL resolved to https://parselradar-production.up.railway.app"
     },
     "healthProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json",
+      "status": "PASS",
+      "detail": "JSON response received.",
       "url": "https://parselradar-production.up.railway.app/health",
-      "statusCode": 502,
-      "contentType": "application/json",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
       "allowOrigin": null,
-      "allowCredentials": null,
+      "allowCredentials": "true",
       "allowHeaders": null,
       "allowMethods": null,
-      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"vSgbskyQRD2ajXbMvEOTxA\"}"
+      "bodyPreview": "{\"status\":\"DISABLED\",\"runtimeStatus\":{\"state\":\"DISABLED\",\"reason\":\"Distributed runtime is disabled by configuration.\",\"mode\":\"standby\",\"redisConfigured\":false,\"bullmqConfigured\":false,\"distributedRuntimeEnabled\":false,\"checkedAt\":\"2026-05-2"
     },
     "buildInfoProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json",
+      "status": "PASS",
+      "detail": "JSON response received.",
       "url": "https://parselradar-production.up.railway.app/__buildinfo",
-      "statusCode": 502,
-      "contentType": "application/json",
+      "statusCode": 200,
+      "contentType": "application/json; charset=utf-8",
       "allowOrigin": null,
       "allowCredentials": null,
       "allowHeaders": null,
       "allowMethods": null,
-      "bodyPreview": "{\"status\":\"error\",\"code\":502,\"message\":\"Application failed to respond\",\"request_id\":\"6t6e1iNJQzSoEuFE2JZdWA\"}"
+      "bodyPreview": "{\"gitSha\":\"c5193a17b64a54df5d9846f65e1300fd956e1898\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T12:48:12.996Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence_v28\",\"nodeEnv\":\"pro"
     },
     "authLoginOptionsProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json"
+      "status": "PASS",
+      "detail": "OPTIONS /auth/login returned JSON-capable preflight headers."
     },
     "forgotPasswordOptionsProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json"
+      "status": "PASS",
+      "detail": "OPTIONS /auth/forgot-password returned JSON-capable preflight headers."
     },
     "resetPasswordOptionsProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json"
+      "status": "PASS",
+      "detail": "OPTIONS /auth/reset-password returned JSON-capable preflight headers."
     },
     "accessControlAllowOriginProof": {
-      "status": "FAIL",
-      "detail": "Observed ACAO values: login=none, forgot=none, reset=none"
+      "status": "PASS",
+      "detail": "Observed ACAO values: login=https://parselradar.vercel.app, forgot=https://parselradar.vercel.app, reset=https://parselradar.vercel.app"
     },
     "credentialsHeaderProof": {
-      "status": "FAIL",
-      "detail": "Observed ACC values: login=none, forgot=none, reset=none"
+      "status": "PASS",
+      "detail": "Observed ACC values: login=true, forgot=true, reset=true"
     },
     "allowedHeadersProof": {
-      "status": "FAIL",
-      "detail": "Observed ACAH values: login=none, forgot=none, reset=none"
+      "status": "PASS",
+      "detail": "Observed ACAH values: login=Content-Type,Authorization,X-Request-Id, forgot=Content-Type,Authorization,X-Request-Id, reset=Content-Type,Authorization,X-Request-Id"
     },
     "allowedMethodsProof": {
-      "status": "FAIL",
-      "detail": "Observed ACAM values: login=none, forgot=none, reset=none"
+      "status": "PASS",
+      "detail": "Observed ACAM values: login=GET,POST,PUT,PATCH,DELETE,OPTIONS, forgot=GET,POST,PUT,PATCH,DELETE,OPTIONS, reset=GET,POST,PUT,PATCH,DELETE,OPTIONS"
     },
     "forgotPasswordLiveProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json"
+      "status": "PASS",
+      "detail": "POST /auth/forgot-password returned a JSON response with Vercel origin."
     },
     "noHtmlResponseProof": {
       "status": "PASS",
       "detail": "Checked that API endpoints did not return HTML bodies."
     },
     "buildInfoVisibleProof": {
-      "status": "FAIL",
-      "detail": "Unexpected response status=502, contentType=application/json"
+      "status": "PASS",
+      "detail": "Build info endpoint responded with JSON."
     },
     "vercelViteApiUrlProof": {
       "status": "PASS",
