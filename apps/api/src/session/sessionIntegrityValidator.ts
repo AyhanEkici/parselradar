@@ -39,7 +39,14 @@ export function sessionIntegrityValidator(token?: string | null): SessionIntegri
       userId: String(decoded.id),
       expiresAt: decoded.exp ? decoded.exp * 1000 : undefined,
     };
-  } catch {
+  } catch (error) {
+    if (process.env.AUTH_SAFE_DEBUG === 'true') {
+      console.error('[sessionIntegrityValidator-error]', {
+        tokenLength: token?.length || 0,
+        jwtSecretLength: JWT_SECRET?.length || 0,
+        errorMessage: (error as any)?.message,
+      });
+    }
     return { valid: false, sessionTrust: 'BLOCKED', reason: 'invalid_signature' };
   }
 }
