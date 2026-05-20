@@ -3,23 +3,7 @@
     "category": "Routes",
     "routeFile": "apps/api/src/index.ts",
     "method": "GET",
-    "path": "/__auth-debug",
-    "requiresAuth": false,
-    "requiresAdmin": false
-  },
-  {
-    "category": "Routes",
-    "routeFile": "apps/api/src/index.ts",
-    "method": "GET",
     "path": "/__buildinfo",
-    "requiresAuth": false,
-    "requiresAdmin": false
-  },
-  {
-    "category": "Routes",
-    "routeFile": "apps/api/src/index.ts",
-    "method": "GET",
-    "path": "/__jwt-diagnostics",
     "requiresAuth": false,
     "requiresAdmin": false
   },
@@ -152,6 +136,14 @@
     "requiresAdmin": true
   },
   {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "GET",
+    "path": "/admin/email-delivery-state",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
     "category": "Observability",
     "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
     "method": "GET",
@@ -228,6 +220,14 @@
     "routeFile": "apps/api/src/routes/adminRoutes.ts",
     "method": "GET",
     "path": "/admin/users",
+    "requiresAuth": true,
+    "requiresAdmin": true
+  },
+  {
+    "category": "Admin",
+    "routeFile": "apps/api/src/routes/adminRoutes.ts",
+    "method": "PATCH",
+    "path": "/admin/users/:id/role",
     "requiresAuth": true,
     "requiresAdmin": true
   },

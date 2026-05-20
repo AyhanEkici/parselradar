@@ -39,20 +39,7 @@ const register = async (req, res) => {
         return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
     const passwordHash = await bcrypt_1.default.hash(password, 10);
     const user = await User_1.default.create({ email, passwordHash, passwordChangedAt: new Date(), name, role: 'USER' });
-    console.log('[authController register] SIGNING TOKEN', {
-        jwtSecretLength: env_1.JWT_SECRET?.length,
-        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
-    });
     const token = jsonwebtoken_1.default.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
-    global.lastJwtDebug = {
-        timestamp: new Date().toISOString(),
-        type: 'token_signed_register',
-        jwtSecretLength: env_1.JWT_SECRET?.length,
-        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
-        tokenLength: token.length,
-        userId: String(user._id),
-    };
-    console.log('[authController register] TOKEN SIGNED', { tokenLength: token.length });
     res.cookie('token', token, {
         httpOnly: true,
         secure: true,
@@ -107,21 +94,7 @@ const login = async (req, res) => {
     safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
     if (!valid)
         return res.status(401).json({ error: 'Şifre hatalı' });
-    console.log('[authController login] SIGNING TOKEN', {
-        jwtSecretLength: env_1.JWT_SECRET?.length,
-        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
-        userId: String(user._id),
-    });
     const token = jsonwebtoken_1.default.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, env_1.JWT_SECRET, { expiresIn: '7d' });
-    global.lastJwtDebug = {
-        timestamp: new Date().toISOString(),
-        type: 'token_signed_login',
-        jwtSecretLength: env_1.JWT_SECRET?.length,
-        jwtSecretStart: env_1.JWT_SECRET?.substring(0, 5),
-        tokenLength: token.length,
-        userId: String(user._id),
-    };
-    console.log('[authController login] TOKEN SIGNED', { tokenLength: token.length });
     res.cookie('token', token, {
         httpOnly: true,
         secure: true,

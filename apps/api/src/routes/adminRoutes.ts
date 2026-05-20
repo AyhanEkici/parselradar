@@ -9,12 +9,14 @@ import {
 	acceptDealPool,
 	shareDealPool,
 	getAdminUsers,
+	updateAdminUserRole,
 	getAdminAnalyses,
 	getAdminCreditLedger,
 	getAdminStripeSessions,
 	getAdminDeploymentOverview,
 	getAdminRuntimeOverview,
-	getAdminSecurityOverview
+	getAdminSecurityOverview,
+	getAdminEmailDeliveryState
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -28,11 +30,13 @@ router.post('/deal-pool/:entryId/share', auth, admin, shareDealPool);
 
 // Admin operations suite
 router.get('/users', auth, admin, getAdminUsers);
+router.patch('/users/:id/role', auth, admin, updateAdminUserRole);
 router.get('/analyses', auth, admin, getAdminAnalyses);
 router.get('/credit-ledger', auth, admin, getAdminCreditLedger);
 router.get('/stripe-sessions', auth, admin, getAdminStripeSessions);
 router.get('/deployment', auth, admin, getAdminDeploymentOverview);
 router.get('/runtime', auth, admin, getAdminRuntimeOverview);
 router.get('/security-overview', auth, admin, getAdminSecurityOverview);
+router.get('/email-delivery-state', auth, admin, getAdminEmailDeliveryState);
 
 export default router;

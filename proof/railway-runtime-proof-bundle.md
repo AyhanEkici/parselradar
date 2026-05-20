@@ -1,6 +1,6 @@
 # Railway Runtime Proof Bundle
 
-Generated at: 2026-05-20T12:57:28.710Z
+Generated at: 2026-05-20T18:46:10.741Z
 Overall status: PASS
 Active target: https://parselradar-production.up.railway.app
 

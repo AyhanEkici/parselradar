@@ -220,7 +220,7 @@ export default function AdminPropertyDocuments() {
     };
   }, [cards]);
 
-  if (!user || user.role !== 'ADMIN') {
+  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
 

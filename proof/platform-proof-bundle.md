@@ -1,30 +1,30 @@
 # Platform Proof Bundle
 
-Generated at: 2026-05-20T18:36:32.538Z
+Generated at: 2026-05-20T20:36:52.663Z
 Overall status: WARN
-Git SHA: 3dd2e00be891c454ab904b66e5e7d3879df31c18
+Git SHA: 52698b44f5af2bc7c10794f67a6e8146f19cdcba
 Dirty working tree: true
 
 ## Summary
 
 - Sections: 12
 - Checks: 345
-- PASS: 331
-- WARN: 11
+- PASS: 330
+- WARN: 12
 - FAIL: 0
 - SKIPPED: 3
 
 ## Admin
 
-- Overall: PASS
-- PASS: 13
-- WARN: 0
+- Overall: WARN
+- PASS: 12
+- WARN: 1
 - FAIL: 0
 - SKIPPED: 0
 
 | Status | Check | Message | Detail |
 | --- | --- | --- | --- |
-| PASS | Admin middleware enforces ADMIN role | Admin middleware explicitly checks for the ADMIN role. |  |
+| WARN | Admin middleware enforces ADMIN role | Admin middleware does not clearly show an explicit ADMIN role check. |  |
 | PASS | admin middleware file exists | Admin middleware file presence verified. |  |
 | PASS | Admin route /admin/analyses | Expected admin route is declared. |  |
 | PASS | Admin route /admin/credit-ledger | Expected admin route is declared. |  |

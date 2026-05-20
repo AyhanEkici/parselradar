@@ -4,7 +4,8 @@ import { logAuditEvent } from '../utils/auditLog';
 import { recordAccessDecision } from '../utils/accessAudit';
 
 export const requireAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (!req.user || req.user.role !== 'ADMIN') {
+  const normalizedRole = String(req.user?.role || '').toUpperCase();
+  if (!req.user || normalizedRole !== 'ADMIN') {
     await recordAccessDecision({
       userId: req.user?._id?.toString(),
       role: req.user?.role,
@@ -34,7 +35,7 @@ export const requireAdmin = async (req: AuthRequest, res: Response, next: NextFu
 
   await recordAccessDecision({
     userId: req.user._id?.toString(),
-    role: req.user.role,
+    role: normalizedRole,
     resourceType: 'AdminRoute',
     resourceId: req.path,
     decision: 'allow',

@@ -13,6 +13,7 @@ import StripeCheckoutSession from '../models/StripeCheckoutSession';
 import DocumentUpload from '../models/DocumentUpload';
 import Report from '../models/Report';
 import AuditEvent from '../models/AuditEvent';
+import { getPasswordResetEmailProviderState } from '../services/auth/passwordResetEmailService';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
 import { operationalSecurityDashboard } from '../monitoring/operationalSecurityDashboard';
 import { threatSignalAggregator } from '../monitoring/threatSignalAggregator';
@@ -66,6 +67,103 @@ export const getAdminUsers = async (req: AuthRequest, res: Response) => {
   );
 
   res.json({ users: usersWithCredits, page, limit, total, totalPages: Math.ceil(total / limit) });
+};
+
+// PATCH /admin/users/:id/role
+export const updateAdminUserRole = async (req: AuthRequest, res: Response) => {
+  const actor = requireAuthUser(req);
+  const targetUserId = String(req.params.id || '').trim();
+  const requestedRole = String(req.body?.role || '').trim().toUpperCase();
+
+  if (!targetUserId) {
+    return res.status(400).json({ error: 'Geçersiz kullanıcı kimliği' });
+  }
+
+  if (requestedRole !== 'ADMIN' && requestedRole !== 'USER') {
+    return res.status(400).json({ error: 'Geçersiz rol değeri' });
+  }
+
+  const target = await User.findById(targetUserId).select('email name role createdAt');
+  if (!target) {
+    return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+  }
+
+  const currentRole = String(target.role || '').toUpperCase();
+  if (currentRole === requestedRole) {
+    return res.json({
+      ok: true,
+      changed: false,
+      message: 'Rol zaten güncel',
+      user: {
+        _id: String(target._id),
+        name: target.name,
+        email: target.email,
+        role: currentRole,
+        createdAt: target.createdAt,
+      },
+    });
+  }
+
+  const actorId = String(actor._id || '');
+  const actorRole = String(actor.role || '').toUpperCase();
+
+  // Prevent removing admin from the last remaining admin user.
+  if (currentRole === 'ADMIN' && requestedRole === 'USER') {
+    const adminCount = await User.countDocuments({ role: 'ADMIN' });
+    if (adminCount <= 1) {
+      return res.status(400).json({ error: 'Sistemde en az bir ADMIN kalmalıdır' });
+    }
+
+    // Also block self-demotion to reduce accidental lockout.
+    if (actorId && String(target._id) === actorId) {
+      return res.status(400).json({ error: 'Kendi hesabınızı USER rolüne düşüremezsiniz' });
+    }
+  }
+
+  target.role = requestedRole as 'ADMIN' | 'USER';
+  await target.save();
+
+  await logAuditEvent({
+    type: 'admin_user_role_updated',
+    actorUserId: actorId,
+    actorRole,
+    targetType: 'User',
+    targetId: String(target._id),
+    message: `User role updated to ${requestedRole}`,
+    metadata: {
+      previousRole: currentRole,
+      nextRole: requestedRole,
+      targetEmail: target.email,
+      targetName: target.name,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
+  return res.json({
+    ok: true,
+    changed: true,
+    message: 'Rol güncellendi',
+    user: {
+      _id: String(target._id),
+      name: target.name,
+      email: target.email,
+      role: String(target.role || '').toUpperCase(),
+      createdAt: target.createdAt,
+    },
+  });
+};
+
+// GET /admin/email-delivery-state
+export const getAdminEmailDeliveryState = async (_req: AuthRequest, res: Response) => {
+  const provider = getPasswordResetEmailProviderState();
+  return res.json({
+    state: provider.state,
+    configured: provider.configured,
+    provider: 'smtp',
+    diagnosis: provider.configured ? 'EMAIL_CONFIGURED' : 'EMAIL_NOT_CONFIGURED',
+  });
 };
 
 // GET /admin/analyses

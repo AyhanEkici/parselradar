@@ -27,7 +27,7 @@ export default function AdminConnectors() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!user || user.role !== 'ADMIN') return <div>Yonetici yetkisi gerekli</div>;
+  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') return <div>Yonetici yetkisi gerekli</div>;
   if (error) return <div>Hata: {error}</div>;
 
   const connectors: any[] = (data?.connectors || []).slice().sort((a: any, b: any) => {

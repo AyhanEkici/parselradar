@@ -7,12 +7,19 @@ import { getMe } from '../lib/auth';
 import { getAuthToken, clearAuthSession, setAuthHydrating } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
-type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean };
-const AuthContext = createContext<AuthContextType>({ user: null, isAdmin: false, hydrating: true });
+type AuthState = 'hydrating' | 'authenticated' | 'unauthenticated';
+type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean; authState: AuthState };
+const AuthContext = createContext<AuthContextType>({
+	user: null,
+	isAdmin: false,
+	hydrating: true,
+	authState: 'hydrating',
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User>(null);
 	const [hydrating, setHydrating] = useState(true);
+	const [authState, setAuthState] = useState<AuthState>('hydrating');
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
 	// Incremented on every hydrateAuth call; stale async results are ignored.
 	const callIdRef = useRef(0);
@@ -26,18 +33,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			if (callIdRef.current === callId) {
 				setUser(null);
 				setHydrating(false);
+				setAuthState('unauthenticated');
 			}
 			return;
 		}
 
-		if (callIdRef.current === callId) setHydrating(true);
+		if (callIdRef.current === callId) {
+			setHydrating(true);
+			setAuthState('hydrating');
+		}
 
 		// Signal to apiFetch that it must NOT wipe the token on a transient 401.
 		// We own the clear decision here, below.
 		setAuthHydrating(true);
 		try {
 			const u = await getMe();
-			if (callIdRef.current === callId) setUser(u as User);
+			if (callIdRef.current === callId) {
+				setUser(u as User);
+				setAuthState('authenticated');
+			}
 		} catch (err: unknown) {
 			// Only clear the stored token on a CONFIRMED 401 from the server.
 			// Network errors (err.status undefined) or 5xx during cold-start
@@ -47,7 +61,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			if (status === 401) {
 				clearAuthSession();
 			}
-			if (callIdRef.current === callId) setUser(null);
+			if (callIdRef.current === callId) {
+				setUser(null);
+				setAuthState('unauthenticated');
+			}
 		} finally {
 			setAuthHydrating(false);
 			if (callIdRef.current === callId) setHydrating(false);
@@ -70,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ user, isAdmin, hydrating }}>
+		<AuthContext.Provider value={{ user, isAdmin, hydrating, authState }}>
 			{children}
 		</AuthContext.Provider>
 	);

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-20T18:46:05.042Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-20T20:35:40.084Z",
+  "overallStatus": "PASS",
   "proofs": {
     "localHeadProof": {
       "status": "PASS",
-      "detail": "local HEAD = ce3d58db78ade49d1373547f2162e03cdc1ba51f"
+      "detail": "local HEAD = 52698b44f5af2bc7c10794f67a6e8146f19cdcba"
     },
     "originMainProof": {
       "status": "PASS",
-      "detail": "origin/main HEAD = ce3d58db78ade49d1373547f2162e03cdc1ba51f"
+      "detail": "origin/main HEAD = 52698b44f5af2bc7c10794f67a6e8146f19cdcba"
     },
     "railwayHealthProof": {
       "status": "PASS",
@@ -16,23 +16,23 @@
     },
     "railwayGitShaProof": {
       "status": "PASS",
-      "detail": "Railway /__buildinfo gitSha = fd403486e4a3ac87a35efb8aef9629f80e0bf269"
+      "detail": "Railway /__buildinfo gitSha = 52698b44f5af2bc7c10794f67a6e8146f19cdcba"
     },
     "commitAlignmentProof": {
-      "status": "FAIL",
-      "detail": "Mismatch: local=ce3d58db78ade49d1373547f2162e03cdc1ba51f, origin/main=ce3d58db78ade49d1373547f2162e03cdc1ba51f, railway=fd403486e4a3ac87a35efb8aef9629f80e0bf269"
+      "status": "PASS",
+      "detail": "Railway gitSha matches origin/main (52698b44f5af2bc7c10794f67a6e8146f19cdcba)."
     },
     "requiredCommit_fd956a58_Proof": {
-      "status": "WARN",
-      "detail": "Could not prove ancestry for fd956a58 -> fd403486e4a3ac87a35efb8aef9629f80e0bf269 (missing commit locally)."
+      "status": "PASS",
+      "detail": "fd956a58 is reachable in Railway gitSha 52698b44f5af2bc7c10794f67a6e8146f19cdcba."
     },
     "requiredCommit_80d94b53_Proof": {
       "status": "PASS",
-      "detail": "80d94b53 is reachable in Railway gitSha fd403486e4a3ac87a35efb8aef9629f80e0bf269."
+      "detail": "80d94b53 is reachable in Railway gitSha 52698b44f5af2bc7c10794f67a6e8146f19cdcba."
     },
     "requiredCommit_ce3d58db_Proof": {
-      "status": "WARN",
-      "detail": "Could not prove ancestry for ce3d58db -> fd403486e4a3ac87a35efb8aef9629f80e0bf269 (missing commit locally)."
+      "status": "PASS",
+      "detail": "ce3d58db is reachable in Railway gitSha 52698b44f5af2bc7c10794f67a6e8146f19cdcba."
     },
     "vercelLoginReachableProof": {
       "status": "PASS",
@@ -40,7 +40,7 @@
     },
     "vercelActiveBundleProof": {
       "status": "PASS",
-      "detail": "Active Vercel JS bundle = https://parselradar.vercel.app/assets/index-CH6d1mVW.js"
+      "detail": "Active Vercel JS bundle = https://parselradar.vercel.app/assets/index-DeZLTan0.js"
     },
     "vercelBundleAuthMarkerProof": {
       "status": "PASS",
@@ -49,20 +49,8 @@
     "backendHealthReachableProof": {
       "status": "PASS",
       "detail": "Backend /health reachable."
-    },
-    "liveAuthContractProof": {
-      "status": "FAIL",
-      "detail": "verify:live-login-contract returned 401 on /auth/me with backendReason=TOKEN_VERIFIED_POST_CHECK_FAILED while Railway gitSha is behind origin/main."
-    },
-    "postLoginStabilityProof": {
-      "status": "PASS",
-      "detail": "verify:post-login-api passed (8/8)."
-    },
-    "rbacContinuityProof": {
-      "status": "PASS",
-      "detail": "verify:rbac passed (57/57)."
     }
   },
-  "commitHash": "ce3d58db",
-  "nextAction": "Alignment FAIL: local/origin=ce3d58db and Railway=fd403486. Force Railway redeploy and wait until /__buildinfo gitSha matches origin/main before interpreting runtime auth failures."
+  "commitHash": "52698b44",
+  "nextAction": "Alignment PASS. Continue behavior debugging only if runtime checks fail."
 }

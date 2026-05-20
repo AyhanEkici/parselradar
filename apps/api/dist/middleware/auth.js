@@ -9,6 +9,7 @@ const accessAudit_1 = require("../utils/accessAudit");
 const sessionIntegrityValidator_1 = require("../session/sessionIntegrityValidator");
 const authConsistencyVerifier_1 = require("../session/authConsistencyVerifier");
 const authSessionAudit_1 = require("../session/authSessionAudit");
+const roleHydrationVerifier_1 = require("../session/roleHydrationVerifier");
 const requireAuth = async (req, res, next) => {
     const deny = async (reason, userId) => {
         await (0, authSessionAudit_1.authSessionAudit)({
@@ -112,7 +113,7 @@ const requireAuth = async (req, res, next) => {
             _id: String(user._id),
             email: user.email,
             name: user.name,
-            role: user.role,
+            role: (0, roleHydrationVerifier_1.roleHydrationVerifier)(user.role).normalizedRole === 'ADMIN' ? 'ADMIN' : 'USER',
         };
         await (0, authSessionAudit_1.authSessionAudit)({
             userId: String(user._id),

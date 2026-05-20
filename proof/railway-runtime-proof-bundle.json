@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T12:57:28.710Z",
+  "generatedAt": "2026-05-20T18:46:10.741Z",
   "overallStatus": "PASS",
   "activeTarget": "https://parselradar-production.up.railway.app",
   "commitHash": "",
@@ -38,7 +38,7 @@
       "detail": "JSON response received.",
       "statusCode": 200,
       "contentType": "application/json; charset=utf-8",
-      "bodyPreview": "{\"gitSha\":\"c5193a17b64a54df5d9846f65e1300fd956e1898\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T12:48:12.996Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
+      "bodyPreview": "{\"gitSha\":\"fd403486e4a3ac87a35efb8aef9629f80e0bf269\",\"gitShaSource\":\"runtime_env\",\"buildGitSha\":\"unavailable\",\"buildTime\":\"2026-05-20T18:16:58.164Z\",\"platformVersion\":\"ParselRadar\",\"routeVersion\":\"autonomous_intelligence",
       "allowOrigin": null,
       "allowCredentials": null,
       "allowHeaders": null,

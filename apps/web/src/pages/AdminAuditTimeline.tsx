@@ -114,7 +114,7 @@ export default function AdminAuditTimeline() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, actorUserId, page]);
 
-  if (!user || user.role !== 'ADMIN') {
+  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') {
     return (
       <AdminPage>
         <AdminSurface>

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminSecurityOverview = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminUsers = void 0;
+exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminSecurityOverview = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminEmailDeliveryState = exports.updateAdminUserRole = exports.getAdminUsers = void 0;
 const authUser_1 = require("../utils/authUser");
 const auditLog_1 = require("../utils/auditLog");
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
@@ -17,6 +17,7 @@ const StripeCheckoutSession_1 = __importDefault(require("../models/StripeCheckou
 const DocumentUpload_1 = __importDefault(require("../models/DocumentUpload"));
 const Report_1 = __importDefault(require("../models/Report"));
 const AuditEvent_1 = __importDefault(require("../models/AuditEvent"));
+const passwordResetEmailService_1 = require("../services/auth/passwordResetEmailService");
 const buildOperationalSnapshot_1 = require("../monitoring/buildOperationalSnapshot");
 const operationalSecurityDashboard_1 = require("../monitoring/operationalSecurityDashboard");
 const threatSignalAggregator_1 = require("../monitoring/threatSignalAggregator");
@@ -70,6 +71,93 @@ const getAdminUsers = async (req, res) => {
     res.json({ users: usersWithCredits, page, limit, total, totalPages: Math.ceil(total / limit) });
 };
 exports.getAdminUsers = getAdminUsers;
+// PATCH /admin/users/:id/role
+const updateAdminUserRole = async (req, res) => {
+    const actor = (0, authUser_1.requireAuthUser)(req);
+    const targetUserId = String(req.params.id || '').trim();
+    const requestedRole = String(req.body?.role || '').trim().toUpperCase();
+    if (!targetUserId) {
+        return res.status(400).json({ error: 'Geçersiz kullanıcı kimliği' });
+    }
+    if (requestedRole !== 'ADMIN' && requestedRole !== 'USER') {
+        return res.status(400).json({ error: 'Geçersiz rol değeri' });
+    }
+    const target = await User_1.default.findById(targetUserId).select('email name role createdAt');
+    if (!target) {
+        return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+    }
+    const currentRole = String(target.role || '').toUpperCase();
+    if (currentRole === requestedRole) {
+        return res.json({
+            ok: true,
+            changed: false,
+            message: 'Rol zaten güncel',
+            user: {
+                _id: String(target._id),
+                name: target.name,
+                email: target.email,
+                role: currentRole,
+                createdAt: target.createdAt,
+            },
+        });
+    }
+    const actorId = String(actor._id || '');
+    const actorRole = String(actor.role || '').toUpperCase();
+    // Prevent removing admin from the last remaining admin user.
+    if (currentRole === 'ADMIN' && requestedRole === 'USER') {
+        const adminCount = await User_1.default.countDocuments({ role: 'ADMIN' });
+        if (adminCount <= 1) {
+            return res.status(400).json({ error: 'Sistemde en az bir ADMIN kalmalıdır' });
+        }
+        // Also block self-demotion to reduce accidental lockout.
+        if (actorId && String(target._id) === actorId) {
+            return res.status(400).json({ error: 'Kendi hesabınızı USER rolüne düşüremezsiniz' });
+        }
+    }
+    target.role = requestedRole;
+    await target.save();
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'admin_user_role_updated',
+        actorUserId: actorId,
+        actorRole,
+        targetType: 'User',
+        targetId: String(target._id),
+        message: `User role updated to ${requestedRole}`,
+        metadata: {
+            previousRole: currentRole,
+            nextRole: requestedRole,
+            targetEmail: target.email,
+            targetName: target.name,
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
+    return res.json({
+        ok: true,
+        changed: true,
+        message: 'Rol güncellendi',
+        user: {
+            _id: String(target._id),
+            name: target.name,
+            email: target.email,
+            role: String(target.role || '').toUpperCase(),
+            createdAt: target.createdAt,
+        },
+    });
+};
+exports.updateAdminUserRole = updateAdminUserRole;
+// GET /admin/email-delivery-state
+const getAdminEmailDeliveryState = async (_req, res) => {
+    const provider = (0, passwordResetEmailService_1.getPasswordResetEmailProviderState)();
+    return res.json({
+        state: provider.state,
+        configured: provider.configured,
+        provider: 'smtp',
+        diagnosis: provider.configured ? 'EMAIL_CONFIGURED' : 'EMAIL_NOT_CONFIGURED',
+    });
+};
+exports.getAdminEmailDeliveryState = getAdminEmailDeliveryState;
 // GET /admin/analyses
 const getAdminAnalyses = async (req, res) => {
     const page = Math.max(1, parseInt(req.query.page) || 1);

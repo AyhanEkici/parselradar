@@ -16,10 +16,12 @@ router.post('/deal-pool/:propertyId/accept', auth_1.auth, admin_1.admin, adminCo
 router.post('/deal-pool/:entryId/share', auth_1.auth, admin_1.admin, adminController_1.shareDealPool);
 // Admin operations suite
 router.get('/users', auth_1.auth, admin_1.admin, adminController_1.getAdminUsers);
+router.patch('/users/:id/role', auth_1.auth, admin_1.admin, adminController_1.updateAdminUserRole);
 router.get('/analyses', auth_1.auth, admin_1.admin, adminController_1.getAdminAnalyses);
 router.get('/credit-ledger', auth_1.auth, admin_1.admin, adminController_1.getAdminCreditLedger);
 router.get('/stripe-sessions', auth_1.auth, admin_1.admin, adminController_1.getAdminStripeSessions);
 router.get('/deployment', auth_1.auth, admin_1.admin, adminController_1.getAdminDeploymentOverview);
 router.get('/runtime', auth_1.auth, admin_1.admin, adminController_1.getAdminRuntimeOverview);
 router.get('/security-overview', auth_1.auth, admin_1.admin, adminController_1.getAdminSecurityOverview);
+router.get('/email-delivery-state', auth_1.auth, admin_1.admin, adminController_1.getAdminEmailDeliveryState);
 exports.default = router;

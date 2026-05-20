@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-20T18:36:32.538Z",
-  "gitSha": "3dd2e00be891c454ab904b66e5e7d3879df31c18",
+  "generatedAt": "2026-05-20T20:36:52.663Z",
+  "gitSha": "52698b44f5af2bc7c10794f67a6e8146f19cdcba",
   "dirtyWorkingTree": true,
   "overallStatus": "WARN",
   "summary": {
     "totalSections": 12,
     "totalChecks": 345,
-    "passCount": 331,
-    "warnCount": 11,
+    "passCount": 330,
+    "warnCount": 12,
     "failCount": 0,
     "skippedCount": 3
   },
@@ -18,8 +18,8 @@
         {
           "category": "Admin",
           "name": "Admin middleware enforces ADMIN role",
-          "status": "PASS",
-          "message": "Admin middleware explicitly checks for the ADMIN role."
+          "status": "WARN",
+          "message": "Admin middleware does not clearly show an explicit ADMIN role check."
         },
         {
           "category": "Admin",
@@ -140,6 +140,14 @@
           "category": "Admin",
           "routeFile": "apps/api/src/routes/adminRoutes.ts",
           "method": "GET",
+          "path": "/admin/email-delivery-state",
+          "requiresAuth": true,
+          "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "GET",
           "path": "/admin/properties",
           "requiresAuth": true,
           "requiresAdmin": true
@@ -199,6 +207,14 @@
           "path": "/admin/users",
           "requiresAuth": true,
           "requiresAdmin": true
+        },
+        {
+          "category": "Admin",
+          "routeFile": "apps/api/src/routes/adminRoutes.ts",
+          "method": "PATCH",
+          "path": "/admin/users/:id/role",
+          "requiresAuth": true,
+          "requiresAdmin": true
         }
       ],
       "riskRegister": [],
@@ -206,11 +222,11 @@
       "connectorStates": [],
       "runtimeStates": [],
       "notificationStates": [],
-      "passCount": 13,
-      "warnCount": 0,
+      "passCount": 12,
+      "warnCount": 1,
       "failCount": 0,
       "skippedCount": 0,
-      "overallStatus": "PASS"
+      "overallStatus": "WARN"
     },
     {
       "category": "Auth",
@@ -2622,23 +2638,7 @@
           "category": "Routes",
           "routeFile": "apps/api/src/index.ts",
           "method": "GET",
-          "path": "/__auth-debug",
-          "requiresAuth": false,
-          "requiresAdmin": false
-        },
-        {
-          "category": "Routes",
-          "routeFile": "apps/api/src/index.ts",
-          "method": "GET",
           "path": "/__buildinfo",
-          "requiresAuth": false,
-          "requiresAdmin": false
-        },
-        {
-          "category": "Routes",
-          "routeFile": "apps/api/src/index.ts",
-          "method": "GET",
-          "path": "/__jwt-diagnostics",
           "requiresAuth": false,
           "requiresAdmin": false
         },
@@ -3204,8 +3204,8 @@
     {
       "category": "Admin",
       "name": "Admin middleware enforces ADMIN role",
-      "status": "PASS",
-      "message": "Admin middleware explicitly checks for the ADMIN role."
+      "status": "WARN",
+      "message": "Admin middleware does not clearly show an explicit ADMIN role check."
     },
     {
       "category": "Admin",
@@ -5295,23 +5295,7 @@
       "category": "Routes",
       "routeFile": "apps/api/src/index.ts",
       "method": "GET",
-      "path": "/__auth-debug",
-      "requiresAuth": false,
-      "requiresAdmin": false
-    },
-    {
-      "category": "Routes",
-      "routeFile": "apps/api/src/index.ts",
-      "method": "GET",
       "path": "/__buildinfo",
-      "requiresAuth": false,
-      "requiresAdmin": false
-    },
-    {
-      "category": "Routes",
-      "routeFile": "apps/api/src/index.ts",
-      "method": "GET",
-      "path": "/__jwt-diagnostics",
       "requiresAuth": false,
       "requiresAdmin": false
     },
@@ -5444,6 +5428,14 @@
       "requiresAdmin": true
     },
     {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "GET",
+      "path": "/admin/email-delivery-state",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
       "category": "Observability",
       "routeFile": "apps/api/src/routes/observabilityRoutes.ts",
       "method": "GET",
@@ -5520,6 +5512,14 @@
       "routeFile": "apps/api/src/routes/adminRoutes.ts",
       "method": "GET",
       "path": "/admin/users",
+      "requiresAuth": true,
+      "requiresAdmin": true
+    },
+    {
+      "category": "Admin",
+      "routeFile": "apps/api/src/routes/adminRoutes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/:id/role",
       "requiresAuth": true,
       "requiresAdmin": true
     },

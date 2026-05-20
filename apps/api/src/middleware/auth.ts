@@ -4,6 +4,7 @@ import { recordAccessDecision } from '../utils/accessAudit';
 import { sessionIntegrityValidator } from '../session/sessionIntegrityValidator';
 import { authConsistencyVerifier } from '../session/authConsistencyVerifier';
 import { authSessionAudit } from '../session/authSessionAudit';
+import { roleHydrationVerifier } from '../session/roleHydrationVerifier';
 
 
 export interface AuthRequest extends Request {
@@ -125,7 +126,7 @@ export const requireAuth = async (req: AuthRequest, res: Response, next: NextFun
       _id: String(user._id),
       email: user.email,
       name: user.name,
-      role: user.role,
+      role: roleHydrationVerifier(user.role).normalizedRole === 'ADMIN' ? 'ADMIN' : 'USER',
     };
 
     await authSessionAudit({

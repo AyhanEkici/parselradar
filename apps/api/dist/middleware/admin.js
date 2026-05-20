@@ -4,7 +4,8 @@ exports.admin = exports.requireAdmin = void 0;
 const auditLog_1 = require("../utils/auditLog");
 const accessAudit_1 = require("../utils/accessAudit");
 const requireAdmin = async (req, res, next) => {
-    if (!req.user || req.user.role !== 'ADMIN') {
+    const normalizedRole = String(req.user?.role || '').toUpperCase();
+    if (!req.user || normalizedRole !== 'ADMIN') {
         await (0, accessAudit_1.recordAccessDecision)({
             userId: req.user?._id?.toString(),
             role: req.user?.role,
@@ -33,7 +34,7 @@ const requireAdmin = async (req, res, next) => {
     }
     await (0, accessAudit_1.recordAccessDecision)({
         userId: req.user._id?.toString(),
-        role: req.user.role,
+        role: normalizedRole,
         resourceType: 'AdminRoute',
         resourceId: req.path,
         decision: 'allow',

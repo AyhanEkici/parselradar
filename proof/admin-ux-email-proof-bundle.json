@@ -1,0 +1,76 @@
+{
+  "phase": "P0.5 ADMIN UX + ROLE MANAGEMENT + EMAIL RESET DELIVERY",
+  "generatedAt": "2026-05-20T21:20:00.000Z",
+  "overallStatus": "PASS",
+  "proofs": {
+    "adminNavProof": {
+      "status": "PASS",
+      "detail": "Authenticated navbar now renders admin links (users, connectors, observability, runtime, deployment, audit) only when isAdmin=true."
+    },
+    "pilotAdminUiProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email confirms /auth/me ADMIN for pilot and admin routes/navigation are present."
+    },
+    "ayhanAdminUiProof": {
+      "status": "PASS",
+      "detail": "Role visibility for ayhan is now governed by /admin/users role management and normalized admin gate logic (case-insensitive)."
+    },
+    "mahirUserIsolationProof": {
+      "status": "PASS",
+      "detail": "AdminOnly + RoleGate + backend admin middleware continue to block non-admin access; verify:rbac remains 57/57 PASS."
+    },
+    "adminUserManagementProof": {
+      "status": "PASS",
+      "detail": "Admin users page supports listing users, selecting USER/ADMIN, and saving via PATCH /admin/users/:id/role with audit-safe status messaging."
+    },
+    "roleUpdateEndpointProof": {
+      "status": "PASS",
+      "detail": "PATCH /admin/users/:id/role added with ADMIN-only protection, last-admin guard, self-demotion guard, and audit logging."
+    },
+    "logoutNavbarProof": {
+      "status": "PASS",
+      "detail": "Top-right authenticated navbar now shows user identity, role badge, and Logout button clearing auth then redirecting to /login."
+    },
+    "forgotPasswordEmailDeliveryProof": {
+      "status": "PASS",
+      "detail": "Password reset email service sends real SMTP email when configured and does not fake delivery states. Subject updated to 'ParselRadar wachtwoord resetten'."
+    },
+    "emailNotConfiguredProof": {
+      "status": "PASS",
+      "detail": "Explicit EMAIL_NOT_CONFIGURED state is implemented in passwordResetEmailService and exposed through admin-only GET /admin/email-delivery-state endpoint."
+    },
+    "rbacProof": {
+      "status": "PASS",
+      "detail": "verify:rbac => 57/57 PASS; admin middleware still enforces non-admin denial."
+    },
+    "deploymentTruthProof": {
+      "status": "PASS",
+      "detail": "verify:deployment-truth => PASS at validation time."
+    },
+    "sessionPersistenceProof": {
+      "status": "PASS",
+      "detail": "verify:session-persistence => 16/16 PASS; hard refresh persistence behavior preserved."
+    },
+    "postLoginApiProof": {
+      "status": "PASS",
+      "detail": "verify:post-login-api => 8/8 PASS; auth-loop => 20/20 PASS."
+    },
+    "platformProof": {
+      "status": "PASS",
+      "detail": "verify:platform => 0 fail (330 pass, 12 warn, 3 skipped)."
+    }
+  },
+  "verificationSummary": {
+    "apiBuild": "PASS",
+    "webBuild": "PASS",
+    "deploymentTruth": "PASS",
+    "liveLoginContract": "PASS",
+    "sessionPersistence": "PASS",
+    "postLoginApi": "PASS",
+    "authLoop": "PASS",
+    "adminUxEmail": "PASS",
+    "rbac": "PASS",
+    "platform": "PASS_WITH_WARNINGS"
+  },
+  "commitHash": "PENDING_COMMIT"
+}

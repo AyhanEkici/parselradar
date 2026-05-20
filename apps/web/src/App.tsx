@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -45,79 +45,120 @@ import { ToastProvider } from './components/ui';
 import { useAuth } from './hooks/useAuth';
 import AccessDenied from './pages/AccessDenied';
 import AdminOnly from './components/AdminOnly';
+import { logout } from './lib/auth';
+
+function AppShell() {
+  const { isAdmin, user, hydrating } = useAuth();
+  const navigate = useNavigate();
+
+  const roleLabel = String(user?.role || '').toUpperCase() || 'USER';
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
+  const showAuthenticatedNav = !hydrating && Boolean(user);
+
+  return (
+    <>
+      {showAuthenticatedNav ? (
+        <div className="w-full bg-gray-100 border-b mb-4">
+          <div className="max-w-5xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
+            <nav className="flex flex-wrap gap-2 text-xs">
+              {isAdmin ? <a href="/admin/audit-timeline" className="hover:underline">Audit</a> : null}
+              {isAdmin ? <a href="/admin/users" className="hover:underline">Users</a> : null}
+              {isAdmin ? <a href="/admin/analyses" className="hover:underline">Analyses</a> : null}
+              {isAdmin ? <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a> : null}
+              {isAdmin ? <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a> : null}
+              {isAdmin ? <a href="/admin/properties" className="hover:underline">Properties</a> : null}
+              {isAdmin ? <a href="/admin/runtime" className="hover:underline">Runtime</a> : null}
+              {isAdmin ? <a href="/admin/deployment" className="hover:underline">Deployment</a> : null}
+              {isAdmin ? <a href="/admin/observability" className="hover:underline">Observability</a> : null}
+              {isAdmin ? <a href="/admin/analytics" className="hover:underline">Analytics</a> : null}
+              {isAdmin ? <a href="/admin/connectors" className="hover:underline">Connectors</a> : null}
+              <a href="/investor" className="hover:underline">Investor</a>
+              <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
+              <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
+              <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
+              <a href="/organizations" className="hover:underline">Organizations</a>
+              <a href="/notifications" className="hover:underline">Notifications</a>
+            </nav>
+
+            <div className="ml-auto flex items-center gap-2 text-xs">
+              <span className="text-gray-700 truncate max-w-[180px]" title={user?.email || ''}>
+                {user?.name || user?.email}
+              </span>
+              <span className={`px-2 py-0.5 rounded border font-semibold ${isAdmin ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>
+                {roleLabel}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-2 py-1 rounded border border-red-200 text-red-700 bg-red-50 hover:bg-red-100"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/access-denied" element={<AccessDenied />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/credits" element={<Credits />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/admin/properties" element={<AdminOnly><AdminProperties /></AdminOnly>} />
+        <Route path="/admin/properties/:propertyId" element={<AdminOnly><PropertyDetail /></AdminOnly>} />
+        <Route path="/admin/properties/:propertyId/documents" element={<AdminOnly><AdminPropertyDocuments /></AdminOnly>} />
+        <Route path="/admin/deal-pool" element={<AdminOnly><AdminDealPool /></AdminOnly>} />
+        <Route path="/admin/audit-timeline" element={<AdminOnly><AdminAuditTimeline /></AdminOnly>} />
+        <Route path="/admin/users" element={<AdminOnly><AdminUsers /></AdminOnly>} />
+        <Route path="/admin/analyses" element={<AdminOnly><AdminAnalyses /></AdminOnly>} />
+        <Route path="/admin/credit-ledger" element={<AdminOnly><AdminCreditLedger /></AdminOnly>} />
+        <Route path="/admin/stripe-sessions" element={<AdminOnly><AdminStripeSessions /></AdminOnly>} />
+        <Route path="/admin/runtime" element={<AdminOnly><AdminSystemRuntime /></AdminOnly>} />
+        <Route path="/admin/deployment" element={<AdminOnly><AdminDeploymentOverview /></AdminOnly>} />
+        <Route path="/admin/observability" element={<AdminOnly><AdminObservability /></AdminOnly>} />
+        <Route path="/admin/analytics" element={<AdminOnly><AdminAnalytics /></AdminOnly>} />
+        <Route path="/admin/connectors" element={<AdminOnly><AdminConnectors /></AdminOnly>} />
+        <Route path="/admin/connectors/:connectorKey" element={<AdminOnly><AdminConnectorDetail /></AdminOnly>} />
+        <Route path="/properties/new" element={<NewProperty />} />
+        <Route path="/properties/:id" element={<PropertyDetail />} />
+        <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
+        <Route path="/properties/:id/consent" element={<PropertyConsent />} />
+        <Route path="/properties/:id/result" element={<PropertyResult />} />
+        <Route path="/investor" element={<InvestorDashboard />} />
+        <Route path="/investor/saved-analyses" element={<SavedAnalyses />} />
+        <Route path="/investor/watchlist" element={<Watchlist />} />
+        <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
+        <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
+        <Route path="/investor/portfolio/:id/analytics" element={<PortfolioAnalytics />} />
+        <Route path="/organizations" element={<Organizations />} />
+        <Route path="/organizations/:id" element={<OrganizationDetail />} />
+        <Route path="/workspace/:organizationId/dashboard" element={<WorkspaceDashboard />} />
+        <Route path="/workspace/:organizationId/portfolio" element={<WorkspacePortfolio />} />
+        <Route path="/workspace/:organizationId/watchlist" element={<WorkspaceWatchlist />} />
+        <Route path="/workspace/:organizationId/activity" element={<WorkspaceActivity />} />
+        <Route path="/notifications" element={<NotificationInbox />} />
+        <Route path="/notifications/preferences" element={<NotificationPreferences />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+}
 
 export default function App() {
-  const { isAdmin } = useAuth();
   return (
     <ToastProvider>
       <BrowserRouter>
-        <div className="w-full bg-gray-100 border-b mb-4">
-          <nav className="max-w-5xl mx-auto flex flex-wrap gap-2 py-2 px-4 text-xs">
-            {isAdmin ? <a href="/admin/audit-timeline" className="hover:underline">Audit</a> : null}
-            {isAdmin ? <a href="/admin/users" className="hover:underline">Users</a> : null}
-            {isAdmin ? <a href="/admin/analyses" className="hover:underline">Analyses</a> : null}
-            {isAdmin ? <a href="/admin/credit-ledger" className="hover:underline">Credit Ledger</a> : null}
-            {isAdmin ? <a href="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</a> : null}
-            {isAdmin ? <a href="/admin/properties" className="hover:underline">Properties</a> : null}
-            {isAdmin ? <a href="/admin/runtime" className="hover:underline">Runtime</a> : null}
-            {isAdmin ? <a href="/admin/deployment" className="hover:underline">Deployment</a> : null}
-            {isAdmin ? <a href="/admin/observability" className="hover:underline">Observability</a> : null}
-            {isAdmin ? <a href="/admin/analytics" className="hover:underline">Analytics</a> : null}
-            {isAdmin ? <a href="/admin/connectors" className="hover:underline">Connectors</a> : null}
-            <a href="/investor" className="hover:underline">Investor</a>
-            <a href="/investor/saved-analyses" className="hover:underline">Saved</a>
-            <a href="/investor/watchlist" className="hover:underline">Watchlist</a>
-            <a href="/investor/portfolio" className="hover:underline">Portfolio</a>
-            <a href="/organizations" className="hover:underline">Organizations</a>
-            <a href="/notifications" className="hover:underline">Notifications</a>
-          </nav>
-        </div>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/access-denied" element={<AccessDenied />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/credits" element={<Credits />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/admin/properties" element={<AdminOnly><AdminProperties /></AdminOnly>} />
-          <Route path="/admin/properties/:propertyId" element={<AdminOnly><PropertyDetail /></AdminOnly>} />
-          <Route path="/admin/properties/:propertyId/documents" element={<AdminOnly><AdminPropertyDocuments /></AdminOnly>} />
-          <Route path="/admin/deal-pool" element={<AdminOnly><AdminDealPool /></AdminOnly>} />
-          <Route path="/admin/audit-timeline" element={<AdminOnly><AdminAuditTimeline /></AdminOnly>} />
-          <Route path="/admin/users" element={<AdminOnly><AdminUsers /></AdminOnly>} />
-          <Route path="/admin/analyses" element={<AdminOnly><AdminAnalyses /></AdminOnly>} />
-          <Route path="/admin/credit-ledger" element={<AdminOnly><AdminCreditLedger /></AdminOnly>} />
-          <Route path="/admin/stripe-sessions" element={<AdminOnly><AdminStripeSessions /></AdminOnly>} />
-          <Route path="/admin/runtime" element={<AdminOnly><AdminSystemRuntime /></AdminOnly>} />
-          <Route path="/admin/deployment" element={<AdminOnly><AdminDeploymentOverview /></AdminOnly>} />
-          <Route path="/admin/observability" element={<AdminOnly><AdminObservability /></AdminOnly>} />
-          <Route path="/admin/analytics" element={<AdminOnly><AdminAnalytics /></AdminOnly>} />
-          <Route path="/admin/connectors" element={<AdminOnly><AdminConnectors /></AdminOnly>} />
-          <Route path="/admin/connectors/:connectorKey" element={<AdminOnly><AdminConnectorDetail /></AdminOnly>} />
-          <Route path="/properties/new" element={<NewProperty />} />
-          <Route path="/properties/:id" element={<PropertyDetail />} />
-          <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
-          <Route path="/properties/:id/consent" element={<PropertyConsent />} />
-          <Route path="/properties/:id/result" element={<PropertyResult />} />
-          <Route path="/investor" element={<InvestorDashboard />} />
-          <Route path="/investor/saved-analyses" element={<SavedAnalyses />} />
-          <Route path="/investor/watchlist" element={<Watchlist />} />
-          <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
-          <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
-          <Route path="/investor/portfolio/:id/analytics" element={<PortfolioAnalytics />} />
-          <Route path="/organizations" element={<Organizations />} />
-          <Route path="/organizations/:id" element={<OrganizationDetail />} />
-          <Route path="/workspace/:organizationId/dashboard" element={<WorkspaceDashboard />} />
-          <Route path="/workspace/:organizationId/portfolio" element={<WorkspacePortfolio />} />
-          <Route path="/workspace/:organizationId/watchlist" element={<WorkspaceWatchlist />} />
-          <Route path="/workspace/:organizationId/activity" element={<WorkspaceActivity />} />
-          <Route path="/notifications" element={<NotificationInbox />} />
-          <Route path="/notifications/preferences" element={<NotificationPreferences />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppShell />
       </BrowserRouter>
     </ToastProvider>
   );

@@ -8,7 +8,11 @@ type RoleGateProps = {
 };
 
 export default function RoleGate({ allow, children }: RoleGateProps) {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, hydrating } = useAuth();
+
+  if (hydrating) {
+    return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum doğrulanıyor...</div>;
+  }
 
   if (!user) return <Navigate to="/login" replace />;
   if (allow === 'admin' && !isAdmin) return <Navigate to="/access-denied" replace />;

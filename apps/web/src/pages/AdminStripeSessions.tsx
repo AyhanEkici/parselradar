@@ -95,7 +95,7 @@ export default function AdminStripeSessions() {
 
   useEffect(() => { fetchSessions(); /* eslint-disable-next-line */ }, [page]);
 
-  if (!user || user.role !== 'ADMIN') return <div>Yönetici yetkisi gerekli</div>;
+  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') return <div>Yönetici yetkisi gerekli</div>;
   if (error) return <div>Hata: {error}</div>;
 
   return (
