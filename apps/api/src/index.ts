@@ -237,11 +237,43 @@ app.get('/__jwt-diagnostics', (req, res) => {
   const jwtSecretSample = ENV.JWT_SECRET 
     ? `${ENV.JWT_SECRET.substring(0, 5)}...${ENV.JWT_SECRET.substring(Math.max(0, ENV.JWT_SECRET.length - 5))}`
     : 'MISSING';
+
+  // Live sign/verify test
+  let signVerifyResult: any = {};
+  try {
+    const jwt = require('jsonwebtoken');
+    const testPayload = { id: 'test-user-id', email: 'test@test.com', role: 'USER' };
+    const testToken = jwt.sign(testPayload, ENV.JWT_SECRET, { expiresIn: '1h' });
+    try {
+      const decoded = jwt.verify(testToken, ENV.JWT_SECRET);
+      signVerifyResult = { success: true, tokenLength: testToken.length, decodedId: decoded.id };
+    } catch (verifyErr: any) {
+      signVerifyResult = { success: false, phase: 'verify', error: verifyErr.message, tokenLength: testToken.length };
+    }
+  } catch (signErr: any) {
+    signVerifyResult = { success: false, phase: 'sign', error: signErr.message };
+  }
+
+  // Test with a real user token if provided in query
+  let externalTokenResult: any = null;
+  const testToken = req.query.token as string;
+  if (testToken) {
+    try {
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.verify(testToken, ENV.JWT_SECRET);
+      externalTokenResult = { success: true, decoded };
+    } catch (err: any) {
+      externalTokenResult = { success: false, error: err.message };
+    }
+  }
+
   res.json({
     jwtSecretPresent,
     jwtSecretLength,
     jwtSecretSample,
     nodeEnv: ENV.NODE_ENV,
+    signVerifyTest: signVerifyResult,
+    externalTokenTest: externalTokenResult,
   });
 });
 
