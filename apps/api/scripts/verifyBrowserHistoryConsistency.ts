@@ -8,6 +8,7 @@ type RuntimeProof = {
     ctrlF5Persistence?: RuntimeFlow;
     backForwardPersistence?: RuntimeFlow;
     authMeStorm?: RuntimeFlow;
+    shellMissingWithToken?: RuntimeFlow;
   };
   runtimeEvidence?: {
     authMe?: { total?: number; status401?: number; errorCode?: string };
@@ -33,7 +34,7 @@ function main() {
   const shell = readText('apps/web/src/components/AppShell.tsx');
   const app = readText('apps/web/src/App.tsx');
 
-  push(checks, 'Shell keeps nav mounted during auth boot states', shell.includes('shellVisible') && shell.includes("authState === 'booting'"), 'History navigation should not collapse shell while auth settles.');
+  push(checks, 'Shell keeps nav mounted during auth boot/check states', shell.includes('shellVisible') && shell.includes("authStatus === 'booting'") && shell.includes("authStatus === 'checking'"), 'History navigation should not collapse shell while auth settles.');
   push(checks, 'Protected pages are wrapped by RequireAuth', app.includes('<RequireAuth><Dashboard /></RequireAuth>') && app.includes('<RequireAuth><PropertyDocuments /></RequireAuth>'), 'History transitions should be guarded centrally.');
 
   if (!fs.existsSync(runtimePath)) {
@@ -43,11 +44,13 @@ function main() {
     const ctrlF5 = String(runtime.flows?.ctrlF5Persistence?.status || '').toUpperCase() === 'PASS';
     const backForward = String(runtime.flows?.backForwardPersistence?.status || '').toUpperCase() === 'PASS';
     const stormBounded = String(runtime.flows?.authMeStorm?.status || '').toUpperCase() === 'PASS';
+    const shellVisible = String(runtime.flows?.shellMissingWithToken?.status || '').toUpperCase() === 'PASS';
     const status401 = Number(runtime.runtimeEvidence?.authMe?.status401 || 0);
 
     push(checks, 'Runtime CTRL+F5 consistency', ctrlF5, runtime.flows?.ctrlF5Persistence?.detail || 'ctrl+f5 flow unavailable');
     push(checks, 'Runtime browser back/forward consistency', backForward, runtime.flows?.backForwardPersistence?.detail || 'back/forward flow unavailable');
     push(checks, 'Runtime auth/me stability under history actions', stormBounded && status401 === 0, `authMe status401=${status401}`);
+    push(checks, 'Runtime shell/nav remains visible with token', shellVisible, runtime.flows?.shellMissingWithToken?.detail || 'shell visibility flow unavailable');
   }
 
   const failed = checks.filter((c) => c.status === 'FAIL');

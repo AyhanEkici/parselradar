@@ -26,16 +26,19 @@ function run() {
   checks.push(
     check(
       'Login redirects authenticated users to /dashboard',
-      login.includes("navigate('/dashboard', { replace: true })") && login.includes("authState === 'authenticated'"),
-      'Login page contains authenticated redirect effect.',
+      login.includes("navigate('/dashboard', { replace: true })") &&
+        login.includes('if (isAuthenticated && user)') &&
+        login.includes('useEffect(() => {'),
+      'Login page redirects from the authenticated effect when the user is confirmed.',
     ),
   );
 
   checks.push(
     check(
       'Login form is hidden while authenticated',
-      login.includes("if (hydrating || authState === 'authenticated')") && login.includes('Oturum doğrulanıyor'),
-      'Login page returns verification state while auth is hydrating/authenticated.',
+      login.includes("if (isAuthenticated || hasPersistentSession || authStatus === 'booting' || authStatus === 'checking')") &&
+        login.includes('Oturum doğrulanıyor'),
+      'Login page returns verification state while auth is booting/checking or a persistent session is being confirmed.',
     ),
   );
 
@@ -84,9 +87,11 @@ function run() {
   checks.push(
     check(
       'No stale user state survives without session token',
-      useAuth.includes('if (user && !hasAuthSession() && (authState === \'unauthenticated\' || authState === \'invalid\'))') &&
-        useAuth.includes("setAuthState('unauthenticated')"),
-      'useAuth only clears stale in-memory user on confirmed unauthenticated/invalid state.',
+      useAuth.includes("if (user && !hasAuthSession() && (authStatus === 'unauthenticated' || authStatus === 'invalid'))") &&
+        useAuth.includes('setUser(null)') &&
+        useAuth.includes('setHasPersistentSession(false)') &&
+        useAuth.includes("setAuthStatus('unauthenticated')"),
+      'useAuth clears stale in-memory user only after a confirmed unauthenticated or invalid session state.',
     ),
   );
 
@@ -101,10 +106,12 @@ function run() {
   checks.push(
     check(
       'Protected routes wait for hydration contract exists',
-      (useAuth.includes("authState: 'booting'") || useAuth.includes("authState: 'authenticating'")) &&
+      app.includes('<RequireAuth>') &&
         app.includes('<AdminOnly>') &&
-        login.includes('hydrating'),
-      'Boot/authenticating contract remains explicit across auth context and route surfaces.',
+        app.includes('authStatus') &&
+        app.includes('hasPersistentSession') &&
+        login.includes("authStatus === 'booting' || authStatus === 'checking'"),
+      'Boot/checking contract remains explicit across login and protected route surfaces.',
     ),
   );
 

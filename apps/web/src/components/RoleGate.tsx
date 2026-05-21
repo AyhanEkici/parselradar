@@ -8,13 +8,13 @@ type RoleGateProps = {
 };
 
 export default function RoleGate({ allow, children }: RoleGateProps) {
-  const { user, isAdmin, hydrating, authState } = useAuth();
+  const { user, isAdmin, authStatus, hasPersistentSession } = useAuth();
 
-  if (hydrating || authState === 'authenticating' || authState === 'booting') {
+  if (authStatus === 'booting' || authStatus === 'checking' || hasPersistentSession) {
     return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum doğrulanıyor...</div>;
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user || authStatus === 'unauthenticated' || authStatus === 'invalid') return <Navigate to="/login" replace />;
   if (allow === 'admin' && !isAdmin) return <Navigate to="/access-denied" replace />;
   return <>{children}</>;
 }

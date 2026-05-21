@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T19:21:57.812Z",
+  "generatedAt": "2026-05-21T20:08:51.660Z",
   "overallStatus": "PASS",
   "summary": {
     "total": 6,
@@ -10,7 +10,7 @@
     {
       "name": "RequireAuth exists and redirects unauthenticated to /login",
       "status": "PASS",
-      "detail": "Canonical guard should handle auth transitions."
+      "detail": "Canonical guard should handle auth transitions deterministically."
     },
     {
       "name": "RoleGate does not block solely on storage session",
@@ -35,7 +35,7 @@
     {
       "name": "Runtime protected/admin route traversal",
       "status": "PASS",
-      "detail": "admin route traversal evidence unavailable"
+      "detail": "Audit:PASS:/admin/audit-timeline | Users:PASS:/admin/users | Analyses:PASS:/admin/analyses | Credit Ledger:PASS:/admin/credit-ledger | Stripe Sessions:PASS:/admin/stripe-sessions | Properties:PASS:/admin/properties | Runtime:PASS:/admin/runtime | Deployment:PASS:/admin/deployment | Observability:PASS:/admin/observability | Analytics:PASS:/admin/analytics | Connectors:PASS:/admin/connectors | Investor:PASS:/investor | Saved:PASS:/investor/saved-analyses | Watchlist:PASS:/investor/watchlist | Portfolio:PASS:/investor/portfolio | Organizations:PASS:/organizations | Notifications:PASS:/notifications | /dashboard:PASS:/dashboard | /reports:PASS:/reports | /credits:PASS:/credits | /property/new:PASS:/property/new | /documents:PASS:/documents | /settings:PASS:/settings | /audit:PASS:/audit | /admin/connector-detail:PASS:/admin/connector-detail"
     }
   ]
 }

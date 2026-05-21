@@ -1,32 +1,40 @@
 {
-  "generatedAt": "2026-05-21T19:23:42.937Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-21T20:08:43.418Z",
+  "overallStatus": "PASS",
   "summary": {
     "total": 5,
-    "pass": 2,
-    "fail": 3,
+    "pass": 5,
+    "fail": 0,
     "blocked": 0
   },
   "flows": {
     "pilotAdminFlow": {
-      "status": "FAIL",
-      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "post_login: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     "ctrlF5Persistence": {
-      "status": "FAIL",
-      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "ctrlf5_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     "backForwardPersistence": {
-      "status": "FAIL",
-      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
+      "status": "PASS",
+      "detail": "history_back: path=/audit, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | history_forward: path=/admin/connector-detail, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | finalPath=/admin/connector-detail | historyStartPath=/admin/connector-detail"
     },
     "adminRouteTraversal": {
       "status": "PASS",
-      "detail": ""
+      "detail": "Audit:PASS:/admin/audit-timeline | Users:PASS:/admin/users | Analyses:PASS:/admin/analyses | Credit Ledger:PASS:/admin/credit-ledger | Stripe Sessions:PASS:/admin/stripe-sessions | Properties:PASS:/admin/properties | Runtime:PASS:/admin/runtime | Deployment:PASS:/admin/deployment | Observability:PASS:/admin/observability | Analytics:PASS:/admin/analytics | Connectors:PASS:/admin/connectors | Investor:PASS:/investor | Saved:PASS:/investor/saved-analyses | Watchlist:PASS:/investor/watchlist | Portfolio:PASS:/investor/portfolio | Organizations:PASS:/organizations | Notifications:PASS:/notifications | /dashboard:PASS:/dashboard | /reports:PASS:/reports | /credits:PASS:/credits | /property/new:PASS:/property/new | /documents:PASS:/documents | /settings:PASS:/settings | /audit:PASS:/audit | /admin/connector-detail:PASS:/admin/connector-detail"
     },
     "authMeStorm": {
       "status": "PASS",
       "detail": "statuses=200,200,200,200,200,200,200,200,200,200 codes=none"
+    },
+    "tokenLoginBounce": {
+      "status": "PASS",
+      "detail": "none"
+    },
+    "shellMissingWithToken": {
+      "status": "PASS",
+      "detail": "none"
     }
   },
   "runtimeEvidence": {
@@ -44,46 +52,48 @@
       {
         "cycle": 1,
         "ok": true,
-        "detail": "reload_1: path=/dashboard, logoutVisible=true, navCount=17"
+        "detail": "reload_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 2,
         "ok": true,
-        "detail": "reload_2: path=/dashboard, logoutVisible=true, navCount=17"
+        "detail": "reload_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 3,
         "ok": true,
-        "detail": "reload_3: path=/dashboard, logoutVisible=true, navCount=17"
+        "detail": "reload_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 4,
-        "ok": false,
-        "detail": "reload_4: path=/login, logoutVisible=false, navCount=0"
+        "ok": true,
+        "detail": "reload_4: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 5,
-        "ok": false,
-        "detail": "reload_5: path=/login, logoutVisible=false, navCount=0"
+        "ok": true,
+        "detail": "reload_5: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       }
     ],
     "ctrlF5Results": [
       {
         "cycle": 1,
-        "ok": false,
-        "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0"
+        "ok": true,
+        "detail": "ctrlf5_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 2,
-        "ok": false,
-        "detail": "ctrlf5_2: path=/login, logoutVisible=false, navCount=0"
+        "ok": true,
+        "detail": "ctrlf5_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       },
       {
         "cycle": 3,
-        "ok": false,
-        "detail": "ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+        "ok": true,
+        "detail": "ctrlf5_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
       }
-    ]
+    ],
+    "tokenLoginBounces": [],
+    "shellMissingWithToken": []
   },
   "authMeRecords": [
     {
@@ -157,5 +167,156 @@
       "code": null
     }
   ],
-  "routeResults": []
+  "routeResults": [
+    {
+      "label": "Audit",
+      "path": "/admin/audit-timeline",
+      "status": "PASS",
+      "detail": "route_/admin/audit-timeline: path=/admin/audit-timeline, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Users",
+      "path": "/admin/users",
+      "status": "PASS",
+      "detail": "route_/admin/users: path=/admin/users, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Analyses",
+      "path": "/admin/analyses",
+      "status": "PASS",
+      "detail": "route_/admin/analyses: path=/admin/analyses, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Credit Ledger",
+      "path": "/admin/credit-ledger",
+      "status": "PASS",
+      "detail": "route_/admin/credit-ledger: path=/admin/credit-ledger, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Stripe Sessions",
+      "path": "/admin/stripe-sessions",
+      "status": "PASS",
+      "detail": "route_/admin/stripe-sessions: path=/admin/stripe-sessions, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Properties",
+      "path": "/admin/properties",
+      "status": "PASS",
+      "detail": "route_/admin/properties: path=/admin/properties, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Runtime",
+      "path": "/admin/runtime",
+      "status": "PASS",
+      "detail": "route_/admin/runtime: path=/admin/runtime, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Deployment",
+      "path": "/admin/deployment",
+      "status": "PASS",
+      "detail": "route_/admin/deployment: path=/admin/deployment, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Observability",
+      "path": "/admin/observability",
+      "status": "PASS",
+      "detail": "route_/admin/observability: path=/admin/observability, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Analytics",
+      "path": "/admin/analytics",
+      "status": "PASS",
+      "detail": "route_/admin/analytics: path=/admin/analytics, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Connectors",
+      "path": "/admin/connectors",
+      "status": "PASS",
+      "detail": "route_/admin/connectors: path=/admin/connectors, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Investor",
+      "path": "/investor",
+      "status": "PASS",
+      "detail": "route_/investor: path=/investor, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Saved",
+      "path": "/investor/saved-analyses",
+      "status": "PASS",
+      "detail": "route_/investor/saved-analyses: path=/investor/saved-analyses, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Watchlist",
+      "path": "/investor/watchlist",
+      "status": "PASS",
+      "detail": "route_/investor/watchlist: path=/investor/watchlist, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Portfolio",
+      "path": "/investor/portfolio",
+      "status": "PASS",
+      "detail": "route_/investor/portfolio: path=/investor/portfolio, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Organizations",
+      "path": "/organizations",
+      "status": "PASS",
+      "detail": "route_/organizations: path=/organizations, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "Notifications",
+      "path": "/notifications",
+      "status": "PASS",
+      "detail": "route_/notifications: path=/notifications, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/dashboard",
+      "path": "/dashboard",
+      "status": "PASS",
+      "detail": "route_/dashboard: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/reports",
+      "path": "/reports",
+      "status": "PASS",
+      "detail": "route_/reports: path=/reports, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/credits",
+      "path": "/credits",
+      "status": "PASS",
+      "detail": "route_/credits: path=/credits, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/property/new",
+      "path": "/property/new",
+      "status": "PASS",
+      "detail": "route_/property/new: path=/property/new, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/documents",
+      "path": "/documents",
+      "status": "PASS",
+      "detail": "route_/documents: path=/documents, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/settings",
+      "path": "/settings",
+      "status": "PASS",
+      "detail": "route_/settings: path=/settings, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/audit",
+      "path": "/audit",
+      "status": "PASS",
+      "detail": "route_/audit: path=/audit, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    },
+    {
+      "label": "/admin/connector-detail",
+      "path": "/admin/connector-detail",
+      "status": "PASS",
+      "detail": "route_/admin/connector-detail: path=/admin/connector-detail, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+    }
+  ]
 }

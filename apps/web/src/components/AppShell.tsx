@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { logout } from '../lib/auth';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { isAdmin, user, hydrating, authState } = useAuth();
+  const { isAdmin, user, authStatus, hasPersistentSession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,15 +13,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     location.pathname === '/login' ||
     location.pathname === '/register' ||
     location.pathname === '/forgot-password' ||
-	 location.pathname === '/reset-password';
+   location.pathname === '/reset-password';
 
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
   };
 
-  const shellVisible = !isPublicRoute && (authState === 'authenticated' || authState === 'authenticating' || authState === 'booting' || (hydrating && Boolean(user)));
-  const showAuthenticatedNav = shellVisible && Boolean(user) && authState !== 'unauthenticated' && authState !== 'invalid';
+  const shellVisible = !isPublicRoute && (hasPersistentSession || authStatus === 'authenticated' || authStatus === 'checking' || authStatus === 'booting');
+  const showAuthenticatedNav = shellVisible && (Boolean(user) || hasPersistentSession) && authStatus !== 'unauthenticated' && authStatus !== 'invalid';
+  const roleDisplay = user ? roleLabel : 'CHECKING';
+  const identityDisplay = user?.name || user?.email || 'Oturum doğrulanıyor...';
 
   return (
     <>
@@ -52,10 +54,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
                 <div className="ml-auto flex items-center gap-2 text-xs">
                   <span className="text-gray-700 truncate max-w-[180px]" title={user?.email || ''}>
-                    {user?.name || user?.email}
+                    {identityDisplay}
                   </span>
                   <span className={`px-2 py-0.5 rounded border font-semibold ${isAdmin ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>
-                    {roleLabel}
+                    {roleDisplay}
                   </span>
                   <button
                     type="button"

@@ -31,7 +31,7 @@ function main() {
   const dashboard = readText('apps/web/src/pages/Dashboard.tsx');
   const credits = readText('apps/web/src/pages/Credits.tsx');
 
-  push(checks, 'RequireAuth exists and redirects unauthenticated to /login', reqAuth.includes('Navigate to="/login"') && reqAuth.includes('authState === \'authenticating\''), 'Canonical guard should handle auth transitions.');
+  push(checks, 'RequireAuth exists and redirects unauthenticated to /login', reqAuth.includes('Navigate to="/login"') && reqAuth.includes('hasPersistentSession'), 'Canonical guard should handle auth transitions deterministically.');
   push(checks, 'RoleGate does not block solely on storage session', !gate.includes('hasAuthSession('), 'Role checks must be based on canonical auth context only.');
   push(checks, 'Admin routes are wrapped by RequireAuth and AdminOnly', app.includes('<RequireAuth><AdminOnly><AdminUsers /></AdminOnly></RequireAuth>') && app.includes('<RequireAuth><AdminOnly><AdminProperties /></AdminOnly></RequireAuth>'), 'Admin route access should be explicit and deterministic.');
   push(

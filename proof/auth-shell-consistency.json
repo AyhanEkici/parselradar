@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-05-21T19:23:49.241Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-21T20:08:46.166Z",
+  "overallStatus": "PASS",
   "summary": {
-    "total": 7,
-    "pass": 5,
-    "fail": 2
+    "total": 9,
+    "pass": 9,
+    "fail": 0
   },
   "checks": [
     {
@@ -18,7 +18,7 @@
       "detail": "Navbar visibility must not infer auth from storage."
     },
     {
-      "name": "AppShell keeps shell visible during boot/authenticating",
+      "name": "AppShell keeps shell visible during checking/booting",
       "status": "PASS",
       "detail": "Transient hydration must not collapse shell."
     },
@@ -29,18 +29,28 @@
     },
     {
       "name": "Runtime pilot shell persistence",
-      "status": "FAIL",
-      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "post_login: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Runtime CTRL+F5 shell persistence",
-      "status": "FAIL",
-      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "ctrlf5_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Runtime auth/me storm bounded",
       "status": "PASS",
       "detail": "authMe status401=0"
+    },
+    {
+      "name": "No /login bounce with persistent session",
+      "status": "PASS",
+      "detail": "none"
+    },
+    {
+      "name": "AppShell remains mounted with persistent session",
+      "status": "PASS",
+      "detail": "none"
     }
   ],
   "runtimePath": "proof/live-browser-mvp-runtime.json"

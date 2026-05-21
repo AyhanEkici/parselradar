@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-05-21T19:24:12.641Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-21T20:08:59.883Z",
+  "overallStatus": "PASS",
   "summary": {
     "total": 9,
-    "pass": 4,
-    "fail": 5,
+    "pass": 9,
+    "fail": 0,
     "blockers": 0
   },
   "areas": {
@@ -13,28 +13,28 @@
       "detail": "proof/deployment-truth-proof-bundle.json overallStatus=PASS"
     },
     "authShell": {
-      "status": "FAIL",
-      "detail": "proof/auth-shell-consistency.json overallStatus=FAIL"
+      "status": "PASS",
+      "detail": "proof/auth-shell-consistency.json overallStatus=PASS"
     },
     "navigationPersistence": {
-      "status": "FAIL",
-      "detail": "proof/navigation-persistence.json overallStatus=FAIL"
+      "status": "PASS",
+      "detail": "proof/navigation-persistence.json overallStatus=PASS"
     },
     "protectedRoutes": {
       "status": "PASS",
       "detail": "proof/protected-route-integrity.json overallStatus=PASS"
     },
     "browserHistory": {
-      "status": "FAIL",
-      "detail": "proof/browser-history-consistency.json overallStatus=FAIL"
+      "status": "PASS",
+      "detail": "proof/browser-history-consistency.json overallStatus=PASS"
     },
     "liveBrowserMvp": {
-      "status": "FAIL",
-      "detail": "proof/live-browser-mvp-runtime.json overallStatus=FAIL"
+      "status": "PASS",
+      "detail": "proof/live-browser-mvp-runtime.json overallStatus=PASS"
     },
     "routeWiring": {
-      "status": "FAIL",
-      "detail": "proof/route-wiring-audit.json overallStatus=FAIL"
+      "status": "PASS",
+      "detail": "proof/route-wiring-audit.json overallStatus=PASS"
     },
     "rbac": {
       "status": "PASS",

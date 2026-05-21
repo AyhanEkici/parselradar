@@ -1,8 +1,8 @@
 # Live Browser MVP Proof Bundle
 
-overallStatus: FAIL
-navbarPersistenceProof: FAIL
-ctrlF5PersistenceProof: FAIL
-backForwardProof: FAIL
+overallStatus: PASS
+navbarPersistenceProof: PASS
+ctrlF5PersistenceProof: PASS
+backForwardProof: PASS
 routeTraversalProof: PASS
 noAuthCollapseProof: PASS

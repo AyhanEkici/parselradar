@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-21T19:23:58.717Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-21T20:08:54.411Z",
+  "overallStatus": "PASS",
   "summary": {
-    "total": 5,
-    "pass": 3,
-    "fail": 2
+    "total": 6,
+    "pass": 6,
+    "fail": 0
   },
   "checks": [
     {
-      "name": "Shell keeps nav mounted during auth boot states",
+      "name": "Shell keeps nav mounted during auth boot/check states",
       "status": "PASS",
       "detail": "History navigation should not collapse shell while auth settles."
     },
@@ -19,18 +19,23 @@
     },
     {
       "name": "Runtime CTRL+F5 consistency",
-      "status": "FAIL",
-      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "ctrlf5_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Runtime browser back/forward consistency",
-      "status": "FAIL",
-      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
+      "status": "PASS",
+      "detail": "history_back: path=/audit, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | history_forward: path=/admin/connector-detail, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | finalPath=/admin/connector-detail | historyStartPath=/admin/connector-detail"
     },
     {
       "name": "Runtime auth/me stability under history actions",
       "status": "PASS",
       "detail": "authMe status401=0"
+    },
+    {
+      "name": "Runtime shell/nav remains visible with token",
+      "status": "PASS",
+      "detail": "none"
     }
   ]
 }

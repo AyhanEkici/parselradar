@@ -12,15 +12,15 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-  const { authState, user, hydrating } = useAuth();
+  const { authStatus, user, hasPersistentSession, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!hydrating && authState === 'authenticated' && user) {
+    if (isAuthenticated && user) {
       navigate('/dashboard', { replace: true });
     }
-  }, [hydrating, authState, user, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
-  if (hydrating || authState === 'authenticated') {
+  if (isAuthenticated || hasPersistentSession || authStatus === 'booting' || authStatus === 'checking') {
     return (
       <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
         Oturum doğrulanıyor...

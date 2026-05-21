@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-05-21T19:24:03.037Z",
-  "overallStatus": "FAIL",
+  "generatedAt": "2026-05-21T20:08:57.194Z",
+  "overallStatus": "PASS",
   "summary": {
     "total": 17,
-    "working": 0,
+    "working": 17,
     "partial": 0,
     "broken": 0,
     "disconnected": 0,
@@ -11,129 +11,129 @@
     "missingBackend": 0,
     "missingFrontend": 0,
     "looping": 0,
-    "staleState": 17,
+    "staleState": 0,
     "invalidRedirect": 0,
-    "fail": 17
+    "fail": 0
   },
   "routes": [
     {
       "name": "Audit",
       "path": "/admin/audit-timeline",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/audit-timeline: path=/admin/audit-timeline, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Users",
       "path": "/admin/users",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/users: path=/admin/users, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Analyses",
       "path": "/admin/analyses",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/analyses: path=/admin/analyses, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Credit Ledger",
       "path": "/admin/credit-ledger",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/credit-ledger: path=/admin/credit-ledger, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Stripe Sessions",
       "path": "/admin/stripe-sessions",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/stripe-sessions: path=/admin/stripe-sessions, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Properties",
       "path": "/admin/properties",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/properties: path=/admin/properties, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Runtime",
       "path": "/admin/runtime",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/runtime: path=/admin/runtime, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Deployment",
       "path": "/admin/deployment",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/deployment: path=/admin/deployment, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Observability",
       "path": "/admin/observability",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/observability: path=/admin/observability, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Analytics",
       "path": "/admin/analytics",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/analytics: path=/admin/analytics, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Connectors",
       "path": "/admin/connectors",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/admin/connectors: path=/admin/connectors, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Investor",
       "path": "/investor",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/investor: path=/investor, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Saved",
       "path": "/investor/saved-analyses",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/investor/saved-analyses: path=/investor/saved-analyses, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Watchlist",
       "path": "/investor/watchlist",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/investor/watchlist: path=/investor/watchlist, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Portfolio",
       "path": "/investor/portfolio",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/investor/portfolio: path=/investor/portfolio, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Organizations",
       "path": "/organizations",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/organizations: path=/organizations, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "name": "Notifications",
       "path": "/notifications",
-      "classification": "STALE_STATE",
-      "status": "FAIL",
-      "detail": "No runtime traversal result recorded for nav route."
+      "classification": "WORKING",
+      "status": "PASS",
+      "detail": "route_/notifications: path=/notifications, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     }
   ]
 }

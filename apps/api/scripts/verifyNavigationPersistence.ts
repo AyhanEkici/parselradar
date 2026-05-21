@@ -8,6 +8,7 @@ type RuntimeProof = {
     ctrlF5Persistence?: RuntimeFlow;
     backForwardPersistence?: RuntimeFlow;
     adminRouteTraversal?: RuntimeFlow;
+    tokenLoginBounce?: RuntimeFlow;
   };
 };
 
@@ -33,7 +34,7 @@ function main() {
 
   push(checks, 'Protected routes use RequireAuth wrappers', app.includes('<RequireAuth><Dashboard /></RequireAuth>') && app.includes('<RequireAuth><Credits /></RequireAuth>'), 'Navigation safety must come from route wrappers, not page-local redirects.');
   push(checks, 'Dashboard internal navigation uses Link', dashboard.includes('<Link to="/properties/new"') && !dashboard.includes('<a href="/properties/new"'), 'Internal route transitions should avoid full page reload.');
-  push(checks, 'AppShell nav uses router links', shell.includes('<Link to="/investor"') && shell.includes('<Link to="/notifications"'), 'Navbar routing should remain client-side and consistent.');
+  push(checks, 'AppShell nav uses router links', shell.includes('<Link to=') && !shell.includes('<a href='), 'Navbar routing should remain client-side and consistent.');
 
   if (!fs.existsSync(runtimePath)) {
     push(checks, 'Runtime navigation proof exists', false, 'Missing proof/live-browser-mvp-runtime.json');
@@ -42,10 +43,12 @@ function main() {
     const ctrlF5 = String(runtime.flows?.ctrlF5Persistence?.status || '').toUpperCase() === 'PASS';
     const backForward = String(runtime.flows?.backForwardPersistence?.status || '').toUpperCase() === 'PASS';
     const adminTraversal = String(runtime.flows?.adminRouteTraversal?.status || '').toUpperCase() === 'PASS';
+    const noTokenBounce = String(runtime.flows?.tokenLoginBounce?.status || '').toUpperCase() === 'PASS';
 
     push(checks, 'Runtime CTRL+F5 persistence', ctrlF5, runtime.flows?.ctrlF5Persistence?.detail || 'ctrl+f5 flow unavailable');
     push(checks, 'Runtime back/forward persistence', backForward, runtime.flows?.backForwardPersistence?.detail || 'history flow unavailable');
     push(checks, 'Runtime protected route traversal persistence', adminTraversal, runtime.flows?.adminRouteTraversal?.detail || 'admin traversal flow unavailable');
+    push(checks, 'Runtime has no /login bounce with token', noTokenBounce, runtime.flows?.tokenLoginBounce?.detail || 'token bounce flow unavailable');
   }
 
   const failed = checks.filter((c) => c.status === 'FAIL');

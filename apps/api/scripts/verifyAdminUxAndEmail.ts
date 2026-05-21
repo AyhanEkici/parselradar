@@ -84,10 +84,13 @@ async function main() {
   checks.push(
     check(
       'RoleGate + AdminOnly are wired',
-      adminOnly.includes("allow=\"admin\"") &&
+      adminOnly.includes('RoleGate') &&
+        adminOnly.includes('allow="admin"') &&
         roleGate.includes("allow === 'admin'") &&
-        roleGate.includes('hydrating'),
-      'AdminOnly delegates to RoleGate and RoleGate enforces admin access.',
+        roleGate.includes("authStatus === 'booting' || authStatus === 'checking' || hasPersistentSession") &&
+        roleGate.includes('Navigate to="/access-denied"') &&
+        roleGate.includes('Navigate to="/login"'),
+      'AdminOnly delegates to RoleGate and RoleGate enforces the admin boundary with the auth-status guard.',
     ),
   );
 

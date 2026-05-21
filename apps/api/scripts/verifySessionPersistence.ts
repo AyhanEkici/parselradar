@@ -84,10 +84,15 @@ function runStaticChecks(): void {
   // useAuth must keep hydration flow defensive without unconditional destructive clear
   record(
     'useAuth handles hydration failures without destructive clear',
-    useAuth.includes("status === 401") &&
-      useAuth.includes('setAuthState(\'unauthenticated\')') &&
-      !useAuth.includes('clearAuthSession()'),
-    'hydrateAuth should transition to unauthenticated state without wiping storage during transient failures.',
+    useAuth.includes('setAuthHydrating(true)') &&
+      useAuth.includes('setAuthHydrating(false)') &&
+      useAuth.includes("if (authStatus === 'booting' || authStatus === 'checking') return;") &&
+      useAuth.includes("status === 401") &&
+      useAuth.includes("clearAuthSession('confirmed_auth_me_401')") &&
+      useAuth.includes("setAuthStatus('invalid')") &&
+      useAuth.includes("setAuthStatus('checking')") &&
+      useAuth.includes("setAuthStatus('unauthenticated')"),
+    'hydrateAuth should keep checking/booting non-destructive and only clear on confirmed /auth/me 401.',
   );
 
   // Token key must still be canonical

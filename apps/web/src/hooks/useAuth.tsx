@@ -7,20 +7,35 @@ import { getMe } from '../lib/auth';
 import { AUTH_LOGIN_WRITE_KEY, AUTH_TOKEN_KEY, AUTH_USER_KEY, getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession, clearAuthSession, isLoginWriteInProgress } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
-type AuthState = 'booting' | 'authenticating' | 'authenticated' | 'unauthenticated' | 'invalid';
-type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean; authState: AuthState };
+type AuthStatus = 'booting' | 'checking' | 'authenticated' | 'unauthenticated' | 'invalid';
+type LegacyAuthState = 'booting' | 'authenticating' | 'authenticated' | 'unauthenticated' | 'invalid';
+type AuthContextType = {
+	user: User;
+	isAdmin: boolean;
+	authStatus: AuthStatus;
+	isAuthenticated: boolean;
+	hasPersistentSession: boolean;
+	hydrating: boolean;
+	authState: LegacyAuthState;
+};
 const AuthContext = createContext<AuthContextType>({
 	user: null,
 	isAdmin: false,
+	authStatus: 'booting',
+	isAuthenticated: false,
+	hasPersistentSession: false,
 	hydrating: true,
 	authState: 'booting',
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User>(null);
-	const [hydrating, setHydrating] = useState(true);
-	const [authState, setAuthState] = useState<AuthState>('booting');
+	const [authStatus, setAuthStatus] = useState<AuthStatus>('booting');
+	const [hasPersistentSession, setHasPersistentSession] = useState<boolean>(false);
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
+	const isAuthenticated = authStatus === 'authenticated' && Boolean(user);
+	const hydrating = authStatus === 'booting' || authStatus === 'checking';
+	const authState: LegacyAuthState = authStatus === 'checking' ? 'authenticating' : authStatus;
 	// Incremented on every hydrateAuth call; stale async results are ignored.
 	const callIdRef = useRef(0);
 
@@ -29,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 		if (isLoginWriteInProgress()) {
 			const hasPersistedSession = Boolean(getAuthToken() && getStoredUser());
+			setHasPersistentSession(hasPersistedSession);
 			if (!hasPersistedSession) {
 				return;
 			}
@@ -40,11 +56,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		// Guard: no token → clear state and stop. Do NOT call /auth/me.
 		const token = getAuthToken();
 		const storedUser = getStoredUser();
+		setHasPersistentSession(Boolean(token && storedUser));
 		if (!token) {
 			if (callIdRef.current === callId) {
 				setUser(null);
-				setHydrating(false);
-				setAuthState('unauthenticated');
+				setAuthStatus('unauthenticated');
+				setHasPersistentSession(false);
 			}
 			return;
 		}
@@ -53,12 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		// /auth/me confirms server-side validity in the background.
 		if (callIdRef.current === callId && storedUser) {
 			setUser(storedUser as User);
-			setAuthState('authenticated');
+			setHasPersistentSession(true);
+			setAuthStatus('checking');
 		}
 
 		if (callIdRef.current === callId) {
-			setHydrating(true);
-			setAuthState('authenticating');
+			setAuthStatus('checking');
 		}
 
 		// Signal to apiFetch that it must NOT wipe the token on a transient 401.
@@ -68,7 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			const u = await getMe();
 			if (callIdRef.current === callId) {
 				setUser(u as User);
-				setAuthState('authenticated');
+				setHasPersistentSession(true);
+				setAuthStatus('authenticated');
 			}
 		} catch (err: unknown) {
 			// Only clear the stored token on a CONFIRMED 401 from the server.
@@ -79,19 +97,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			if (callIdRef.current === callId) {
 				if (status === 401) {
 					const hasPersistedSession = Boolean(storedUser && getAuthToken());
+					setHasPersistentSession(hasPersistedSession);
 					if (hasPersistedSession) {
 						try {
 							assertStorageConsistency();
 							const retryUser = await getMe();
 							if (callIdRef.current === callId) {
 								setUser(retryUser as User);
-								setAuthState('authenticated');
+								setHasPersistentSession(true);
+								setAuthStatus('authenticated');
 							}
 							return;
 						} catch (retryErr: unknown) {
 							if ((retryErr as { status?: number })?.status !== 401 && storedUser && getAuthToken()) {
 								setUser(storedUser as User);
-								setAuthState('authenticated');
+								setHasPersistentSession(true);
+								setAuthStatus('authenticated');
 								return;
 							}
 						}
@@ -99,20 +120,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 					clearAuthSession('confirmed_auth_me_401');
 					setUser(null);
-					setAuthState('invalid');
+					setHasPersistentSession(false);
+					setAuthStatus('invalid');
 				} else {
 					if (storedUser && getAuthToken()) {
 						setUser(storedUser as User);
-						setAuthState('authenticated');
+						setHasPersistentSession(true);
+						setAuthStatus('checking');
 					} else {
 						setUser(null);
-						setAuthState('unauthenticated');
+						setHasPersistentSession(false);
+						setAuthStatus('unauthenticated');
 					}
 				}
 			}
 		} finally {
 			setAuthHydrating(false);
-			if (callIdRef.current === callId) setHydrating(false);
 		}
 	}
 
@@ -148,19 +171,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	// Keep in-memory user during transient hydration or storage races.
 	// Session clearing decisions are made only in hydrateAuth() on confirmed invalidation.
 	useEffect(() => {
-		if (hydrating) return;
+		if (authStatus === 'booting' || authStatus === 'checking') return;
 		if (isLoginWriteInProgress()) return;
 		if (user) {
 			assertStorageConsistency();
 		}
-		if (user && !hasAuthSession() && (authState === 'unauthenticated' || authState === 'invalid')) {
+		if (user && !hasAuthSession() && (authStatus === 'unauthenticated' || authStatus === 'invalid')) {
 			setUser(null);
-			setAuthState('unauthenticated');
+			setHasPersistentSession(false);
+			setAuthStatus('unauthenticated');
 		}
-	}, [authState, hydrating, user]);
+	}, [authStatus, user]);
 
 	return (
-		<AuthContext.Provider value={{ user, isAdmin, hydrating, authState }}>
+		<AuthContext.Provider value={{ user, isAdmin, authStatus, isAuthenticated, hasPersistentSession, hydrating, authState }}>
 			{children}
 		</AuthContext.Provider>
 	);

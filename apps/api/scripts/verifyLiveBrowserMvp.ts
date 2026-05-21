@@ -4,6 +4,15 @@ import path from 'path';
 type AuthMeRecord = { index: number; status: number; email: string | null; role: string | null; code: string | null };
 type RouteResult = { label: string; path: string; status: 'PASS' | 'FAIL'; detail: string };
 type CycleResult = { cycle: number; ok: boolean; detail: string };
+type ShellSnapshot = {
+  ok: boolean;
+  detail: string;
+  pathName: string;
+  logoutVisible: boolean;
+  navCount: number;
+  tokenExists: boolean;
+  userExists: boolean;
+};
 
 const ROOT = process.cwd();
 const runtimeProofPath = path.join(ROOT, 'proof/live-browser-mvp-runtime.json');
@@ -72,18 +81,42 @@ async function main() {
   }
 
   async function assertShell(detailLabel: string) {
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(800);
     const logoutVisible = await page.getByRole('button', { name: /logout/i }).isVisible().catch(() => false);
     const navCount = await page.locator('nav a').count();
     const pathName = currentPath();
+    const storage = await captureStorage();
+    const tokenExists = Boolean(storage.localToken);
+    const userExists = Boolean(storage.localUser);
+    const hasPersistentSession = tokenExists && userExists;
+    const loginBounceWithToken = pathName === '/login' && hasPersistentSession;
+    const hiddenNavbarWithToken = hasPersistentSession && navCount === 0;
+    const hiddenLogoutWithToken = hasPersistentSession && !logoutVisible;
+
     return {
-      ok: logoutVisible && navCount > 0 && pathName !== '/login',
-      detail: `${detailLabel}: path=${pathName}, logoutVisible=${logoutVisible}, navCount=${navCount}`,
+      ok: logoutVisible && navCount > 0 && pathName !== '/login' && !loginBounceWithToken && !hiddenNavbarWithToken && !hiddenLogoutWithToken,
+      detail: `${detailLabel}: path=${pathName}, logoutVisible=${logoutVisible}, navCount=${navCount}, tokenExists=${tokenExists}, userExists=${userExists}, loginBounceWithToken=${loginBounceWithToken}, hiddenNavbarWithToken=${hiddenNavbarWithToken}`,
       pathName,
       logoutVisible,
       navCount,
+      tokenExists,
+      userExists,
     };
   }
+
+  const fallbackRoutes = [
+    '/dashboard',
+    '/reports',
+    '/credits',
+    '/property/new',
+    '/documents',
+    '/settings',
+    '/audit',
+    '/admin/users',
+    '/admin/connector-detail',
+    '/admin/credit-ledger',
+  ];
 
   try {
     await page.goto(LOGIN_URL, { waitUntil: 'networkidle' });
@@ -145,20 +178,26 @@ async function main() {
     }
 
     const navLinks = await page.locator('nav a').evaluateAll((elements: Element[]) =>
-      elements.map((element: Element) => ({
-        label: (element.textContent || '').trim(),
-        path: (element.getAttribute('href') || '').trim(),
-      })),
+      elements
+        .map((element: Element) => ({
+          label: (element.textContent || '').trim(),
+          path: (element.getAttribute('href') || '').trim(),
+        }))
+        .filter((item: { label: string; path: string }) => item.path.startsWith('/')),
     );
+    const allRouteTargets = [
+      ...navLinks.map((item: { label: string; path: string }) => item.path),
+      ...fallbackRoutes,
+    ];
+    const dedupedRoutes = Array.from(new Set(allRouteTargets));
 
-    for (const nav of navLinks) {
-      if (!nav.path) continue;
-      await page.locator(`nav a[href="${nav.path}"]`).first().click();
-      await page.waitForLoadState('networkidle');
-      const shell = await assertShell(`route_${nav.path}`);
+    for (const routePath of dedupedRoutes) {
+      await page.goto(`https://parselradar.vercel.app${routePath}`, { waitUntil: 'domcontentloaded' });
+      const shell = await assertShell(`route_${routePath}`);
+      const navLabel = navLinks.find((item: { label: string; path: string }) => item.path === routePath)?.label || routePath;
       routeResults.push({
-        label: nav.label,
-        path: nav.path,
+        label: navLabel,
+        path: routePath,
         status: shell.ok ? 'PASS' : 'FAIL',
         detail: shell.detail,
       });
@@ -175,9 +214,15 @@ async function main() {
     const authMeCodes = authMeRecords.map((record: AuthMeRecord) => record.code).filter(Boolean);
     const authMe401 = authMeRecords.filter((record: AuthMeRecord) => record.status === 401).length;
     const authMePass = authMeRecords.every((record: AuthMeRecord) => record.status === 200);
-    const routeTraversalPass = routeResults.every((result) => result.status === 'PASS');
+    const routeTraversalPass = routeResults.length > 0 && routeResults.every((result) => result.status === 'PASS');
     const navbarPass = postLoginShell.ok && reloadResults.every((result) => result.ok);
     const ctrlF5Pass = ctrlF5Results.every((result) => result.ok);
+    const tokenLoginBounces = [postLoginShell, backResult, forwardResult]
+      .filter((snapshot: ShellSnapshot) => snapshot.tokenExists && snapshot.userExists && snapshot.pathName === '/login')
+      .map((snapshot: ShellSnapshot) => snapshot.detail);
+    const shellMissingWithToken = [postLoginShell, backResult, forwardResult]
+      .filter((snapshot: ShellSnapshot) => snapshot.tokenExists && snapshot.userExists && (!snapshot.logoutVisible || snapshot.navCount === 0))
+      .map((snapshot: ShellSnapshot) => snapshot.detail);
 
     const runtimePayload = {
       generatedAt: new Date().toISOString(),
@@ -209,6 +254,14 @@ async function main() {
           status: authMePass ? 'PASS' : 'FAIL',
           detail: `statuses=${authMeStatuses.join(',')} codes=${authMeCodes.join(',') || 'none'}`,
         },
+        tokenLoginBounce: {
+          status: tokenLoginBounces.length === 0 ? 'PASS' : 'FAIL',
+          detail: tokenLoginBounces.length === 0 ? 'none' : tokenLoginBounces.join(' | '),
+        },
+        shellMissingWithToken: {
+          status: shellMissingWithToken.length === 0 ? 'PASS' : 'FAIL',
+          detail: shellMissingWithToken.length === 0 ? 'none' : shellMissingWithToken.join(' | '),
+        },
       },
       runtimeEvidence: {
         authMe: {
@@ -219,6 +272,8 @@ async function main() {
         storageAfterLogin,
         reloadResults,
         ctrlF5Results,
+        tokenLoginBounces,
+        shellMissingWithToken,
       },
       authMeRecords,
       routeResults,

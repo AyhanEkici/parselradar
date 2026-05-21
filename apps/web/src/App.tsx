@@ -49,9 +49,9 @@ import RequireAuth from './components/RequireAuth';
 import { useAuth } from './hooks/useAuth';
 
 function RootRedirect() {
-  const { user, hydrating, authState } = useAuth();
+  const { user, authStatus, hasPersistentSession } = useAuth();
 
-  if (hydrating || authState === 'booting' || authState === 'authenticating') {
+  if (authStatus === 'booting' || authStatus === 'checking' || hasPersistentSession) {
     return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum dogrulaniyor...</div>;
   }
 

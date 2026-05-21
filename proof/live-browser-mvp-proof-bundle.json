@@ -1,21 +1,21 @@
 {
-  "overallStatus": "FAIL",
+  "overallStatus": "PASS",
   "proofs": {
     "navbarPersistenceProof": {
-      "status": "FAIL",
-      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "post_login: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     "ctrlF5PersistenceProof": {
-      "status": "FAIL",
-      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      "status": "PASS",
+      "detail": "ctrlf5_1: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_2: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | ctrlf5_3: path=/dashboard, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     "backForwardProof": {
-      "status": "FAIL",
-      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
+      "status": "PASS",
+      "detail": "history_back: path=/audit, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | history_forward: path=/admin/connector-detail, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false | finalPath=/admin/connector-detail | historyStartPath=/admin/connector-detail"
     },
     "routeTraversalProof": {
       "status": "PASS",
-      "detail": ""
+      "detail": "Audit:PASS:/admin/audit-timeline | Users:PASS:/admin/users | Analyses:PASS:/admin/analyses | Credit Ledger:PASS:/admin/credit-ledger | Stripe Sessions:PASS:/admin/stripe-sessions | Properties:PASS:/admin/properties | Runtime:PASS:/admin/runtime | Deployment:PASS:/admin/deployment | Observability:PASS:/admin/observability | Analytics:PASS:/admin/analytics | Connectors:PASS:/admin/connectors | Investor:PASS:/investor | Saved:PASS:/investor/saved-analyses | Watchlist:PASS:/investor/watchlist | Portfolio:PASS:/investor/portfolio | Organizations:PASS:/organizations | Notifications:PASS:/notifications | /dashboard:PASS:/dashboard | /reports:PASS:/reports | /credits:PASS:/credits | /property/new:PASS:/property/new | /documents:PASS:/documents | /settings:PASS:/settings | /audit:PASS:/audit | /admin/connector-detail:PASS:/admin/connector-detail"
     },
     "noAuthCollapseProof": {
       "status": "PASS",

@@ -13,6 +13,8 @@ type RuntimeProof = {
     backForwardPersistence?: RuntimeFlow;
     adminRouteTraversal?: RuntimeFlow;
     authMeStorm?: RuntimeFlow;
+    tokenLoginBounce?: RuntimeFlow;
+    shellMissingWithToken?: RuntimeFlow;
   };
   runtimeEvidence?: {
     authMe?: { total?: number; status401?: number };
@@ -57,7 +59,7 @@ function main() {
 
   push(checks, 'App wraps routes in AppShell', app.includes('<AppShell>') && app.includes('<AppRoutes />'), 'App shell must remain mounted around route tree.');
   push(checks, 'AppShell derives auth from context', shell.includes('useAuth()') && !shell.includes('hasAuthSession('), 'Navbar visibility must not infer auth from storage.');
-  push(checks, 'AppShell keeps shell visible during boot/authenticating', shell.includes("authState === 'authenticating'") && shell.includes("authState === 'booting'"), 'Transient hydration must not collapse shell.');
+  push(checks, 'AppShell keeps shell visible during checking/booting', shell.includes("authStatus === 'checking'") && shell.includes("authStatus === 'booting'"), 'Transient hydration must not collapse shell.');
   push(checks, 'Hydration marks auth phase boundaries', auth.includes('setAuthHydrating(true)') && auth.includes('setAuthHydrating(false)'), 'Hydration lifecycle must be explicit and deterministic.');
 
   let runtime: RuntimeProof | null = null;
@@ -71,11 +73,15 @@ function main() {
     const pilot = String(runtime.flows?.pilotAdminFlow?.status || '').toUpperCase() === 'PASS';
     const ctrlF5 = String(runtime.flows?.ctrlF5Persistence?.status || '').toUpperCase() === 'PASS';
     const authMeStorm = String(runtime.flows?.authMeStorm?.status || '').toUpperCase() === 'PASS';
+    const tokenLoginBounce = String(runtime.flows?.tokenLoginBounce?.status || '').toUpperCase() === 'PASS';
+    const shellMissingWithToken = String(runtime.flows?.shellMissingWithToken?.status || '').toUpperCase() === 'PASS';
     const status401 = Number(runtime.runtimeEvidence?.authMe?.status401 || 0);
 
     push(checks, 'Runtime pilot shell persistence', pilot, runtime.flows?.pilotAdminFlow?.detail || 'pilot flow unavailable');
     push(checks, 'Runtime CTRL+F5 shell persistence', ctrlF5, runtime.flows?.ctrlF5Persistence?.detail || 'ctrl+f5 flow unavailable');
     push(checks, 'Runtime auth/me storm bounded', authMeStorm && status401 === 0, `authMe status401=${status401}`);
+    push(checks, 'No /login bounce with persistent session', tokenLoginBounce, runtime.flows?.tokenLoginBounce?.detail || 'token/login bounce evidence unavailable');
+    push(checks, 'AppShell remains mounted with persistent session', shellMissingWithToken, runtime.flows?.shellMissingWithToken?.detail || 'shell visibility evidence unavailable');
   }
 
   const failed = checks.filter((c) => c.status === 'FAIL');

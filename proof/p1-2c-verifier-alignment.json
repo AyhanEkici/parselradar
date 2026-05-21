@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-05-21T20:09:40.000Z",
+  "phase": "P1.2C — STATIC VERIFIER ALIGNMENT AFTER RUNTIME PASS",
+  "overallStatus": "PASS",
+  "oldFailingFields": {
+    "verify:session-persistence": [
+      "useAuth handles hydration failures without destructive clear"
+    ],
+    "verify:auth-ui-consistency": [
+      "Login redirects authenticated users to /dashboard",
+      "Login form is hidden while authenticated",
+      "No stale user state survives without session token",
+      "Protected routes wait for hydration contract exists"
+    ],
+    "verify:admin-ux-email": [
+      "RoleGate + AdminOnly are wired"
+    ]
+  },
+  "updatedAssertionLogic": {
+    "verify:session-persistence": [
+      "accept authStatus booting/checking as non-destructive hydration phases",
+      "require setAuthHydrating(true) / setAuthHydrating(false) around getMe",
+      "require confirmed 401-only clearAuthSession('confirmed_auth_me_401')",
+      "require invalid/authenticated state transitions for retry and fallback paths"
+    ],
+    "verify:auth-ui-consistency": [
+      "accept Login verification state while isAuthenticated, hasPersistentSession, booting, or checking",
+      "require authenticated redirect effect to /dashboard",
+      "require stale user cleanup only after confirmed unauthenticated/invalid state",
+      "require protected route boot/checking contract to be explicit with authStatus + hasPersistentSession"
+    ],
+    "verify:admin-ux-email": [
+      "require AdminOnly to delegate to RoleGate",
+      "require RoleGate to use authStatus + hasPersistentSession boot/checking guard",
+      "require ADMIN/USER boundary and existing /access-denied and /login redirects"
+    ]
+  },
+  "finalVerifierTable": [
+    { "verifier": "verify:live-browser-mvp", "status": "PASS" },
+    { "verifier": "verify:auth-shell", "status": "PASS" },
+    { "verifier": "verify:navigation-persistence", "status": "PASS" },
+    { "verifier": "verify:protected-routes", "status": "PASS" },
+    { "verifier": "verify:browser-history", "status": "PASS" },
+    { "verifier": "verify:route-wiring", "status": "PASS" },
+    { "verifier": "verify:platform-integrity", "status": "PASS" },
+    { "verifier": "verify:canonical-auth", "status": "PASS" },
+    { "verifier": "verify:live-login-contract", "status": "PASS" },
+    { "verifier": "verify:auth-runtime", "status": "PASS" },
+    { "verifier": "verify:session-persistence", "status": "PASS" },
+    { "verifier": "verify:auth-ui-consistency", "status": "PASS" },
+    { "verifier": "verify:post-login-api", "status": "PASS" },
+    { "verifier": "verify:admin-ux-email", "status": "PASS" },
+    { "verifier": "verify:rbac", "status": "PASS" },
+    { "verifier": "verify:platform", "status": "WARN" }
+  ],
+  "runtimeConfirmation": {
+    "liveBrowserMvp": "PASS",
+    "authShell": "PASS",
+    "navigationPersistence": "PASS",
+    "browserHistory": "PASS",
+    "protectedRoutes": "PASS",
+    "routeWiring": "PASS",
+    "platformIntegrity": "PASS",
+    "canonicalAuth": "PASS",
+    "authMeX10": "PASS",
+    "tokenWithLoginBounce": false,
+    "shellMissingWithToken": false,
+    "navbarDisappearance": false,
+    "ctrlF5Logout": false,
+    "loginBounceWithToken": false,
+    "authMe401Storm": false
+  },
+  "remainingWarnings": [
+    "verify:platform reports WARN with 12 warnings and 0 failures"
+  ],
+  "proofArtifacts": [
+    "proof/live-browser-mvp-proof-bundle.json",
+    "proof/auth-shell-consistency.json",
+    "proof/navigation-persistence.json",
+    "proof/browser-history-consistency.json",
+    "proof/route-wiring-audit.json",
+    "proof/platform-integrity-audit.json",
+    "proof/canonical-auth-validation.json"
+  ],
+  "commitEligible": true
+}
