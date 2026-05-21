@@ -71,7 +71,20 @@ export function assertStorageConsistency(): boolean {
   if (!token && !user) return true;
   if (token && user) return true;
 
-  clearAuthSession();
+  // Never destructively clear a valid token when storage events are racing
+  // across tabs (token write and user write are separate events).
+  // Keep token-only state and let hydrateAuth reconcile via /auth/me.
+  if (token && !user) {
+    return false;
+  }
+
+  // user-without-token is stale and unsafe; clear only user side.
+  if (!token && user) {
+    localStorage.removeItem(AUTH_USER_KEY);
+    sessionStorage.removeItem(AUTH_USER_KEY);
+    return false;
+  }
+
   return false;
 }
 
