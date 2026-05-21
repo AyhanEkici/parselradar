@@ -23,7 +23,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
 	// Incremented on every hydrateAuth call; stale async results are ignored.
 	const callIdRef = useRef(0);
-	const consecutive401Ref = useRef(0);
 
 	async function hydrateAuth() {
 		const callId = ++callIdRef.current;
@@ -35,7 +34,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		const token = getAuthToken();
 		const storedUser = getStoredUser();
 		if (!token) {
-			consecutive401Ref.current = 0;
 			if (callIdRef.current === callId) {
 				setUser(null);
 				setHydrating(false);
@@ -61,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setAuthHydrating(true);
 		try {
 			const u = await getMe();
-			consecutive401Ref.current = 0;
 			if (callIdRef.current === callId) {
 				setUser(u as User);
 				setAuthState('authenticated');
@@ -74,21 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			const status = (err as { status?: number })?.status;
 			if (callIdRef.current === callId) {
 				if (status === 401) {
-					consecutive401Ref.current += 1;
-
-					// Only clear after repeated 401s to avoid transient reload lockouts.
-					// This preserves session continuity on hard-refresh/back-forward races.
-					if (consecutive401Ref.current >= 2 || !storedUser) {
-						setUser(null);
-						setAuthState('unauthenticated');
-					} else {
+					// Keep session continuity on refresh/back-forward when storage still
+					// has a complete auth session and /auth/me flakes transiently.
+					if (storedUser && getAuthToken()) {
 						setUser(storedUser as User);
 						setAuthState('authenticated');
-						setTimeout(() => {
-							if (getAuthToken()) {
-								hydrateAuth();
-							}
-						}, 700);
+					} else {
+						setUser(null);
+						setAuthState('unauthenticated');
 					}
 				} else {
 					if (storedUser && getAuthToken()) {

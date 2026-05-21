@@ -1,8 +1,8 @@
 /**
  * verifySessionPersistence.ts
  *
- * Verifies that the session persistence fix (P0.4) is correctly in place:
- *   1. Static code proofs — hydration guard exists in authStorage / apiFetch / useAuth
+ * Verifies that the session persistence fix is correctly in place:
+ *   1. Static code proofs — hydration guard + non-destructive 401 handling in authStorage / apiFetch / useAuth
  *   2. Live proofs    — token survives repeated /auth/me calls (hard-refresh simulation)
  *   3. Logout proof   — token clear path remains correct
  *
@@ -52,12 +52,14 @@ function runStaticChecks(): void {
     'isAuthHydrating must be exported from authStorage.ts',
   );
 
-  // apiFetch must NOT clear session while hydrating
+  // apiFetch must treat 401 as non-destructive and let auth hooks decide session transitions
   record(
-    'apiFetch skips clearAuthSession during hydration',
-    api.includes('isAuthHydrating()') &&
-      api.includes('response.status === 401 && !isAuthHydrating()'),
-    'apiFetch must gate clearAuthSession on !isAuthHydrating().',
+    'apiFetch keeps 401 handling non-destructive',
+    api.includes('response.status === 401') &&
+      api.includes('session clearing is handled explicitly') &&
+      api.includes('confirmed auth invalidation logic in useAuth') &&
+      !api.includes('clearAuthSession()'),
+    'apiFetch should surface 401 without force-clearing browser auth session.',
   );
 
   record(
@@ -79,14 +81,13 @@ function runStaticChecks(): void {
     'useAuth must clear hydrating flag in finally block.',
   );
 
-  // useAuth must only clear on confirmed 401 — not generic catch
+  // useAuth must keep hydration flow defensive without unconditional destructive clear
   record(
-    'useAuth only clears session on confirmed 401',
+    'useAuth handles hydration failures without destructive clear',
     useAuth.includes("status === 401") &&
-      useAuth.includes('clearAuthSession()') &&
-      // Must NOT have the old "catch {" pattern that clears unconditionally
-      !useAuth.includes('} catch {\n\t\t\t// 401 or network error: clear session silently'),
-    'hydrateAuth must check err.status === 401 before calling clearAuthSession.',
+      useAuth.includes('setAuthState(\'unauthenticated\')') &&
+      !useAuth.includes('clearAuthSession()'),
+    'hydrateAuth should transition to unauthenticated state without wiping storage during transient failures.',
   );
 
   // Token key must still be canonical
