@@ -4,27 +4,31 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
+import { getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession, clearAuthSession, isLoginWriteInProgress } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
-type AuthState = 'hydrating' | 'authenticated' | 'unauthenticated';
+type AuthState = 'booting' | 'authenticating' | 'authenticated' | 'unauthenticated' | 'invalid';
 type AuthContextType = { user: User; isAdmin: boolean; hydrating: boolean; authState: AuthState };
 const AuthContext = createContext<AuthContextType>({
 	user: null,
 	isAdmin: false,
 	hydrating: true,
-	authState: 'hydrating',
+	authState: 'booting',
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User>(null);
 	const [hydrating, setHydrating] = useState(true);
-	const [authState, setAuthState] = useState<AuthState>('hydrating');
+	const [authState, setAuthState] = useState<AuthState>('booting');
 	const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
 	// Incremented on every hydrateAuth call; stale async results are ignored.
 	const callIdRef = useRef(0);
 
 	async function hydrateAuth() {
+		if (isLoginWriteInProgress()) {
+			return;
+		}
+
 		const callId = ++callIdRef.current;
 
 		// Always reconcile split storage before auth checks.
@@ -51,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 		if (callIdRef.current === callId) {
 			setHydrating(true);
-			setAuthState('hydrating');
+			setAuthState('authenticating');
 		}
 
 		// Signal to apiFetch that it must NOT wipe the token on a transient 401.
@@ -71,15 +75,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			const status = (err as { status?: number })?.status;
 			if (callIdRef.current === callId) {
 				if (status === 401) {
-					// Keep session continuity on refresh/back-forward when storage still
-					// has a complete auth session and /auth/me flakes transiently.
-					if (storedUser && getAuthToken()) {
-						setUser(storedUser as User);
-						setAuthState('authenticated');
-					} else {
-						setUser(null);
-						setAuthState('unauthenticated');
-					}
+					clearAuthSession('confirmed_auth_me_401');
+					setUser(null);
+					setAuthState('invalid');
 				} else {
 					if (storedUser && getAuthToken()) {
 						setUser(storedUser as User);
@@ -105,7 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	// Cross-tab login/logout sync. auth:changed is NEVER dispatched by 401
 	// handling, so this cannot create a retry loop.
 	useEffect(() => {
-		const handler = () => hydrateAuth();
+		const handler = () => {
+			if (isLoginWriteInProgress()) return;
+			hydrateAuth();
+		};
 		window.addEventListener('auth:changed', handler);
 		window.addEventListener('storage', handler);
 		return () => {
@@ -119,6 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	// force user state to unauthenticated to avoid stale navbar/login mismatches.
 	useEffect(() => {
 		if (hydrating) return;
+		if (isLoginWriteInProgress()) return;
 		if (user && !hasAuthSession()) {
 			setUser(null);
 			setAuthState('unauthenticated');

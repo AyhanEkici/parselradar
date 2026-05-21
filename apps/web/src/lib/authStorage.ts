@@ -4,19 +4,24 @@
 
 export const AUTH_TOKEN_KEY = 'parselradar_token';
 export const AUTH_USER_KEY = 'parselradar_user';
+export const AUTH_LOGIN_WRITE_KEY = 'parselradar_login_write_in_progress';
 
 export type StoredUser = { id: string; email: string; name: string; role: string };
 
+function hasWindow() {
+  return typeof window !== 'undefined';
+}
+
 /** Returns the stored JWT or null if absent/empty. */
 export function getAuthToken(): string | null {
-  if (typeof window === 'undefined') return null;
+  if (!hasWindow()) return null;
   const t = localStorage.getItem(AUTH_TOKEN_KEY);
   return t && t.trim().length > 0 ? t : null;
 }
 
 /** Returns the stored user object or null. */
 export function getStoredUser(): StoredUser | null {
-  if (typeof window === 'undefined') return null;
+  if (!hasWindow()) return null;
   try {
     const raw = localStorage.getItem(AUTH_USER_KEY);
     if (!raw) return null;
@@ -26,17 +31,43 @@ export function getStoredUser(): StoredUser | null {
   }
 }
 
+export function markLoginWriteInProgress(active = true): void {
+  if (!hasWindow()) return;
+  if (active) {
+    localStorage.setItem(AUTH_LOGIN_WRITE_KEY, '1');
+    sessionStorage.setItem(AUTH_LOGIN_WRITE_KEY, '1');
+    return;
+  }
+  localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
+  sessionStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
+}
+
+export function isLoginWriteInProgress(): boolean {
+  if (!hasWindow()) return false;
+  return localStorage.getItem(AUTH_LOGIN_WRITE_KEY) === '1' || sessionStorage.getItem(AUTH_LOGIN_WRITE_KEY) === '1';
+}
+
 /**
  * Persist a new session and notify same-tab + cross-tab listeners.
  * Call this after a successful login or register response.
  */
 export function setAuthSession(token: string, user: StoredUser): void {
+  if (!hasWindow()) return;
+  markLoginWriteInProgress(true);
   localStorage.setItem(AUTH_TOKEN_KEY, token);
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-  // Notify listeners (useAuth cross-tab sync, other components)
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new Event('auth:changed'));
+  sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+  sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  const writeOk = Boolean(getAuthToken() && getStoredUser());
+  markLoginWriteInProgress(false);
+
+  if (!writeOk) {
+    clearAuthSession('login_write_verification_failed');
+    throw new Error('AUTH_SESSION_WRITE_FAILED');
   }
+
+  // Notify listeners (useAuth cross-tab sync, other components)
+  window.dispatchEvent(new Event('auth:changed'));
 }
 
 /**
@@ -45,17 +76,20 @@ export function setAuthSession(token: string, user: StoredUser): void {
  * a re-hydration loop. Callers that need cross-tab notification (logout)
  * must dispatch 'auth:changed' themselves.
  */
-export function clearAuthSession(): void {
-  if (typeof window === 'undefined') return;
+export function clearAuthSession(reason = 'unspecified'): void {
+  if (!hasWindow()) return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(AUTH_USER_KEY);
+  localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
   sessionStorage.removeItem(AUTH_TOKEN_KEY);
   sessionStorage.removeItem(AUTH_USER_KEY);
+  sessionStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
+  sessionStorage.setItem('parselradar_last_clear_reason', reason);
 }
 
 /** True only when BOTH token + user exist in localStorage. */
 export function hasAuthSession(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (!hasWindow()) return false;
   return Boolean(getAuthToken() && getStoredUser());
 }
 
@@ -64,12 +98,16 @@ export function hasAuthSession(): boolean {
  * Returns true when storage is internally consistent after reconciliation.
  */
 export function assertStorageConsistency(): boolean {
-  if (typeof window === 'undefined') return true;
+  if (!hasWindow()) return true;
   const token = getAuthToken();
   const user = getStoredUser();
 
   if (!token && !user) return true;
   if (token && user) return true;
+
+  if (isLoginWriteInProgress()) {
+    return false;
+  }
 
   // Never destructively clear a valid token when storage events are racing
   // across tabs (token write and user write are separate events).

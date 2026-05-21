@@ -1,5 +1,5 @@
 import { apiFetch } from './api';
-import { setAuthSession, clearAuthSession, StoredUser } from './authStorage';
+import { clearAuthSession, StoredUser } from './authStorage';
 
 type AuthSuccessResponse = { token: string; user: StoredUser };
 type AuthErrorResponse = { error: string };
@@ -10,29 +10,17 @@ export async function getMe(): Promise<StoredUser> {
 }
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
-  const response = (await apiFetch('/auth/login', {
+  return (await apiFetch('/auth/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   })) as AuthResponse;
-
-  if ('token' in response && response.token && response.user) {
-    setAuthSession(response.token, response.user);
-  }
-
-  return response;
 }
 
 export async function register(email: string, password: string, name: string): Promise<AuthResponse> {
-  const response = (await apiFetch('/auth/register', {
+  return (await apiFetch('/auth/register', {
     method: 'POST',
     body: JSON.stringify({ email, password, name }),
   })) as AuthResponse;
-
-  if ('token' in response && response.token && response.user) {
-    setAuthSession(response.token, response.user);
-  }
-
-  return response;
 }
 
 export async function logout(): Promise<void> {

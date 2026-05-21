@@ -101,8 +101,10 @@ function run() {
   checks.push(
     check(
       'Protected routes wait for hydration contract exists',
-      useAuth.includes("authState: 'hydrating'") && app.includes('<AdminOnly>') && login.includes('hydrating'),
-      'Hydration contract remains explicit across auth context and route surfaces.',
+      (useAuth.includes("authState: 'booting'") || useAuth.includes("authState: 'authenticating'")) &&
+        app.includes('<AdminOnly>') &&
+        login.includes('hydrating'),
+      'Boot/authenticating contract remains explicit across auth context and route surfaces.',
     ),
   );
 

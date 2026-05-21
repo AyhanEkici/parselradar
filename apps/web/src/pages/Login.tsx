@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui';
 import ForgotPasswordLink from '../components/auth/ForgotPasswordLink';
 import { useAuth } from '../hooks/useAuth';
-import { setAuthSession } from '../lib/authStorage';
+import { getAuthToken, getStoredUser, setAuthSession } from '../lib/authStorage';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,8 +34,6 @@ export default function Login() {
     const loadingToastId = toast.loading('Giriş yapılıyor...');
 
     try {
-      // login() calls setAuthSession internally on success (via auth.ts).
-      // Do NOT write to localStorage here — that would create a duplicate.
       const res = await login(email.trim(), password);
 
       if ('error' in res) {
@@ -50,9 +48,13 @@ export default function Login() {
         return;
       }
 
-      // Redundant safety write: keep storage truth intact even if upstream auth
-      // helper behavior changes or a race interrupts initial hydration.
       setAuthSession(res.token, res.user);
+
+      if (!getAuthToken() || !getStoredUser()) {
+        toast.dismiss(loadingToastId);
+        toast.error('Oturum yazilamadi. Lutfen tekrar deneyin.');
+        return;
+      }
 
       toast.dismiss(loadingToastId);
       toast.success('Giriş başarılı');
