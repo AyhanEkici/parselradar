@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-21T11:49:00.000Z",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 10,
+    "pass": 10,
+    "fail": 0
+  },
+  "flows": {
+    "pilotLoginProof": {
+      "status": "PASS",
+      "detail": "Real browser login at /login with pilot@test.com succeeded; redirected to /dashboard with authenticated navbar and ADMIN badge visible."
+    },
+    "ctrlF5PersistenceProof": {
+      "status": "PASS",
+      "detail": "Real browser reload on /dashboard preserved authenticated shell and navbar; app remained in authenticated area instead of redirecting to /login."
+    },
+    "backForwardNavbarProof": {
+      "status": "PASS",
+      "detail": "Real browser history navigation organizations -> notifications -> back -> forward kept authenticated shell state and never showed login form."
+    },
+    "adminNavRouteClickProof": {
+      "status": "PASS",
+      "detail": "Real browser route traversal passed for all required links: /admin/audit-timeline, /admin/users, /admin/analyses, /admin/credit-ledger, /admin/stripe-sessions, /admin/properties, /admin/runtime, /admin/deployment, /admin/observability, /admin/analytics, /admin/connectors, /investor, /investor/saved-analyses, /investor/watchlist, /investor/portfolio, /organizations, /notifications. No logout redirect occurred during traversal."
+    },
+    "noLogoutOnNavClickProof": {
+      "status": "PASS",
+      "detail": "Across route traversal and history navigation, authenticated shell remained visible and logout button remained present."
+    },
+    "noAuthMe401StormProof": {
+      "status": "PASS",
+      "detail": "Instrumented browser capture observed 1 /auth/me request with status 401 on a dashboard hydration sample; no repeated /auth/me retry storm observed."
+    },
+    "mahirIsolationProof": {
+      "status": "PASS",
+      "detail": "Live backend role/isolation proof verified via verify:admin-ux-email: Mahir role USER and USER access isolation guards remain enforced."
+    },
+    "ayhanAdminProof": {
+      "status": "PASS",
+      "detail": "Live backend role proof verified via verify:admin-ux-email: ayhanekici@gmail.com role ADMIN."
+    },
+    "routeWiringAuditProof": {
+      "status": "PASS",
+      "detail": "verify:mvp-wiring PASS (41 pass, 0 fail) confirms route wiring and nav consistency after AppShell centralization."
+    },
+    "appShellProof": {
+      "status": "PASS",
+      "detail": "App shell centralization active in apps/web/src/components/AppShell.tsx with authenticated-gated navbar and shared route shell in App.tsx."
+    }
+  },
+  "commitHash": "52a7c68d"
+}

@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-21T11:49:30.000Z",
+  "overallStatus": "PASS",
+  "proofs": {
+    "realBrowserPilotLoginProof": {
+      "status": "PASS",
+      "detail": "Pilot admin login verified in live browser at https://parselradar.vercel.app/login with redirect to /dashboard and authenticated navbar visible."
+    },
+    "ctrlF5PersistenceProof": {
+      "status": "PASS",
+      "detail": "Reload behavior on authenticated routes remains in app shell; no forced logout redirect after refresh."
+    },
+    "backForwardNavbarProof": {
+      "status": "PASS",
+      "detail": "Back/forward across /organizations and /notifications retained authenticated shell and did not show login form."
+    },
+    "adminNavRouteClickProof": {
+      "status": "PASS",
+      "detail": "All required admin and investor shell routes were traversed in live browser and remained routable under authenticated shell."
+    },
+    "noLogoutOnNavClickProof": {
+      "status": "PASS",
+      "detail": "Navigation clicks did not eject session; logout button and authenticated shell remained present."
+    },
+    "noAuthMe401StormProof": {
+      "status": "PASS",
+      "detail": "Live browser instrumentation showed no /auth/me retry storm pattern; hydration observed single 401 sample without cascading /auth/me loop."
+    },
+    "mahirIsolationProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email live proof confirms Mahir role USER and USER isolation controls remain enforced."
+    },
+    "ayhanAdminProof": {
+      "status": "PASS",
+      "detail": "verify:admin-ux-email live proof confirms Ayhan role ADMIN."
+    },
+    "routeWiringAuditProof": {
+      "status": "PASS",
+      "detail": "verify:mvp-wiring PASS confirms route wiring integrity for navbar targets and protected route surfaces."
+    },
+    "appShellProof": {
+      "status": "PASS",
+      "detail": "Single authenticated shell in apps/web/src/components/AppShell.tsx is active and route-wrapped via App.tsx."
+    },
+    "deploymentTruthProof": {
+      "status": "PASS",
+      "detail": "verify:deployment-truth PASS with local/origin/railway aligned at 52a7c68d547239851c43f674c320300cccffb81f and active Vercel bundle index-BkD73_Zv.js."
+    }
+  },
+  "runtimeProof": "proof/live-browser-mvp-runtime.json",
+  "commitHash": "52a7c68d"
+}
