@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:49:25.496Z",
+  "step": "verify:geo-ux-integrity",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "geo overlay rendering",
+      "pass": true,
+      "proof": "proof/geo-overlay-render-audit.json"
+    },
+    {
+      "name": "layer grouping",
+      "pass": true,
+      "proof": "proof/layer-grouping-audit.json"
+    },
+    {
+      "name": "viewport persistence",
+      "pass": true,
+      "proof": "proof/viewport-persistence-audit.json"
+    },
+    {
+      "name": "spatial analysis linkage",
+      "pass": true,
+      "proof": "proof/spatial-analysis-linkage.json"
+    },
+    {
+      "name": "map diagnostics",
+      "pass": true,
+      "proof": "proof/map-diagnostics-audit.json"
+    }
+  ]
+}

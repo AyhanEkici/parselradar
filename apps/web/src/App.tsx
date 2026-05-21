@@ -28,6 +28,10 @@ import AdminTucbsConnector from './pages/AdminTucbsConnector';
 import AdminOgcConnectors from './pages/AdminOgcConnectors';
 import AdminLayers from './pages/AdminLayers';
 import AdminLayerHealth from './pages/AdminLayerHealth';
+import AdminGeoDiagnostics from './pages/AdminGeoDiagnostics';
+import MapRoute from './pages/MapRoute';
+import MapAnalysisRoute from './pages/MapAnalysisRoute';
+import MapPortfolioRoute from './pages/MapPortfolioRoute';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -105,6 +109,10 @@ function AppRoutes() {
       <Route path="/admin/connectors/:connectorKey" element={<RequireAuth><AdminOnly><AdminConnectorDetail /></AdminOnly></RequireAuth>} />
       <Route path="/admin/layers" element={<RequireAuth><AdminOnly>{withBoundary('/admin/layers', <AdminLayers />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/layer-health" element={<RequireAuth><AdminOnly>{withBoundary('/admin/layer-health', <AdminLayerHealth />)}</AdminOnly></RequireAuth>} />
+      <Route path="/admin/geo-diagnostics" element={<RequireAuth><AdminOnly>{withBoundary('/admin/geo-diagnostics', <AdminGeoDiagnostics />)}</AdminOnly></RequireAuth>} />
+      <Route path="/map" element={<RequireAuth>{withBoundary('/map', <MapRoute />)}</RequireAuth>} />
+      <Route path="/map/analysis/:id" element={<RequireAuth>{withBoundary('/map/analysis/:id', <MapAnalysisRoute />)}</RequireAuth>} />
+      <Route path="/map/portfolio" element={<RequireAuth>{withBoundary('/map/portfolio', <MapPortfolioRoute />)}</RequireAuth>} />
       <Route path="/properties/new" element={<RequireAuth><NewProperty /></RequireAuth>} />
       <Route path="/properties/:id" element={<RequireAuth><PropertyDetail /></RequireAuth>} />
       <Route path="/properties/:id/documents" element={<RequireAuth><PropertyDocuments /></RequireAuth>} />

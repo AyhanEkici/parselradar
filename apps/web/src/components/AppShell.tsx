@@ -51,6 +51,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   {isAdmin ? <Link to="/admin/connectors/ogc" className="hover:underline">OGC</Link> : null}
                   {isAdmin ? <Link to="/admin/layers" className="hover:underline">Layers</Link> : null}
                   {isAdmin ? <Link to="/admin/layer-health" className="hover:underline">Layer Health</Link> : null}
+                  {isAdmin ? <Link to="/admin/geo-diagnostics" className="hover:underline">Geo Diagnostics</Link> : null}
+                  <Link to="/map" className="hover:underline">Map</Link>
+                  <Link to="/map/portfolio" className="hover:underline">Map Portfolio</Link>
                   <Link to="/investor" className="hover:underline">Investor</Link>
                   <Link to="/investor/saved-analyses" className="hover:underline">Saved</Link>
                   <Link to="/investor/watchlist" className="hover:underline">Watchlist</Link>

@@ -67,6 +67,7 @@ export default function PortfolioDashboard() {
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-5xl space-y-4">
         <h1 className="text-2xl font-bold text-slate-900">Portfolio Dashboard</h1>
+        <Link to="/map/portfolio" className="inline-flex rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Open Portfolio Map</Link>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Toplam Değer: {new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(summary.totalValue)}</div>

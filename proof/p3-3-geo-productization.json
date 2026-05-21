@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-21T21:49:27.982Z",
+  "phase": "P3.3",
+  "step": "verify:geo-productization",
+  "overallStatus": "PASS",
+  "geoUxStatus": "PASS",
+  "overlayIntegrityStatus": "PASS",
+  "diagnosticsStatus": "PASS",
+  "analysisLinkageStatus": "PASS",
+  "remainingGeoBlockers": [],
+  "checks": [
+    {
+      "name": "overlay integrity",
+      "status": "PASS",
+      "proof": "proof/geo-overlay-render-audit.json"
+    },
+    {
+      "name": "layer grouping",
+      "status": "PASS",
+      "proof": "proof/layer-grouping-audit.json"
+    },
+    {
+      "name": "viewport persistence",
+      "status": "PASS",
+      "proof": "proof/viewport-persistence-audit.json"
+    },
+    {
+      "name": "analysis linkage",
+      "status": "PASS",
+      "proof": "proof/spatial-analysis-linkage.json"
+    },
+    {
+      "name": "diagnostics",
+      "status": "PASS",
+      "proof": "proof/map-diagnostics-audit.json"
+    },
+    {
+      "name": "geo ux integrity",
+      "status": "PASS",
+      "proof": "proof/geo-ux-integrity-audit.json"
+    }
+  ],
+  "proofs": [
+    "proof/p3-3-geo-productization.json",
+    "proof/p3-3-geo-productization.md",
+    "proof/geo-overlay-render-audit.json",
+    "proof/layer-grouping-audit.json",
+    "proof/viewport-persistence-audit.json",
+    "proof/spatial-analysis-linkage.json",
+    "proof/map-diagnostics-audit.json"
+  ]
+}

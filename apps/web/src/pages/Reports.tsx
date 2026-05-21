@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
+import { Link } from 'react-router-dom';
 import GovernanceBadge from '../components/governance/GovernanceBadge';
 import UserScopedNotice from '../components/UserScopedNotice';
 import { getApiBaseUrl } from '../lib/api';
@@ -111,6 +112,14 @@ export default function Reports() {
             <div className="flex flex-wrap justify-between items-center gap-2">
               <span>Rapor: {r._id}</span>
               <div className="flex items-center gap-2">
+                {r.analysisRunId ? (
+                  <Link
+                    to={`/map/analysis/${r.analysisRunId}`}
+                    className="rounded bg-slate-700 px-3 py-1 text-white"
+                  >
+                    Map
+                  </Link>
+                ) : null}
                 {r.analysisRunId ? (
                   <button
                     type="button"

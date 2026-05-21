@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:48:50.127Z",
+  "step": "verify:layer-grouping",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "layer group panel exists",
+      "pass": true,
+      "detail": "LayerGroupPanel should exist."
+    },
+    {
+      "name": "keyword classification exists",
+      "pass": true,
+      "detail": "Layer grouping classification should be implemented."
+    },
+    {
+      "name": "layer search filter exists",
+      "pass": true,
+      "detail": "Layer search should filter grouped layers."
+    },
+    {
+      "name": "group visibility toggles exist",
+      "pass": true,
+      "detail": "Layer visibility toggles should exist in groups."
+    },
+    {
+      "name": "group opacity sliders exist",
+      "pass": true,
+      "detail": "Layer opacity controls should exist in groups."
+    },
+    {
+      "name": "legend summarizes active overlays",
+      "pass": true,
+      "detail": "Legend should summarize active overlays."
+    }
+  ]
+}

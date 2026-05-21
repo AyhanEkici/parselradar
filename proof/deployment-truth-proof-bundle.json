@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-21T21:35:51.789Z",
+  "generatedAt": "2026-05-21T21:48:35.739Z",
   "overallStatus": "PASS",
   "proofs": {
     "localHeadProof": {
       "status": "PASS",
-      "detail": "local HEAD = a4442c335dfee6738d010a08b71fe4e7a4815187"
+      "detail": "local HEAD = f8307b5665003cc4b3b3d8fe39c2666ac68d3003"
     },
     "originMainProof": {
       "status": "PASS",
-      "detail": "origin/main HEAD = a4442c335dfee6738d010a08b71fe4e7a4815187"
+      "detail": "origin/main HEAD = f8307b5665003cc4b3b3d8fe39c2666ac68d3003"
     },
     "railwayHealthProof": {
       "status": "PASS",
@@ -16,23 +16,23 @@
     },
     "railwayGitShaProof": {
       "status": "PASS",
-      "detail": "Railway /__buildinfo gitSha = a4442c335dfee6738d010a08b71fe4e7a4815187"
+      "detail": "Railway /__buildinfo gitSha = f8307b5665003cc4b3b3d8fe39c2666ac68d3003"
     },
     "commitAlignmentProof": {
       "status": "PASS",
-      "detail": "Railway gitSha matches origin/main (a4442c335dfee6738d010a08b71fe4e7a4815187)."
+      "detail": "Railway gitSha matches origin/main (f8307b5665003cc4b3b3d8fe39c2666ac68d3003)."
     },
     "requiredCommit_fd956a58_Proof": {
       "status": "PASS",
-      "detail": "fd956a58 is reachable in Railway gitSha a4442c335dfee6738d010a08b71fe4e7a4815187."
+      "detail": "fd956a58 is reachable in Railway gitSha f8307b5665003cc4b3b3d8fe39c2666ac68d3003."
     },
     "requiredCommit_80d94b53_Proof": {
       "status": "PASS",
-      "detail": "80d94b53 is reachable in Railway gitSha a4442c335dfee6738d010a08b71fe4e7a4815187."
+      "detail": "80d94b53 is reachable in Railway gitSha f8307b5665003cc4b3b3d8fe39c2666ac68d3003."
     },
     "requiredCommit_ce3d58db_Proof": {
       "status": "PASS",
-      "detail": "ce3d58db is reachable in Railway gitSha a4442c335dfee6738d010a08b71fe4e7a4815187."
+      "detail": "ce3d58db is reachable in Railway gitSha f8307b5665003cc4b3b3d8fe39c2666ac68d3003."
     },
     "vercelLoginReachableProof": {
       "status": "PASS",
@@ -40,7 +40,7 @@
     },
     "vercelActiveBundleProof": {
       "status": "PASS",
-      "detail": "Active Vercel JS bundle = https://parselradar.vercel.app/assets/index-BiIk5hmT.js"
+      "detail": "Active Vercel JS bundle = https://parselradar.vercel.app/assets/index-Dd-NTmJk.js"
     },
     "vercelBundleAuthMarkerProof": {
       "status": "PASS",
@@ -51,6 +51,6 @@
       "detail": "Backend /health reachable."
     }
   },
-  "commitHash": "a4442c33",
+  "commitHash": "f8307b56",
   "nextAction": "Alignment PASS. Continue behavior debugging only if runtime checks fail."
 }

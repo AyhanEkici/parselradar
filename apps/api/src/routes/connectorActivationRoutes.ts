@@ -20,6 +20,9 @@ import {
   getAdminLayers,
   patchAdminLayerVisibility,
   getAdminLayerHealth,
+  getAdminGeoDiagnostics,
+  getGeoLayers,
+  getGeoDiagnostics,
 } from '../controllers/connectorActivationController';
 
 const router = express.Router();
@@ -47,5 +50,10 @@ router.patch('/admin/connectors/:connectorKey/source-approval', auth, admin, pat
 router.get('/admin/layers', auth, admin, getAdminLayers);
 router.patch('/admin/layers/:layerId/visibility', auth, admin, patchAdminLayerVisibility);
 router.get('/admin/layer-health', auth, admin, getAdminLayerHealth);
+router.get('/admin/geo-diagnostics', auth, admin, getAdminGeoDiagnostics);
+
+// P3.3 authenticated geo read surfaces
+router.get('/geo/layers', auth, getGeoLayers);
+router.get('/geo/diagnostics', auth, getGeoDiagnostics);
 
 export default router;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
+import { Link } from 'react-router-dom';
 import OrganizationCard from '../components/organization/OrganizationCard';
 
 export default function Organizations() {
@@ -48,6 +49,7 @@ export default function Organizations() {
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-6xl space-y-5">
         <h1 className="text-3xl font-bold text-slate-900">Organizations</h1>
+        <Link to="/map" className="inline-flex rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Open Spatial Workspace</Link>
 
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="mb-2 text-sm font-semibold text-slate-800">Create Organization</div>

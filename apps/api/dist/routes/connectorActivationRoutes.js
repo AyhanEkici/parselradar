@@ -28,4 +28,8 @@ router.patch('/admin/connectors/:connectorKey/source-approval', auth_1.auth, adm
 router.get('/admin/layers', auth_1.auth, admin_1.admin, connectorActivationController_1.getAdminLayers);
 router.patch('/admin/layers/:layerId/visibility', auth_1.auth, admin_1.admin, connectorActivationController_1.patchAdminLayerVisibility);
 router.get('/admin/layer-health', auth_1.auth, admin_1.admin, connectorActivationController_1.getAdminLayerHealth);
+router.get('/admin/geo-diagnostics', auth_1.auth, admin_1.admin, connectorActivationController_1.getAdminGeoDiagnostics);
+// P3.3 authenticated geo read surfaces
+router.get('/geo/layers', auth_1.auth, connectorActivationController_1.getGeoLayers);
+router.get('/geo/diagnostics', auth_1.auth, connectorActivationController_1.getGeoDiagnostics);
 exports.default = router;

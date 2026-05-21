@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:49:18.376Z",
+  "step": "verify:viewport-persistence",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "viewport persistence utility exists",
+      "pass": true,
+      "detail": "ViewportPersistence utility should expose load/save."
+    },
+    {
+      "name": "viewport defaults bounded",
+      "pass": true,
+      "detail": "Viewport bounds should be clamped safely."
+    },
+    {
+      "name": "map loads persisted viewport on boot",
+      "pass": true,
+      "detail": "Map workspace should restore viewport on boot."
+    },
+    {
+      "name": "map saves viewport changes",
+      "pass": true,
+      "detail": "Map workspace should persist viewport changes."
+    },
+    {
+      "name": "viewport reset control exists",
+      "pass": true,
+      "detail": "Viewport reset should be available."
+    }
+  ]
+}

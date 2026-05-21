@@ -329,3 +329,35 @@ export const getAdminLayerHealth = async (_req: AuthRequest, res: Response) => {
     ...health,
   });
 };
+
+// P3.3: GET /admin/geo-diagnostics
+export const getAdminGeoDiagnostics = async (_req: AuthRequest, res: Response) => {
+  const health = await getTucbsLayerHealth();
+  return res.json({
+    mode: 'READ_ONLY_GEO_LAYERS',
+    diagnosticsScope: 'ADMIN',
+    generatedAt: new Date().toISOString(),
+    ...health,
+  });
+};
+
+// P3.3: GET /geo/layers
+export const getGeoLayers = async (_req: AuthRequest, res: Response) => {
+  const catalog = await getTucbsLayerCatalog();
+  return res.json({
+    provider: catalog.provider,
+    mode: 'READ_ONLY_GEO_LAYERS',
+    layers: catalog.layers,
+  });
+};
+
+// P3.3: GET /geo/diagnostics
+export const getGeoDiagnostics = async (_req: AuthRequest, res: Response) => {
+  const health = await getTucbsLayerHealth();
+  return res.json({
+    mode: 'READ_ONLY_GEO_LAYERS',
+    diagnosticsScope: 'USER',
+    generatedAt: new Date().toISOString(),
+    ...health,
+  });
+};

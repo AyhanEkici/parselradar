@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-05-21T21:49:23.072Z",
+  "step": "verify:map-diagnostics",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "diagnostics panel exists",
+      "pass": true,
+      "detail": "MapDiagnosticsPanel should exist."
+    },
+    {
+      "name": "overlay render latency tracked",
+      "pass": true,
+      "detail": "Overlay render latency should be tracked."
+    },
+    {
+      "name": "failed layer and provider diagnostics tracked",
+      "pass": true,
+      "detail": "Failed layer/provider diagnostics should be tracked."
+    },
+    {
+      "name": "crs mismatch and unsupported projection tracked",
+      "pass": true,
+      "detail": "CRS mismatch and unsupported projection diagnostics should be tracked."
+    },
+    {
+      "name": "timeout layer diagnostics tracked",
+      "pass": true,
+      "detail": "Timeout layer diagnostics should be tracked."
+    },
+    {
+      "name": "geo diagnostics admin route exists",
+      "pass": true,
+      "detail": "Admin geo diagnostics route should exist."
+    },
+    {
+      "name": "geo diagnostics admin page exists",
+      "pass": true,
+      "detail": "Admin geo diagnostics UI should exist."
+    }
+  ]
+}

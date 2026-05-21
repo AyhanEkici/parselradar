@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAdminLayerHealth = exports.patchAdminLayerVisibility = exports.getAdminLayers = exports.postAdminTucbsSync = exports.getAdminOgcConnectors = exports.getAdminTucbsConnector = exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
+exports.getGeoDiagnostics = exports.getGeoLayers = exports.getAdminGeoDiagnostics = exports.getAdminLayerHealth = exports.patchAdminLayerVisibility = exports.getAdminLayers = exports.postAdminTucbsSync = exports.getAdminOgcConnectors = exports.getAdminTucbsConnector = exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
 const connectorRegistry_1 = require("../connectors/connectorRegistry");
 const connectorExecutionRegistry_1 = require("../connectors/connectorExecutionRegistry");
 const buildConnectorReadiness_1 = require("../services/connectorActivation/buildConnectorReadiness");
@@ -310,3 +310,35 @@ const getAdminLayerHealth = async (_req, res) => {
     });
 };
 exports.getAdminLayerHealth = getAdminLayerHealth;
+// P3.3: GET /admin/geo-diagnostics
+const getAdminGeoDiagnostics = async (_req, res) => {
+    const health = await (0, tucbsLayerCatalog_1.getTucbsLayerHealth)();
+    return res.json({
+        mode: 'READ_ONLY_GEO_LAYERS',
+        diagnosticsScope: 'ADMIN',
+        generatedAt: new Date().toISOString(),
+        ...health,
+    });
+};
+exports.getAdminGeoDiagnostics = getAdminGeoDiagnostics;
+// P3.3: GET /geo/layers
+const getGeoLayers = async (_req, res) => {
+    const catalog = await (0, tucbsLayerCatalog_1.getTucbsLayerCatalog)();
+    return res.json({
+        provider: catalog.provider,
+        mode: 'READ_ONLY_GEO_LAYERS',
+        layers: catalog.layers,
+    });
+};
+exports.getGeoLayers = getGeoLayers;
+// P3.3: GET /geo/diagnostics
+const getGeoDiagnostics = async (_req, res) => {
+    const health = await (0, tucbsLayerCatalog_1.getTucbsLayerHealth)();
+    return res.json({
+        mode: 'READ_ONLY_GEO_LAYERS',
+        diagnosticsScope: 'USER',
+        generatedAt: new Date().toISOString(),
+        ...health,
+    });
+};
+exports.getGeoDiagnostics = getGeoDiagnostics;

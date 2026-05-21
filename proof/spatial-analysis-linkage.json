@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:49:20.699Z",
+  "step": "verify:spatial-analysis-linkage",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "analysis overlays linked from reports",
+      "pass": true,
+      "detail": "Map overlays should link report analysis IDs to parcel overlays."
+    },
+    {
+      "name": "reports page links to analysis map route",
+      "pass": true,
+      "detail": "Reports should deep-link to map analysis route."
+    },
+    {
+      "name": "portfolio overlays linked to map",
+      "pass": true,
+      "detail": "Portfolio overlays should be derived from investor portfolio API."
+    },
+    {
+      "name": "portfolio page links to map route",
+      "pass": true,
+      "detail": "Portfolio page should link to map portfolio route."
+    },
+    {
+      "name": "organization/project overlays use real spatial fields",
+      "pass": true,
+      "detail": "Organization overlays should use real organization spatial portfolio data."
+    },
+    {
+      "name": "organizations page links to map workspace",
+      "pass": true,
+      "detail": "Organizations page should provide map entry point."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:48:47.875Z",
+  "step": "verify:geo-overlay-rendering",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "overlay component exists",
+      "pass": true,
+      "detail": "GeoAnalysisOverlay should be implemented."
+    },
+    {
+      "name": "real bbox rendering exists",
+      "pass": true,
+      "detail": "Layer bbox overlays should render from real layer data."
+    },
+    {
+      "name": "multi-overlay point rendering exists",
+      "pass": true,
+      "detail": "Overlay points should render from linked analysis/investment data."
+    },
+    {
+      "name": "selected overlay highlighting exists",
+      "pass": true,
+      "detail": "Selected analysis overlay should be highlighted."
+    },
+    {
+      "name": "compare-mode stacking support exists",
+      "pass": true,
+      "detail": "Compare mode should alter multi-layer rendering behavior."
+    },
+    {
+      "name": "map page links real overlay sources",
+      "pass": true,
+      "detail": "Map workspace should bind overlays to real APIs."
+    }
+  ]
+}
