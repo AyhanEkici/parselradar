@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CONNECTOR_ENDPOINT_REQUIREMENTS = void 0;
 exports.CONNECTOR_ENDPOINT_REQUIREMENTS = {
+    tucbs_ogc: 'CONNECTOR_TUCBS_WMS_ENDPOINT',
     tkgm_parcel: 'CONNECTOR_TKGM_ENDPOINT',
     municipality_zoning: 'CONNECTOR_MUNICIPALITY_ENDPOINT',
     listing_feed: 'CONNECTOR_LISTING_ENDPOINT',

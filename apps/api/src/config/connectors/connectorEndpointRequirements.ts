@@ -1,6 +1,7 @@
 import { ConnectorKey } from '../../connectors/connectorContracts';
 
 export const CONNECTOR_ENDPOINT_REQUIREMENTS: Record<ConnectorKey, string | null> = {
+  tucbs_ogc: 'CONNECTOR_TUCBS_WMS_ENDPOINT',
   tkgm_parcel: 'CONNECTOR_TKGM_ENDPOINT',
   municipality_zoning: 'CONNECTOR_MUNICIPALITY_ENDPOINT',
   listing_feed: 'CONNECTOR_LISTING_ENDPOINT',

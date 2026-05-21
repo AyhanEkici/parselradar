@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
+exports.getAdminLayerHealth = exports.patchAdminLayerVisibility = exports.getAdminLayers = exports.postAdminTucbsSync = exports.getAdminOgcConnectors = exports.getAdminTucbsConnector = exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
 const connectorRegistry_1 = require("../connectors/connectorRegistry");
 const connectorExecutionRegistry_1 = require("../connectors/connectorExecutionRegistry");
 const buildConnectorReadiness_1 = require("../services/connectorActivation/buildConnectorReadiness");
@@ -22,6 +22,7 @@ const deactivateConnector_1 = require("../services/connectorActivation/deactivat
 const buildConnectorActivationAudit_1 = require("../services/connectorActivation/buildConnectorActivationAudit");
 const ConnectorSourceApproval_1 = __importDefault(require("../models/ConnectorSourceApproval"));
 const auditLog_1 = require("../utils/auditLog");
+const tucbsLayerCatalog_1 = require("../connectors/tucbs/tucbsLayerCatalog");
 const getAdminConnectors = async (_req, res) => {
     const readiness = (0, buildConnectorReadiness_1.buildConnectorReadiness)();
     const legalRegistry = (0, buildLegalSourceRegistry_1.buildLegalSourceRegistry)();
@@ -209,3 +210,103 @@ const patchAdminConnectorSourceApproval = async (req, res) => {
     });
 };
 exports.patchAdminConnectorSourceApproval = patchAdminConnectorSourceApproval;
+// P3: GET /admin/connectors/tucbs
+const getAdminTucbsConnector = async (_req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)('tucbs_ogc');
+    if (!connector)
+        return res.status(404).json({ error: 'TUCBS connector not registered' });
+    const [activationState, catalog] = await Promise.all([
+        (0, getConnectorActivationState_1.getConnectorActivationState)('tucbs_ogc'),
+        (0, tucbsLayerCatalog_1.getTucbsLayerCatalog)(),
+    ]);
+    return res.json({
+        provider: 'tucbs_public_geo_layers',
+        mode: 'READ_ONLY_GEO_LAYERS',
+        connector: {
+            ...connector,
+            legalRequirement: sourceLegalRequirements_1.SOURCE_LEGAL_REQUIREMENTS[connector.legalRequirementKey],
+        },
+        activationState,
+        diagnostics: catalog.diagnostics,
+    });
+};
+exports.getAdminTucbsConnector = getAdminTucbsConnector;
+// P3: GET /admin/connectors/ogc
+const getAdminOgcConnectors = async (_req, res) => {
+    const catalog = await (0, tucbsLayerCatalog_1.getTucbsLayerCatalog)();
+    return res.json({
+        provider: 'tucbs_public_geo_layers',
+        mode: 'READ_ONLY_GEO_LAYERS',
+        services: catalog.diagnostics?.services || [],
+    });
+};
+exports.getAdminOgcConnectors = getAdminOgcConnectors;
+// P3: POST /admin/connectors/tucbs/sync
+const postAdminTucbsSync = async (req, res) => {
+    const result = await (0, tucbsLayerCatalog_1.syncTucbsLayerCatalog)();
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'connector_tucbs_sync',
+        actorUserId: req.user._id.toString(),
+        actorRole: req.user.role,
+        targetType: 'Connector',
+        targetId: 'tucbs_ogc',
+        message: 'TUCBS layer catalog sync executed',
+        metadata: {
+            mode: 'READ_ONLY_GEO_LAYERS',
+            layerCount: result.layers.length,
+            availability: result.diagnostics?.availability,
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
+    return res.json(result);
+};
+exports.postAdminTucbsSync = postAdminTucbsSync;
+// P3: GET /admin/layers
+const getAdminLayers = async (_req, res) => {
+    const catalog = await (0, tucbsLayerCatalog_1.getTucbsLayerCatalog)();
+    return res.json({
+        provider: catalog.provider,
+        mode: 'READ_ONLY_GEO_LAYERS',
+        layers: catalog.layers,
+    });
+};
+exports.getAdminLayers = getAdminLayers;
+// P3: PATCH /admin/layers/:layerId/visibility
+const patchAdminLayerVisibility = async (req, res) => {
+    const { layerId } = req.params;
+    const visible = req.body?.visible;
+    const opacity = req.body?.opacity;
+    const updated = await (0, tucbsLayerCatalog_1.patchLayerVisibility)(layerId, {
+        visible: typeof visible === 'boolean' ? visible : undefined,
+        opacity: typeof opacity === 'number' ? opacity : undefined,
+    });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'layer_visibility_updated',
+        actorUserId: req.user._id.toString(),
+        actorRole: req.user.role,
+        targetType: 'Layer',
+        targetId: layerId,
+        message: 'Layer visibility/opacity updated',
+        metadata: {
+            readOnly: true,
+            visible: updated.visibility,
+            opacity: updated.opacity,
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
+    return res.json(updated);
+};
+exports.patchAdminLayerVisibility = patchAdminLayerVisibility;
+// P3: GET /admin/layer-health
+const getAdminLayerHealth = async (_req, res) => {
+    const health = await (0, tucbsLayerCatalog_1.getTucbsLayerHealth)();
+    return res.json({
+        mode: 'READ_ONLY_GEO_LAYERS',
+        ...health,
+    });
+};
+exports.getAdminLayerHealth = getAdminLayerHealth;

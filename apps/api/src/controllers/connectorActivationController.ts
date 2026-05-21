@@ -18,6 +18,7 @@ import { deactivateConnector } from '../services/connectorActivation/deactivateC
 import { buildConnectorActivationAudit } from '../services/connectorActivation/buildConnectorActivationAudit';
 import ConnectorSourceApproval from '../models/ConnectorSourceApproval';
 import { logAuditEvent } from '../utils/auditLog';
+import { getTucbsLayerCatalog, getTucbsLayerHealth, patchLayerVisibility, syncTucbsLayerCatalog } from '../connectors/tucbs/tucbsLayerCatalog';
 
 export const getAdminConnectors = async (_req: AuthRequest, res: Response) => {
   const readiness = buildConnectorReadiness();
@@ -221,5 +222,110 @@ export const patchAdminConnectorSourceApproval = async (req: AuthRequest, res: R
     approved: record.approved,
     approvedAt: record.approvedAt,
     note: record.note,
+  });
+};
+
+// P3: GET /admin/connectors/tucbs
+export const getAdminTucbsConnector = async (_req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey('tucbs_ogc');
+  if (!connector) return res.status(404).json({ error: 'TUCBS connector not registered' });
+
+  const [activationState, catalog] = await Promise.all([
+    getConnectorActivationState('tucbs_ogc'),
+    getTucbsLayerCatalog(),
+  ]);
+
+  return res.json({
+    provider: 'tucbs_public_geo_layers',
+    mode: 'READ_ONLY_GEO_LAYERS',
+    connector: {
+      ...connector,
+      legalRequirement: SOURCE_LEGAL_REQUIREMENTS[connector.legalRequirementKey],
+    },
+    activationState,
+    diagnostics: catalog.diagnostics,
+  });
+};
+
+// P3: GET /admin/connectors/ogc
+export const getAdminOgcConnectors = async (_req: AuthRequest, res: Response) => {
+  const catalog = await getTucbsLayerCatalog();
+  return res.json({
+    provider: 'tucbs_public_geo_layers',
+    mode: 'READ_ONLY_GEO_LAYERS',
+    services: catalog.diagnostics?.services || [],
+  });
+};
+
+// P3: POST /admin/connectors/tucbs/sync
+export const postAdminTucbsSync = async (req: AuthRequest, res: Response) => {
+  const result = await syncTucbsLayerCatalog();
+  await logAuditEvent({
+    type: 'connector_tucbs_sync',
+    actorUserId: req.user!._id.toString(),
+    actorRole: req.user!.role,
+    targetType: 'Connector',
+    targetId: 'tucbs_ogc',
+    message: 'TUCBS layer catalog sync executed',
+    metadata: {
+      mode: 'READ_ONLY_GEO_LAYERS',
+      layerCount: result.layers.length,
+      availability: result.diagnostics?.availability,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
+  return res.json(result);
+};
+
+// P3: GET /admin/layers
+export const getAdminLayers = async (_req: AuthRequest, res: Response) => {
+  const catalog = await getTucbsLayerCatalog();
+  return res.json({
+    provider: catalog.provider,
+    mode: 'READ_ONLY_GEO_LAYERS',
+    layers: catalog.layers,
+  });
+};
+
+// P3: PATCH /admin/layers/:layerId/visibility
+export const patchAdminLayerVisibility = async (req: AuthRequest, res: Response) => {
+  const { layerId } = req.params;
+  const visible = req.body?.visible;
+  const opacity = req.body?.opacity;
+
+  const updated = await patchLayerVisibility(layerId, {
+    visible: typeof visible === 'boolean' ? visible : undefined,
+    opacity: typeof opacity === 'number' ? opacity : undefined,
+  });
+
+  await logAuditEvent({
+    type: 'layer_visibility_updated',
+    actorUserId: req.user!._id.toString(),
+    actorRole: req.user!.role,
+    targetType: 'Layer',
+    targetId: layerId,
+    message: 'Layer visibility/opacity updated',
+    metadata: {
+      readOnly: true,
+      visible: updated.visibility,
+      opacity: updated.opacity,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
+  return res.json(updated);
+};
+
+// P3: GET /admin/layer-health
+export const getAdminLayerHealth = async (_req: AuthRequest, res: Response) => {
+  const health = await getTucbsLayerHealth();
+  return res.json({
+    mode: 'READ_ONLY_GEO_LAYERS',
+    ...health,
   });
 };

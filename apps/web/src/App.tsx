@@ -24,6 +24,10 @@ import AdminStripeDiagnostics from './pages/AdminStripeDiagnostics';
 import AdminAnalytics from './pages/AdminAnalytics';
 import AdminConnectors from './pages/AdminConnectors';
 import AdminConnectorDetail from './pages/AdminConnectorDetail';
+import AdminTucbsConnector from './pages/AdminTucbsConnector';
+import AdminOgcConnectors from './pages/AdminOgcConnectors';
+import AdminLayers from './pages/AdminLayers';
+import AdminLayerHealth from './pages/AdminLayerHealth';
 import NewProperty from './pages/NewProperty';
 import PropertyDocuments from './pages/PropertyDocuments';
 import PropertyConsent from './pages/PropertyConsent';
@@ -96,7 +100,11 @@ function AppRoutes() {
       <Route path="/admin/stripe-diagnostics" element={<RequireAuth><AdminOnly>{withBoundary('/admin/stripe-diagnostics', <AdminStripeDiagnostics />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/analytics" element={<RequireAuth><AdminOnly><AdminAnalytics /></AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors" element={<RequireAuth><AdminOnly><AdminConnectors /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/connectors/tucbs" element={<RequireAuth><AdminOnly>{withBoundary('/admin/connectors/tucbs', <AdminTucbsConnector />)}</AdminOnly></RequireAuth>} />
+      <Route path="/admin/connectors/ogc" element={<RequireAuth><AdminOnly>{withBoundary('/admin/connectors/ogc', <AdminOgcConnectors />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors/:connectorKey" element={<RequireAuth><AdminOnly><AdminConnectorDetail /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/layers" element={<RequireAuth><AdminOnly>{withBoundary('/admin/layers', <AdminLayers />)}</AdminOnly></RequireAuth>} />
+      <Route path="/admin/layer-health" element={<RequireAuth><AdminOnly>{withBoundary('/admin/layer-health', <AdminLayerHealth />)}</AdminOnly></RequireAuth>} />
       <Route path="/properties/new" element={<RequireAuth><NewProperty /></RequireAuth>} />
       <Route path="/properties/:id" element={<RequireAuth><PropertyDetail /></RequireAuth>} />
       <Route path="/properties/:id/documents" element={<RequireAuth><PropertyDocuments /></RequireAuth>} />

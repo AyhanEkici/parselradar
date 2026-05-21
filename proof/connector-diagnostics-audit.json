@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:16:43.528Z",
+  "step": "verify:connector-diagnostics",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "diagnostics include availability",
+      "pass": true,
+      "detail": "Diagnostics should include availability and latency."
+    },
+    {
+      "name": "diagnostics include parse state",
+      "pass": true,
+      "detail": "Diagnostics should include capability parse state."
+    },
+    {
+      "name": "diagnostics include layer count",
+      "pass": true,
+      "detail": "Diagnostics should include layer count."
+    },
+    {
+      "name": "diagnostics include projection support",
+      "pass": true,
+      "detail": "Diagnostics should include projection support."
+    },
+    {
+      "name": "diagnostics include last sync",
+      "pass": true,
+      "detail": "Diagnostics should include last sync timestamp."
+    },
+    {
+      "name": "health endpoint implemented",
+      "pass": true,
+      "detail": "Layer health endpoint should return diagnostics."
+    }
+  ]
+}

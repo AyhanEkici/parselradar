@@ -14,6 +14,12 @@ import {
   postAdminConnectorDeactivate,
   getAdminConnectorAuditByKey,
   patchAdminConnectorSourceApproval,
+  getAdminTucbsConnector,
+  getAdminOgcConnectors,
+  postAdminTucbsSync,
+  getAdminLayers,
+  patchAdminLayerVisibility,
+  getAdminLayerHealth,
 } from '../controllers/connectorActivationController';
 
 const router = express.Router();
@@ -21,6 +27,9 @@ const router = express.Router();
 // V17 routes
 router.get('/admin/connectors', auth, admin, getAdminConnectors);
 router.get('/admin/connectors/audit-trail', auth, admin, getAdminConnectorAuditTrail);
+router.get('/admin/connectors/tucbs', auth, admin, getAdminTucbsConnector);
+router.post('/admin/connectors/tucbs/sync', auth, admin, postAdminTucbsSync);
+router.get('/admin/connectors/ogc', auth, admin, getAdminOgcConnectors);
 router.get('/admin/connectors/:connectorKey/activation-plan', auth, admin, getAdminConnectorActivationPlan);
 
 // V19 extended detail route (replaces V17 GET /:connectorKey with activation state)
@@ -33,5 +42,10 @@ router.post('/admin/connectors/:connectorKey/activate', auth, admin, postAdminCo
 router.post('/admin/connectors/:connectorKey/deactivate', auth, admin, postAdminConnectorDeactivate);
 router.get('/admin/connectors/:connectorKey/audit', auth, admin, getAdminConnectorAuditByKey);
 router.patch('/admin/connectors/:connectorKey/source-approval', auth, admin, patchAdminConnectorSourceApproval);
+
+// P3 external intelligence surfaces
+router.get('/admin/layers', auth, admin, getAdminLayers);
+router.patch('/admin/layers/:layerId/visibility', auth, admin, patchAdminLayerVisibility);
+router.get('/admin/layer-health', auth, admin, getAdminLayerHealth);
 
 export default router;

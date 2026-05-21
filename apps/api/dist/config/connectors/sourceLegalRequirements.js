@@ -3,6 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SOURCE_LEGAL_REQUIREMENTS = void 0;
 exports.isLegalRequirementApproved = isLegalRequirementApproved;
 exports.SOURCE_LEGAL_REQUIREMENTS = {
+    tucbs_public_layers_terms: {
+        required: true,
+        description: 'TUCBS is used strictly as a public read-only geo-layer provider (WMS/WMTS/WFS capabilities only). No ownership or protected cadastral access.',
+    },
     tkgm_license: {
         required: true,
         description: 'TKGM data usage and licensing approval must be documented.',

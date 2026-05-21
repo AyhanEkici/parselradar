@@ -1,6 +1,7 @@
 import { ConnectorKey } from '../../connectors/connectorContracts';
 
 export const CONNECTOR_CREDENTIAL_REQUIREMENTS: Record<ConnectorKey, string[]> = {
+  tucbs_ogc: [],
   tkgm_parcel: ['CONNECTOR_TKGM_API_KEY'],
   municipality_zoning: ['CONNECTOR_MUNICIPALITY_TOKEN'],
   listing_feed: ['CONNECTOR_LISTING_API_KEY'],

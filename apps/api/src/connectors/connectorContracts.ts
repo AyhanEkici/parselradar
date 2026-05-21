@@ -1,4 +1,5 @@
 export type ConnectorKey =
+  | 'tucbs_ogc'
   | 'tkgm_parcel'
   | 'municipality_zoning'
   | 'listing_feed'
@@ -21,7 +22,7 @@ export type ConnectorDefinition = {
   key: ConnectorKey;
   name: string;
   description: string;
-  category: 'cadastre' | 'zoning' | 'market' | 'infrastructure' | 'demographic' | 'mapping' | 'communications';
+  category: 'cadastre' | 'zoning' | 'market' | 'infrastructure' | 'demographic' | 'mapping' | 'communications' | 'geo_layers';
   credentialEnvKeys: string[];
   endpointEnvKey?: string;
   legalRequirementKey: string;

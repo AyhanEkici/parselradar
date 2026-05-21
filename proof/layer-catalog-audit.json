@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:16:40.328Z",
+  "step": "verify:layer-catalog",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "layer catalog sync exists",
+      "pass": true,
+      "detail": "Layer catalog sync function should exist."
+    },
+    {
+      "name": "layer visibility patch exists",
+      "pass": true,
+      "detail": "Layer visibility/opacity patch should exist."
+    },
+    {
+      "name": "admin layers route exists",
+      "pass": true,
+      "detail": "Admin layers route should exist."
+    },
+    {
+      "name": "layer health route exists",
+      "pass": true,
+      "detail": "Admin layer health route should exist."
+    },
+    {
+      "name": "controller exposes layer endpoints",
+      "pass": true,
+      "detail": "Controller should expose layer catalog endpoints."
+    }
+  ]
+}

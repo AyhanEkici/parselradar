@@ -2,6 +2,16 @@ import { ConnectorDefinition } from './connectorContracts';
 
 export const CONNECTOR_REGISTRY: ConnectorDefinition[] = [
   {
+    key: 'tucbs_ogc',
+    name: 'TUCBS Public Geo-Layer Connector',
+    description: 'Read-only OGC layer provider for public geo layers (WMS/WMTS/WFS capabilities).',
+    category: 'geo_layers',
+    credentialEnvKeys: [],
+    endpointEnvKey: 'CONNECTOR_TUCBS_WMS_ENDPOINT',
+    legalRequirementKey: 'tucbs_public_layers_terms',
+    activeEnvKey: 'CONNECTOR_TUCBS_ACTIVE',
+  },
+  {
     key: 'tkgm_parcel',
     name: 'TKGM Parcel Connector',
     description: 'Parcel cadastre integration for title/parcel lookups.',

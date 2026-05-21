@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-05-21T21:17:10.115Z",
+  "step": "verify:read-only-geo-mode",
+  "overallStatus": "PASS",
+  "checks": {
+    "modePass": true,
+    "controllerPass": true,
+    "violations": []
+  }
+}

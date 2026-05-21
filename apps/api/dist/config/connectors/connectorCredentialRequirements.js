@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CONNECTOR_CREDENTIAL_REQUIREMENTS = void 0;
 exports.CONNECTOR_CREDENTIAL_REQUIREMENTS = {
+    tucbs_ogc: [],
     tkgm_parcel: ['CONNECTOR_TKGM_API_KEY'],
     municipality_zoning: ['CONNECTOR_MUNICIPALITY_TOKEN'],
     listing_feed: ['CONNECTOR_LISTING_API_KEY'],

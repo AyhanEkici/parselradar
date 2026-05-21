@@ -9,7 +9,9 @@ const infrastructureConnector_1 = require("./infrastructureConnector");
 const demographicConnector_1 = require("./demographicConnector");
 const mapGeocodingConnector_1 = require("./mapGeocodingConnector");
 const emailProviderConnector_1 = require("./emailProviderConnector");
+const tucbsConnector_1 = require("./tucbs/tucbsConnector");
 const EXECUTION_REGISTRY = [
+    tucbsConnector_1.tucbsConnectorExecution,
     tkgmProductionConnector_1.tkgmProductionConnectorExecution,
     municipalityPlanningConnector_1.municipalityPlanningConnectorExecution,
     listingConnector_1.listingConnectorExecution,

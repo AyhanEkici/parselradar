@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:16:37.290Z",
+  "step": "verify:ogc-capabilities",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "wms getcapabilities implemented",
+      "pass": true,
+      "detail": "WMS GetCapabilities fetch should be implemented."
+    },
+    {
+      "name": "wmts foundation implemented",
+      "pass": true,
+      "detail": "WMTS capabilities foundation should exist."
+    },
+    {
+      "name": "wfs foundation implemented",
+      "pass": true,
+      "detail": "WFS capabilities foundation should exist."
+    },
+    {
+      "name": "capability parser extracts layer metadata",
+      "pass": true,
+      "detail": "Parser should extract layer names/titles/bbox/projection."
+    },
+    {
+      "name": "ogc layer type is read-only",
+      "pass": true,
+      "detail": "Layer records must be marked read-only."
+    }
+  ]
+}

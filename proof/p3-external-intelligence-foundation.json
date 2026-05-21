@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:17:12.588Z",
+  "phase": "P3",
+  "overallStatus": "PASS",
+  "connectorStatus": "PASS",
+  "layerCatalogStatus": "PASS",
+  "diagnosticsStatus": "PASS",
+  "mapOverlayIntegrity": "PASS",
+  "remainingGisBlockers": [],
+  "proofs": [
+    {
+      "name": "tucbs-capabilities-audit.json",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "ogc-layer-catalog.json",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "connector-diagnostics-audit.json",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "map-overlay-integrity.json",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "read-only-geo-mode-audit.json",
+      "exists": true,
+      "status": "PASS"
+    },
+    {
+      "name": "layer-catalog-audit.json",
+      "exists": true,
+      "status": "PASS"
+    }
+  ]
+}

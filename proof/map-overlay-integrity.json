@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:16:46.602Z",
+  "step": "verify:map-overlay-integrity",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "read-only toggle panel exists",
+      "pass": true,
+      "detail": "Read-only layer toggle panel should exist."
+    },
+    {
+      "name": "visibility controls exist",
+      "pass": true,
+      "detail": "Layer visibility toggles should exist."
+    },
+    {
+      "name": "opacity controls exist",
+      "pass": true,
+      "detail": "Layer opacity control should exist."
+    },
+    {
+      "name": "bbox rendering exists",
+      "pass": true,
+      "detail": "Map overlay preview should render bboxes."
+    },
+    {
+      "name": "projection awareness visible",
+      "pass": true,
+      "detail": "Layer projection awareness should be shown."
+    },
+    {
+      "name": "admin layers route wired",
+      "pass": true,
+      "detail": "Admin layers page should wire catalog and visibility endpoints."
+    }
+  ]
+}
