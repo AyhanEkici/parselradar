@@ -105,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		const handler = () => {
 			if (isLoginWriteInProgress()) return;
+			if (assertStorageConsistency()) return;
 			hydrateAuth();
 		};
 		window.addEventListener('auth:changed', handler);
@@ -121,6 +122,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		if (hydrating) return;
 		if (isLoginWriteInProgress()) return;
+		if (user) {
+			assertStorageConsistency();
+		}
 		if (user && !hasAuthSession()) {
 			setUser(null);
 			setAuthState('unauthenticated');
