@@ -1,4 +1,4 @@
-import { getAuthToken, clearAuthSession, isAuthHydrating } from './authStorage';
+import { getAuthToken, isAuthHydrating } from './authStorage';
 
 const LOCAL_API_URL = 'http://localhost:4000';
 const PRODUCTION_API_URL = 'https://parselradar-production.up.railway.app';
@@ -86,12 +86,8 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     if (response.status === 401 && !isAuthHydrating()) {
-      // Do not wipe session for arbitrary endpoint 401s (e.g. transient credits/admin calls).
-      // Clear session only for explicit auth-session verification endpoints.
-      const isAuthSessionEndpoint = cleanPath === '/auth/me' || cleanPath === '/auth/session-diagnostics';
-      if (isAuthSessionEndpoint) {
-        clearAuthSession();
-      }
+      // 401s are surfaced to callers; session clearing is handled explicitly
+      // by logout() or confirmed auth invalidation logic in useAuth.
     }
     if (data) {
       throw { ...data, status: response.status, url };

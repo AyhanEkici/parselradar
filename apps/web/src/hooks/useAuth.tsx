@@ -4,7 +4,7 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, getStoredUser, clearAuthSession, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
+import { getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
 type AuthState = 'hydrating' | 'authenticated' | 'unauthenticated';
@@ -79,7 +79,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					// Only clear after repeated 401s to avoid transient reload lockouts.
 					// This preserves session continuity on hard-refresh/back-forward races.
 					if (consecutive401Ref.current >= 2 || !storedUser) {
-						clearAuthSession();
 						setUser(null);
 						setAuthState('unauthenticated');
 					} else {

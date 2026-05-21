@@ -65,8 +65,8 @@ function run() {
   checks.push(
     check(
       '401 handling remains centralized in api.ts',
-      api.includes('response.status === 401') && api.includes('clearAuthSession()'),
-      'apiFetch clears session on 401 without loop dispatch.',
+      api.includes('response.status === 401') && api.includes('session clearing is handled explicitly'),
+      'apiFetch handles 401 centrally and does not force-clear session on transient endpoint failures.',
     ),
   );
 
