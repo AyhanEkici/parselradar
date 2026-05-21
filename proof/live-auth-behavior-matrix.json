@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-05-21T21:36:18.074Z",
+  "overallStatus": "PASS",
+  "users": [
+    {
+      "user": "pilot@test.com",
+      "role": "ADMIN",
+      "login": 200,
+      "authMe10": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "protectedAdminRoute": 200,
+      "logout": 200,
+      "blockers": []
+    },
+    {
+      "user": "ayhanekici@gmail.com",
+      "role": "ADMIN",
+      "login": 200,
+      "authMe10": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "protectedAdminRoute": 200,
+      "logout": 200,
+      "blockers": []
+    },
+    {
+      "user": "mmahir38@gmail.com",
+      "role": "USER",
+      "login": 200,
+      "authMe10": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "protectedAdminRoute": 403,
+      "logout": 200,
+      "blockers": []
+    }
+  ]
+}

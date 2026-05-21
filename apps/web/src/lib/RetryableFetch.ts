@@ -47,10 +47,7 @@ export async function retryableFetch(url: string, init: RequestInit = {}, option
   while (attempt <= maxRetries) {
     const timeout = withTimeout(timeoutMs);
     try {
-      const headers = new Headers(init.headers || {});
-      headers.set('X-Client-Retry-Attempts', String(attempt));
-
-      const response = await fetch(url, { ...init, method, headers, signal: timeout.signal });
+      const response = await fetch(url, { ...init, method, signal: timeout.signal });
       timeout.clear();
 
       const remaining = maxRetries - attempt;

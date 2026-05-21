@@ -20,7 +20,7 @@ export default function Login() {
     }
   }, [isAuthenticated, user, navigate]);
 
-  if (isAuthenticated || hasPersistentSession || authStatus === 'booting' || authStatus === 'checking') {
+  if (isAuthenticated || authStatus === 'booting' || authStatus === 'checking' || (hasPersistentSession && !user)) {
     return (
       <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
         Oturum doğrulanıyor...

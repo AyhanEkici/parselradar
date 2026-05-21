@@ -143,7 +143,7 @@ app.use((0, cors_1.default)({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Client-Retry-Attempts'],
     exposedHeaders: ['X-Request-Id'],
     optionsSuccessStatus: 204,
 }));
@@ -155,7 +155,7 @@ app.options('*', (0, cors_1.default)({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Client-Retry-Attempts'],
     exposedHeaders: ['X-Request-Id'],
     optionsSuccessStatus: 204,
 }));

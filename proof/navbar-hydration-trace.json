@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-05-21T21:36:18.074Z",
+  "checks": [
+    {
+      "name": "navbar authenticated visibility bound to canonical user",
+      "pass": true,
+      "detail": "AppShell authenticated nav should require canonical authenticated user state."
+    },
+    {
+      "name": "role gate does not block solely on persistent session",
+      "pass": true,
+      "detail": "RoleGate should only wait on unresolved persisted session, not every persisted state."
+    },
+    {
+      "name": "require auth keeps hydration and redirect phases deterministic",
+      "pass": true,
+      "detail": "RequireAuth must preserve deterministic transition from hydrating to redirect/allow."
+    },
+    {
+      "name": "login page waits only for unresolved hydration",
+      "pass": true,
+      "detail": "Login page should not spin forever after auth resolves."
+    },
+    {
+      "name": "auth hydration has explicit boundaries and retry behavior",
+      "pass": true,
+      "detail": "Hydration boundaries and /auth/me retry behavior must be explicit."
+    }
+  ],
+  "overallStatus": "PASS"
+}

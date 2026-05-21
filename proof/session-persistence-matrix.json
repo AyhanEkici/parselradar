@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-05-21T21:36:18.074Z",
+  "overallStatus": "PASS",
+  "users": [
+    {
+      "user": "pilot@test.com",
+      "login": 200,
+      "refresh": 200,
+      "ctrlF5": 200,
+      "backForward": 200,
+      "directRoute": 200,
+      "status": "PASS"
+    },
+    {
+      "user": "ayhanekici@gmail.com",
+      "login": 200,
+      "refresh": 200,
+      "ctrlF5": 200,
+      "backForward": 200,
+      "directRoute": 200,
+      "status": "PASS"
+    },
+    {
+      "user": "mmahir38@gmail.com",
+      "login": 200,
+      "refresh": 200,
+      "ctrlF5": 200,
+      "backForward": 200,
+      "directRoute": 200,
+      "status": "PASS"
+    }
+  ]
+}

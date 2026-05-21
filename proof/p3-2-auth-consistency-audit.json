@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-05-21T21:36:18.074Z",
+  "phase": "P3.2",
+  "step": "verify:multi-user-auth-consistency",
+  "overallStatus": "PASS",
+  "rootCause": "Auth shell and role gating used persistent-session state too broadly during/after hydration, creating stale navbar/route mismatches; additionally, custom X-Client-Retry-Attempts request header triggered CORS preflight rejection on login.",
+  "checks": [
+    {
+      "name": "three-user role hydration parity",
+      "pass": true,
+      "detail": "DB role + JWT role claims align for pilot, ayhan, mahir."
+    },
+    {
+      "name": "/auth/me x10 stability parity",
+      "pass": true,
+      "detail": "Each user keeps 200 on ten consecutive /auth/me checks."
+    },
+    {
+      "name": "refresh/ctrl+f5/back parity",
+      "pass": true,
+      "detail": "Each user keeps valid session through refresh simulations."
+    },
+    {
+      "name": "protected route parity",
+      "pass": true,
+      "detail": "Admin users keep admin routes; USER does not receive admin route access."
+    },
+    {
+      "name": "navbar/auth shell hydration determinism",
+      "pass": true,
+      "detail": "Auth shell rules are deterministic and non-stale by source audit."
+    },
+    {
+      "name": "live auth login path CORS-safe",
+      "pass": true,
+      "detail": "Browser auth requests do not inject custom preflight headers."
+    }
+  ],
+  "remainingAuthBlockers": [],
+  "proofs": [
+    "proof/p3-2-auth-consistency-audit.json",
+    "proof/p3-2-auth-consistency-audit.md",
+    "proof/user-role-comparison.json",
+    "proof/navbar-hydration-trace.json",
+    "proof/session-persistence-matrix.json",
+    "proof/live-auth-behavior-matrix.json"
+  ]
+}

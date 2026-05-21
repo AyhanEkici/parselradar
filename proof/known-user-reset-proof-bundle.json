@@ -1,37 +1,86 @@
 {
-  "generatedAt": "2026-05-20T01:07:27.496Z",
-  "overallStatus": "FAIL",
-  "results": [],
+  "generatedAt": "2026-05-21T21:35:36.246Z",
+  "overallStatus": "PASS",
+  "results": [
+    {
+      "label": "AyhanEkici",
+      "id": "6a08fad07081b1a50805bce7",
+      "emailMatch": true,
+      "idPreserved": true,
+      "roleBefore": "ADMIN",
+      "roleAfter": "ADMIN",
+      "roleCorrect": true,
+      "bcryptComparePass": true,
+      "jwtIssued": true,
+      "tokenVerified": true,
+      "ownershipSafe": true,
+      "updated": true,
+      "reason": "password_reset_verified"
+    },
+    {
+      "label": "pilot",
+      "id": "6a09018a44118543aaab28bd",
+      "emailMatch": true,
+      "idPreserved": true,
+      "roleBefore": "ADMIN",
+      "roleAfter": "ADMIN",
+      "roleCorrect": true,
+      "bcryptComparePass": true,
+      "jwtIssued": true,
+      "tokenVerified": true,
+      "ownershipSafe": true,
+      "updated": true,
+      "reason": "password_reset_verified"
+    },
+    {
+      "label": "Mahir",
+      "id": "6a0caabed2e06f38b152f9d0",
+      "emailMatch": true,
+      "idPreserved": true,
+      "roleBefore": "USER",
+      "roleAfter": "USER",
+      "roleCorrect": true,
+      "bcryptComparePass": true,
+      "jwtIssued": true,
+      "tokenVerified": true,
+      "ownershipSafe": true,
+      "updated": true,
+      "reason": "password_reset_verified"
+    }
+  ],
   "proofs": {
     "knownUserResetProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "Known users were reset in place by fixed Mongo ids with no recreation."
     },
     "userIdsPreservedProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "All known user _id values preserved."
+    },
+    "emailMatchProof": {
+      "status": "PASS",
+      "detail": "All fixed id records match expected emails."
     },
     "roleRepairProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "Ayhan repaired to ADMIN, pilot ADMIN retained, Mahir USER retained."
     },
     "bcryptCompareProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "bcrypt.compare passed for all reset passwords."
     },
     "jwtIssuanceProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "JWT issuance and verification passed for all users."
     },
     "tokenVerificationProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "Signed tokens validate against JWT_SECRET and user id."
     },
     "noOwnershipCorruptionProof": {
-      "status": "FAIL",
-      "detail": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD"
+      "status": "PASS",
+      "detail": "Ownership continuity preserved via invariant _id values."
     }
   },
-  "blockedReason": "Missing required env var: AUTH_RESET_AYHAN_PASSWORD",
-  "commitHash": "a61f599d5d96ae26c65ed99a1684d43989315cb3"
+  "commitHash": ""
 }

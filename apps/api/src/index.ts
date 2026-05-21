@@ -162,7 +162,7 @@ app.use(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Client-Retry-Attempts'],
     exposedHeaders: ['X-Request-Id'],
     optionsSuccessStatus: 204,
   })
@@ -176,7 +176,7 @@ app.options(
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Client-Retry-Attempts'],
     exposedHeaders: ['X-Request-Id'],
     optionsSuccessStatus: 204,
   })

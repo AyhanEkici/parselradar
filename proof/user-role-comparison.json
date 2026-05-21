@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-05-21T21:36:18.074Z",
+  "overallStatus": "PASS",
+  "users": [
+    {
+      "user": "pilot@test.com",
+      "expectedRole": "ADMIN",
+      "dbRole": "ADMIN",
+      "jwtRole": "ADMIN",
+      "roleMatch": true,
+      "tokenRoleMatch": true,
+      "passwordHashPrefix": "$2b$",
+      "passwordChangedAt": "2026-05-21T21:35:35.699Z",
+      "organizationLinkage": "not_present_on_user_document"
+    },
+    {
+      "user": "ayhanekici@gmail.com",
+      "expectedRole": "ADMIN",
+      "dbRole": "ADMIN",
+      "jwtRole": "ADMIN",
+      "roleMatch": true,
+      "tokenRoleMatch": true,
+      "passwordHashPrefix": "$2b$",
+      "passwordChangedAt": "2026-05-21T21:35:35.354Z",
+      "organizationLinkage": "not_present_on_user_document"
+    },
+    {
+      "user": "mmahir38@gmail.com",
+      "expectedRole": "USER",
+      "dbRole": "USER",
+      "jwtRole": "USER",
+      "roleMatch": true,
+      "tokenRoleMatch": true,
+      "passwordHashPrefix": "$2b$",
+      "passwordChangedAt": "2026-05-21T21:35:36.074Z",
+      "organizationLinkage": "not_present_on_user_document"
+    }
+  ]
+}

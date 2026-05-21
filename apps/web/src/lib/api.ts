@@ -35,10 +35,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
           ...options,
           method,
           credentials: 'include',
-          headers: {
-            ...baseHeaders,
-            'X-Client-Retry-Attempts': '0',
-          },
+          headers: baseHeaders,
         },
         { maxRetries: 2, timeoutMs: 12000, initialBackoffMs: 250 }
       );
@@ -51,10 +48,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
           ...options,
           method,
           credentials: 'include',
-          headers: {
-            ...baseHeaders,
-            'X-Client-Retry-Attempts': '0',
-          },
+          headers: baseHeaders,
         },
         { maxRetries: 0, timeoutMs: 12000, initialBackoffMs: 250 }
       );

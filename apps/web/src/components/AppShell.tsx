@@ -21,7 +21,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   const shellVisible = !isPublicRoute && (hasPersistentSession || authStatus === 'authenticated' || authStatus === 'checking' || authStatus === 'booting');
-  const showAuthenticatedNav = shellVisible && (Boolean(user) || hasPersistentSession) && authStatus !== 'unauthenticated' && authStatus !== 'invalid';
+  const showAuthenticatedNav = shellVisible && Boolean(user) && authStatus === 'authenticated';
   const roleDisplay = user ? roleLabel : 'CHECKING';
   const identityDisplay = user?.name || user?.email || 'Oturum doğrulanıyor...';
 
