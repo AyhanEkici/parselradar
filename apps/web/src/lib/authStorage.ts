@@ -12,10 +12,18 @@ function hasWindow() {
   return typeof window !== 'undefined';
 }
 
+function readStorageValue(key: string): string | null {
+  if (!hasWindow()) return null;
+  const sessionValue = sessionStorage.getItem(key);
+  if (sessionValue && sessionValue.trim().length > 0) return sessionValue;
+  const localValue = localStorage.getItem(key);
+  return localValue && localValue.trim().length > 0 ? localValue : null;
+}
+
 /** Returns the stored JWT or null if absent/empty. */
 export function getAuthToken(): string | null {
   if (!hasWindow()) return null;
-  const t = localStorage.getItem(AUTH_TOKEN_KEY);
+  const t = readStorageValue(AUTH_TOKEN_KEY);
   return t && t.trim().length > 0 ? t : null;
 }
 
@@ -23,7 +31,7 @@ export function getAuthToken(): string | null {
 export function getStoredUser(): StoredUser | null {
   if (!hasWindow()) return null;
   try {
-    const raw = localStorage.getItem(AUTH_USER_KEY);
+    const raw = readStorageValue(AUTH_USER_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as StoredUser;
   } catch {
@@ -99,6 +107,11 @@ export function hasAuthSession(): boolean {
  */
 export function assertStorageConsistency(): boolean {
   if (!hasWindow()) return true;
+  const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
+  const localUserRaw = localStorage.getItem(AUTH_USER_KEY);
+  const sessionToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
+  const sessionUserRaw = sessionStorage.getItem(AUTH_USER_KEY);
+
   const token = getAuthToken();
   const user = getStoredUser();
 
@@ -107,6 +120,18 @@ export function assertStorageConsistency(): boolean {
 
   if (isLoginWriteInProgress()) {
     return false;
+  }
+
+  if (sessionToken && sessionUserRaw && (!localToken || !localUserRaw)) {
+    localStorage.setItem(AUTH_TOKEN_KEY, sessionToken);
+    localStorage.setItem(AUTH_USER_KEY, sessionUserRaw);
+    return true;
+  }
+
+  if (localToken && localUserRaw && (!sessionToken || !sessionUserRaw)) {
+    sessionStorage.setItem(AUTH_TOKEN_KEY, localToken);
+    sessionStorage.setItem(AUTH_USER_KEY, localUserRaw);
+    return true;
   }
 
   // Never destructively clear a valid token when storage events are racing
