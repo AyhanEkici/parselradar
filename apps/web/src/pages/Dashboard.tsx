@@ -4,20 +4,24 @@ import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import UserScopedNotice from '../components/UserScopedNotice';
 import { useAuth } from '../hooks/useAuth';
+import { hasAuthSession } from '../lib/authStorage';
 
 export default function Dashboard() {
   const [credits, setCredits] = useState<number>(0);
   const [creditsError, setCreditsError] = useState<string | null>(null);
   const [loadingCredits, setLoadingCredits] = useState(false);
-  const { user, hydrating } = useAuth();
+  const { user, hydrating, authState } = useAuth();
   const navigate = useNavigate();
+  const hasSession = hasAuthSession();
 
   useEffect(() => {
     if (hydrating) return;
-    if (!user) {
+    if (!user && !hasSession && authState !== 'authenticating' && authState !== 'booting') {
       navigate('/login', { replace: true });
       return;
     }
+
+    if (!user) return;
 
     let cancelled = false;
     const run = async () => {
@@ -45,9 +49,9 @@ export default function Dashboard() {
     return () => {
       cancelled = true;
     };
-  }, [hydrating, user, navigate]);
+  }, [hydrating, user, hasSession, authState, navigate]);
 
-  if (hydrating) {
+  if (hydrating || (!user && hasSession)) {
     return (
       <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded shadow">
         Oturum doğrulanıyor...
