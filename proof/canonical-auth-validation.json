@@ -1,0 +1,114 @@
+{
+  "generatedAt": "2026-05-21T18:48:52.162Z",
+  "overallStatus": "PASS",
+  "code": "CANONICAL_AUTH_VALIDATION_PASS",
+  "freshLoginStatus": 200,
+  "tokenPresent": true,
+  "authMeStatuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "authMeCodes": [],
+  "authMeRecords": [
+    {
+      "index": 1,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 2,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 3,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 4,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 5,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 6,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 7,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 8,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 9,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 10,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    }
+  ],
+  "allAuthMe200": true,
+  "singletonValidatorProof": {
+    "pass": true,
+    "detail": "Canonical validator owns the only passwordChangedAt comparison; middleware imports validateAuthToken; no disallowed literal copies found.",
+    "canonicalAuthValidatorExists": true,
+    "authImportsValidateAuthToken": true,
+    "literalOccurrencesOnlyAllowed": true,
+    "comparisonOnlyCanonical": true,
+    "unexpectedLiteralPaths": [],
+    "comparisonPaths": [
+      "apps/api/src/session/canonicalAuthValidator.ts"
+    ]
+  },
+  "noCookieFallbackProof": {
+    "pass": true,
+    "detail": "Verifier reads LIVE_VERIFY_PILOT_PASSWORD only and does not inspect cookies.txt, cookies2.txt, or token artifacts."
+  },
+  "noSyntheticJwtProof": {
+    "pass": true,
+    "detail": "Verifier uses only the token returned by POST /auth/login and never constructs or decodes a substitute JWT for auth decisions."
+  },
+  "remainingBlockers": []
+}
