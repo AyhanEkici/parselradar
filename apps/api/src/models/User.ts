@@ -13,9 +13,16 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
-  passwordChangedAt: { type: Date, default: Date.now },
+  passwordChangedAt: { type: Date },
   name: { type: String, required: true },
   role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
 }, { timestamps: true });
+
+UserSchema.pre('save', function updatePasswordChangedAt(next) {
+  if (this.isModified('passwordHash')) {
+    this.passwordChangedAt = new Date();
+  }
+  next();
+});
 
 export default mongoose.model<IUser>('User', UserSchema);

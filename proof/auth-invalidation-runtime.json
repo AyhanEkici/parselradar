@@ -1,0 +1,213 @@
+{
+  "generatedAt": "2026-05-21T17:33:03.501Z",
+  "overallStatus": "FAIL",
+  "tokenIatSeconds": 1779384760,
+  "tokenIatMs": 1779384760000,
+  "skewMs": 15000,
+  "phases": [
+    {
+      "requestPhase": "login",
+      "status": 200,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": false,
+      "invalidationReason": null
+    },
+    {
+      "requestPhase": "auth_me_1",
+      "status": 200,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": false,
+      "invalidationReason": null
+    },
+    {
+      "requestPhase": "auth_me_2",
+      "status": 200,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": false,
+      "invalidationReason": null
+    },
+    {
+      "requestPhase": "auth_me_3",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_4",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_5",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_6",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_7",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_8",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_9",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "auth_me_10",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    },
+    {
+      "requestPhase": "admin_route",
+      "status": 401,
+      "tokenIatSeconds": 1779384760,
+      "tokenIatMs": 1779384760000,
+      "passwordChangedAtIso": null,
+      "passwordChangedAtMs": null,
+      "deltaMs": null,
+      "invalidated": true,
+      "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+    }
+  ],
+  "firstInvalidation": {
+    "requestPhase": "auth_me_3",
+    "status": 401,
+    "tokenIatSeconds": 1779384760,
+    "tokenIatMs": 1779384760000,
+    "passwordChangedAtIso": null,
+    "passwordChangedAtMs": null,
+    "deltaMs": null,
+    "invalidated": true,
+    "invalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT"
+  },
+  "rootCause": "comparison_logic_or_clock_path",
+  "analysis": {
+    "firstInvalidationPhase": "auth_me_3",
+    "firstInvalidationReason": "TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT",
+    "passwordChangedAtShifted": false,
+    "hashFingerprintChanged": false,
+    "passwordHashFingerprints": [
+      {
+        "phase": "login",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_1",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_2",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_3",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_4",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_5",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_6",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_7",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_8",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_9",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "auth_me_10",
+        "passwordHashFingerprint": "796289d4a120"
+      },
+      {
+        "phase": "admin_route",
+        "passwordHashFingerprint": "796289d4a120"
+      }
+    ]
+  },
+  "passCriteria": {
+    "authMeAll200": false,
+    "noPasswordChangedAfterIat": false
+  }
+}

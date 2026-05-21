@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-05-21T19:21:57.812Z",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "RequireAuth exists and redirects unauthenticated to /login",
+      "status": "PASS",
+      "detail": "Canonical guard should handle auth transitions."
+    },
+    {
+      "name": "RoleGate does not block solely on storage session",
+      "status": "PASS",
+      "detail": "Role checks must be based on canonical auth context only."
+    },
+    {
+      "name": "Admin routes are wrapped by RequireAuth and AdminOnly",
+      "status": "PASS",
+      "detail": "Admin route access should be explicit and deterministic."
+    },
+    {
+      "name": "Dashboard page does not use unauthenticated redirect effect",
+      "status": "PASS",
+      "detail": "Dashboard should not apply independent unauthenticated redirect logic."
+    },
+    {
+      "name": "Credits page does not use unauthenticated redirect effect",
+      "status": "PASS",
+      "detail": "Credits should not apply independent unauthenticated redirect logic."
+    },
+    {
+      "name": "Runtime protected/admin route traversal",
+      "status": "PASS",
+      "detail": "admin route traversal evidence unavailable"
+    }
+  ]
+}

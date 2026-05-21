@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-05-21T19:23:58.717Z",
+  "overallStatus": "FAIL",
+  "summary": {
+    "total": 5,
+    "pass": 3,
+    "fail": 2
+  },
+  "checks": [
+    {
+      "name": "Shell keeps nav mounted during auth boot states",
+      "status": "PASS",
+      "detail": "History navigation should not collapse shell while auth settles."
+    },
+    {
+      "name": "Protected pages are wrapped by RequireAuth",
+      "status": "PASS",
+      "detail": "History transitions should be guarded centrally."
+    },
+    {
+      "name": "Runtime CTRL+F5 consistency",
+      "status": "FAIL",
+      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+    },
+    {
+      "name": "Runtime browser back/forward consistency",
+      "status": "FAIL",
+      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
+    },
+    {
+      "name": "Runtime auth/me stability under history actions",
+      "status": "PASS",
+      "detail": "authMe status401=0"
+    }
+  ]
+}

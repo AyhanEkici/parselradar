@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-05-21T19:23:49.241Z",
+  "overallStatus": "FAIL",
+  "summary": {
+    "total": 7,
+    "pass": 5,
+    "fail": 2
+  },
+  "checks": [
+    {
+      "name": "App wraps routes in AppShell",
+      "status": "PASS",
+      "detail": "App shell must remain mounted around route tree."
+    },
+    {
+      "name": "AppShell derives auth from context",
+      "status": "PASS",
+      "detail": "Navbar visibility must not infer auth from storage."
+    },
+    {
+      "name": "AppShell keeps shell visible during boot/authenticating",
+      "status": "PASS",
+      "detail": "Transient hydration must not collapse shell."
+    },
+    {
+      "name": "Hydration marks auth phase boundaries",
+      "status": "PASS",
+      "detail": "Hydration lifecycle must be explicit and deterministic."
+    },
+    {
+      "name": "Runtime pilot shell persistence",
+      "status": "FAIL",
+      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
+    },
+    {
+      "name": "Runtime CTRL+F5 shell persistence",
+      "status": "FAIL",
+      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+    },
+    {
+      "name": "Runtime auth/me storm bounded",
+      "status": "PASS",
+      "detail": "authMe status401=0"
+    }
+  ],
+  "runtimePath": "proof/live-browser-mvp-runtime.json"
+}

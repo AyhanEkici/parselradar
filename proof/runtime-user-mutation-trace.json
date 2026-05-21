@@ -1,0 +1,62 @@
+{
+  "generatedAt": "2026-05-21T16:39:34.480Z",
+  "overallStatus": "FAIL",
+  "mutationDetected": true,
+  "mutationPhase": "during_login",
+  "timeline": {
+    "beforeLogin": {
+      "passwordChangedAt": "2026-05-21T16:39:26.708Z",
+      "updatedAt": "2026-05-17T02:31:08.992Z",
+      "passwordHashFingerprint": "796289d4a120"
+    },
+    "afterLogin": {
+      "passwordChangedAt": null,
+      "updatedAt": null,
+      "passwordHashFingerprint": "796289d4a120"
+    },
+    "afterAuthMe1": {
+      "passwordChangedAt": null,
+      "updatedAt": null,
+      "passwordHashFingerprint": "796289d4a120"
+    },
+    "afterAuthMe2": {
+      "passwordChangedAt": null,
+      "updatedAt": null,
+      "passwordHashFingerprint": "796289d4a120"
+    },
+    "afterAdminRoute": {
+      "passwordChangedAt": null,
+      "updatedAt": null,
+      "passwordHashFingerprint": "796289d4a120"
+    }
+  },
+  "requestStatus": {
+    "bootstrapLogin": 200,
+    "trackedLogin": 200,
+    "authMe1": 200,
+    "authMe2": 200,
+    "adminRoute": 401
+  },
+  "deltas": {
+    "passwordChangedAtChanged": {
+      "login": true,
+      "authMe1": false,
+      "authMe2": false,
+      "adminRoute": false
+    },
+    "updatedAtChanged": {
+      "login": true,
+      "authMe1": false,
+      "authMe2": false,
+      "adminRoute": false
+    },
+    "passwordHashFingerprintChanged": {
+      "login": false,
+      "authMe1": false,
+      "authMe2": false,
+      "adminRoute": false
+    }
+  },
+  "likelySourcePath": "apps/api/src/controllers/authController.ts -> login",
+  "hashFingerprintAvailable": true
+}

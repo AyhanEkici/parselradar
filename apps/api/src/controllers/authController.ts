@@ -7,7 +7,7 @@ import { logAuditEvent } from '../utils/auditLog';
 import { JWT_SECRET } from '../config/env';
 import { AuthRequest } from '../middleware/auth';
 import { roleHydrationVerifier } from '../session/roleHydrationVerifier';
-import { sessionIntegrityValidator } from '../session/sessionIntegrityValidator';
+import { validateAuthToken } from '../session/canonicalAuthValidator';
 
 function normalizeEmail(email: unknown) {
   return String(email || '').trim().toLowerCase();
@@ -35,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
   const exists = await User.findOne({ email });
   if (exists) return res.status(409).json({ error: 'Bu e-posta zaten kayıtlı' });
   const passwordHash = await bcrypt.hash(password, 10);
-  const user = await User.create({ email, passwordHash, passwordChangedAt: new Date(), name, role: 'USER' });
+  const user = await User.create({ email, passwordHash, name, role: 'USER' });
   const token = jwt.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
   res.cookie('token', token, {
     httpOnly: true,
@@ -72,10 +72,6 @@ export const login = async (req: Request, res: Response) => {
   if (!user && email) {
     // Backward-compatible recovery for legacy mixed-case emails.
     user = await User.findOne({ email: { $regex: `^${escapeRegExp(email)}$`, $options: 'i' } }).select('+passwordHash');
-    if (user && user.email !== email) {
-      user.email = email;
-      await user.save();
-    }
   }
   safeAuthDebug('login_user_lookup', {
     userFound: Boolean(user),
@@ -88,6 +84,12 @@ export const login = async (req: Request, res: Response) => {
   safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
   if (!valid) return res.status(401).json({ error: 'Şifre hatalı' });
   const token = jwt.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+  const decoded = jwt.decode(token) as { iat?: number } | null;
+  const tokenIatSeconds = typeof decoded?.iat === 'number' ? decoded.iat : null;
+  const tokenIatMs = typeof tokenIatSeconds === 'number' ? tokenIatSeconds * 1000 : null;
+  const passwordChangedAtIso = user.passwordChangedAt ? new Date(user.passwordChangedAt).toISOString() : null;
+  const passwordChangedAtMs = passwordChangedAtIso ? new Date(passwordChangedAtIso).getTime() : null;
+  const deltaMs = typeof tokenIatMs === 'number' && typeof passwordChangedAtMs === 'number' ? passwordChangedAtMs - tokenIatMs : null;
   res.cookie('token', token, {
     httpOnly: true,
     secure: true,
@@ -100,6 +102,12 @@ export const login = async (req: Request, res: Response) => {
   safeAuthDebug('login_token_issued', {
     tokenIssued: Boolean(token),
     role: roleState.normalizedRole,
+    requestPhase: 'POST:/auth/login',
+    tokenIatSeconds,
+    tokenIatMs,
+    passwordChangedAtIso,
+    passwordChangedAtMs,
+    deltaMs,
   });
 
   res.json({ token, user: { id: String(user._id), email: user.email, name: user.name, role: roleState.normalizedRole } });
@@ -145,23 +153,24 @@ export const getMe = (req: AuthRequest, res: Response) => {
   res.json({ id: user._id, email: user.email, name: user.name, role: user.role });
 };
 
-export const getSessionDiagnostics = (req: AuthRequest, res: Response) => {
+export const getSessionDiagnostics = async (req: AuthRequest, res: Response) => {
   const authHeader = req.headers['authorization'];
   const bearer = typeof authHeader === 'string' && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
   const cookieToken = req.cookies?.token;
   const token = bearer || cookieToken;
-  const integrity = sessionIntegrityValidator(token);
   const roleState = roleHydrationVerifier(req.user?.role);
+  const integrity = token ? await validateAuthToken(token) : null;
 
   return res.json({
     authenticated: Boolean(req.user),
     tokenPresent: Boolean(token),
     tokenSource: bearer ? 'bearer' : cookieToken ? 'cookie' : 'none',
-    sessionTrust: integrity.sessionTrust,
-    tokenReason: integrity.reason,
+    sessionTrust: integrity?.ok ? 'VERIFIED' : 'BLOCKED',
+    tokenReason: integrity?.code || 'MISSING_TOKEN',
     roleHydrated: roleState.valid,
     role: req.user?.role || 'UNKNOWN',
     roleReason: roleState.reason,
     userId: req.user?._id || null,
+    authDiagnostics: integrity?.diagnostics || null,
   });
 };

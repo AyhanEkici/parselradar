@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import jwt from 'jsonwebtoken';
 
 type LoginResponse = {
@@ -24,6 +26,8 @@ const BASE_URL = 'https://parselradar-production.up.railway.app';
 const LOGIN_URL = `${BASE_URL}/auth/login`;
 const ME_URL = `${BASE_URL}/auth/me`;
 const EXPECTED_EMAIL = 'pilot@test.com';
+const PROOF_JSON = path.join(process.cwd(), 'proof', 'live-login-contract-proof.json');
+const PROOF_MD = path.join(process.cwd(), 'proof', 'live-login-contract-proof.md');
 
 function fail(reason: string, details: Record<string, unknown> = {}): never {
   const payload = {
@@ -43,6 +47,16 @@ function pass(details: Record<string, unknown>): void {
     details,
   };
   console.log(JSON.stringify(payload, null, 2));
+}
+
+function writeProof(overallStatus: 'PASS' | 'FAIL', payload: Record<string, unknown>) {
+  fs.mkdirSync(path.dirname(PROOF_JSON), { recursive: true });
+  fs.writeFileSync(PROOF_JSON, `${JSON.stringify({ overallStatus, ...payload }, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(
+    PROOF_MD,
+    ['# Live Login Contract', '', `overallStatus: ${overallStatus}`, ...Object.entries(payload).map(([key, value]) => `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`), ''].join('\n'),
+    'utf8',
+  );
 }
 
 function parseJson(text: string): any {
@@ -141,15 +155,20 @@ async function main() {
     });
   }
 
-  pass({
+  const details = {
     loginStatus: loginResponse.status,
     meStatus: meResponse.status,
     loginUser,
     meUser,
-  });
+    tokenPreview: token.slice(0, 12),
+  };
+
+  writeProof('PASS', details);
+  pass(details);
 }
 
 main().catch((error) => {
+  writeProof('FAIL', { message: error instanceof Error ? error.message : String(error) });
   fail('unexpected exception during live login contract verification', {
     message: error instanceof Error ? error.message : String(error),
   });

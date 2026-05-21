@@ -1,50 +1,48 @@
 {
-  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "generatedAt": "2026-05-21T19:24:12.641Z",
   "overallStatus": "FAIL",
   "summary": {
-    "total": 8,
-    "pass": 2,
-    "fail": 4,
-    "blockers": 2
+    "total": 9,
+    "pass": 4,
+    "fail": 5,
+    "blockers": 0
   },
   "areas": {
     "deploymentTruth": {
-      "status": "FAIL",
-      "detail": "Deployment alignment is not yet at local HEAD 850d5b00 (Railway still on a4b1e4b2 at capture time)."
-    },
-    "authRuntime": {
-      "status": "FAIL",
-      "detail": "Login success toast does not produce durable authenticated state in real browser run."
-    },
-    "routeWiringRuntime": {
-      "status": "FAIL",
-      "detail": "Required navbar routes are reachable but not under stable authenticated shell context."
-    },
-    "rbacRuntime": {
-      "status": "FAIL",
-      "detail": "Runtime role visibility and access behavior cannot be fully trusted until auth shell persistence is fixed."
-    },
-    "staticPlatformVerifier": {
       "status": "PASS",
-      "detail": "verify:platform returned WARN with 0 hard FAIL checks."
+      "detail": "proof/deployment-truth-proof-bundle.json overallStatus=PASS"
     },
-    "apiBuildAndWebBuild": {
+    "authShell": {
+      "status": "FAIL",
+      "detail": "proof/auth-shell-consistency.json overallStatus=FAIL"
+    },
+    "navigationPersistence": {
+      "status": "FAIL",
+      "detail": "proof/navigation-persistence.json overallStatus=FAIL"
+    },
+    "protectedRoutes": {
       "status": "PASS",
-      "detail": "apps/api and apps/web builds succeeded."
+      "detail": "proof/protected-route-integrity.json overallStatus=PASS"
     },
-    "ayhanBrowserFlow": {
-      "status": "BLOCKED",
-      "detail": "Valid real credential unavailable in-session."
+    "browserHistory": {
+      "status": "FAIL",
+      "detail": "proof/browser-history-consistency.json overallStatus=FAIL"
     },
-    "mahirBrowserFlow": {
-      "status": "BLOCKED",
-      "detail": "Valid real credential unavailable in-session."
+    "liveBrowserMvp": {
+      "status": "FAIL",
+      "detail": "proof/live-browser-mvp-runtime.json overallStatus=FAIL"
+    },
+    "routeWiring": {
+      "status": "FAIL",
+      "detail": "proof/route-wiring-audit.json overallStatus=FAIL"
+    },
+    "rbac": {
+      "status": "PASS",
+      "detail": "proof/rbac-proof-bundle.json overallStatus=PASS"
+    },
+    "platform": {
+      "status": "WARN",
+      "detail": "proof/platform-proof-bundle.json overallStatus=WARN"
     }
-  },
-  "blockingDefects": [
-    "post-login storage clears unexpectedly in real browser flow",
-    "authenticated shell does not remain mounted after login",
-    "Ctrl+F5 persistence cannot pass while login session collapses",
-    "full role runtime audit blocked without Ayhan/Mahir credentials"
-  ]
+  }
 }

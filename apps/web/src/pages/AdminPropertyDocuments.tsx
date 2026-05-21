@@ -13,6 +13,7 @@ import {
   AdminToolbar,
 } from '../components/admin';
 import { useToast } from '../components/ui';
+import { getAuthHeader } from '../lib/authStorage';
 
 type DocumentItem = {
   _id: string;
@@ -111,7 +112,7 @@ export default function AdminPropertyDocuments() {
     setUploading(true);
     const loadingToastId = toast.loading('Belge yükleniyor...');
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+      const authHeader = getAuthHeader();
       const formData = new FormData();
       formData.append('documentType', documentType);
       formData.append('file', file);
@@ -120,7 +121,7 @@ export default function AdminPropertyDocuments() {
         body: formData,
         credentials: 'include',
         headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(authHeader ? { Authorization: authHeader } : {}),
         },
       });
       const text = await response.text();
@@ -176,7 +177,7 @@ export default function AdminPropertyDocuments() {
     const currentObjectUrls: string[] = [];
 
     const loadPreviews = async () => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+      const authHeader = getAuthHeader();
       const failed: Record<string, string> = {};
 
       await Promise.all(
@@ -187,7 +188,7 @@ export default function AdminPropertyDocuments() {
               method: 'GET',
               credentials: 'include',
               headers: {
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                ...(authHeader ? { Authorization: authHeader } : {}),
               },
             });
             if (!response.ok) {

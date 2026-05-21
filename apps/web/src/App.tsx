@@ -45,55 +45,68 @@ import { ToastProvider } from './components/ui';
 import AccessDenied from './pages/AccessDenied';
 import AdminOnly from './components/AdminOnly';
 import AppShell from './components/AppShell';
+import RequireAuth from './components/RequireAuth';
+import { useAuth } from './hooks/useAuth';
+
+function RootRedirect() {
+  const { user, hydrating, authState } = useAuth();
+
+  if (hydrating || authState === 'booting' || authState === 'authenticating') {
+    return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum dogrulaniyor...</div>;
+  }
+
+  return <Navigate to={user ? '/dashboard' : '/login'} replace />;
+}
 
 function AppRoutes() {
   return (
     <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/access-denied" element={<AccessDenied />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/credits" element={<Credits />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/admin/properties" element={<AdminOnly><AdminProperties /></AdminOnly>} />
-        <Route path="/admin/properties/:propertyId" element={<AdminOnly><PropertyDetail /></AdminOnly>} />
-        <Route path="/admin/properties/:propertyId/documents" element={<AdminOnly><AdminPropertyDocuments /></AdminOnly>} />
-        <Route path="/admin/deal-pool" element={<AdminOnly><AdminDealPool /></AdminOnly>} />
-        <Route path="/admin/audit-timeline" element={<AdminOnly><AdminAuditTimeline /></AdminOnly>} />
-        <Route path="/admin/users" element={<AdminOnly><AdminUsers /></AdminOnly>} />
-        <Route path="/admin/analyses" element={<AdminOnly><AdminAnalyses /></AdminOnly>} />
-        <Route path="/admin/credit-ledger" element={<AdminOnly><AdminCreditLedger /></AdminOnly>} />
-        <Route path="/admin/stripe-sessions" element={<AdminOnly><AdminStripeSessions /></AdminOnly>} />
-        <Route path="/admin/runtime" element={<AdminOnly><AdminSystemRuntime /></AdminOnly>} />
-        <Route path="/admin/deployment" element={<AdminOnly><AdminDeploymentOverview /></AdminOnly>} />
-        <Route path="/admin/observability" element={<AdminOnly><AdminObservability /></AdminOnly>} />
-        <Route path="/admin/analytics" element={<AdminOnly><AdminAnalytics /></AdminOnly>} />
-        <Route path="/admin/connectors" element={<AdminOnly><AdminConnectors /></AdminOnly>} />
-        <Route path="/admin/connectors/:connectorKey" element={<AdminOnly><AdminConnectorDetail /></AdminOnly>} />
-        <Route path="/properties/new" element={<NewProperty />} />
-        <Route path="/properties/:id" element={<PropertyDetail />} />
-        <Route path="/properties/:id/documents" element={<PropertyDocuments />} />
-        <Route path="/properties/:id/consent" element={<PropertyConsent />} />
-        <Route path="/properties/:id/result" element={<PropertyResult />} />
-        <Route path="/investor" element={<InvestorDashboard />} />
-        <Route path="/investor/saved-analyses" element={<SavedAnalyses />} />
-        <Route path="/investor/watchlist" element={<Watchlist />} />
-        <Route path="/investor/portfolio" element={<PortfolioDashboard />} />
-        <Route path="/investor/portfolio/:id" element={<PortfolioDetail />} />
-        <Route path="/investor/portfolio/:id/analytics" element={<PortfolioAnalytics />} />
-        <Route path="/organizations" element={<Organizations />} />
-        <Route path="/organizations/:id" element={<OrganizationDetail />} />
-        <Route path="/workspace/:organizationId/dashboard" element={<WorkspaceDashboard />} />
-        <Route path="/workspace/:organizationId/portfolio" element={<WorkspacePortfolio />} />
-        <Route path="/workspace/:organizationId/watchlist" element={<WorkspaceWatchlist />} />
-        <Route path="/workspace/:organizationId/activity" element={<WorkspaceActivity />} />
-        <Route path="/notifications" element={<NotificationInbox />} />
-        <Route path="/notifications/preferences" element={<NotificationPreferences />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Route path="/" element={<RootRedirect />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/access-denied" element={<AccessDenied />} />
+
+      <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+      <Route path="/credits" element={<RequireAuth><Credits /></RequireAuth>} />
+      <Route path="/reports" element={<RequireAuth><Reports /></RequireAuth>} />
+      <Route path="/admin/properties" element={<RequireAuth><AdminOnly><AdminProperties /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/properties/:propertyId" element={<RequireAuth><AdminOnly><PropertyDetail /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/properties/:propertyId/documents" element={<RequireAuth><AdminOnly><AdminPropertyDocuments /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/deal-pool" element={<RequireAuth><AdminOnly><AdminDealPool /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/audit-timeline" element={<RequireAuth><AdminOnly><AdminAuditTimeline /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/users" element={<RequireAuth><AdminOnly><AdminUsers /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/analyses" element={<RequireAuth><AdminOnly><AdminAnalyses /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/credit-ledger" element={<RequireAuth><AdminOnly><AdminCreditLedger /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/stripe-sessions" element={<RequireAuth><AdminOnly><AdminStripeSessions /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/runtime" element={<RequireAuth><AdminOnly><AdminSystemRuntime /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/deployment" element={<RequireAuth><AdminOnly><AdminDeploymentOverview /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/observability" element={<RequireAuth><AdminOnly><AdminObservability /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/analytics" element={<RequireAuth><AdminOnly><AdminAnalytics /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/connectors" element={<RequireAuth><AdminOnly><AdminConnectors /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/connectors/:connectorKey" element={<RequireAuth><AdminOnly><AdminConnectorDetail /></AdminOnly></RequireAuth>} />
+      <Route path="/properties/new" element={<RequireAuth><NewProperty /></RequireAuth>} />
+      <Route path="/properties/:id" element={<RequireAuth><PropertyDetail /></RequireAuth>} />
+      <Route path="/properties/:id/documents" element={<RequireAuth><PropertyDocuments /></RequireAuth>} />
+      <Route path="/properties/:id/consent" element={<RequireAuth><PropertyConsent /></RequireAuth>} />
+      <Route path="/properties/:id/result" element={<RequireAuth><PropertyResult /></RequireAuth>} />
+      <Route path="/investor" element={<RequireAuth><InvestorDashboard /></RequireAuth>} />
+      <Route path="/investor/saved-analyses" element={<RequireAuth><SavedAnalyses /></RequireAuth>} />
+      <Route path="/investor/watchlist" element={<RequireAuth><Watchlist /></RequireAuth>} />
+      <Route path="/investor/portfolio" element={<RequireAuth><PortfolioDashboard /></RequireAuth>} />
+      <Route path="/investor/portfolio/:id" element={<RequireAuth><PortfolioDetail /></RequireAuth>} />
+      <Route path="/investor/portfolio/:id/analytics" element={<RequireAuth><PortfolioAnalytics /></RequireAuth>} />
+      <Route path="/organizations" element={<RequireAuth><Organizations /></RequireAuth>} />
+      <Route path="/organizations/:id" element={<RequireAuth><OrganizationDetail /></RequireAuth>} />
+      <Route path="/workspace/:organizationId/dashboard" element={<RequireAuth><WorkspaceDashboard /></RequireAuth>} />
+      <Route path="/workspace/:organizationId/portfolio" element={<RequireAuth><WorkspacePortfolio /></RequireAuth>} />
+      <Route path="/workspace/:organizationId/watchlist" element={<RequireAuth><WorkspaceWatchlist /></RequireAuth>} />
+      <Route path="/workspace/:organizationId/activity" element={<RequireAuth><WorkspaceActivity /></RequireAuth>} />
+      <Route path="/notifications" element={<RequireAuth><NotificationInbox /></RequireAuth>} />
+      <Route path="/notifications/preferences" element={<RequireAuth><NotificationPreferences /></RequireAuth>} />
+      <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
+    </Routes>
   );
 }
 

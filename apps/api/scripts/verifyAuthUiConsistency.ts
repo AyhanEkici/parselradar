@@ -41,11 +41,10 @@ function run() {
 
   checks.push(
     check(
-      'Navbar auth block requires authenticated auth state and storage session',
-      (app.includes("authState === 'authenticated'") || appShell.includes("authState === 'authenticated'")) &&
-        (app.includes('hasAuthSession()') || appShell.includes('hasAuthSession()')) &&
-        (app.includes('showAuthenticatedNav') || appShell.includes('showAuthenticatedNav')),
-      'Navbar visibility is gated by both auth state and storage truth.',
+      'Navbar derives visibility from auth context only',
+      (appShell.includes("authState === 'authenticated'") || appShell.includes('showAuthenticatedNav')) &&
+        !appShell.includes('hasAuthSession('),
+      'Navbar visibility must not independently infer auth from storage.',
     ),
   );
 
@@ -85,16 +84,17 @@ function run() {
   checks.push(
     check(
       'No stale user state survives without session token',
-      useAuth.includes('if (user && !hasAuthSession())') && useAuth.includes("setAuthState('unauthenticated')"),
-      'useAuth force-clears stale in-memory user when storage has no session.',
+      useAuth.includes('if (user && !hasAuthSession() && (authState === \'unauthenticated\' || authState === \'invalid\'))') &&
+        useAuth.includes("setAuthState('unauthenticated')"),
+      'useAuth only clears stale in-memory user on confirmed unauthenticated/invalid state.',
     ),
   );
 
   checks.push(
     check(
-      'Logout clears localStorage and sessionStorage',
-      auth.includes('sessionStorage.clear()') && authStorage.includes('sessionStorage.removeItem(AUTH_TOKEN_KEY)'),
-      'Logout and clearAuthSession remove auth traces from both storage scopes.',
+      'Logout clears canonical localStorage auth state',
+      !auth.includes('sessionStorage.clear()') && authStorage.includes('localStorage.removeItem(AUTH_TOKEN_KEY)'),
+      'Logout and clearAuthSession should clear canonical localStorage auth data.',
     ),
   );
 

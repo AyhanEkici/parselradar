@@ -5,6 +5,7 @@
 export const AUTH_TOKEN_KEY = 'parselradar_token';
 export const AUTH_USER_KEY = 'parselradar_user';
 export const AUTH_LOGIN_WRITE_KEY = 'parselradar_login_write_in_progress';
+const AUTH_LOGIN_WRITE_MAX_AGE_MS = 15000;
 
 export type StoredUser = { id: string; email: string; name: string; role: string };
 
@@ -14,17 +15,7 @@ function hasWindow() {
 
 function readStorageValue(key: string): string | null {
   if (!hasWindow()) return null;
-  const sessionValue = sessionStorage.getItem(key);
-  if (sessionValue && sessionValue.trim().length > 0) {
-    if (!localStorage.getItem(key)) {
-      localStorage.setItem(key, sessionValue);
-    }
-    return sessionValue;
-  }
   const localValue = localStorage.getItem(key);
-  if (localValue && localValue.trim().length > 0 && !sessionStorage.getItem(key)) {
-    sessionStorage.setItem(key, localValue);
-  }
   return localValue && localValue.trim().length > 0 ? localValue : null;
 }
 
@@ -50,17 +41,30 @@ export function getStoredUser(): StoredUser | null {
 export function markLoginWriteInProgress(active = true): void {
   if (!hasWindow()) return;
   if (active) {
-    localStorage.setItem(AUTH_LOGIN_WRITE_KEY, '1');
-    sessionStorage.setItem(AUTH_LOGIN_WRITE_KEY, '1');
+    localStorage.setItem(AUTH_LOGIN_WRITE_KEY, String(Date.now()));
     return;
   }
   localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
-  sessionStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
 }
 
 export function isLoginWriteInProgress(): boolean {
   if (!hasWindow()) return false;
-  return localStorage.getItem(AUTH_LOGIN_WRITE_KEY) === '1' || sessionStorage.getItem(AUTH_LOGIN_WRITE_KEY) === '1';
+  const value = localStorage.getItem(AUTH_LOGIN_WRITE_KEY);
+  if (!value) return false;
+
+  const startedAt = Number(value);
+  if (!Number.isFinite(startedAt) || startedAt <= 0) {
+    localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
+    return false;
+  }
+
+  const ageMs = Date.now() - startedAt;
+  if (ageMs > AUTH_LOGIN_WRITE_MAX_AGE_MS) {
+    localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -72,8 +76,6 @@ export function setAuthSession(token: string, user: StoredUser): void {
   markLoginWriteInProgress(true);
   localStorage.setItem(AUTH_TOKEN_KEY, token);
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-  sessionStorage.setItem(AUTH_TOKEN_KEY, token);
-  sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
   const writeOk = Boolean(getAuthToken() && getStoredUser());
   markLoginWriteInProgress(false);
 
@@ -97,10 +99,7 @@ export function clearAuthSession(reason = 'unspecified'): void {
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(AUTH_USER_KEY);
   localStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
-  sessionStorage.removeItem(AUTH_TOKEN_KEY);
-  sessionStorage.removeItem(AUTH_USER_KEY);
-  sessionStorage.removeItem(AUTH_LOGIN_WRITE_KEY);
-  sessionStorage.setItem('parselradar_last_clear_reason', reason);
+  localStorage.setItem('parselradar_last_clear_reason', reason);
 }
 
 /** True only when BOTH token + user exist in localStorage. */
@@ -117,23 +116,9 @@ export function assertStorageConsistency(): boolean {
   if (!hasWindow()) return true;
   const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
   const localUserRaw = localStorage.getItem(AUTH_USER_KEY);
-  const sessionToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
-  const sessionUserRaw = sessionStorage.getItem(AUTH_USER_KEY);
 
   if (isLoginWriteInProgress()) {
     return false;
-  }
-
-  if (sessionToken && sessionUserRaw && (!localToken || !localUserRaw)) {
-    localStorage.setItem(AUTH_TOKEN_KEY, sessionToken);
-    localStorage.setItem(AUTH_USER_KEY, sessionUserRaw);
-    return true;
-  }
-
-  if (localToken && localUserRaw && (!sessionToken || !sessionUserRaw)) {
-    sessionStorage.setItem(AUTH_TOKEN_KEY, localToken);
-    sessionStorage.setItem(AUTH_USER_KEY, localUserRaw);
-    return true;
   }
 
   const token = getAuthToken();
@@ -152,7 +137,6 @@ export function assertStorageConsistency(): boolean {
   // user-without-token is stale and unsafe; clear only user side.
   if (!token && user) {
     localStorage.removeItem(AUTH_USER_KEY);
-    sessionStorage.removeItem(AUTH_USER_KEY);
     return false;
   }
 

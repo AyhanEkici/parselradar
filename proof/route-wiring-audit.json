@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "generatedAt": "2026-05-21T19:24:03.037Z",
   "overallStatus": "FAIL",
   "summary": {
     "total": 17,
     "working": 0,
-    "partial": 17,
+    "partial": 0,
     "broken": 0,
     "disconnected": 0,
     "unauthorized": 0,
@@ -16,22 +16,124 @@
     "fail": 17
   },
   "routes": [
-    { "name": "Audit", "path": "/admin/audit-timeline", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Users", "path": "/admin/users", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Analyses", "path": "/admin/analyses", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Credit Ledger", "path": "/admin/credit-ledger", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Stripe Sessions", "path": "/admin/stripe-sessions", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Properties", "path": "/admin/properties", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Runtime", "path": "/admin/runtime", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Deployment", "path": "/admin/deployment", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Observability", "path": "/admin/observability", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Analytics", "path": "/admin/analytics", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Connectors", "path": "/admin/connectors", "classification": "STALE_STATE", "status": "FAIL", "detail": "Redirected to /login because authenticated session collapsed after login." },
-    { "name": "Investor", "path": "/investor", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." },
-    { "name": "Saved", "path": "/investor/saved-analyses", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." },
-    { "name": "Watchlist", "path": "/investor/watchlist", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." },
-    { "name": "Portfolio", "path": "/investor/portfolio", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." },
-    { "name": "Organizations", "path": "/organizations", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." },
-    { "name": "Notifications", "path": "/notifications", "classification": "STALE_STATE", "status": "FAIL", "detail": "Page renders without authenticated app shell (logout/nav missing)." }
+    {
+      "name": "Audit",
+      "path": "/admin/audit-timeline",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Users",
+      "path": "/admin/users",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Analyses",
+      "path": "/admin/analyses",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Credit Ledger",
+      "path": "/admin/credit-ledger",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Stripe Sessions",
+      "path": "/admin/stripe-sessions",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Properties",
+      "path": "/admin/properties",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Runtime",
+      "path": "/admin/runtime",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Deployment",
+      "path": "/admin/deployment",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Observability",
+      "path": "/admin/observability",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Analytics",
+      "path": "/admin/analytics",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Connectors",
+      "path": "/admin/connectors",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Investor",
+      "path": "/investor",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Saved",
+      "path": "/investor/saved-analyses",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Watchlist",
+      "path": "/investor/watchlist",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Portfolio",
+      "path": "/investor/portfolio",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Organizations",
+      "path": "/organizations",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    },
+    {
+      "name": "Notifications",
+      "path": "/notifications",
+      "classification": "STALE_STATE",
+      "status": "FAIL",
+      "detail": "No runtime traversal result recorded for nav route."
+    }
   ]
 }

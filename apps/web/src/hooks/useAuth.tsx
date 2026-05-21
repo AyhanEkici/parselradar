@@ -4,7 +4,7 @@
 // so cross-tab sync cannot re-trigger a 401 storm.
 import React, { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { getMe } from '../lib/auth';
-import { getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession, clearAuthSession, isLoginWriteInProgress } from '../lib/authStorage';
+import { AUTH_LOGIN_WRITE_KEY, AUTH_TOKEN_KEY, AUTH_USER_KEY, getAuthToken, getStoredUser, setAuthHydrating, assertStorageConsistency, hasAuthSession, clearAuthSession, isLoginWriteInProgress } from '../lib/authStorage';
 
 type User = { id: string; email: string; name: string; role: string } | null;
 type AuthState = 'booting' | 'authenticating' | 'authenticated' | 'unauthenticated' | 'invalid';
@@ -25,11 +25,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const callIdRef = useRef(0);
 
 	async function hydrateAuth() {
-		if (isLoginWriteInProgress()) {
-			return;
-		}
-
 		const callId = ++callIdRef.current;
+
+		if (isLoginWriteInProgress()) {
+			const hasPersistedSession = Boolean(getAuthToken() && getStoredUser());
+			if (!hasPersistedSession) {
+				return;
+			}
+		}
 
 		// Always reconcile split storage before auth checks.
 		assertStorageConsistency();
@@ -122,9 +125,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	// Cross-tab login/logout sync. auth:changed is NEVER dispatched by 401
 	// handling, so this cannot create a retry loop.
 	useEffect(() => {
-		const handler = () => {
+		const handler = (event?: Event) => {
+			if (event instanceof StorageEvent) {
+				const key = event.key;
+				if (key && key !== AUTH_TOKEN_KEY && key !== AUTH_USER_KEY && key !== AUTH_LOGIN_WRITE_KEY && key !== 'parselradar_last_clear_reason') {
+					return;
+				}
+			}
 			if (isLoginWriteInProgress()) return;
-			if (assertStorageConsistency()) return;
+			assertStorageConsistency();
 			hydrateAuth();
 		};
 		window.addEventListener('auth:changed', handler);
@@ -136,19 +145,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Final in-memory safety net: if storage has no complete session,
-	// force user state to unauthenticated to avoid stale navbar/login mismatches.
+	// Keep in-memory user during transient hydration or storage races.
+	// Session clearing decisions are made only in hydrateAuth() on confirmed invalidation.
 	useEffect(() => {
 		if (hydrating) return;
 		if (isLoginWriteInProgress()) return;
 		if (user) {
 			assertStorageConsistency();
 		}
-		if (user && !hasAuthSession()) {
+		if (user && !hasAuthSession() && (authState === 'unauthenticated' || authState === 'invalid')) {
 			setUser(null);
 			setAuthState('unauthenticated');
 		}
-	}, [hydrating, user]);
+	}, [authState, hydrating, user]);
 
 	return (
 		<AuthContext.Provider value={{ user, isAdmin, hydrating, authState }}>

@@ -3,19 +3,19 @@
 Overall status: FAIL
 
 Failing auth defects:
-- pilot real login remains on /login after success toast
-- parselradar_token and parselradar_user are cleared immediately after login
-- Ctrl+F5/reload does not preserve authenticated session
+- pilot login reaches /dashboard but collapses to /login on reload cycle 2
+- auth keys remain present while backend returns TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT
+- reload does not preserve authenticated session
 - back/forward does not keep authenticated app shell
-- admin route clicks fall back to /login due to collapsed auth state
+- protected route traversal falls back to /login after /auth/me invalidation
 
 Blockers:
-- Ayhan real browser login credential not available in-session
-- Mahir real browser login credential not available in-session
+- Ayhan real browser credential unavailable in-session
+- Mahir real browser credential unavailable in-session
 
 Evidence:
-- pilot after-login URL: /login
-- pilot storage: token=false user=false
-- pilot after-reload URL: /login
-- ayhan attempt result: Şifre hatalı
-- mahir attempt result: Şifre hatalı
+- pilot login state: /dashboard with token/user persisted in local+session storage
+- reload cycle 3 state: /login, last clear reason confirmed_auth_me_401
+- /auth/me sampled: total=16, 401=14, code=TOKEN_VERIFIED_PASSWORD_CHANGED_AFTER_IAT
+- password invalidation trace: iatMs=1779377791000, passwordChangedAtMs=1779377793297, deltaMs=2297, skewMs=10000
+- second normal login changed passwordChangedAt (unexpected): 2026-05-21T15:36:33.297Z -> 2026-05-21T15:36:34.075Z

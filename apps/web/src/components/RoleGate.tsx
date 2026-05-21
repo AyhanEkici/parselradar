@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { hasAuthSession } from '../lib/authStorage';
 
 type RoleGateProps = {
   allow: 'admin' | 'user';
@@ -10,9 +9,8 @@ type RoleGateProps = {
 
 export default function RoleGate({ allow, children }: RoleGateProps) {
   const { user, isAdmin, hydrating, authState } = useAuth();
-  const hasSession = hasAuthSession();
 
-  if (hydrating || hasSession || authState === 'authenticating' || authState === 'booting') {
+  if (hydrating || authState === 'authenticating' || authState === 'booting') {
     return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum doğrulanıyor...</div>;
   }
 

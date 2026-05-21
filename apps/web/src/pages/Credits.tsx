@@ -2,25 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { useToast } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { hasAuthSession } from '../lib/authStorage';
 
 export default function Credits() {
   const [credits, setCredits] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const { user, hydrating, authState } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const toast = useToast();
-  const hasSession = hasAuthSession();
 
   useEffect(() => {
-    if (hydrating) return;
-    if (!user && !hasSession && authState !== 'authenticating' && authState !== 'booting') {
-      navigate('/login', { replace: true });
-      return;
-    }
-
     if (!user) return;
 
     let cancelled = false;
@@ -44,15 +34,7 @@ export default function Credits() {
     return () => {
       cancelled = true;
     };
-  }, [hydrating, user, hasSession, authState, navigate]);
-
-  if (hydrating || (!user && hasSession)) {
-    return (
-      <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
-        Oturum doğrulanıyor...
-      </div>
-    );
-  }
+  }, [user]);
 
   if (!user) return null;
 

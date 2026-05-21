@@ -11,6 +11,7 @@ import {
   AdminToolbar,
 } from '../components/admin';
 import { useToast } from '../components/ui';
+import { getAuthHeader } from '../lib/authStorage';
 
 const docTypes = [
   { key: 'ONLINE_IMAR_DURUM_BELGESI', label: 'Online İmar Durum Belgesi' },
@@ -118,7 +119,7 @@ export default function PropertyDocuments() {
     const currentObjectUrls: string[] = [];
 
     const loadPreviews = async () => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+      const authHeader = getAuthHeader();
       const failed: Record<string, string> = {};
 
       await Promise.all(
@@ -129,7 +130,7 @@ export default function PropertyDocuments() {
               method: 'GET',
               credentials: 'include',
               headers: {
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                ...(authHeader ? { Authorization: authHeader } : {}),
               },
             });
             if (!response.ok) {
@@ -168,14 +169,14 @@ export default function PropertyDocuments() {
     const currentType = String(formData.get('documentType') || '');
     setUploadingType(currentType);
     const loadingToastId = toast.loading('Belge yükleniyor...');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('parselradar_token') : null;
+    const authHeader = getAuthHeader();
     try {
       const response = await fetch(`${getApiBaseUrl()}/properties/${id}/documents`, {
         method: 'POST',
         body: formData,
         credentials: 'include',
         headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(authHeader ? { Authorization: authHeader } : {}),
         },
       });
 

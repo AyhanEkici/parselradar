@@ -1,40 +1,161 @@
 {
-  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "generatedAt": "2026-05-21T19:23:42.937Z",
   "overallStatus": "FAIL",
   "summary": {
-    "total": 7,
-    "pass": 1,
-    "fail": 4,
-    "blocked": 2
+    "total": 5,
+    "pass": 2,
+    "fail": 3,
+    "blocked": 0
   },
   "flows": {
     "pilotAdminFlow": {
       "status": "FAIL",
-      "detail": "Real login attempt shows success toast but URL remains /login and storage keys remain absent."
+      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
     },
     "ctrlF5Persistence": {
       "status": "FAIL",
-      "detail": "Reload remains on /login with no authenticated shell."
+      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
     },
     "backForwardPersistence": {
       "status": "FAIL",
-      "detail": "Back/forward pages can render without authenticated navbar/logout state."
+      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
     },
     "adminRouteTraversal": {
-      "status": "FAIL",
-      "detail": "All admin routes redirect to /login because session collapses before shell mount."
+      "status": "PASS",
+      "detail": ""
     },
     "authMeStorm": {
       "status": "PASS",
-      "detail": "No /auth/me request storm captured in sampled browser run."
-    },
-    "ayhanAdminFlow": {
-      "status": "BLOCKED",
-      "detail": "Valid real credential not available in-session."
-    },
-    "mahirUserFlow": {
-      "status": "BLOCKED",
-      "detail": "Valid real credential not available in-session."
+      "detail": "statuses=200,200,200,200,200,200,200,200,200,200 codes=none"
     }
-  }
+  },
+  "runtimeEvidence": {
+    "authMe": {
+      "total": 10,
+      "status401": 0,
+      "errorCode": null
+    },
+    "storageAfterLogin": {
+      "localToken": true,
+      "localUser": true,
+      "lastClearReason": null
+    },
+    "reloadResults": [
+      {
+        "cycle": 1,
+        "ok": true,
+        "detail": "reload_1: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 2,
+        "ok": true,
+        "detail": "reload_2: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 3,
+        "ok": true,
+        "detail": "reload_3: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 4,
+        "ok": false,
+        "detail": "reload_4: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 5,
+        "ok": false,
+        "detail": "reload_5: path=/login, logoutVisible=false, navCount=0"
+      }
+    ],
+    "ctrlF5Results": [
+      {
+        "cycle": 1,
+        "ok": false,
+        "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 2,
+        "ok": false,
+        "detail": "ctrlf5_2: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 3,
+        "ok": false,
+        "detail": "ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      }
+    ]
+  },
+  "authMeRecords": [
+    {
+      "index": 1,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 2,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 3,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 4,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 5,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 6,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 7,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 8,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 9,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    },
+    {
+      "index": 10,
+      "status": 200,
+      "email": "pilot@test.com",
+      "role": "ADMIN",
+      "code": null
+    }
+  ],
+  "routeResults": []
 }

@@ -25,9 +25,6 @@ export async function register(email: string, password: string, name: string): P
 
 export async function logout(): Promise<void> {
   clearAuthSession();
-  if (typeof window !== 'undefined') {
-    sessionStorage.clear();
-  }
   // Dispatch for cross-tab sync — this is the ONLY place auth:changed fires on logout.
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('auth:changed'));

@@ -14,6 +14,8 @@ type RequiredUser = {
   password: string;
 };
 
+const EXPLICIT_RESET_MODE = String(process.env.ENSURE_REQUIRED_USERS_RESET_MODE || '').trim().toLowerCase() === 'true';
+
 function requireEnv(key: string): string {
   const value = String(process.env[key] || '').trim();
   if (!value) {
@@ -35,7 +37,6 @@ async function upsertRequiredUser(input: RequiredUser) {
     throw new Error(`Missing email for user: ${input.label}`);
   }
   const email = normalizeEmail(input.email);
-  const passwordHash = await bcrypt.hash(input.password, 10);
 
   let user = await User.findOne({ email });
   if (!user) {
@@ -43,6 +44,7 @@ async function upsertRequiredUser(input: RequiredUser) {
   }
 
   if (!user) {
+    const passwordHash = await bcrypt.hash(input.password, 10);
     await User.create({
       email,
       passwordHash,
@@ -53,7 +55,10 @@ async function upsertRequiredUser(input: RequiredUser) {
   }
 
   user.email = email;
-  user.passwordHash = passwordHash;
+  const passwordMatches = await bcrypt.compare(input.password, String(user.passwordHash || ''));
+  if (!passwordMatches && EXPLICIT_RESET_MODE) {
+    user.passwordHash = await bcrypt.hash(input.password, 10);
+  }
   user.role = input.role;
   if (!user.name || !user.name.trim()) {
     user.name = input.label;

@@ -1,84 +1,104 @@
 {
-  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "generatedAt": "2026-05-21T19:24:07.782Z",
   "overallStatus": "FAIL",
   "summary": {
-    "total": 9,
-    "pass": 2,
-    "fail": 7,
-    "blockers": 2
+    "total": 6,
+    "pass": 3,
+    "fail": 3,
+    "blockers": 0
   },
   "checks": [
     {
       "id": "pilot_real_login_redirect",
       "status": "FAIL",
-      "classification": "STALE_STATE",
-      "detail": "Real browser login shows success toast but remains on /login; authenticated shell does not mount."
+      "classification": "INVALID_REDIRECT",
+      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
     },
     {
       "id": "pilot_storage_persistence_after_login",
-      "status": "FAIL",
-      "classification": "STALE_STATE",
-      "detail": "Immediately after successful login toast, localStorage keys parselradar_token and parselradar_user are null."
+      "status": "PASS",
+      "classification": "WORKING",
+      "detail": "localToken=true localUser=true"
     },
     {
       "id": "ctrl_f5_persistence",
       "status": "FAIL",
       "classification": "INVALID_REDIRECT",
-      "detail": "Ctrl+F5/reload lands on /login due to missing session state."
+      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
     },
     {
       "id": "back_forward_shell_persistence",
       "status": "FAIL",
       "classification": "STALE_STATE",
-      "detail": "Back/forward pages render without authenticated navbar/logout shell state."
+      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
     },
     {
       "id": "route_click_logout_side_effect",
-      "status": "FAIL",
-      "classification": "INVALID_REDIRECT",
-      "detail": "Admin route clicks redirect to /login because auth state collapses post-login."
+      "status": "PASS",
+      "classification": "WORKING",
+      "detail": "route traversal unavailable"
     },
     {
       "id": "auth_me_storm",
       "status": "PASS",
       "classification": "WORKING",
-      "detail": "No repeated /auth/me storm observed during sampled run."
-    },
-    {
-      "id": "ayhan_real_login",
-      "status": "BLOCKED",
-      "classification": "UNAUTHORIZED",
-      "detail": "Real browser login with available credential set failed (Şifre hatalı). Valid Ayhan test credential not provided in session."
-    },
-    {
-      "id": "mahir_real_login",
-      "status": "BLOCKED",
-      "classification": "UNAUTHORIZED",
-      "detail": "Real browser login with available credential set failed (Şifre hatalı). Valid Mahir test credential not provided in session."
-    },
-    {
-      "id": "backend_pilot_login_contract",
-      "status": "PASS",
-      "classification": "WORKING",
-      "detail": "Direct backend /auth/login with pilot@test.com returns 200 and ADMIN user payload."
+      "detail": "statuses=200,200,200,200,200,200,200,200,200,200 codes=none"
     }
   ],
   "evidence": {
-    "pilotBrowser": {
-      "afterLogin": {
-        "url": "https://parselradar.vercel.app/login",
-        "tokenPresent": false,
-        "userPresent": false
-      },
-      "afterReload": {
-        "url": "https://parselradar.vercel.app/login",
-        "tokenPresent": false,
-        "userPresent": false
-      }
+    "authMe": {
+      "total": 10,
+      "status401": 0,
+      "errorCode": null
     },
-    "credentialAttempts": {
-      "ayhan": "Şifre hatalı",
-      "mahir": "Şifre hatalı"
-    }
+    "storageAfterLogin": {
+      "localToken": true,
+      "localUser": true,
+      "lastClearReason": null
+    },
+    "reloadResults": [
+      {
+        "cycle": 1,
+        "ok": true,
+        "detail": "reload_1: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 2,
+        "ok": true,
+        "detail": "reload_2: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 3,
+        "ok": true,
+        "detail": "reload_3: path=/dashboard, logoutVisible=true, navCount=17"
+      },
+      {
+        "cycle": 4,
+        "ok": false,
+        "detail": "reload_4: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 5,
+        "ok": false,
+        "detail": "reload_5: path=/login, logoutVisible=false, navCount=0"
+      }
+    ],
+    "ctrlF5Results": [
+      {
+        "cycle": 1,
+        "ok": false,
+        "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 2,
+        "ok": false,
+        "detail": "ctrlf5_2: path=/login, logoutVisible=false, navCount=0"
+      },
+      {
+        "cycle": 3,
+        "ok": false,
+        "detail": "ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
+      }
+    ]
   }
 }

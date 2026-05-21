@@ -1,52 +1,26 @@
 {
-  "generatedAt": "2026-05-21T13:20:00.000Z",
   "overallStatus": "FAIL",
   "proofs": {
-    "realBrowserPilotLoginProof": {
+    "navbarPersistenceProof": {
       "status": "FAIL",
-      "detail": "Pilot login toast succeeds but browser remains on /login with empty session storage keys."
+      "detail": "post_login: path=/dashboard, logoutVisible=false, navCount=0"
     },
     "ctrlF5PersistenceProof": {
       "status": "FAIL",
-      "detail": "Reload returns unauthenticated login state."
+      "detail": "ctrlf5_1: path=/login, logoutVisible=false, navCount=0 | ctrlf5_2: path=/login, logoutVisible=false, navCount=0 | ctrlf5_3: path=/login, logoutVisible=false, navCount=0"
     },
-    "backForwardNavbarProof": {
+    "backForwardProof": {
       "status": "FAIL",
-      "detail": "Back/forward does not preserve authenticated shell visibility."
+      "detail": "history_back: path=blank, logoutVisible=false, navCount=0 | history_forward: path=/login, logoutVisible=false, navCount=0 | finalPath=/login | historyStartPath=/login"
     },
-    "adminNavRouteClickProof": {
-      "status": "FAIL",
-      "detail": "Admin route clicks redirect to /login due to session collapse."
-    },
-    "noLogoutOnNavClickProof": {
-      "status": "FAIL",
-      "detail": "Auth state collapses before route traversal can remain in-shell."
-    },
-    "noAuthMe401StormProof": {
+    "routeTraversalProof": {
       "status": "PASS",
-      "detail": "No /auth/me retry storm pattern observed in sampled run."
+      "detail": ""
     },
-    "mahirIsolationProof": {
-      "status": "BLOCKED",
-      "detail": "Real browser Mahir login unavailable without valid credential in-session."
-    },
-    "ayhanAdminProof": {
-      "status": "BLOCKED",
-      "detail": "Real browser Ayhan login unavailable without valid credential in-session."
-    },
-    "routeWiringAuditProof": {
-      "status": "FAIL",
-      "detail": "Route wiring runtime is partial under collapsed auth shell state."
-    },
-    "appShellProof": {
-      "status": "FAIL",
-      "detail": "Authenticated app shell does not persist deterministically after login in live browser."
-    },
-    "deploymentTruthProof": {
-      "status": "FAIL",
-      "detail": "At capture time, deployment alignment still lagged latest commit."
+    "noAuthCollapseProof": {
+      "status": "PASS",
+      "detail": "statuses=200,200,200,200,200,200,200,200,200,200 codes=none"
     }
   },
-  "runtimeProof": "proof/live-browser-mvp-runtime.json",
-  "commitHash": "850d5b00"
+  "runtimeProof": "proof/live-browser-mvp-runtime.json"
 }

@@ -14,6 +14,7 @@ function check(name: string, pass: boolean, detail: string): Check {
 }
 
 function run() {
+  const app = read('apps/web/src/App.tsx');
   const dashboard = read('apps/web/src/pages/Dashboard.tsx');
   const credits = read('apps/web/src/pages/Credits.tsx');
   const useAuth = read('apps/web/src/hooks/useAuth.tsx');
@@ -24,17 +25,17 @@ function run() {
 
   checks.push(
     check(
-      'Dashboard waits for auth hydration before protected calls',
-      dashboard.includes('if (hydrating) return') && dashboard.includes('if (!user)') && dashboard.includes("apiFetch('credits')"),
-      'Dashboard guards on hydrating/user before credits call.',
+      'Dashboard protected API access is behind RequireAuth route wrapper',
+      app.includes('<RequireAuth><Dashboard /></RequireAuth>') && dashboard.includes('if (!user) return;') && dashboard.includes("apiFetch('credits')"),
+      'Dashboard should rely on centralized route guard and user context before API calls.',
     ),
   );
 
   checks.push(
     check(
-      'Credits waits for auth hydration before protected calls',
-      credits.includes('if (hydrating) return') && credits.includes('if (!user)') && credits.includes("apiFetch('credits')"),
-      'Credits page guards on hydrating/user before credits call.',
+      'Credits protected API access is behind RequireAuth route wrapper',
+      app.includes('<RequireAuth><Credits /></RequireAuth>') && credits.includes('if (!user) return null;') && credits.includes("apiFetch('credits')"),
+      'Credits should rely on centralized route guard and user context before API calls.',
     ),
   );
 

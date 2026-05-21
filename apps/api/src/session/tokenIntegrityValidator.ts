@@ -1,19 +1,15 @@
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config/env';
+import { validateAuthToken } from './canonicalAuthValidator';
 
-export function tokenIntegrityValidator(token?: string) {
+export async function tokenIntegrityValidator(token?: string) {
   if (!token) {
     return { valid: false, reason: 'missing_token' };
   }
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { id?: string; exp?: number };
-    return {
-      valid: Boolean(decoded?.id),
-      userId: decoded?.id || null,
-      expiresAt: decoded?.exp ? decoded.exp * 1000 : null,
-      reason: decoded?.id ? 'valid' : 'missing_subject',
-    };
-  } catch {
-    return { valid: false, reason: 'invalid_signature' };
-  }
+
+  const result = await validateAuthToken(token);
+  return {
+    valid: result.ok,
+    userId: result.user?._id || null,
+    expiresAt: null,
+    reason: result.code === 'TOKEN_PAYLOAD_MISSING_SUBJECT' ? 'missing_subject' : result.ok ? 'valid' : 'invalid_signature',
+  };
 }
