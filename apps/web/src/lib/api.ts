@@ -86,10 +86,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     if (response.status === 401 && !isAuthHydrating()) {
-      // Clear token ONCE and stop — do NOT dispatch auth:changed here.
-      // Skip during hydration: useAuth's hydrateAuth handles clearing on its own
-      // after confirming the 401 is definitive (not a transient cold-start failure).
-      clearAuthSession();
+      // Do not wipe session for arbitrary endpoint 401s (e.g. transient credits/admin calls).
+      // Clear session only for explicit auth-session verification endpoints.
+      const isAuthSessionEndpoint = cleanPath === '/auth/me' || cleanPath === '/auth/session-diagnostics';
+      if (isAuthSessionEndpoint) {
+        clearAuthSession();
+      }
     }
     if (data) {
       throw { ...data, status: response.status, url };

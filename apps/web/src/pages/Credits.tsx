@@ -29,7 +29,7 @@ export default function Credits() {
         if (cancelled) return;
         const apiError = err as { status?: number; error?: string };
         if (apiError?.status === 401) {
-          navigate('/login', { replace: true });
+          setLoadError('Oturum doğrulaması geçici olarak başarısız. Lütfen sayfayı yenileyin.');
           return;
         }
         setLoadError(apiError?.error || 'Kredi bilgisi yüklenemedi');

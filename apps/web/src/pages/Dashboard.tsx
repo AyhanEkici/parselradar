@@ -32,7 +32,7 @@ export default function Dashboard() {
         if (cancelled) return;
         const apiError = err as { status?: number; error?: string };
         if (apiError?.status === 401) {
-          navigate('/login', { replace: true });
+          setCreditsError('Oturum doğrulaması geçici olarak başarısız. Lütfen sayfayı yenileyin.');
           return;
         }
         setCreditsError(apiError?.error || 'Kredi bilgisi yüklenemedi');
