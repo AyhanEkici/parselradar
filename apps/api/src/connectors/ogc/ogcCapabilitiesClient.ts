@@ -14,11 +14,32 @@ function buildCapabilitiesUrl(endpoint: string, service: OgcServiceType) {
 
 export async function fetchOgcCapabilities(provider: string, service: OgcServiceType, endpoint?: string): Promise<OgcCapabilitiesResult> {
   const lastSync = new Date().toISOString();
+
+  const missingEndpointCodes: Record<OgcServiceType, string> = {
+    WMS: 'MISSING_WMS_ENDPOINT',
+    WMTS: 'MISSING_WMTS_ENDPOINT',
+    WFS: 'MISSING_WFS_ENDPOINT',
+  };
+
+  const missingEndpointMessages: Record<OgcServiceType, string> = {
+    WMS: 'WMS endpoint is not configured.',
+    WMTS: 'WMTS endpoint is not configured.',
+    WFS: 'WFS endpoint is not configured.',
+  };
+
+  const missingEndpointActions: Record<OgcServiceType, string> = {
+    WMS: 'Set CONNECTOR_TUCBS_WMS_ENDPOINT to enable WMS capability diagnostics.',
+    WMTS: 'Set CONNECTOR_TUCBS_WMTS_ENDPOINT to enable WMTS capability diagnostics.',
+    WFS: 'Set CONNECTOR_TUCBS_WFS_ENDPOINT to enable WFS capability diagnostics.',
+  };
+
   if (!endpoint) {
     return {
       service,
       provider,
       endpoint: '',
+      state: 'NOT_CONFIGURED',
+      availability: 'UNAVAILABLE',
       available: false,
       latencyMs: 0,
       parseState: 'SKIPPED',
@@ -26,7 +47,10 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
       projectionSupport: [],
       formats: [],
       layers: [],
-      error: `Missing ${service} endpoint`,
+      errorCode: missingEndpointCodes[service],
+      message: missingEndpointMessages[service],
+      error: missingEndpointMessages[service],
+      action: missingEndpointActions[service],
       lastSync,
     };
   }
@@ -47,6 +71,8 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
         service,
         provider,
         endpoint,
+        state: 'FAILED',
+        availability: 'UNAVAILABLE',
         available: false,
         latencyMs,
         parseState: 'FAILED',
@@ -54,6 +80,7 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
         projectionSupport: [],
         formats: [],
         layers: [],
+        message: `GetCapabilities returned ${response.status}`,
         error: `GetCapabilities returned ${response.status}`,
         lastSync,
       };
@@ -71,6 +98,8 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
       service,
       provider,
       endpoint,
+      state: 'READY',
+      availability: 'HEALTHY',
       available: true,
       latencyMs,
       parseState: 'PARSED',
@@ -85,6 +114,8 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
       service,
       provider,
       endpoint,
+      state: 'FAILED',
+      availability: 'UNAVAILABLE',
       available: false,
       latencyMs: Date.now() - start,
       parseState: 'FAILED',
@@ -92,6 +123,7 @@ export async function fetchOgcCapabilities(provider: string, service: OgcService
       projectionSupport: [],
       formats: [],
       layers: [],
+      message: err?.message || 'Capabilities request failed',
       error: err?.message || 'Capabilities request failed',
       lastSync,
     };

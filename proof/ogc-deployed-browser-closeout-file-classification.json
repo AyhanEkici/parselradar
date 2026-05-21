@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-05-22T00:00:00.000Z",
+  "phase": "P2.1B-DEPLOYED-BROWSER-CLOSEOUT",
+  "classification": {
+    "REQUIRED_OGC_CONTRACT_FIX": [
+      "apps/api/src/connectors/ogc/ogcTypes.ts",
+      "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts"
+    ],
+    "REQUIRED_OGC_UI_FIX": [
+      "apps/web/src/components/connectors/OgcServiceDiagnosticsCard.tsx"
+    ],
+    "REQUIRED_OGC_PROOF": [
+      "apps/api/scripts/verifyConnectorDiagnosticsContract.ts",
+      "package.json",
+      "proof/connector-diagnostics-contract.json",
+      "proof/connector-diagnostics-contract.md",
+      "proof/ogc-diagnostics-ui-contract.json",
+      "proof/ogc-diagnostics-ui-contract.md",
+      "proof/ogc-live-diagnostics-payload.json",
+      "proof/ogc-live-diagnostics-payload.md",
+      "proof/ogc-deployed-browser-closeout-local-results.json",
+      "proof/ogc-deployed-browser-closeout-local-results.md",
+      "proof/ogc-deployed-browser-closeout-file-classification.json",
+      "proof/ogc-deployed-browser-closeout-file-classification.md"
+    ],
+    "BASELINE_PROOF_OUTPUT": [
+      "apps/api/dist/generated/buildInfo.js",
+      "apps/api/src/generated/buildInfo.ts",
+      "proof/auth-shell-consistency.json",
+      "proof/auth-shell-consistency.md",
+      "proof/browser-history-consistency.json",
+      "proof/browser-history-consistency.md",
+      "proof/canonical-auth-validation.json",
+      "proof/connector-diagnostics-audit.json",
+      "proof/deployment-truth-proof-bundle.json",
+      "proof/deployment-truth-proof-bundle.md",
+      "proof/live-browser-mvp-proof-bundle.json",
+      "proof/live-browser-mvp-runtime.json",
+      "proof/mvp-api-contract-audit.json",
+      "proof/mvp-api-contract-audit.md",
+      "proof/mvp-functional-completeness-audit.json",
+      "proof/mvp-functional-completeness-audit.md",
+      "proof/mvp-route-action-map.json",
+      "proof/mvp-route-action-map.md",
+      "proof/navigation-persistence.json",
+      "proof/navigation-persistence.md",
+      "proof/platform-integrity-audit.json",
+      "proof/platform-proof-bundle.json",
+      "proof/platform-proof-bundle.md",
+      "proof/platform-route-checks.json",
+      "proof/rbac-proof-bundle.json",
+      "proof/rbac-proof-bundle.md",
+      "proof/route-wiring-audit.json"
+    ],
+    "PREVIOUS_SESSION_NOISE": [
+      "apps/api/dist/testing/verifyConnectors.js",
+      "apps/api/scripts/verifyAdminUxAndEmail.ts",
+      "apps/api/scripts/verifyAuthUiConsistency.ts",
+      "apps/api/scripts/verifyBrowserHistoryConsistency.ts",
+      "apps/api/scripts/verifyNavigationPersistence.ts",
+      "apps/api/scripts/verifyPostLoginApiStability.ts",
+      "apps/api/src/testing/verifyConnectors.ts",
+      "apps/api/scripts/generateP21aDriftAudit.ts",
+      "apps/api/scripts/runP21aBaselineProof.ts",
+      "proof/p2-1a-command-results.json",
+      "proof/p2-1a-command-results.md",
+      "proof/p2-1a-drift-audit.json",
+      "proof/p2-1a-drift-audit.md"
+    ],
+    "UNKNOWN_REQUIRES_REVIEW": []
+  },
+  "commitPolicy": {
+    "allowCommitCategories": [
+      "REQUIRED_OGC_CONTRACT_FIX",
+      "REQUIRED_OGC_UI_FIX",
+      "REQUIRED_OGC_PROOF"
+    ],
+    "disallowCommitCategories": [
+      "BASELINE_PROOF_OUTPUT",
+      "PREVIOUS_SESSION_NOISE",
+      "UNKNOWN_REQUIRES_REVIEW"
+    ]
+  }
+}

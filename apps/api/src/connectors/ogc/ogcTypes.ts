@@ -26,6 +26,8 @@ export type OgcCapabilitiesResult = {
   service: OgcServiceType;
   provider: string;
   endpoint: string;
+  state: 'NOT_CONFIGURED' | 'READY' | 'FAILED';
+  availability: 'HEALTHY' | 'DEGRADED' | 'UNAVAILABLE';
   available: boolean;
   latencyMs: number;
   parseState: 'PARSED' | 'FAILED' | 'SKIPPED';
@@ -33,7 +35,10 @@ export type OgcCapabilitiesResult = {
   projectionSupport: string[];
   formats: string[];
   layers: OgcLayerRecord[];
+  errorCode?: string;
+  message?: string;
   error?: string;
+  action?: string;
   lastSync: string;
 };
 

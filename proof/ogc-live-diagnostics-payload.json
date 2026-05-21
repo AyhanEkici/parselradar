@@ -1,0 +1,48 @@
+{
+  "provider": "tucbs_public_geo_layers",
+  "mode": "READ_ONLY_GEO_LAYERS",
+  "services": [
+    {
+      "service": "WMS",
+      "provider": "tucbs_public_geo_layers",
+      "endpoint": "",
+      "available": false,
+      "latencyMs": 0,
+      "parseState": "SKIPPED",
+      "layerCount": 0,
+      "projectionSupport": [],
+      "formats": [],
+      "layers": [],
+      "error": "Missing WMS endpoint",
+      "lastSync": "2026-05-21T22:08:05.359Z"
+    },
+    {
+      "service": "WMTS",
+      "provider": "tucbs_public_geo_layers",
+      "endpoint": "",
+      "available": false,
+      "latencyMs": 0,
+      "parseState": "SKIPPED",
+      "layerCount": 0,
+      "projectionSupport": [],
+      "formats": [],
+      "layers": [],
+      "error": "Missing WMTS endpoint",
+      "lastSync": "2026-05-21T22:08:05.359Z"
+    },
+    {
+      "service": "WFS",
+      "provider": "tucbs_public_geo_layers",
+      "endpoint": "",
+      "available": false,
+      "latencyMs": 0,
+      "parseState": "SKIPPED",
+      "layerCount": 0,
+      "projectionSupport": [],
+      "formats": [],
+      "layers": [],
+      "error": "Missing WFS endpoint",
+      "lastSync": "2026-05-21T22:08:05.359Z"
+    }
+  ]
+}

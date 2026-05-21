@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-05-21T23:41:03.454Z",
+  "step": "verify:connector-diagnostics-contract",
+  "overallStatus": "PASS",
+  "summary": {
+    "total": 17,
+    "pass": 17,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "No external fetch is executed when endpoints are missing",
+      "pass": true,
+      "detail": "axios.get calls=0"
+    },
+    {
+      "name": "Connector diagnostics availability resolves to UNAVAILABLE",
+      "pass": true,
+      "detail": "availability=UNAVAILABLE"
+    },
+    {
+      "name": "Connector diagnostics never default to ACTIVE",
+      "pass": true,
+      "detail": "Service diagnostics state set excludes ACTIVE by default."
+    },
+    {
+      "name": "WMS missing endpoint contract",
+      "pass": true,
+      "detail": "state=NOT_CONFIGURED, availability=UNAVAILABLE, parse=SKIPPED"
+    },
+    {
+      "name": "WMS missing endpoint error code and message",
+      "pass": true,
+      "detail": "errorCode=MISSING_WMS_ENDPOINT, message=WMS endpoint is not configured."
+    },
+    {
+      "name": "WMS missing endpoint action guidance exists",
+      "pass": true,
+      "detail": "Set CONNECTOR_TUCBS_WMS_ENDPOINT to enable WMS capability diagnostics."
+    },
+    {
+      "name": "WMTS missing endpoint contract",
+      "pass": true,
+      "detail": "state=NOT_CONFIGURED, availability=UNAVAILABLE, parse=SKIPPED"
+    },
+    {
+      "name": "WMTS missing endpoint error code and message",
+      "pass": true,
+      "detail": "errorCode=MISSING_WMTS_ENDPOINT, message=WMTS endpoint is not configured."
+    },
+    {
+      "name": "WMTS missing endpoint action guidance exists",
+      "pass": true,
+      "detail": "Set CONNECTOR_TUCBS_WMTS_ENDPOINT to enable WMTS capability diagnostics."
+    },
+    {
+      "name": "WFS missing endpoint contract",
+      "pass": true,
+      "detail": "state=NOT_CONFIGURED, availability=UNAVAILABLE, parse=SKIPPED"
+    },
+    {
+      "name": "WFS missing endpoint error code and message",
+      "pass": true,
+      "detail": "errorCode=MISSING_WFS_ENDPOINT, message=WFS endpoint is not configured."
+    },
+    {
+      "name": "WFS missing endpoint action guidance exists",
+      "pass": true,
+      "detail": "Set CONNECTOR_TUCBS_WFS_ENDPOINT to enable WFS capability diagnostics."
+    },
+    {
+      "name": "No hardcoded OGC endpoint URLs are introduced",
+      "pass": true,
+      "detail": "No http(s) URL literals found in OGC connector files."
+    },
+    {
+      "name": "No connector is ACTIVE by default",
+      "pass": true,
+      "detail": "No ACTIVE default state evidence detected in current proof bundle."
+    },
+    {
+      "name": "Frontend does not render legacy error-only text for missing endpoints",
+      "pass": true,
+      "detail": "Legacy error-only literals are absent from OGC diagnostics card source."
+    },
+    {
+      "name": "Frontend renders state/errorCode/message/action fields",
+      "pass": true,
+      "detail": "OGC diagnostics card uses state + errorCode + message + action for display."
+    },
+    {
+      "name": "Missing endpoint maps to NOT_CONFIGURED display state",
+      "pass": true,
+      "detail": "UI treats MISSING_* endpoint diagnostics as NOT_CONFIGURED state."
+    }
+  ]
+}
