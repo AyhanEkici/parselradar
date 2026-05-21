@@ -34,6 +34,7 @@ const observabilityRoutes_1 = __importDefault(require("./routes/observabilityRou
 const connectorActivationRoutes_1 = __importDefault(require("./routes/connectorActivationRoutes"));
 const helmet_1 = __importDefault(require("helmet"));
 const requestId_1 = require("./middleware/requestId");
+const operationalTelemetry_1 = require("./middleware/operationalTelemetry");
 const healthController_1 = require("./health/healthController");
 const readinessController_1 = require("./health/readinessController");
 const livenessController_1 = require("./health/livenessController");
@@ -43,6 +44,7 @@ const queueFactory_1 = require("./runtime/queueFactory");
 const redisClient_1 = require("./redis/redisClient");
 const buildInfo_1 = require("./generated/buildInfo");
 const degradedRuntime_1 = require("./runtime/degradedRuntime");
+const envValidator_1 = require("./config/envValidator");
 const app = (0, express_1.default)();
 (0, degradedRuntime_1.installRuntimeProcessGuards)();
 (0, degradedRuntime_1.recordStartupPhase)('express_initialized', 'Express application created.');
@@ -86,6 +88,11 @@ if (isProd) {
 app.use((0, helmet_1.default)());
 // Request ID middleware
 app.use(requestId_1.requestIdMiddleware);
+app.use(operationalTelemetry_1.operationalTelemetry);
+const envValidation = (0, envValidator_1.validateRuntimeEnv)();
+(0, degradedRuntime_1.recordStartupPhase)('env_validation', envValidation.valid
+    ? 'Runtime env validation passed.'
+    : `Runtime env validation failed: ${envValidation.missingRequired.join(', ')}`);
 // Safe CORS diagnostics (no auth/cookie/token content)
 app.use((req, _res, next) => {
     if (process.env.CORS_SAFE_DEBUG === 'true') {

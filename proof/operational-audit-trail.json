@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:03:57.395Z",
+  "overallStatus": "PASS",
+  "step": "verify:operational-audit-trail",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "failed login audited",
+      "pass": true,
+      "detail": "Auth controller should audit login failures."
+    },
+    {
+      "name": "report purchase audited",
+      "pass": true,
+      "detail": "Report purchases should be audited."
+    },
+    {
+      "name": "organization mutation audited",
+      "pass": true,
+      "detail": "Organization mutations should be audited."
+    },
+    {
+      "name": "retry events audited",
+      "pass": true,
+      "detail": "Retry events should be audited."
+    },
+    {
+      "name": "connector actions audited",
+      "pass": true,
+      "detail": "Connector lifecycle actions should be auditable."
+    }
+  ]
+}

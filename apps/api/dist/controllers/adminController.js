@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminSecurityOverview = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminEmailDeliveryState = exports.updateAdminUserRole = exports.getAdminUsers = void 0;
+exports.shareDealPool = exports.acceptDealPool = exports.updatePropertyStatus = exports.reviewProperty = exports.getPropertyById = exports.getAllProperties = exports.getAdminSecurityOverview = exports.getAdminObservabilitySummary = exports.getAdminStripeDiagnostics = exports.postAdminMailTestEmail = exports.getAdminMailDiagnostics = exports.getAdminRuntimeHealth = exports.getAdminRuntimeOverview = exports.getAdminDeploymentOverview = exports.getAdminStripeSessions = exports.getAdminCreditLedger = exports.getAdminAnalyses = exports.getAdminEmailDeliveryState = exports.updateAdminUserRole = exports.getAdminUsers = void 0;
 const authUser_1 = require("../utils/authUser");
 const auditLog_1 = require("../utils/auditLog");
 const PropertySubmission_1 = __importDefault(require("../models/PropertySubmission"));
@@ -18,12 +18,17 @@ const DocumentUpload_1 = __importDefault(require("../models/DocumentUpload"));
 const Report_1 = __importDefault(require("../models/Report"));
 const AuditEvent_1 = __importDefault(require("../models/AuditEvent"));
 const passwordResetEmailService_1 = require("../services/auth/passwordResetEmailService");
+const passwordResetEmailService_2 = require("../services/auth/passwordResetEmailService");
 const buildOperationalSnapshot_1 = require("../monitoring/buildOperationalSnapshot");
 const operationalSecurityDashboard_1 = require("../monitoring/operationalSecurityDashboard");
 const threatSignalAggregator_1 = require("../monitoring/threatSignalAggregator");
 const governanceComplianceMonitor_1 = require("../governance/governanceComplianceMonitor");
 const retentionGovernanceEngine_1 = require("../governance/retentionGovernanceEngine");
 const credentialGovernance_1 = require("../governance/credentialGovernance");
+const stripeService_1 = require("../services/stripeService");
+const operationalIntegrityStore_1 = require("../observability/operationalIntegrityStore");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const os_1 = __importDefault(require("os"));
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -39,6 +44,33 @@ const mapCreationSource = (inputMethod) => {
         return 'SCRAPER';
     return 'MANUAL_ENTRY';
 };
+function readVerifierStatus() {
+    const proofDir = path_1.default.resolve(process.cwd(), '../../proof');
+    const candidates = [
+        'deployment-truth-proof-bundle.json',
+        'canonical-auth-validation.json',
+        'live-browser-mvp-runtime.json',
+        'platform-integrity-audit.json',
+        'rbac-proof-bundle.json',
+        'mvp-blocker-closure-audit.json',
+    ];
+    return candidates.map((name) => {
+        const filePath = path_1.default.join(proofDir, name);
+        if (!fs_1.default.existsSync(filePath)) {
+            return { name, status: 'MISSING' };
+        }
+        try {
+            const payload = JSON.parse(fs_1.default.readFileSync(filePath, 'utf8'));
+            return {
+                name,
+                status: String(payload?.overallStatus || payload?.status || 'UNKNOWN').toUpperCase(),
+            };
+        }
+        catch {
+            return { name, status: 'UNREADABLE' };
+        }
+    });
+}
 // GET /admin/users
 const getAdminUsers = async (req, res) => {
     const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -256,6 +288,125 @@ const getAdminRuntimeOverview = async (_req, res) => {
     res.json(snapshot);
 };
 exports.getAdminRuntimeOverview = getAdminRuntimeOverview;
+// GET /admin/runtime-health
+const getAdminRuntimeHealth = async (_req, res) => {
+    const [runtimeSnapshot] = await Promise.all([(0, buildOperationalSnapshot_1.buildOperationalSnapshot)()]);
+    const integrity = (0, operationalIntegrityStore_1.getOperationalIntegritySnapshot)();
+    res.json({
+        generatedAt: new Date().toISOString(),
+        runtimeStatus: runtimeSnapshot.runtimeStatus,
+        healthSummary: runtimeSnapshot.healthSummary,
+        failedRequestSummary: integrity.failedRequestSummary,
+        failedRequestsTimeline: integrity.failedRequestsTimeline,
+        authFailureSummary: integrity.authFailureSummary,
+        retrySummary: integrity.retrySummary,
+        runtimeDiagnostics: integrity.runtimeDiagnostics,
+        envValidation: integrity.envValidation,
+    });
+};
+exports.getAdminRuntimeHealth = getAdminRuntimeHealth;
+// GET /admin/mail-diagnostics
+const getAdminMailDiagnostics = async (_req, res) => {
+    const provider = (0, passwordResetEmailService_1.getPasswordResetEmailProviderState)();
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentFailures = await AuditEvent_1.default.find({
+        type: { $in: ['password_reset_email_failed', 'admin_mail_test_failed'] },
+        createdAt: { $gte: since },
+    })
+        .sort({ createdAt: -1 })
+        .limit(20)
+        .select('createdAt message type')
+        .lean();
+    res.json({
+        generatedAt: new Date().toISOString(),
+        provider: 'smtp',
+        state: provider.state,
+        configured: provider.configured,
+        retryQueueDepth: 0,
+        failedDeliveriesLast24h: recentFailures.length,
+        recentFailures: recentFailures.map((row) => ({
+            at: row.createdAt,
+            message: `${row.type}: ${row.message}`,
+        })),
+    });
+};
+exports.getAdminMailDiagnostics = getAdminMailDiagnostics;
+// POST /admin/mail-diagnostics/test-email
+const postAdminMailTestEmail = async (req, res) => {
+    const actor = (0, authUser_1.requireAuthUser)(req);
+    const result = await (0, passwordResetEmailService_2.sendPasswordResetEmail)({
+        toEmail: actor.email,
+        resetLink: `${process.env.CLIENT_URL || ''}/reset-password?token=admin-test`,
+    });
+    const success = result.state === 'EMAIL_SENT';
+    await (0, auditLog_1.logAuditEvent)({
+        type: success ? 'admin_mail_test_sent' : 'admin_mail_test_failed',
+        actorUserId: String(actor._id),
+        actorRole: String(actor.role),
+        targetType: 'MailDiagnostics',
+        targetId: String(actor._id),
+        message: success ? 'Admin mail test email sent' : 'Admin mail test email failed',
+        metadata: { state: result.state },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success,
+    });
+    if (!success) {
+        return res.status(503).json({ error: 'Mail provider not ready', state: result.state });
+    }
+    return res.json({ ok: true, state: result.state });
+};
+exports.postAdminMailTestEmail = postAdminMailTestEmail;
+// GET /admin/stripe-diagnostics
+const getAdminStripeDiagnostics = async (_req, res) => {
+    const stripe = (0, stripeService_1.getStripeRuntimeState)();
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const [pendingCheckouts, failedAudit] = await Promise.all([
+        StripeCheckoutSession_1.default.countDocuments({ status: 'PENDING' }),
+        AuditEvent_1.default.find({
+            type: { $in: ['stripe_checkout_create', 'stripe_webhook'] },
+            success: false,
+            createdAt: { $gte: since },
+        })
+            .sort({ createdAt: -1 })
+            .limit(30)
+            .select('createdAt message type')
+            .lean(),
+    ]);
+    const failedCheckouts = failedAudit.filter((row) => row.type === 'stripe_checkout_create').length;
+    const webhookFailures = failedAudit.filter((row) => row.type === 'stripe_webhook').length;
+    res.json({
+        generatedAt: new Date().toISOString(),
+        state: stripe.mode,
+        configured: stripe.configured,
+        pendingCheckouts,
+        failedCheckoutsLast24h: failedCheckouts,
+        webhookFailuresLast24h: webhookFailures,
+        recentFailures: failedAudit.map((row) => ({
+            at: row.createdAt,
+            type: row.type,
+            message: row.message,
+        })),
+    });
+};
+exports.getAdminStripeDiagnostics = getAdminStripeDiagnostics;
+// GET /admin/observability-summary
+const getAdminObservabilitySummary = async (_req, res) => {
+    const integrity = (0, operationalIntegrityStore_1.getOperationalIntegritySnapshot)();
+    res.json({
+        generatedAt: new Date().toISOString(),
+        runtimeDiagnostics: integrity.runtimeDiagnostics,
+        apiErrorCounters: {
+            total: integrity.failedRequestSummary.totalFailedRequests,
+            byStatus: integrity.failedRequestSummary.statusCounters,
+        },
+        verifierStatus: readVerifierStatus(),
+        connectorRuntimeState: [],
+        retrySummary: integrity.retrySummary,
+        envValidation: integrity.envValidation,
+    });
+};
+exports.getAdminObservabilitySummary = getAdminObservabilitySummary;
 // GET /admin/security-overview
 const getAdminSecurityOverview = async (_req, res) => {
     const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);

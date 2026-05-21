@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T20:08:43.418Z",
+  "generatedAt": "2026-05-21T21:03:33.975Z",
   "overallStatus": "PASS",
   "summary": {
     "total": 5,
@@ -172,67 +172,67 @@
       "label": "Audit",
       "path": "/admin/audit-timeline",
       "status": "PASS",
-      "detail": "route_/admin/audit-timeline: path=/admin/audit-timeline, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/audit-timeline: path=/admin/audit-timeline, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Users",
       "path": "/admin/users",
       "status": "PASS",
-      "detail": "route_/admin/users: path=/admin/users, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/users: path=/admin/users, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Analyses",
       "path": "/admin/analyses",
       "status": "PASS",
-      "detail": "route_/admin/analyses: path=/admin/analyses, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/analyses: path=/admin/analyses, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Credit Ledger",
       "path": "/admin/credit-ledger",
       "status": "PASS",
-      "detail": "route_/admin/credit-ledger: path=/admin/credit-ledger, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/credit-ledger: path=/admin/credit-ledger, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Stripe Sessions",
       "path": "/admin/stripe-sessions",
       "status": "PASS",
-      "detail": "route_/admin/stripe-sessions: path=/admin/stripe-sessions, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/stripe-sessions: path=/admin/stripe-sessions, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Properties",
       "path": "/admin/properties",
       "status": "PASS",
-      "detail": "route_/admin/properties: path=/admin/properties, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/properties: path=/admin/properties, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Runtime",
       "path": "/admin/runtime",
       "status": "PASS",
-      "detail": "route_/admin/runtime: path=/admin/runtime, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/runtime: path=/admin/runtime, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Deployment",
       "path": "/admin/deployment",
       "status": "PASS",
-      "detail": "route_/admin/deployment: path=/admin/deployment, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/deployment: path=/admin/deployment, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Observability",
       "path": "/admin/observability",
       "status": "PASS",
-      "detail": "route_/admin/observability: path=/admin/observability, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/observability: path=/admin/observability, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Analytics",
       "path": "/admin/analytics",
       "status": "PASS",
-      "detail": "route_/admin/analytics: path=/admin/analytics, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/analytics: path=/admin/analytics, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Connectors",
       "path": "/admin/connectors",
       "status": "PASS",
-      "detail": "route_/admin/connectors: path=/admin/connectors, logoutVisible=true, navCount=28, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
+      "detail": "route_/admin/connectors: path=/admin/connectors, logoutVisible=true, navCount=17, tokenExists=true, userExists=true, loginBounceWithToken=false, hiddenNavbarWithToken=false"
     },
     {
       "label": "Investor",

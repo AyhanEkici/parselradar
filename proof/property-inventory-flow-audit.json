@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-05-21T20:45:21.595Z",
+  "overallStatus": "PASS",
+  "step": "verify:property-inventory-flow",
+  "summary": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "properties api wired",
+      "pass": true,
+      "detail": "Admin properties list must call backend."
+    },
+    {
+      "name": "status filtering present",
+      "pass": true,
+      "detail": "Status filter should exist."
+    },
+    {
+      "name": "analysis linkage present",
+      "pass": true,
+      "detail": "Property rows should link to filtered analyses."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Loading state is required."
+    },
+    {
+      "name": "empty state present",
+      "pass": true,
+      "detail": "Empty state is required."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Error state is required."
+    },
+    {
+      "name": "backend routes exist",
+      "pass": true,
+      "detail": "Property inventory routes must exist."
+    }
+  ]
+}

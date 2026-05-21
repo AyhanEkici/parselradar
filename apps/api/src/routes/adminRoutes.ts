@@ -15,8 +15,13 @@ import {
 	getAdminStripeSessions,
 	getAdminDeploymentOverview,
 	getAdminRuntimeOverview,
+	getAdminRuntimeHealth,
+	getAdminObservabilitySummary,
 	getAdminSecurityOverview,
-	getAdminEmailDeliveryState
+	getAdminEmailDeliveryState,
+	getAdminMailDiagnostics,
+	postAdminMailTestEmail,
+	getAdminStripeDiagnostics,
 } from '../controllers/adminController';
 
 const router = express.Router();
@@ -36,7 +41,12 @@ router.get('/credit-ledger', auth, admin, getAdminCreditLedger);
 router.get('/stripe-sessions', auth, admin, getAdminStripeSessions);
 router.get('/deployment', auth, admin, getAdminDeploymentOverview);
 router.get('/runtime', auth, admin, getAdminRuntimeOverview);
+router.get('/runtime-health', auth, admin, getAdminRuntimeHealth);
+router.get('/observability-summary', auth, admin, getAdminObservabilitySummary);
 router.get('/security-overview', auth, admin, getAdminSecurityOverview);
 router.get('/email-delivery-state', auth, admin, getAdminEmailDeliveryState);
+router.get('/mail-diagnostics', auth, admin, getAdminMailDiagnostics);
+router.post('/mail-diagnostics/test-email', auth, admin, postAdminMailTestEmail);
+router.get('/stripe-diagnostics', auth, admin, getAdminStripeDiagnostics);
 
 export default router;

@@ -12,6 +12,7 @@ import { canPerformWorkspaceAction, resolveWorkspacePermissions } from '../servi
 import { buildOrganizationSummary } from '../services/organizations/buildOrganizationSummary';
 import { calculateOrganizationExposure } from '../services/organizations/calculateOrganizationExposure';
 import { createOrganizationSnapshot } from '../services/organizations/createOrganizationSnapshot';
+import { logAuditEvent } from '../utils/auditLog';
 
 function userId(req: AuthRequest) {
   return new mongoose.Types.ObjectId(String(req.user?._id));
@@ -98,6 +99,19 @@ export const createOrganization = async (req: AuthRequest, res: Response) => {
     createdByUserId: requestUserId,
   });
 
+  await logAuditEvent({
+    type: 'organization_created',
+    actorUserId: String(requestUserId),
+    actorRole: String(req.user?.role || ''),
+    targetType: 'Organization',
+    targetId: String(organization._id),
+    message: 'Organization created',
+    metadata: { organizationName: name, organizationSlug: slug },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   return res.json(organization);
 };
 
@@ -178,6 +192,19 @@ export const addOrganizationMember = async (req: AuthRequest, res: Response) => 
     { new: true, upsert: true }
   ).lean();
 
+  await logAuditEvent({
+    type: 'organization_member_added',
+    actorUserId: String(requestUserId),
+    actorRole: String(req.user?.role || ''),
+    targetType: 'Organization',
+    targetId: String(organizationId),
+    message: 'Organization member added/activated',
+    metadata: { targetUserId, role },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   return res.json(doc);
 };
 
@@ -202,6 +229,20 @@ export const patchOrganizationMember = async (req: AuthRequest, res: Response) =
   ).lean();
 
   if (!updated) return res.status(404).json({ error: 'Organization member bulunamadı' });
+
+  await logAuditEvent({
+    type: 'organization_member_updated',
+    actorUserId: String(requestUserId),
+    actorRole: String(req.user?.role || ''),
+    targetType: 'OrganizationMember',
+    targetId: String(req.params.memberId),
+    message: 'Organization member updated',
+    metadata: { organizationId, role, status },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   return res.json(updated);
 };
 
@@ -217,5 +258,19 @@ export const deleteOrganizationMember = async (req: AuthRequest, res: Response) 
 
   const deleted = await OrganizationMember.findOneAndDelete({ _id: req.params.memberId, organizationId }).lean();
   if (!deleted) return res.status(404).json({ error: 'Organization member bulunamadı' });
+
+  await logAuditEvent({
+    type: 'organization_member_deleted',
+    actorUserId: String(requestUserId),
+    actorRole: String(req.user?.role || ''),
+    targetType: 'OrganizationMember',
+    targetId: String(req.params.memberId),
+    message: 'Organization member deleted',
+    metadata: { organizationId },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
+
   return res.json({ ok: true });
 };

@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T20:45:18.698Z",
+  "overallStatus": "PASS",
+  "step": "verify:organizations-flow",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "organizations list api wired",
+      "pass": true,
+      "detail": "Organizations list must call backend."
+    },
+    {
+      "name": "organization create api wired",
+      "pass": true,
+      "detail": "Create organization action must call backend."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Loading state is required."
+    },
+    {
+      "name": "empty state present",
+      "pass": true,
+      "detail": "Empty state is required."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Error state is required."
+    },
+    {
+      "name": "organization routes exist",
+      "pass": true,
+      "detail": "Core organization routes must exist."
+    }
+  ]
+}

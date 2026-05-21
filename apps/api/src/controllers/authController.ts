@@ -8,6 +8,7 @@ import { JWT_SECRET } from '../config/env';
 import { AuthRequest } from '../middleware/auth';
 import { roleHydrationVerifier } from '../session/roleHydrationVerifier';
 import { validateAuthToken } from '../session/canonicalAuthValidator';
+import { recordAuthFailure } from '../observability/operationalIntegrityStore';
 
 function normalizeEmail(email: unknown) {
   return String(email || '').trim().toLowerCase();
@@ -78,11 +79,55 @@ export const login = async (req: Request, res: Response) => {
     role: user?.role || 'UNKNOWN',
     hasPasswordHash: Boolean((user as any)?.passwordHash),
   });
-  if (!user) return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
-  if (!(user as any)?.passwordHash) return res.status(401).json({ error: 'Şifre doğrulama alanı eksik' });
+  if (!user) {
+    recordAuthFailure({ at: new Date().toISOString(), reason: 'USER_NOT_FOUND', email, ip: req.ip });
+    await logAuditEvent({
+      type: 'auth_login_failed',
+      actorRole: 'ANON',
+      targetType: 'User',
+      targetId: email,
+      message: 'Login failed: user not found',
+      metadata: { email, reason: 'USER_NOT_FOUND' },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
+  }
+  if (!(user as any)?.passwordHash) {
+    recordAuthFailure({ at: new Date().toISOString(), reason: 'PASSWORD_HASH_MISSING', email, ip: req.ip });
+    await logAuditEvent({
+      type: 'auth_login_failed',
+      actorUserId: user._id.toString(),
+      actorRole: user.role,
+      targetType: 'User',
+      targetId: user._id.toString(),
+      message: 'Login failed: password hash missing',
+      metadata: { email, reason: 'PASSWORD_HASH_MISSING' },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(401).json({ error: 'Şifre doğrulama alanı eksik' });
+  }
   const valid = await bcrypt.compare(password, user.passwordHash);
   safeAuthDebug('login_password_check', { passwordValid: valid, role: user.role });
-  if (!valid) return res.status(401).json({ error: 'Şifre hatalı' });
+  if (!valid) {
+    recordAuthFailure({ at: new Date().toISOString(), reason: 'PASSWORD_MISMATCH', email, ip: req.ip });
+    await logAuditEvent({
+      type: 'auth_login_failed',
+      actorUserId: user._id.toString(),
+      actorRole: user.role,
+      targetType: 'User',
+      targetId: user._id.toString(),
+      message: 'Login failed: password mismatch',
+      metadata: { email, reason: 'PASSWORD_MISMATCH' },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(401).json({ error: 'Şifre hatalı' });
+  }
   const token = jwt.sign({ id: String(user._id), userId: String(user._id), sub: String(user._id), email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
   const decoded = jwt.decode(token) as { iat?: number } | null;
   const tokenIatSeconds = typeof decoded?.iat === 'number' ? decoded.iat : null;

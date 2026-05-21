@@ -1,0 +1,32 @@
+{
+  "generatedAt": "2026-05-21T21:03:43.645Z",
+  "overallStatus": "PASS",
+  "step": "verify:observability",
+  "summary": {
+    "total": 4,
+    "pass": 4,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "observability dashboard component used",
+      "pass": true,
+      "detail": "Admin observability page should render ObservabilityDashboard."
+    },
+    {
+      "name": "observability summary endpoint wired",
+      "pass": true,
+      "detail": "Observability page should fetch summary endpoint."
+    },
+    {
+      "name": "runtime health route added",
+      "pass": true,
+      "detail": "App routes must include /admin/runtime-health."
+    },
+    {
+      "name": "runtime health api route added",
+      "pass": true,
+      "detail": "API routes must include /admin/runtime-health endpoint."
+    }
+  ]
+}

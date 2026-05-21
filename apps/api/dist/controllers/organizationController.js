@@ -16,6 +16,7 @@ const resolveWorkspacePermissions_1 = require("../services/organizations/resolve
 const buildOrganizationSummary_1 = require("../services/organizations/buildOrganizationSummary");
 const calculateOrganizationExposure_1 = require("../services/organizations/calculateOrganizationExposure");
 const createOrganizationSnapshot_1 = require("../services/organizations/createOrganizationSnapshot");
+const auditLog_1 = require("../utils/auditLog");
 function userId(req) {
     return new mongoose_1.default.Types.ObjectId(String(req.user?._id));
 }
@@ -90,6 +91,18 @@ const createOrganization = async (req, res) => {
         description: 'Default collaborative workspace',
         createdByUserId: requestUserId,
     });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'organization_created',
+        actorUserId: String(requestUserId),
+        actorRole: String(req.user?.role || ''),
+        targetType: 'Organization',
+        targetId: String(organization._id),
+        message: 'Organization created',
+        metadata: { organizationName: name, organizationSlug: slug },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     return res.json(organization);
 };
 exports.createOrganization = createOrganization;
@@ -158,6 +171,18 @@ const addOrganizationMember = async (req, res) => {
         $set: { role, status: 'ACTIVE' },
         $setOnInsert: { organizationId, userId: targetUserId, invitedByUserId: requestUserId },
     }, { new: true, upsert: true }).lean();
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'organization_member_added',
+        actorUserId: String(requestUserId),
+        actorRole: String(req.user?.role || ''),
+        targetType: 'Organization',
+        targetId: String(organizationId),
+        message: 'Organization member added/activated',
+        metadata: { targetUserId, role },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     return res.json(doc);
 };
 exports.addOrganizationMember = addOrganizationMember;
@@ -177,6 +202,18 @@ const patchOrganizationMember = async (req, res) => {
     }, { new: true }).lean();
     if (!updated)
         return res.status(404).json({ error: 'Organization member bulunamadı' });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'organization_member_updated',
+        actorUserId: String(requestUserId),
+        actorRole: String(req.user?.role || ''),
+        targetType: 'OrganizationMember',
+        targetId: String(req.params.memberId),
+        message: 'Organization member updated',
+        metadata: { organizationId, role, status },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     return res.json(updated);
 };
 exports.patchOrganizationMember = patchOrganizationMember;
@@ -192,6 +229,18 @@ const deleteOrganizationMember = async (req, res) => {
     const deleted = await OrganizationMember_1.default.findOneAndDelete({ _id: req.params.memberId, organizationId }).lean();
     if (!deleted)
         return res.status(404).json({ error: 'Organization member bulunamadı' });
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'organization_member_deleted',
+        actorUserId: String(requestUserId),
+        actorRole: String(req.user?.role || ''),
+        targetType: 'OrganizationMember',
+        targetId: String(req.params.memberId),
+        message: 'Organization member deleted',
+        metadata: { organizationId },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: true,
+    });
     return res.json({ ok: true });
 };
 exports.deleteOrganizationMember = deleteOrganizationMember;

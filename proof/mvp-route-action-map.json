@@ -1,0 +1,363 @@
+{
+  "generatedAt": "2026-05-21T20:46:18.359Z",
+  "summary": {
+    "total": 21,
+    "statusCounts": {
+      "COMPLETE": 21
+    }
+  },
+  "rows": [
+    {
+      "route": "/dashboard",
+      "pageComponent": "Dashboard",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "dashboard",
+      "primaryActions": [
+        "button:{ await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap",
+        "link:/properties/new",
+        "link:/reports",
+        "link:/credits"
+      ],
+      "backendEndpointsUsed": [
+        "credits"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/credits",
+      "pageComponent": "Credits",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "credits",
+      "primaryActions": [
+        "button:handleCheckout(amount)}>{amount} Kredi",
+        "button:Dev Only: 10 Kredi Ekle"
+      ],
+      "backendEndpointsUsed": [
+        "credits",
+        "credits/dev-add",
+        "stripe/create-checkout-session"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/reports",
+      "pageComponent": "Reports",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "reports",
+      "primaryActions": [
+        "button:handlePurchase(r)} > {buyingId === r._id ? 'Satın alınıyor...' : 'PDF Satın Al'}",
+        "button:handleDownload(r)} > {downloadingId === r._id ? 'İndiriliyor...' : 'İndir'}"
+      ],
+      "backendEndpointsUsed": [
+        "/reports/${report.analysisRunId}/purchase-pdf",
+        "reports"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/analyses",
+      "pageComponent": "AdminAnalyses",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Analyses",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/analyses?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/investor",
+      "pageComponent": "InvestorDashboard",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Investor",
+      "primaryActions": [
+        "link:/investor/saved-analyses",
+        "link:/investor/watchlist",
+        "link:/investor/portfolio"
+      ],
+      "backendEndpointsUsed": [
+        "investor/dashboard"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/investor/saved-analyses",
+      "pageComponent": "SavedAnalyses",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Saved",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "investor/saved-analyses",
+        "investor/saved-analyses/${id}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/investor/watchlist",
+      "pageComponent": "Watchlist",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Watchlist",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "investor/watchlist",
+        "investor/watchlist/${id}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/investor/portfolio",
+      "pageComponent": "PortfolioDashboard",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Portfolio",
+      "primaryActions": [
+        "button:{creating ? 'Creating...' : 'Create'}"
+      ],
+      "backendEndpointsUsed": [
+        "investor/portfolio",
+        "investor/portfolio/${portfolio._id}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/organizations",
+      "pageComponent": "Organizations",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Organizations",
+      "primaryActions": [
+        "button:{creating ? 'Creating...' : 'Create'}"
+      ],
+      "backendEndpointsUsed": [
+        "organizations"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/notifications",
+      "pageComponent": "NotificationInbox",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "Notifications",
+      "primaryActions": [
+        "button:Create Test Event",
+        "link:/notifications/preferences"
+      ],
+      "backendEndpointsUsed": [
+        "notifications",
+        "notifications/${id}/archive",
+        "notifications/${id}/read",
+        "notifications/digests",
+        "notifications/test-event"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/users",
+      "pageComponent": "AdminUsers",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Users",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/audit-events?type=admin_user_role_updated&page=1&limit=5",
+        "/admin/email-delivery-state",
+        "/admin/users/${targetUserId}/role",
+        "/admin/users?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/analyses",
+      "pageComponent": "AdminAnalyses",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Analyses",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/analyses?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/credit-ledger",
+      "pageComponent": "AdminCreditLedger",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Credit Ledger",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/credit-ledger?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/stripe-sessions",
+      "pageComponent": "AdminStripeSessions",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Stripe Sessions",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/stripe-sessions?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/properties",
+      "pageComponent": "AdminProperties",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Properties",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/properties"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/runtime",
+      "pageComponent": "AdminSystemRuntime",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Runtime",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/runtime"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/deployment",
+      "pageComponent": "AdminDeploymentOverview",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Deployment",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/deployment"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/observability",
+      "pageComponent": "AdminObservability",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Observability",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/analyses?page=1",
+        "/admin/observability"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/analytics",
+      "pageComponent": "AdminAnalytics",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Analytics",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/analytics"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/connectors",
+      "pageComponent": "AdminConnectors",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Connectors",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/connectors",
+        "/admin/connectors/audit-trail"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    },
+    {
+      "route": "/admin/audit-timeline",
+      "pageComponent": "AdminAuditTimeline",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "Audit",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/audit-events?${params.toString()}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P3"
+    }
+  ]
+}

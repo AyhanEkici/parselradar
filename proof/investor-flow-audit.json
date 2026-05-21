@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T20:45:15.651Z",
+  "overallStatus": "PASS",
+  "step": "verify:investor-flow",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "dashboard api wired",
+      "pass": true,
+      "detail": "Investor dashboard must use live API."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Loading state is required."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Error state is required."
+    },
+    {
+      "name": "summary metrics wired",
+      "pass": true,
+      "detail": "Investor metrics should be fed by API summary."
+    },
+    {
+      "name": "investor routes exist",
+      "pass": true,
+      "detail": "Core investor API routes must exist."
+    },
+    {
+      "name": "no mock marker",
+      "pass": true,
+      "detail": "Investor page should not include mock/fake markers."
+    }
+  ]
+}

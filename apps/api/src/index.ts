@@ -31,6 +31,7 @@ import observabilityRoutes from './routes/observabilityRoutes';
 import connectorActivationRoutes from './routes/connectorActivationRoutes';
 import helmet from 'helmet';
 import { requestIdMiddleware } from './middleware/requestId';
+import { operationalTelemetry } from './middleware/operationalTelemetry';
 import { healthController } from './health/healthController';
 import { readinessController } from './health/readinessController';
 import { livenessController } from './health/livenessController';
@@ -47,6 +48,7 @@ import {
   recordStartupPhase,
   getRuntimeDiagnostics,
 } from './runtime/degradedRuntime';
+import { validateRuntimeEnv } from './config/envValidator';
 
 
 
@@ -95,6 +97,15 @@ app.use(helmet());
 
 // Request ID middleware
 app.use(requestIdMiddleware);
+app.use(operationalTelemetry);
+
+const envValidation = validateRuntimeEnv();
+recordStartupPhase(
+  'env_validation',
+  envValidation.valid
+    ? 'Runtime env validation passed.'
+    : `Runtime env validation failed: ${envValidation.missingRequired.join(', ')}`
+);
 
 // Safe CORS diagnostics (no auth/cookie/token content)
 app.use((req, _res, next) => {

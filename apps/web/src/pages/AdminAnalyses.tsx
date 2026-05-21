@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { apiFetch } from '../lib/api';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   AdminButton,
   AdminEmptyState,
@@ -96,16 +96,26 @@ function renderUserIdentity(userId: Analysis['userId']) {
 
 export default function AdminAnalyses() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [analyses, setAnalyses] = useState<Analysis[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [userIdFilter, setUserIdFilter] = useState(searchParams.get('userId') || '');
+  const [propertyIdFilter, setPropertyIdFilter] = useState(searchParams.get('propertyId') || '');
+  const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '');
 
   function fetchAnalyses() {
     setLoading(true);
     const params = new URLSearchParams();
     params.append('page', String(page));
+    if (userIdFilter.trim()) params.append('userId', userIdFilter.trim());
+    if (propertyIdFilter.trim()) params.append('propertyId', propertyIdFilter.trim());
+    if (typeFilter.trim()) params.append('type', typeFilter.trim());
+
+    setSearchParams(params, { replace: true });
+
     apiFetch(`/admin/analyses?${params.toString()}`)
       .then((data) => {
         setAnalyses(data.analyses);
@@ -118,7 +128,7 @@ export default function AdminAnalyses() {
       });
   }
 
-  useEffect(() => { fetchAnalyses(); /* eslint-disable-next-line */ }, [page]);
+  useEffect(() => { fetchAnalyses(); /* eslint-disable-next-line */ }, [page, userIdFilter, propertyIdFilter, typeFilter]);
 
   if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') return <div>Yönetici yetkisi gerekli</div>;
   if (error) return <div>Hata: {error}</div>;
@@ -131,6 +141,46 @@ export default function AdminAnalyses() {
           title="Analizler"
           subtitle="Skor, sinyal ve yeniden kullanım durumlarıyla analiz kayıtlarını izleyin"
         />
+
+        <AdminToolbar>
+          <AdminInput
+            className="w-full sm:w-56"
+            placeholder="UserId"
+            value={userIdFilter}
+            onChange={(e) => {
+              setPage(1);
+              setUserIdFilter(e.target.value);
+            }}
+          />
+          <AdminInput
+            className="w-full sm:w-56"
+            placeholder="PropertyId"
+            value={propertyIdFilter}
+            onChange={(e) => {
+              setPage(1);
+              setPropertyIdFilter(e.target.value);
+            }}
+          />
+          <AdminInput
+            className="w-full sm:w-44"
+            placeholder="Type"
+            value={typeFilter}
+            onChange={(e) => {
+              setPage(1);
+              setTypeFilter(e.target.value);
+            }}
+          />
+          <AdminButton
+            onClick={() => {
+              setUserIdFilter('');
+              setPropertyIdFilter('');
+              setTypeFilter('');
+              setPage(1);
+            }}
+          >
+            Temizle
+          </AdminButton>
+        </AdminToolbar>
 
         <AdminTableWrap>
           <AdminTable>
@@ -172,14 +222,14 @@ export default function AdminAnalyses() {
                   </AdminTd>
                   <AdminTd>
                     <div className="space-y-1 text-xs text-slate-600">
-                      <div>Dev Prob: {a.fullAnalysis?.territorialIntelligence?.developmentProbability?.value || '-'}</div>
+                      <div>Planning Prob: {a.fullAnalysis?.territorialIntelligence?.planningProbability?.value || '-'}</div>
                       <div>Outlook: {a.fullAnalysis?.territorialIntelligence?.longTermRegionalOutlook?.value || '-'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd>
                     <div className="space-y-1 text-xs text-slate-600">
                       <div>Compliance: {a.fullAnalysis?.ingestionCompliance?.complianceState || '-'}</div>
-                      <div>No fake ACTIVE: {a.fullAnalysis?.noFakeActiveProof ? 'PASS' : 'FAIL'}</div>
+                      <div>ACTIVE proof: {a.fullAnalysis?.noFakeActiveProof ? 'PASS' : 'FAIL'}</div>
                     </div>
                   </AdminTd>
                   <AdminTd>

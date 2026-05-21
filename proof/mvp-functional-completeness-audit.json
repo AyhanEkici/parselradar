@@ -1,0 +1,866 @@
+{
+  "generatedAt": "2026-05-21T20:46:18.359Z",
+  "phase": "P2.1 — FULL MVP FUNCTIONAL COMPLETENESS AUDIT",
+  "baselineCommit": "38355679",
+  "completenessScore": 49,
+  "summary": {
+    "routes": {
+      "COMPLETE": 21
+    },
+    "apis": {
+      "COMPLETE": 36,
+      "DISCONNECTED": 60
+    },
+    "keywordHits": [
+      {
+        "file": "apps/web/src/components/admin/AdminPrimitives.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/components/operatingSystem/TerritorialOperatingSystemCard.tsx",
+        "hits": [
+          "fake"
+        ]
+      },
+      {
+        "file": "apps/web/src/components/trends/ConnectorStatusCard.tsx",
+        "hits": [
+          "mock"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/AdminAnalyses.tsx",
+        "hits": [
+          "fake",
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/AdminAuditTimeline.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/AdminDealPool.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/AdminProperties.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/AdminUsers.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/ForgotPassword.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/InvestorDashboard.tsx",
+        "hits": [
+          "fake"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/Login.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/NewProperty.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/Organizations.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/PortfolioDashboard.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/PropertyDetail.tsx",
+        "hits": [
+          "fake"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/PropertyResult.tsx",
+        "hits": [
+          "fake"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/Register.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/Reports.tsx",
+        "hits": [
+          "fake"
+        ]
+      },
+      {
+        "file": "apps/web/src/pages/ResetPassword.tsx",
+        "hits": [
+          "placeholder"
+        ]
+      }
+    ]
+  },
+  "productionBlockers": [],
+  "partialPages": [],
+  "placeholderOrMockAreas": [],
+  "brokenActions": [],
+  "missingApis": [
+    {
+      "endpoint": "/admin/deal-pool/:propertyId/accept",
+      "method": "POST",
+      "requiredRole": "ADMIN",
+      "controller": "acceptDealPool (apps/api/src/routes/adminRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/admin/deal-pool/:entryId/share",
+      "method": "POST",
+      "requiredRole": "ADMIN",
+      "controller": "shareDealPool (apps/api/src/routes/adminRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/admin/security-overview",
+      "method": "GET",
+      "requiredRole": "ADMIN",
+      "controller": "getAdminSecurityOverview (apps/api/src/routes/adminRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/analysis/:propertyId/quick-score",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "quickScore (apps/api/src/routes/analysisRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/analysis/:propertyId/parsel-insight",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "parselInsight (apps/api/src/routes/analysisRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/analysis/:propertyId/developer-fit",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "developerFit (apps/api/src/routes/analysisRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/auth/session-diagnostics",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getSessionDiagnostics (apps/api/src/routes/authRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/consent",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "submitConsent (apps/api/src/routes/consentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/credits/",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getCredits (apps/api/src/routes/creditRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/credits/dev-add",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "devAddCredits (apps/api/src/routes/creditRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/documents",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "uploadDocument (apps/api/src/routes/documentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/documents",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getDocuments (apps/api/src/routes/documentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/documents/:documentId/view",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "viewDocument (apps/api/src/routes/documentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/documents/:documentId/download",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "downloadDocument (apps/api/src/routes/documentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId/documents/:documentId",
+      "method": "DELETE",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "deleteDocument (apps/api/src/routes/documentRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/exports/analysis/:propertyId",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "exportAnalysisByProperty (apps/api/src/routes/exportRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/dashboard",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getInvestorDashboard (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/saved-analyses",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getSavedAnalyses (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/saved-analyses",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createSavedAnalysis (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/saved-analyses/:id",
+      "method": "DELETE",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "deleteSavedAnalysis (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/watchlist",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getWatchlist (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/watchlist",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createWatchlistItem (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/watchlist/:id",
+      "method": "DELETE",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "deleteWatchlistItem (apps/api/src/routes/investorRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getNotifications (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/preferences",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getNotificationPreferences (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/preferences",
+      "method": "PATCH",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "patchNotificationPreferences (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/:id/read",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "markNotificationRead (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/:id/archive",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "archiveNotification (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/digests",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getNotificationDigests (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/notifications/test-event",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createNotificationTestEvent (apps/api/src/routes/notificationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/admin/telemetry",
+      "method": "GET",
+      "requiredRole": "ADMIN",
+      "controller": "getAdminTelemetry (apps/api/src/routes/observabilityRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getOrganizations (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createOrganization (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations/:id",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getOrganizationById (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations/:id/members",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "addOrganizationMember (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations/:id/members/:memberId",
+      "method": "PATCH",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "patchOrganizationMember (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/organizations/:id/members/:memberId",
+      "method": "DELETE",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "deleteOrganizationMember (apps/api/src/routes/organizationRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/analytics",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioAnalytics (apps/api/src/routes/portfolioAnalyticsRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/benchmark",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioBenchmark (apps/api/src/routes/portfolioAnalyticsRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/scenarios",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioScenarios (apps/api/src/routes/portfolioAnalyticsRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/exposure",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioExposure (apps/api/src/routes/portfolioAnalyticsRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/performance",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioPerformance (apps/api/src/routes/portfolioAnalyticsRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolios (apps/api/src/routes/portfolioRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createPortfolio (apps/api/src/routes/portfolioRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPortfolioById (apps/api/src/routes/portfolioRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/items",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "addPortfolioItem (apps/api/src/routes/portfolioRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/investor/portfolio/:id/items/:itemId",
+      "method": "DELETE",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "deletePortfolioItem (apps/api/src/routes/portfolioRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createProperty (apps/api/src/routes/propertyRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getMyProperties (apps/api/src/routes/propertyRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/properties/:propertyId",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getPropertyById (apps/api/src/routes/propertyRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/reports/:id/download",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "downloadReport (apps/api/src/routes/reportRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/shared-analysis",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createSharedAnalysis (apps/api/src/routes/sharedAnalysisRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/shared-analysis",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getSharedAnalyses (apps/api/src/routes/sharedAnalysisRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/stripe/create-checkout-session",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "createCheckoutSession (apps/api/src/routes/stripeRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/dashboard",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getWorkspaceDashboard (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/portfolios",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getWorkspacePortfolios (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/watchlist",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getWorkspaceWatchlist (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/activity",
+      "method": "GET",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "getWorkspaceActivity (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/portfolios",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "addWorkspacePortfolioProperty (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    },
+    {
+      "endpoint": "/workspace/:organizationId/watchlist",
+      "method": "POST",
+      "requiredRole": "AUTHENTICATED",
+      "controller": "addWorkspaceWatchlistProperty (apps/api/src/routes/workspaceRoutes.ts)",
+      "frontendConsumers": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "No frontend consumer found for this protected API endpoint.",
+      "severity": "MEDIUM",
+      "fixRequired": "Wire the endpoint into intended UI flow or remove dead API surface.",
+      "priority": "P2"
+    }
+  ],
+  "top10NextFixes": [],
+  "recommendedNextPhase": "P2.2 — MVP Blocker Closure (no connector/TUCBS implementation)"
+}

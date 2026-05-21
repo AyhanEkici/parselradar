@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-21T20:45:09.411Z",
+  "overallStatus": "PASS",
+  "step": "verify:reports-flow",
+  "summary": {
+    "total": 8,
+    "pass": 8,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "reports api list wired",
+      "pass": true,
+      "detail": "Reports list must be loaded from API."
+    },
+    {
+      "name": "purchase action wired",
+      "pass": true,
+      "detail": "Purchase PDF action should call purchase endpoint."
+    },
+    {
+      "name": "download action wired",
+      "pass": true,
+      "detail": "Download should use authenticated fetch flow."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Page should expose loading state."
+    },
+    {
+      "name": "empty state present",
+      "pass": true,
+      "detail": "Page should expose empty state."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Page should expose error state."
+    },
+    {
+      "name": "report routes exist",
+      "pass": true,
+      "detail": "Backend report endpoints must be mounted."
+    },
+    {
+      "name": "no mock marker in page",
+      "pass": true,
+      "detail": "Reports page should not include mock/fake markers."
+    }
+  ]
+}

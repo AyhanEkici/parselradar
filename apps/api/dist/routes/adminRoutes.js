@@ -22,6 +22,11 @@ router.get('/credit-ledger', auth_1.auth, admin_1.admin, adminController_1.getAd
 router.get('/stripe-sessions', auth_1.auth, admin_1.admin, adminController_1.getAdminStripeSessions);
 router.get('/deployment', auth_1.auth, admin_1.admin, adminController_1.getAdminDeploymentOverview);
 router.get('/runtime', auth_1.auth, admin_1.admin, adminController_1.getAdminRuntimeOverview);
+router.get('/runtime-health', auth_1.auth, admin_1.admin, adminController_1.getAdminRuntimeHealth);
+router.get('/observability-summary', auth_1.auth, admin_1.admin, adminController_1.getAdminObservabilitySummary);
 router.get('/security-overview', auth_1.auth, admin_1.admin, adminController_1.getAdminSecurityOverview);
 router.get('/email-delivery-state', auth_1.auth, admin_1.admin, adminController_1.getAdminEmailDeliveryState);
+router.get('/mail-diagnostics', auth_1.auth, admin_1.admin, adminController_1.getAdminMailDiagnostics);
+router.post('/mail-diagnostics/test-email', auth_1.auth, admin_1.admin, adminController_1.postAdminMailTestEmail);
+router.get('/stripe-diagnostics', auth_1.auth, admin_1.admin, adminController_1.getAdminStripeDiagnostics);
 exports.default = router;

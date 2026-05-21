@@ -47,6 +47,7 @@ export default function AdminUsers() {
   const [pendingRoles, setPendingRoles] = useState<Record<string, 'USER' | 'ADMIN'>>({});
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [emailDeliveryState, setEmailDeliveryState] = useState<EmailDeliveryState | null>(null);
+  const [roleAudit, setRoleAudit] = useState<Array<{ _id: string; message?: string; createdAt?: string; actorUserId?: string }>>([]);
 
   function fetchUsers() {
     setLoading(true);
@@ -79,6 +80,15 @@ export default function AdminUsers() {
       .catch(() => setEmailDeliveryState(null));
   }
 
+  function fetchRoleAudit() {
+    apiFetch('/admin/audit-events?type=admin_user_role_updated&page=1&limit=5')
+      .then((data) => {
+        const events = Array.isArray(data?.events) ? data.events : [];
+        setRoleAudit(events);
+      })
+      .catch(() => setRoleAudit([]));
+  }
+
   async function saveRole(targetUserId: string) {
     const nextRole = pendingRoles[targetUserId];
     if (!nextRole) return;
@@ -95,6 +105,7 @@ export default function AdminUsers() {
         setUsers((prev) => prev.map((u) => (u._id === targetUserId ? { ...u, role: updated.role } : u)));
       }
       setStatusMessage(response?.message || 'Rol güncellendi');
+      fetchRoleAudit();
     } catch (e) {
       const err = e as { error?: string; message?: string };
       setStatusMessage(err.error || err.message || 'Rol güncellenemedi');
@@ -105,6 +116,7 @@ export default function AdminUsers() {
 
   useEffect(() => { fetchUsers(); /* eslint-disable-next-line */ }, [search, role, page]);
   useEffect(() => { fetchEmailDeliveryState(); }, []);
+  useEffect(() => { fetchRoleAudit(); }, []);
 
   if (hydrating) return <div>Oturum doğrulanıyor...</div>;
 
@@ -132,6 +144,22 @@ export default function AdminUsers() {
             {statusMessage}
           </div>
         ) : null}
+
+        <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+          <div className="font-medium">Rol değişikliği denetimi (son 5)</div>
+          {roleAudit.length === 0 ? (
+            <div className="text-xs text-slate-500 mt-1">Henüz rol değişikliği denetim kaydı yok.</div>
+          ) : (
+            <ul className="mt-1 space-y-1 text-xs">
+              {roleAudit.map((event) => (
+                <li key={event._id}>
+                  {event.createdAt ? new Date(event.createdAt).toLocaleString() : '-'} - {event.message || 'admin_user_role_updated'}
+                  {event.actorUserId ? ` (${event.actorUserId})` : ''}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <AdminToolbar>
           <AdminInput

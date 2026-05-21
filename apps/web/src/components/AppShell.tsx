@@ -40,8 +40,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   {isAdmin ? <Link to="/admin/stripe-sessions" className="hover:underline">Stripe Sessions</Link> : null}
                   {isAdmin ? <Link to="/admin/properties" className="hover:underline">Properties</Link> : null}
                   {isAdmin ? <Link to="/admin/runtime" className="hover:underline">Runtime</Link> : null}
+                  {isAdmin ? <Link to="/admin/runtime-health" className="hover:underline">Runtime Health</Link> : null}
                   {isAdmin ? <Link to="/admin/deployment" className="hover:underline">Deployment</Link> : null}
                   {isAdmin ? <Link to="/admin/observability" className="hover:underline">Observability</Link> : null}
+                  {isAdmin ? <Link to="/admin/mail-diagnostics" className="hover:underline">Mail</Link> : null}
+                  {isAdmin ? <Link to="/admin/stripe-diagnostics" className="hover:underline">Stripe</Link> : null}
                   {isAdmin ? <Link to="/admin/analytics" className="hover:underline">Analytics</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors" className="hover:underline">Connectors</Link> : null}
                   <Link to="/investor" className="hover:underline">Investor</Link>

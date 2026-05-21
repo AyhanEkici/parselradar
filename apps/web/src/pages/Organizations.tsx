@@ -6,13 +6,19 @@ export default function Organizations() {
   const [payload, setPayload] = useState<any>(null);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
 
   const load = async () => {
+    setLoading(true);
+    setError('');
     try {
       const data = await apiFetch('organizations');
       setPayload(data);
     } catch (err: any) {
       setError(err?.error || 'Organizations yüklenemedi');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -22,9 +28,17 @@ export default function Organizations() {
 
   const createOrganization = async () => {
     if (!name.trim()) return;
-    await apiFetch('organizations', { method: 'POST', body: JSON.stringify({ name }) });
-    setName('');
-    await load();
+    setCreating(true);
+    setError('');
+    try {
+      await apiFetch('organizations', { method: 'POST', body: JSON.stringify({ name }) });
+      setName('');
+      await load();
+    } catch (err: any) {
+      setError(err?.error || err?.message || 'Organization oluşturulamadı');
+    } finally {
+      setCreating(false);
+    }
   };
 
   const organizations = payload?.organizations || [];
@@ -44,8 +58,8 @@ export default function Organizations() {
               placeholder="Organization name"
               className="rounded-md border border-slate-300 px-3 py-2 text-sm"
             />
-            <button onClick={createOrganization} className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">
-              Create
+            <button onClick={createOrganization} disabled={creating} className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
+              {creating ? 'Creating...' : 'Create'}
             </button>
           </div>
         </div>
@@ -59,9 +73,10 @@ export default function Organizations() {
         </div>
 
         {error ? <div className="text-sm text-red-600">{error}</div> : null}
+        {loading ? <div className="text-sm text-slate-600">Organizations yükleniyor...</div> : null}
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {organizations.length === 0 ? (
+          {!loading && organizations.length === 0 ? (
             <div className="text-sm text-slate-600">No organizations yet.</div>
           ) : (
             organizations.map((organization: any) => (

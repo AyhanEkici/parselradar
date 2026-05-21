@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-05-21T20:46:21.509Z",
+  "overallStatus": "PASS",
+  "checks": [
+    {
+      "name": "proof exists: routeMap",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\mvp-route-action-map.json"
+    },
+    {
+      "name": "proof exists: completeness",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\mvp-functional-completeness-audit.json"
+    },
+    {
+      "name": "proof exists: reports",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\reports-flow-audit.json"
+    },
+    {
+      "name": "proof exists: adminAnalyses",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\admin-analyses-flow-audit.json"
+    },
+    {
+      "name": "proof exists: investor",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\investor-flow-audit.json"
+    },
+    {
+      "name": "proof exists: organizations",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\organizations-flow-audit.json"
+    },
+    {
+      "name": "proof exists: inventory",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\property-inventory-flow-audit.json"
+    },
+    {
+      "name": "proof exists: auditTimeline",
+      "pass": true,
+      "detail": "C:\\parselradar\\proof\\audit-timeline-flow-audit.json"
+    },
+    {
+      "name": "target routes complete",
+      "pass": true,
+      "detail": "remaining=0"
+    },
+    {
+      "name": "flow verifiers pass",
+      "pass": true,
+      "detail": "verify:reports-flow:PASS, verify:admin-analyses-flow:PASS, verify:investor-flow:PASS, verify:organizations-flow:PASS, verify:property-inventory-flow:PASS, verify:audit-timeline-flow:PASS"
+    },
+    {
+      "name": "completeness score improved",
+      "pass": true,
+      "detail": "score=49 target>=45"
+    }
+  ],
+  "remainingTargets": [],
+  "proofInputs": {
+    "routeMap": "proof/mvp-route-action-map.json",
+    "completeness": "proof/mvp-functional-completeness-audit.json",
+    "reports": "proof/reports-flow-audit.json",
+    "adminAnalyses": "proof/admin-analyses-flow-audit.json",
+    "investor": "proof/investor-flow-audit.json",
+    "organizations": "proof/organizations-flow-audit.json",
+    "inventory": "proof/property-inventory-flow-audit.json",
+    "auditTimeline": "proof/audit-timeline-flow-audit.json"
+  }
+}

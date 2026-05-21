@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:03:48.834Z",
+  "overallStatus": "PASS",
+  "step": "verify:env-integrity",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "backend env validator exists",
+      "pass": true,
+      "detail": "Backend envValidator should exist."
+    },
+    {
+      "name": "required env key checks",
+      "pass": true,
+      "detail": "Backend validator should check required keys."
+    },
+    {
+      "name": "recommended env warnings",
+      "pass": true,
+      "detail": "Backend validator should expose recommended missing secrets."
+    },
+    {
+      "name": "startup env validation call",
+      "pass": true,
+      "detail": "API startup should run env validation."
+    },
+    {
+      "name": "frontend env validator exists",
+      "pass": true,
+      "detail": "Frontend env validator should exist."
+    },
+    {
+      "name": "api uses frontend env validator",
+      "pass": true,
+      "detail": "apiFetch base URL resolution should use frontend env validator."
+    }
+  ]
+}

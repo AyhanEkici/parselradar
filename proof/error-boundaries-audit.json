@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-21T21:03:41.187Z",
+  "overallStatus": "PASS",
+  "step": "verify:error-boundaries",
+  "summary": {
+    "total": 8,
+    "pass": 8,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "error boundary component exists",
+      "pass": true,
+      "detail": "ErrorBoundary class component should exist."
+    },
+    {
+      "name": "route wrapper exists",
+      "pass": true,
+      "detail": "Routes should use withBoundary helper."
+    },
+    {
+      "name": "dashboard protected by boundary",
+      "pass": true,
+      "detail": "Dashboard route should be wrapped."
+    },
+    {
+      "name": "reports protected by boundary",
+      "pass": true,
+      "detail": "Reports route should be wrapped."
+    },
+    {
+      "name": "admin analyses protected by boundary",
+      "pass": true,
+      "detail": "Admin analyses route should be wrapped."
+    },
+    {
+      "name": "investor protected by boundary",
+      "pass": true,
+      "detail": "Investor route should be wrapped."
+    },
+    {
+      "name": "organizations protected by boundary",
+      "pass": true,
+      "detail": "Organizations route should be wrapped."
+    },
+    {
+      "name": "recover actions present",
+      "pass": true,
+      "detail": "Boundary fallback should support recover + reload."
+    }
+  ]
+}

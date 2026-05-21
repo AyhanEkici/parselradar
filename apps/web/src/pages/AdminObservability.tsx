@@ -15,17 +15,19 @@ import ExecutionReadinessCard from '../components/execution/ExecutionReadinessCa
 import OperationalStateCard from '../components/operatingSystem/OperationalStateCard';
 import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
 import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
+import ObservabilityDashboard from '../components/ObservabilityDashboard';
 
 export default function AdminObservability() {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
+  const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([apiFetch('/admin/observability'), apiFetch('/admin/analyses?page=1')])
-      .then(([response, analysesPayload]) => {
+    Promise.all([apiFetch('/admin/observability'), apiFetch('/admin/analyses?page=1'), apiFetch('/admin/observability-summary')])
+      .then(([response, analysesPayload, observabilitySummary]) => {
         const first = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.autonomyIntelligence || {};
         const execution = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.executionOperatingSystem || {};
         setData({
@@ -39,6 +41,7 @@ export default function AdminObservability() {
           },
           execution,
         });
+        setSummary(observabilitySummary);
         setError('');
       })
       .catch((err) => setError(err?.error || err?.message || 'Observability data could not be loaded'))
@@ -61,6 +64,12 @@ export default function AdminObservability() {
             <div className="text-sm text-slate-600">Yükleniyor...</div>
           ) : (
             <>
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                <div className="xl:col-span-12">
+                  <ObservabilityDashboard data={summary} />
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
                 <div className="xl:col-span-4">
                   <ObservabilitySnapshotCard snapshot={data} />

@@ -68,13 +68,31 @@ function resolveUserDisplay(property: Property) {
 export default function AdminProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function fetchProperties() {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await apiFetch('/admin/properties');
+      setProperties(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError((err as { error?: string; message?: string }).error || (err as Error).message || 'Mülkler yüklenemedi');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    apiFetch('admin/properties').then(setProperties);
+    fetchProperties();
   }, []);
 
   const normalizedQuery = query.trim().toLowerCase();
   const filtered = properties.filter((property) => {
+    const normalizedStatus = String(property.status || '').toUpperCase();
+    if (statusFilter && normalizedStatus !== statusFilter) return false;
     if (!normalizedQuery) return true;
     const haystack = [
       property.addressText,
@@ -102,21 +120,40 @@ export default function AdminProperties() {
         />
 
         <AdminToolbar className="justify-between">
-          <AdminInput
-            className="w-full sm:w-80"
-            placeholder="Adres, şehir, ilçe, durum, kullanıcı ara"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div className="flex w-full flex-wrap items-center gap-2">
+            <AdminInput
+              className="w-full sm:w-80"
+              placeholder="Adres, şehir, ilçe, durum, kullanıcı ara"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <select
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">Tüm Durumlar</option>
+              <option value="DRAFT">DRAFT</option>
+              <option value="PENDING">PENDING</option>
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-slate-600">{filtered.length} kayıt</span>
-            <AdminButton onClick={() => setQuery('')} disabled={!query}>
+            <AdminButton onClick={() => { setQuery(''); setStatusFilter(''); }} disabled={!query && !statusFilter}>
               Temizle
             </AdminButton>
           </div>
         </AdminToolbar>
 
-        {filtered.length === 0 ? (
+        {error ? (
+          <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
+        ) : null}
+
+        {loading ? <div className="text-sm text-slate-500">Mülkler yükleniyor...</div> : null}
+
+        {!loading && filtered.length === 0 ? (
           <AdminEmptyState>
             Görüntülenecek mülk bulunamadı. Filtreyi temizleyip tekrar deneyin.
           </AdminEmptyState>
@@ -162,6 +199,9 @@ export default function AdminProperties() {
 
                     <div className="mt-3 text-sm text-slate-700">
                       <span className="text-slate-500">Kullanıcı:</span> {resolveUserDisplay(p)}
+                    </div>
+                    <div className="mt-2 text-xs text-blue-700 underline">
+                      <Link to={`/admin/analyses?propertyId=${p._id}`}>Bu mülkün analizlerini görüntüle</Link>
                     </div>
                   </Link>
                 </li>

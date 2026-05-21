@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-05-21T20:45:12.627Z",
+  "overallStatus": "PASS",
+  "step": "verify:admin-analyses-flow",
+  "summary": {
+    "total": 7,
+    "pass": 7,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "analyses endpoint wired",
+      "pass": true,
+      "detail": "Admin analyses list must call backend endpoint."
+    },
+    {
+      "name": "filters wired",
+      "pass": true,
+      "detail": "User/property/type filters should be present."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Loading state is required."
+    },
+    {
+      "name": "empty state present",
+      "pass": true,
+      "detail": "Empty state is required."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Error state is required."
+    },
+    {
+      "name": "admin route exists",
+      "pass": true,
+      "detail": "Admin analyses backend route should exist."
+    },
+    {
+      "name": "no mock marker",
+      "pass": true,
+      "detail": "Admin analyses page should avoid mock/fake markers."
+    }
+  ]
+}

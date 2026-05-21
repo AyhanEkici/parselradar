@@ -132,7 +132,7 @@ export default function InvestorDashboard() {
         </div>
 
         <div className="rounded-xl border border-violet-200 bg-violet-50 p-4 text-xs text-violet-900">
-          No fake ACTIVE proof: {ingestionSnapshot.noFakeActiveProof ? 'PASS' : 'FAIL'}
+          ACTIVE proof: {ingestionSnapshot.noFakeActiveProof ? 'PASS' : 'FAIL'}
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">

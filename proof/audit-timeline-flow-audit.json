@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T20:45:24.643Z",
+  "overallStatus": "PASS",
+  "step": "verify:audit-timeline-flow",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "audit events api wired",
+      "pass": true,
+      "detail": "Audit timeline must load from backend."
+    },
+    {
+      "name": "loading state present",
+      "pass": true,
+      "detail": "Loading state is required."
+    },
+    {
+      "name": "empty state present",
+      "pass": true,
+      "detail": "Empty state is required."
+    },
+    {
+      "name": "error state present",
+      "pass": true,
+      "detail": "Error state is required."
+    },
+    {
+      "name": "pagination controls present",
+      "pass": true,
+      "detail": "Timeline should support pagination."
+    },
+    {
+      "name": "backend route exists",
+      "pass": true,
+      "detail": "Audit route must exist."
+    }
+  ]
+}

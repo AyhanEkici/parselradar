@@ -20,9 +20,37 @@ const PDF_COST = 5;
 export const purchasePDF = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const run = await AnalysisRun.findOne(analysisOwnerScope(user, { _id: req.params.analysisRunId }));
-  if (!run) return res.status(404).json({ error: 'Analiz bulunamadı' });
+  if (!run) {
+    await logAuditEvent({
+      type: 'report_purchase_failed',
+      actorUserId: String(user._id),
+      actorRole: String(user.role),
+      targetType: 'AnalysisRun',
+      targetId: String(req.params.analysisRunId || ''),
+      message: 'Report purchase failed: analysis not found',
+      metadata: { analysisRunId: req.params.analysisRunId },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(404).json({ error: 'Analiz bulunamadı' });
+  }
   const credits = await getUserCredits(user._id);
-  if (credits < PDF_COST) return res.status(400).json({ error: 'Yetersiz kredi' });
+  if (credits < PDF_COST) {
+    await logAuditEvent({
+      type: 'report_purchase_failed',
+      actorUserId: String(user._id),
+      actorRole: String(user.role),
+      targetType: 'AnalysisRun',
+      targetId: String(run._id),
+      message: 'Report purchase failed: insufficient credits',
+      metadata: { availableCredits: credits, requiredCredits: PDF_COST },
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      success: false,
+    });
+    return res.status(400).json({ error: 'Yetersiz kredi' });
+  }
   await CreditLedger.create({ userId: user._id, type: 'PDF_PURCHASE', amount: -PDF_COST, reason: 'PDF rapor' });
   const pdfPath = path.join(__dirname, `../../uploads/report-${run._id}.pdf`);
   await generateReportPDF({
@@ -37,6 +65,18 @@ export const purchasePDF = async (req: AuthRequest, res: Response) => {
     }
   }, pdfPath);
   const report = await Report.create({ analysisRunId: run._id, propertySubmissionId: run.propertySubmissionId, userId: user._id, reportType: 'DETAILED_PDF_REPORT', pdfPath, creditsCharged: PDF_COST });
+  await logAuditEvent({
+    type: 'report_purchase_completed',
+    actorUserId: String(user._id),
+    actorRole: String(user.role),
+    targetType: 'Report',
+    targetId: String(report._id),
+    message: 'Report purchase completed',
+    metadata: { analysisRunId: String(run._id), creditsCharged: PDF_COST },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: true,
+  });
   res.json({ id: report._id });
 };
 

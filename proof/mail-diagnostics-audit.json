@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T21:03:51.390Z",
+  "overallStatus": "PASS",
+  "step": "verify:mail-diagnostics",
+  "summary": {
+    "total": 6,
+    "pass": 6,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "mail diagnostics route exists",
+      "pass": true,
+      "detail": "API route /admin/mail-diagnostics is required."
+    },
+    {
+      "name": "mail test route exists",
+      "pass": true,
+      "detail": "API route /admin/mail-diagnostics/test-email is required."
+    },
+    {
+      "name": "mail diagnostics controller exists",
+      "pass": true,
+      "detail": "Controller handlers should exist."
+    },
+    {
+      "name": "mail diagnostics page exists",
+      "pass": true,
+      "detail": "Frontend page should wire diagnostics and test email endpoint."
+    },
+    {
+      "name": "mail diagnostics panel exists",
+      "pass": true,
+      "detail": "Mail diagnostics panel should exist."
+    },
+    {
+      "name": "admin route added",
+      "pass": true,
+      "detail": "App route for mail diagnostics should exist."
+    }
+  ]
+}

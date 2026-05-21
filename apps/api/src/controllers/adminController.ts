@@ -14,12 +14,17 @@ import DocumentUpload from '../models/DocumentUpload';
 import Report from '../models/Report';
 import AuditEvent from '../models/AuditEvent';
 import { getPasswordResetEmailProviderState } from '../services/auth/passwordResetEmailService';
+import { sendPasswordResetEmail } from '../services/auth/passwordResetEmailService';
 import { buildOperationalSnapshot } from '../monitoring/buildOperationalSnapshot';
 import { operationalSecurityDashboard } from '../monitoring/operationalSecurityDashboard';
 import { threatSignalAggregator } from '../monitoring/threatSignalAggregator';
 import { governanceComplianceMonitor } from '../governance/governanceComplianceMonitor';
 import { retentionGovernanceEngine } from '../governance/retentionGovernanceEngine';
 import { credentialGovernance } from '../governance/credentialGovernance';
+import { getStripeRuntimeState } from '../services/stripeService';
+import { getOperationalIntegritySnapshot } from '../observability/operationalIntegrityStore';
+import path from 'path';
+import fs from 'fs';
 import os from 'os';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
@@ -34,6 +39,34 @@ const mapCreationSource = (inputMethod?: string) => {
   if (value.includes('SCRAP')) return 'SCRAPER';
   return 'MANUAL_ENTRY';
 };
+
+function readVerifierStatus() {
+  const proofDir = path.resolve(process.cwd(), '../../proof');
+  const candidates = [
+    'deployment-truth-proof-bundle.json',
+    'canonical-auth-validation.json',
+    'live-browser-mvp-runtime.json',
+    'platform-integrity-audit.json',
+    'rbac-proof-bundle.json',
+    'mvp-blocker-closure-audit.json',
+  ];
+
+  return candidates.map((name) => {
+    const filePath = path.join(proofDir, name);
+    if (!fs.existsSync(filePath)) {
+      return { name, status: 'MISSING' };
+    }
+    try {
+      const payload = JSON.parse(fs.readFileSync(filePath, 'utf8')) as any;
+      return {
+        name,
+        status: String(payload?.overallStatus || payload?.status || 'UNKNOWN').toUpperCase(),
+      };
+    } catch {
+      return { name, status: 'UNREADABLE' };
+    }
+  });
+}
 // GET /admin/users
 export const getAdminUsers = async (req: AuthRequest, res: Response) => {
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
@@ -257,6 +290,133 @@ export const getAdminDeploymentOverview = async (_req: AuthRequest, res: Respons
 export const getAdminRuntimeOverview = async (_req: AuthRequest, res: Response) => {
   const snapshot = await buildOperationalSnapshot();
   res.json(snapshot);
+};
+
+// GET /admin/runtime-health
+export const getAdminRuntimeHealth = async (_req: AuthRequest, res: Response) => {
+  const [runtimeSnapshot] = await Promise.all([buildOperationalSnapshot()]);
+  const integrity = getOperationalIntegritySnapshot();
+
+  res.json({
+    generatedAt: new Date().toISOString(),
+    runtimeStatus: runtimeSnapshot.runtimeStatus,
+    healthSummary: runtimeSnapshot.healthSummary,
+    failedRequestSummary: integrity.failedRequestSummary,
+    failedRequestsTimeline: integrity.failedRequestsTimeline,
+    authFailureSummary: integrity.authFailureSummary,
+    retrySummary: integrity.retrySummary,
+    runtimeDiagnostics: integrity.runtimeDiagnostics,
+    envValidation: integrity.envValidation,
+  });
+};
+
+// GET /admin/mail-diagnostics
+export const getAdminMailDiagnostics = async (_req: AuthRequest, res: Response) => {
+  const provider = getPasswordResetEmailProviderState();
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const recentFailures = await AuditEvent.find({
+    type: { $in: ['password_reset_email_failed', 'admin_mail_test_failed'] },
+    createdAt: { $gte: since },
+  })
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .select('createdAt message type')
+    .lean();
+
+  res.json({
+    generatedAt: new Date().toISOString(),
+    provider: 'smtp',
+    state: provider.state,
+    configured: provider.configured,
+    retryQueueDepth: 0,
+    failedDeliveriesLast24h: recentFailures.length,
+    recentFailures: recentFailures.map((row: any) => ({
+      at: row.createdAt,
+      message: `${row.type}: ${row.message}`,
+    })),
+  });
+};
+
+// POST /admin/mail-diagnostics/test-email
+export const postAdminMailTestEmail = async (req: AuthRequest, res: Response) => {
+  const actor = requireAuthUser(req);
+  const result = await sendPasswordResetEmail({
+    toEmail: actor.email,
+    resetLink: `${process.env.CLIENT_URL || ''}/reset-password?token=admin-test`,
+  });
+
+  const success = result.state === 'EMAIL_SENT';
+  await logAuditEvent({
+    type: success ? 'admin_mail_test_sent' : 'admin_mail_test_failed',
+    actorUserId: String(actor._id),
+    actorRole: String(actor.role),
+    targetType: 'MailDiagnostics',
+    targetId: String(actor._id),
+    message: success ? 'Admin mail test email sent' : 'Admin mail test email failed',
+    metadata: { state: result.state },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success,
+  });
+
+  if (!success) {
+    return res.status(503).json({ error: 'Mail provider not ready', state: result.state });
+  }
+
+  return res.json({ ok: true, state: result.state });
+};
+
+// GET /admin/stripe-diagnostics
+export const getAdminStripeDiagnostics = async (_req: AuthRequest, res: Response) => {
+  const stripe = getStripeRuntimeState();
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const [pendingCheckouts, failedAudit] = await Promise.all([
+    StripeCheckoutSession.countDocuments({ status: 'PENDING' }),
+    AuditEvent.find({
+      type: { $in: ['stripe_checkout_create', 'stripe_webhook'] },
+      success: false,
+      createdAt: { $gte: since },
+    })
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .select('createdAt message type')
+      .lean(),
+  ]);
+
+  const failedCheckouts = failedAudit.filter((row: any) => row.type === 'stripe_checkout_create').length;
+  const webhookFailures = failedAudit.filter((row: any) => row.type === 'stripe_webhook').length;
+
+  res.json({
+    generatedAt: new Date().toISOString(),
+    state: stripe.mode,
+    configured: stripe.configured,
+    pendingCheckouts,
+    failedCheckoutsLast24h: failedCheckouts,
+    webhookFailuresLast24h: webhookFailures,
+    recentFailures: failedAudit.map((row: any) => ({
+      at: row.createdAt,
+      type: row.type,
+      message: row.message,
+    })),
+  });
+};
+
+// GET /admin/observability-summary
+export const getAdminObservabilitySummary = async (_req: AuthRequest, res: Response) => {
+  const integrity = getOperationalIntegritySnapshot();
+  res.json({
+    generatedAt: new Date().toISOString(),
+    runtimeDiagnostics: integrity.runtimeDiagnostics,
+    apiErrorCounters: {
+      total: integrity.failedRequestSummary.totalFailedRequests,
+      byStatus: integrity.failedRequestSummary.statusCounters,
+    },
+    verifierStatus: readVerifierStatus(),
+    connectorRuntimeState: [],
+    retrySummary: integrity.retrySummary,
+    envValidation: integrity.envValidation,
+  });
 };
 
 // GET /admin/security-overview

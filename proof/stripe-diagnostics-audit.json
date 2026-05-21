@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-05-21T21:03:53.878Z",
+  "overallStatus": "PASS",
+  "step": "verify:stripe-diagnostics",
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "stripe diagnostics route exists",
+      "pass": true,
+      "detail": "API route /admin/stripe-diagnostics is required."
+    },
+    {
+      "name": "stripe diagnostics controller exists",
+      "pass": true,
+      "detail": "Controller handler should exist."
+    },
+    {
+      "name": "stripe diagnostics page exists",
+      "pass": true,
+      "detail": "Frontend page should call stripe diagnostics endpoint."
+    },
+    {
+      "name": "stripe diagnostics panel exists",
+      "pass": true,
+      "detail": "Stripe diagnostics panel should exist."
+    },
+    {
+      "name": "admin route added",
+      "pass": true,
+      "detail": "App route for stripe diagnostics should exist."
+    }
+  ]
+}
