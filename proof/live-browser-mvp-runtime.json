@@ -1,52 +1,40 @@
 {
-  "generatedAt": "2026-05-21T11:49:00.000Z",
-  "overallStatus": "PASS",
+  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "overallStatus": "FAIL",
   "summary": {
-    "total": 10,
-    "pass": 10,
-    "fail": 0
+    "total": 7,
+    "pass": 1,
+    "fail": 4,
+    "blocked": 2
   },
   "flows": {
-    "pilotLoginProof": {
-      "status": "PASS",
-      "detail": "Real browser login at /login with pilot@test.com succeeded; redirected to /dashboard with authenticated navbar and ADMIN badge visible."
+    "pilotAdminFlow": {
+      "status": "FAIL",
+      "detail": "Real login attempt shows success toast but URL remains /login and storage keys remain absent."
     },
-    "ctrlF5PersistenceProof": {
-      "status": "PASS",
-      "detail": "Real browser reload on /dashboard preserved authenticated shell and navbar; app remained in authenticated area instead of redirecting to /login."
+    "ctrlF5Persistence": {
+      "status": "FAIL",
+      "detail": "Reload remains on /login with no authenticated shell."
     },
-    "backForwardNavbarProof": {
-      "status": "PASS",
-      "detail": "Real browser history navigation organizations -> notifications -> back -> forward kept authenticated shell state and never showed login form."
+    "backForwardPersistence": {
+      "status": "FAIL",
+      "detail": "Back/forward pages can render without authenticated navbar/logout state."
     },
-    "adminNavRouteClickProof": {
-      "status": "PASS",
-      "detail": "Real browser route traversal passed for all required links: /admin/audit-timeline, /admin/users, /admin/analyses, /admin/credit-ledger, /admin/stripe-sessions, /admin/properties, /admin/runtime, /admin/deployment, /admin/observability, /admin/analytics, /admin/connectors, /investor, /investor/saved-analyses, /investor/watchlist, /investor/portfolio, /organizations, /notifications. No logout redirect occurred during traversal."
+    "adminRouteTraversal": {
+      "status": "FAIL",
+      "detail": "All admin routes redirect to /login because session collapses before shell mount."
     },
-    "noLogoutOnNavClickProof": {
+    "authMeStorm": {
       "status": "PASS",
-      "detail": "Across route traversal and history navigation, authenticated shell remained visible and logout button remained present."
+      "detail": "No /auth/me request storm captured in sampled browser run."
     },
-    "noAuthMe401StormProof": {
-      "status": "PASS",
-      "detail": "Instrumented browser capture observed 1 /auth/me request with status 401 on a dashboard hydration sample; no repeated /auth/me retry storm observed."
+    "ayhanAdminFlow": {
+      "status": "BLOCKED",
+      "detail": "Valid real credential not available in-session."
     },
-    "mahirIsolationProof": {
-      "status": "PASS",
-      "detail": "Live backend role/isolation proof verified via verify:admin-ux-email: Mahir role USER and USER access isolation guards remain enforced."
-    },
-    "ayhanAdminProof": {
-      "status": "PASS",
-      "detail": "Live backend role proof verified via verify:admin-ux-email: ayhanekici@gmail.com role ADMIN."
-    },
-    "routeWiringAuditProof": {
-      "status": "PASS",
-      "detail": "verify:mvp-wiring PASS (41 pass, 0 fail) confirms route wiring and nav consistency after AppShell centralization."
-    },
-    "appShellProof": {
-      "status": "PASS",
-      "detail": "App shell centralization active in apps/web/src/components/AppShell.tsx with authenticated-gated navbar and shared route shell in App.tsx."
+    "mahirUserFlow": {
+      "status": "BLOCKED",
+      "detail": "Valid real credential not available in-session."
     }
-  },
-  "commitHash": "52a7c68d"
+  }
 }

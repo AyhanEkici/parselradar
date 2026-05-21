@@ -1,52 +1,52 @@
 {
-  "generatedAt": "2026-05-21T11:49:30.000Z",
-  "overallStatus": "PASS",
+  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "overallStatus": "FAIL",
   "proofs": {
     "realBrowserPilotLoginProof": {
-      "status": "PASS",
-      "detail": "Pilot admin login verified in live browser at https://parselradar.vercel.app/login with redirect to /dashboard and authenticated navbar visible."
+      "status": "FAIL",
+      "detail": "Pilot login toast succeeds but browser remains on /login with empty session storage keys."
     },
     "ctrlF5PersistenceProof": {
-      "status": "PASS",
-      "detail": "Reload behavior on authenticated routes remains in app shell; no forced logout redirect after refresh."
+      "status": "FAIL",
+      "detail": "Reload returns unauthenticated login state."
     },
     "backForwardNavbarProof": {
-      "status": "PASS",
-      "detail": "Back/forward across /organizations and /notifications retained authenticated shell and did not show login form."
+      "status": "FAIL",
+      "detail": "Back/forward does not preserve authenticated shell visibility."
     },
     "adminNavRouteClickProof": {
-      "status": "PASS",
-      "detail": "All required admin and investor shell routes were traversed in live browser and remained routable under authenticated shell."
+      "status": "FAIL",
+      "detail": "Admin route clicks redirect to /login due to session collapse."
     },
     "noLogoutOnNavClickProof": {
-      "status": "PASS",
-      "detail": "Navigation clicks did not eject session; logout button and authenticated shell remained present."
+      "status": "FAIL",
+      "detail": "Auth state collapses before route traversal can remain in-shell."
     },
     "noAuthMe401StormProof": {
       "status": "PASS",
-      "detail": "Live browser instrumentation showed no /auth/me retry storm pattern; hydration observed single 401 sample without cascading /auth/me loop."
+      "detail": "No /auth/me retry storm pattern observed in sampled run."
     },
     "mahirIsolationProof": {
-      "status": "PASS",
-      "detail": "verify:admin-ux-email live proof confirms Mahir role USER and USER isolation controls remain enforced."
+      "status": "BLOCKED",
+      "detail": "Real browser Mahir login unavailable without valid credential in-session."
     },
     "ayhanAdminProof": {
-      "status": "PASS",
-      "detail": "verify:admin-ux-email live proof confirms Ayhan role ADMIN."
+      "status": "BLOCKED",
+      "detail": "Real browser Ayhan login unavailable without valid credential in-session."
     },
     "routeWiringAuditProof": {
-      "status": "PASS",
-      "detail": "verify:mvp-wiring PASS confirms route wiring integrity for navbar targets and protected route surfaces."
+      "status": "FAIL",
+      "detail": "Route wiring runtime is partial under collapsed auth shell state."
     },
     "appShellProof": {
-      "status": "PASS",
-      "detail": "Single authenticated shell in apps/web/src/components/AppShell.tsx is active and route-wrapped via App.tsx."
+      "status": "FAIL",
+      "detail": "Authenticated app shell does not persist deterministically after login in live browser."
     },
     "deploymentTruthProof": {
-      "status": "PASS",
-      "detail": "verify:deployment-truth PASS with local/origin/railway aligned at 52a7c68d547239851c43f674c320300cccffb81f and active Vercel bundle index-BkD73_Zv.js."
+      "status": "FAIL",
+      "detail": "At capture time, deployment alignment still lagged latest commit."
     }
   },
   "runtimeProof": "proof/live-browser-mvp-runtime.json",
-  "commitHash": "52a7c68d"
+  "commitHash": "850d5b00"
 }

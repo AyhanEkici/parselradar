@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "overallStatus": "FAIL",
+  "summary": {
+    "total": 8,
+    "pass": 2,
+    "fail": 4,
+    "blockers": 2
+  },
+  "areas": {
+    "deploymentTruth": {
+      "status": "FAIL",
+      "detail": "Deployment alignment is not yet at local HEAD 850d5b00 (Railway still on a4b1e4b2 at capture time)."
+    },
+    "authRuntime": {
+      "status": "FAIL",
+      "detail": "Login success toast does not produce durable authenticated state in real browser run."
+    },
+    "routeWiringRuntime": {
+      "status": "FAIL",
+      "detail": "Required navbar routes are reachable but not under stable authenticated shell context."
+    },
+    "rbacRuntime": {
+      "status": "FAIL",
+      "detail": "Runtime role visibility and access behavior cannot be fully trusted until auth shell persistence is fixed."
+    },
+    "staticPlatformVerifier": {
+      "status": "PASS",
+      "detail": "verify:platform returned WARN with 0 hard FAIL checks."
+    },
+    "apiBuildAndWebBuild": {
+      "status": "PASS",
+      "detail": "apps/api and apps/web builds succeeded."
+    },
+    "ayhanBrowserFlow": {
+      "status": "BLOCKED",
+      "detail": "Valid real credential unavailable in-session."
+    },
+    "mahirBrowserFlow": {
+      "status": "BLOCKED",
+      "detail": "Valid real credential unavailable in-session."
+    }
+  },
+  "blockingDefects": [
+    "post-login storage clears unexpectedly in real browser flow",
+    "authenticated shell does not remain mounted after login",
+    "Ctrl+F5 persistence cannot pass while login session collapses",
+    "full role runtime audit blocked without Ayhan/Mahir credentials"
+  ]
+}

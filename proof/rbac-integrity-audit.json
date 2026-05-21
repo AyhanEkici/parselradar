@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "overallStatus": "FAIL",
+  "summary": {
+    "total": 6,
+    "pass": 3,
+    "fail": 1,
+    "blockers": 2
+  },
+  "checks": [
+    {
+      "id": "static_rbac_verifier",
+      "status": "PASS",
+      "detail": "verify:rbac reports 57/57 PASS on route/controller ownership and admin gates."
+    },
+    {
+      "id": "pilot_admin_role_live",
+      "status": "PASS",
+      "detail": "Backend login contract confirms pilot@test.com role ADMIN."
+    },
+    {
+      "id": "admin_vs_user_nav_visibility_runtime",
+      "status": "FAIL",
+      "detail": "Real browser authenticated shell is not persisting; role-based navbar visibility cannot be trusted in runtime state."
+    },
+    {
+      "id": "ayhan_admin_real_login",
+      "status": "BLOCKED",
+      "detail": "Valid Ayhan runtime credential not available in session for real browser login verification."
+    },
+    {
+      "id": "mahir_user_real_login",
+      "status": "BLOCKED",
+      "detail": "Valid Mahir runtime credential not available in session for real browser login verification."
+    },
+    {
+      "id": "backend_role_proof_snapshot",
+      "status": "PASS",
+      "detail": "verify:admin-ux-email historic run confirms Ayhan=ADMIN and Mahir=USER in backend role snapshot."
+    }
+  ]
+}

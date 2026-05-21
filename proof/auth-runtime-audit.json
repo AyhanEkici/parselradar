@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-05-21T13:20:00.000Z",
+  "overallStatus": "FAIL",
+  "summary": {
+    "total": 9,
+    "pass": 2,
+    "fail": 7,
+    "blockers": 2
+  },
+  "checks": [
+    {
+      "id": "pilot_real_login_redirect",
+      "status": "FAIL",
+      "classification": "STALE_STATE",
+      "detail": "Real browser login shows success toast but remains on /login; authenticated shell does not mount."
+    },
+    {
+      "id": "pilot_storage_persistence_after_login",
+      "status": "FAIL",
+      "classification": "STALE_STATE",
+      "detail": "Immediately after successful login toast, localStorage keys parselradar_token and parselradar_user are null."
+    },
+    {
+      "id": "ctrl_f5_persistence",
+      "status": "FAIL",
+      "classification": "INVALID_REDIRECT",
+      "detail": "Ctrl+F5/reload lands on /login due to missing session state."
+    },
+    {
+      "id": "back_forward_shell_persistence",
+      "status": "FAIL",
+      "classification": "STALE_STATE",
+      "detail": "Back/forward pages render without authenticated navbar/logout shell state."
+    },
+    {
+      "id": "route_click_logout_side_effect",
+      "status": "FAIL",
+      "classification": "INVALID_REDIRECT",
+      "detail": "Admin route clicks redirect to /login because auth state collapses post-login."
+    },
+    {
+      "id": "auth_me_storm",
+      "status": "PASS",
+      "classification": "WORKING",
+      "detail": "No repeated /auth/me storm observed during sampled run."
+    },
+    {
+      "id": "ayhan_real_login",
+      "status": "BLOCKED",
+      "classification": "UNAUTHORIZED",
+      "detail": "Real browser login with available credential set failed (Şifre hatalı). Valid Ayhan test credential not provided in session."
+    },
+    {
+      "id": "mahir_real_login",
+      "status": "BLOCKED",
+      "classification": "UNAUTHORIZED",
+      "detail": "Real browser login with available credential set failed (Şifre hatalı). Valid Mahir test credential not provided in session."
+    },
+    {
+      "id": "backend_pilot_login_contract",
+      "status": "PASS",
+      "classification": "WORKING",
+      "detail": "Direct backend /auth/login with pilot@test.com returns 200 and ADMIN user payload."
+    }
+  ],
+  "evidence": {
+    "pilotBrowser": {
+      "afterLogin": {
+        "url": "https://parselradar.vercel.app/login",
+        "tokenPresent": false,
+        "userPresent": false
+      },
+      "afterReload": {
+        "url": "https://parselradar.vercel.app/login",
+        "tokenPresent": false,
+        "userPresent": false
+      }
+    },
+    "credentialAttempts": {
+      "ayhan": "Şifre hatalı",
+      "mahir": "Şifre hatalı"
+    }
+  }
+}
