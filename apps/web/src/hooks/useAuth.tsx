@@ -75,6 +75,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			const status = (err as { status?: number })?.status;
 			if (callIdRef.current === callId) {
 				if (status === 401) {
+					const hasPersistedSession = Boolean(storedUser && getAuthToken());
+					if (hasPersistedSession) {
+						try {
+							assertStorageConsistency();
+							const retryUser = await getMe();
+							if (callIdRef.current === callId) {
+								setUser(retryUser as User);
+								setAuthState('authenticated');
+							}
+							return;
+						} catch (retryErr: unknown) {
+							if ((retryErr as { status?: number })?.status !== 401 && storedUser && getAuthToken()) {
+								setUser(storedUser as User);
+								setAuthState('authenticated');
+								return;
+							}
+						}
+					}
+
 					clearAuthSession('confirmed_auth_me_401');
 					setUser(null);
 					setAuthState('invalid');
