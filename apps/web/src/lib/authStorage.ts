@@ -15,8 +15,16 @@ function hasWindow() {
 function readStorageValue(key: string): string | null {
   if (!hasWindow()) return null;
   const sessionValue = sessionStorage.getItem(key);
-  if (sessionValue && sessionValue.trim().length > 0) return sessionValue;
+  if (sessionValue && sessionValue.trim().length > 0) {
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, sessionValue);
+    }
+    return sessionValue;
+  }
   const localValue = localStorage.getItem(key);
+  if (localValue && localValue.trim().length > 0 && !sessionStorage.getItem(key)) {
+    sessionStorage.setItem(key, localValue);
+  }
   return localValue && localValue.trim().length > 0 ? localValue : null;
 }
 
@@ -112,12 +120,6 @@ export function assertStorageConsistency(): boolean {
   const sessionToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
   const sessionUserRaw = sessionStorage.getItem(AUTH_USER_KEY);
 
-  const token = getAuthToken();
-  const user = getStoredUser();
-
-  if (!token && !user) return true;
-  if (token && user) return true;
-
   if (isLoginWriteInProgress()) {
     return false;
   }
@@ -133,6 +135,12 @@ export function assertStorageConsistency(): boolean {
     sessionStorage.setItem(AUTH_USER_KEY, localUserRaw);
     return true;
   }
+
+  const token = getAuthToken();
+  const user = getStoredUser();
+
+  if (!token && !user) return true;
+  if (token && user) return true;
 
   // Never destructively clear a valid token when storage events are racing
   // across tabs (token write and user write are separate events).
