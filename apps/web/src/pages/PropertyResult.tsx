@@ -180,7 +180,7 @@ export default function PropertyResult() {
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
-      <div className="space-x-2 mb-4">
+      <div className="mb-4 flex flex-wrap gap-2">
         <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => runAnalysis('quick-score')}>Hızlı İlan Kontrolü</button>
         <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runParselInsight}>Parsel Insight</button>
         <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runDeveloperFit}>Developer Fit</button>
@@ -191,7 +191,7 @@ export default function PropertyResult() {
             <GovernanceBadge classification={result.governanceClassification} />
           </div>
           <div><b>Signal:</b> {result.signal}</div>
-          <div><b>Skor:</b> {result.score}</div>
+          <div><b>Skor:</b> {typeof result?.score === 'number' ? result.score : 'Skor mevcut değil'}</div>
           <div><b>TL/m²:</b> {result.pricePerM2 || '-'}</div>
           <div><b>En büyük 3 risk:</b> {(result.topRisks || []).join(', ')}</div>
           <div><b>Eksik belgeler:</b> {(result.missingDocs || []).join(', ')}</div>
