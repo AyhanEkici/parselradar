@@ -46,6 +46,8 @@ const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri
 
 export default function PropertyResult() {
   const { id } = useParams();
+  type AnalysisActionKey = 'quickScore' | 'parselInsight' | 'developerFit';
+  type AnalysisActionStatus = 'idle' | 'loading' | 'success' | 'error' | 'rate_limited' | 'needs_more_data';
   interface AnalysisResult {
     signal: string;
     score: number;
@@ -109,58 +111,66 @@ export default function PropertyResult() {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [analysisRunId, setAnalysisRunId] = useState<string | null>(null);
   const [pdfId, setPdfId] = useState<string | null>(null);
+  const [analysisActionStates, setAnalysisActionStates] = useState<Record<AnalysisActionKey, AnalysisActionStatus>>({
+    quickScore: 'idle',
+    parselInsight: 'idle',
+    developerFit: 'idle',
+  });
   const toast = useToast();
 
-  const runAnalysisEndpoint = async (endpoint: string) => {
+  const setActionState = (action: AnalysisActionKey, status: AnalysisActionStatus) => {
+    setAnalysisActionStates((prev) => ({ ...prev, [action]: status }));
+  };
+
+  const runAnalysisAction = async (action: AnalysisActionKey, endpoint: string) => {
+    if (analysisActionStates[action] === 'loading') return;
+
     setResult(null);
     setPdfId(null);
+    setActionState(action, 'loading');
     const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
     try {
       const res = await apiFetch(endpoint, { method: 'POST' });
       setResult(res);
       setAnalysisRunId(res.id);
+      setActionState(action, 'success');
       toast.dismiss(loadingToastId);
       toast.success('Analiz tamamlandı');
     } catch (err) {
+      const apiError = err as { status?: number; error?: string; message?: string };
+      const errorText = String(apiError.error || apiError.message || '').toLowerCase();
       toast.dismiss(loadingToastId);
-      toast.error((err as { error?: string }).error || 'Analiz başarısız');
+      if (apiError.status === 429) {
+        setActionState(action, 'rate_limited');
+        toast.error('Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar deneyin.');
+        return;
+      }
+      if (
+        apiError.status === 400 ||
+        errorText.includes('validation') ||
+        errorText.includes('missing') ||
+        errorText.includes('invalid') ||
+        errorText.includes('eksik') ||
+        errorText.includes('geçersiz') ||
+        errorText.includes('gecersiz')
+      ) {
+        setActionState(action, 'needs_more_data');
+        toast.error('Eksik veya geçersiz veri nedeniyle analiz tamamlanamadı.');
+        return;
+      }
+      setActionState(action, 'error');
+      toast.error(apiError.error || 'Analiz başarısız');
     }
   };
 
-  const runAnalysis = async (type: string) => {
-    await runAnalysisEndpoint(`analysis/${id}/${type}`);
-  };
-
-  const runParselInsight = async () => {
-    setResult(null);
-    setPdfId(null);
-    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
-    try {
-      const res = await apiFetch(`analysis/${id}/parsel-insight`, { method: 'POST' });
-      setResult(res);
-      setAnalysisRunId(res.id);
-      toast.dismiss(loadingToastId);
-      toast.success('Analiz tamamlandı');
-    } catch (err) {
-      toast.dismiss(loadingToastId);
-      toast.error((err as { error?: string }).error || 'Analiz başarısız');
-    }
-  };
-
-  const runDeveloperFit = async () => {
-    setResult(null);
-    setPdfId(null);
-    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
-    try {
-      const res = await apiFetch(`analysis/${id}/developer-fit`, { method: 'POST' });
-      setResult(res);
-      setAnalysisRunId(res.id);
-      toast.dismiss(loadingToastId);
-      toast.success('Analiz tamamlandı');
-    } catch (err) {
-      toast.dismiss(loadingToastId);
-      toast.error((err as { error?: string }).error || 'Analiz başarısız');
-    }
+  const getActionCaption = (action: AnalysisActionKey) => {
+    const status = analysisActionStates[action];
+    if (status === 'loading') return 'Çalışıyor...';
+    if (status === 'success') return 'Tamamlandı';
+    if (status === 'rate_limited') return 'Bekleme gerekli';
+    if (status === 'needs_more_data') return 'Eksik veri';
+    if (status === 'error') return 'Hata';
+    return null;
   };
 
   const purchasePDF = async () => {
@@ -181,9 +191,32 @@ export default function PropertyResult() {
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
       <div className="mb-4 flex flex-wrap gap-2">
-        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => runAnalysis('quick-score')}>Hızlı İlan Kontrolü</button>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runParselInsight}>Parsel Insight</button>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runDeveloperFit}>Developer Fit</button>
+        <button
+          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
+          disabled={analysisActionStates.quickScore === 'loading'}
+          onClick={() => runAnalysisAction('quickScore', `analysis/${id}/quick-score`)}
+        >
+          Hızlı İlan Kontrolü
+        </button>
+        <button
+          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
+          disabled={analysisActionStates.parselInsight === 'loading'}
+          onClick={() => runAnalysisAction('parselInsight', `analysis/${id}/parsel-insight`)}
+        >
+          Parsel Insight
+        </button>
+        <button
+          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
+          disabled={analysisActionStates.developerFit === 'loading'}
+          onClick={() => runAnalysisAction('developerFit', `analysis/${id}/developer-fit`)}
+        >
+          Developer Fit
+        </button>
+      </div>
+      <div className="mb-4 text-xs text-slate-600 flex flex-wrap gap-3">
+        <span>Hızlı İlan Kontrolü: {getActionCaption('quickScore') || 'Hazır'}</span>
+        <span>Parsel Insight: {getActionCaption('parselInsight') || 'Hazır'}</span>
+        <span>Developer Fit: {getActionCaption('developerFit') || 'Hazır'}</span>
       </div>
       {result && (
         <div className="border p-4 rounded mb-4">
