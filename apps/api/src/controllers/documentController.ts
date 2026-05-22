@@ -27,7 +27,13 @@ const canAccessProperty = async (user: AuthRequest['user'], propertyId: string) 
   return PropertySubmission.findOne(propertyOwnerScope(user, { _id: propertyId }));
 };
 
-type MetadataStatus = 'PREVIEW_ONLY' | 'NEEDS_REVIEW' | 'CONFIRMED_BY_USER' | 'MANUAL_REVIEW_REQUIRED';
+type MetadataStatus =
+  | 'PREVIEW_ONLY'
+  | 'NEEDS_REVIEW'
+  | 'CONFIRMED_BY_USER'
+  | 'CONFIRMED_BY_ADMIN'
+  | 'MANUAL_REVIEW_REQUIRED'
+  | 'REJECTED';
 
 const evidenceTypeAllowlist = new Set([
   'LISTING_SCREENSHOT',
@@ -54,7 +60,14 @@ const sourceTypeAllowlist = new Set([
   'UNKNOWN',
 ]);
 
-const statusAllowlist = new Set<MetadataStatus>(['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'MANUAL_REVIEW_REQUIRED']);
+const statusAllowlist = new Set<MetadataStatus>([
+  'PREVIEW_ONLY',
+  'NEEDS_REVIEW',
+  'CONFIRMED_BY_USER',
+  'CONFIRMED_BY_ADMIN',
+  'MANUAL_REVIEW_REQUIRED',
+  'REJECTED',
+]);
 const previewFieldAllowlist = new Set(['title', 'longitude', 'latitude', '_id_', 'province', 'district', 'neighborhood', 'ada', 'parsel', 'price', 'm2']);
 
 function normalizeAllowed(value: unknown, allowlist: Set<string>) {

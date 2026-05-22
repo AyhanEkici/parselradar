@@ -50,6 +50,14 @@ type CsvPreview = {
   parseError: string | null;
 };
 
+type ReviewStatusValue =
+  | 'PREVIEW_ONLY'
+  | 'NEEDS_REVIEW'
+  | 'CONFIRMED_BY_USER'
+  | 'CONFIRMED_BY_ADMIN'
+  | 'MANUAL_REVIEW_REQUIRED'
+  | 'REJECTED';
+
 const evidenceTypeOptions = [
   'LISTING_SCREENSHOT',
   'TKGM_SCREENSHOT',
@@ -151,6 +159,28 @@ function getFileExtension(filename: string) {
   const index = normalized.lastIndexOf('.');
   if (index < 0 || index === normalized.length - 1) return 'unknown';
   return normalized.slice(index + 1).toLowerCase();
+}
+
+function statusText(status?: string) {
+  const normalized = String(status || '').toUpperCase() as ReviewStatusValue;
+  if (normalized === 'PREVIEW_ONLY') return 'Preview only';
+  if (normalized === 'NEEDS_REVIEW') return 'Needs review';
+  if (normalized === 'CONFIRMED_BY_USER') return 'Confirmed by user';
+  if (normalized === 'CONFIRMED_BY_ADMIN') return 'Confirmed by admin';
+  if (normalized === 'MANUAL_REVIEW_REQUIRED') return 'Manual review required';
+  if (normalized === 'REJECTED') return 'Rejected';
+  return 'Unknown';
+}
+
+function statusClass(status?: string) {
+  const normalized = String(status || '').toUpperCase() as ReviewStatusValue;
+  if (normalized === 'CONFIRMED_BY_ADMIN' || normalized === 'CONFIRMED_BY_USER') {
+    return 'border-emerald-200 bg-emerald-50 text-emerald-700';
+  }
+  if (normalized === 'REJECTED' || normalized === 'MANUAL_REVIEW_REQUIRED') {
+    return 'border-rose-200 bg-rose-50 text-rose-700';
+  }
+  return 'border-amber-200 bg-amber-50 text-amber-700';
 }
 
 function absoluteFileUrl(fileUrl?: string) {
@@ -414,9 +444,17 @@ export default function AdminPropertyDocuments() {
                 <div className="mt-2 space-y-1 text-xs text-slate-600">
                   {doc.evidenceType ? <div>Evidence type: {doc.evidenceType}</div> : null}
                   {doc.sourceType ? <div>Source type: {doc.sourceType}</div> : null}
-                  {doc.reviewStatus ? <div>Review status: {doc.reviewStatus}</div> : null}
-                  {doc.metadataStatus ? <div>Metadata status: {doc.metadataStatus}</div> : null}
+                  <div className="flex flex-wrap gap-1">
+                    <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.reviewStatus)}`}>
+                      Review: {statusText(doc.reviewStatus)}
+                    </span>
+                    <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.metadataStatus)}`}>
+                      Metadata: {statusText(doc.metadataStatus)}
+                    </span>
+                  </div>
                   {doc.supportingEvidenceOnly ? <div>Supporting evidence only</div> : null}
+                  <div>Needs review before verified analysis use.</div>
+                  <div className="text-slate-500">Status update endpoint not wired yet.</div>
                   {Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0 ? (
                     <div>CSV fields: {doc.csvDetectedFields.join(', ')}</div>
                   ) : null}

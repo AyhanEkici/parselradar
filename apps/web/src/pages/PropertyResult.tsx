@@ -56,6 +56,7 @@ type DocumentMetadata = {
   documentType?: string;
   evidenceType?: string;
   sourceType?: string;
+  reviewStatus?: string;
   metadataStatus?: string;
   supportingEvidenceOnly?: boolean;
   parsedPreview?: Record<string, string>;
@@ -225,6 +226,22 @@ export default function PropertyResult() {
     const docs = documents || [];
     const hasSupportingOnly = docs.some((doc) => doc.supportingEvidenceOnly);
     const hasCsvMetadata = docs.some((doc) => Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0);
+    const hasConfirmedByAdmin = docs.some(
+      (doc) => doc.reviewStatus === 'CONFIRMED_BY_ADMIN' || doc.metadataStatus === 'CONFIRMED_BY_ADMIN'
+    );
+    const hasPreviewOnly = docs.some(
+      (doc) => doc.reviewStatus === 'PREVIEW_ONLY' || doc.metadataStatus === 'PREVIEW_ONLY'
+    );
+
+    const getStatusEvidenceNote = () => {
+      if (hasConfirmedByAdmin) {
+        return 'Admin tarafından metadata onayı var; yine de resmi hukuki kanıt değildir.';
+      }
+      if (hasPreviewOnly) {
+        return 'Metadata preview only seviyesinde, doğrulanmış analiz girdisi değildir.';
+      }
+      return 'Supporting evidence only, doğrulanmadan analiz girdisi olarak kabul edilmez.';
+    };
 
     const hasListingUrl = Boolean(String(propertyData?.listingUrl || '').trim());
     const hasPriceContext =
@@ -245,8 +262,8 @@ export default function PropertyResult() {
       label: 'Hızlı İlan Kontrolü',
       status: quickReady ? 'READY' : 'NEEDS_MORE_DATA',
       message: quickReady
-        ? 'İlan bağlamı veya destekleyici ilan kaynağı mevcut.'
-        : 'İlan URL, fiyat/m²/lokasyon veya listing source metadata eksik.',
+        ? `İlan bağlamı veya destekleyici ilan kaynağı mevcut. ${getStatusEvidenceNote()}`
+        : `İlan URL, fiyat/m²/lokasyon veya listing source metadata eksik. ${getStatusEvidenceNote()}`,
       sources: quickSources.length > 0 ? quickSources : ['user-entered data'],
     });
 
@@ -292,7 +309,7 @@ export default function PropertyResult() {
     rows.push({
       label: 'Parsel Insight',
       status: parcelStatus,
-      message: parcelMessage,
+      message: `${parcelMessage} ${getStatusEvidenceNote()}`,
       sources: parcelSources.length > 0 ? parcelSources : ['user-entered data'],
     });
 
@@ -319,8 +336,8 @@ export default function PropertyResult() {
       label: 'Developer Fit',
       status: developerReady ? 'READY' : 'NEEDS_MUNICIPALITY_CHECK',
       message: developerReady
-        ? 'İmar/e-plan veya plan ilişkili belge metadata mevcut.'
-        : 'Belediye imar veya e-plan metadata gerekli.',
+        ? `İmar/e-plan veya plan ilişkili belge metadata mevcut. ${getStatusEvidenceNote()}`
+        : `Belediye imar veya e-plan metadata gerekli. ${getStatusEvidenceNote()}`,
       sources: developerSources.length > 0 ? developerSources : ['uploaded evidence metadata'],
     });
 

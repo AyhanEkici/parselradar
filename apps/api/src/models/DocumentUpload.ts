@@ -6,8 +6,8 @@ export interface IDocumentUpload extends Document {
   documentType: string;
   evidenceType?: string;
   sourceType?: string;
-  reviewStatus?: string;
-  metadataStatus?: 'PREVIEW_ONLY' | 'NEEDS_REVIEW' | 'CONFIRMED_BY_USER' | 'MANUAL_REVIEW_REQUIRED';
+  reviewStatus?: 'PREVIEW_ONLY' | 'NEEDS_REVIEW' | 'CONFIRMED_BY_USER' | 'CONFIRMED_BY_ADMIN' | 'MANUAL_REVIEW_REQUIRED' | 'REJECTED';
+  metadataStatus?: 'PREVIEW_ONLY' | 'NEEDS_REVIEW' | 'CONFIRMED_BY_USER' | 'CONFIRMED_BY_ADMIN' | 'MANUAL_REVIEW_REQUIRED' | 'REJECTED';
   supportingEvidenceOnly?: boolean;
   parsedPreview?: Record<string, string>;
   csvDetectedFields?: string[];
@@ -26,8 +26,8 @@ const DocumentUploadSchema = new Schema<IDocumentUpload>({
   documentType: { type: String, required: true },
   evidenceType: { type: String },
   sourceType: { type: String },
-  reviewStatus: { type: String },
-  metadataStatus: { type: String, enum: ['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'MANUAL_REVIEW_REQUIRED'] },
+  reviewStatus: { type: String, enum: ['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'CONFIRMED_BY_ADMIN', 'MANUAL_REVIEW_REQUIRED', 'REJECTED'] },
+  metadataStatus: { type: String, enum: ['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'CONFIRMED_BY_ADMIN', 'MANUAL_REVIEW_REQUIRED', 'REJECTED'] },
   supportingEvidenceOnly: { type: Boolean },
   parsedPreview: { type: Schema.Types.Mixed },
   csvDetectedFields: [{ type: String }],
