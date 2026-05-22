@@ -27,6 +27,12 @@
 4. Execute a production-like email dry-run and record bounce/complaint handling evidence.
 5. Provision or restore deployed admin smoke-test account and confirm admin login path.
 6. Re-run operational verifiers and `audit:production-readiness` after configuration changes.
+7. Use the deployed admin test account runbook for controlled beta only and rotate/remove credentials after smoke completion.
+8. Execute the controlled beta preflight checklist before inviting any tester.
+
+## Operational Runbooks
+- `docs/DEPLOYED_ADMIN_TEST_ACCOUNT_RUNBOOK.md`
+- `docs/CONTROLLED_BETA_PREFLIGHT_CHECKLIST.md`
 
 ## Guardrails
 - Do not claim production-ready while email provider readiness is `CONFIG_REQUIRED`.

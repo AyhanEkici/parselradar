@@ -89,6 +89,7 @@
     "verify:protected-routes": "ts-node apps/api/scripts/verifyProtectedRouteIntegrity.ts",
     "verify:browser-history": "ts-node apps/api/scripts/verifyBrowserHistoryConsistency.ts",
     "verify:security": "ts-node scripts/verify-security.ts",
+    "admin:seed": "ts-node apps/api/scripts/seedAdmin.ts",
     "users:ensure-required": "ts-node apps/api/scripts/ensureRequiredUsers.ts",
     "check:admin-routes": "ts-node scripts/check-admin-api-routes.ts",
     "check:docker-backend": "ts-node scripts/check-docker-backend-build.ts",
