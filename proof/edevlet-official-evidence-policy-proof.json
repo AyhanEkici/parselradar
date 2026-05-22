@@ -1,0 +1,47 @@
+{
+  "phase": "P2.2B",
+  "title": "LEGITIMATE E-DEVLET / OFFICIAL EVIDENCE WORKFLOW RUNBOOK",
+  "documentationOnly": true,
+  "requiredDocs": {
+    "docs/EDEVLET_OFFICIAL_EVIDENCE_POLICY.md": true,
+    "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md": true,
+    "docs/TUCBS_UCBP_ACCESS_STRATEGY.md": true,
+    "docs/USER_OFFICIAL_EVIDENCE_CHECKLIST.md": true,
+    "docs/CONNECTOR_ACTIVATION_GOVERNANCE.md": true
+  },
+  "policyCoverage": {
+    "allowedWorkflowDocumented": true,
+    "forbiddenWorkflowDocumented": true,
+    "reportLabelingModelDocumented": true,
+    "connectorActivationGovernanceDocumented": true
+  },
+  "securityAssertions": {
+    "edevletCredentialAutomationAdded": false,
+    "tcKimlikCollectionAdded": false,
+    "edevletPasswordStorageAdded": false,
+    "sessionScrapingAdded": false,
+    "connectorActivated": false,
+    "envMutated": false,
+    "runtimeCodeChangedInThisPhase": false,
+    "hardcodedEndpointConfigAdded": false,
+    "tucbsState": "NOT_CONFIGURED"
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "stagedFilesAudit": {
+    "stagedDocsOnly": true,
+    "runtimeFilesStaged": false,
+    "envFilesStaged": false,
+    "connectorActivationFilesStaged": false,
+    "hardcodedEndpointConfigStaged": false
+  },
+  "stagingPolicy": {
+    "docsAndProofOnly": true,
+    "runtimeFilesAllowed": false,
+    "envFilesAllowed": false
+  },
+  "generatedAt": "2026-05-22T00:40:00.000Z"
+}
