@@ -7,6 +7,19 @@
 - WMTS has no verified candidate.
 - No ACTIVE connector.
 
+## Manual Access Constraint Observation (2026)
+- Firm or personnel authorization flow was observed in manual UCBP review.
+- Visible forms include MERSIS No and company identity fields.
+- Turkish identity field exists in the portal flow; masked T.C. Kimlik field observed.
+- Company contact fields are requested in the visible process.
+- Current owner has individual access but no Turkish company registration and does not want company setup now.
+
+Operational interpretation:
+- Individual e-Devlet login may allow manual viewing depending on permissions.
+- Company or personnel authorization appears to require MERSIS or company context.
+- ParselRadar cannot assume company-level UCBP access without legal entity or institution setup.
+- MVP must not depend on company-level connector activation.
+
 ## Correct Access Path
 1. ParselRadar or company applies for official UCBP or TUCBS access.
 2. Determine access model: individual, company, institution, or project-based.
@@ -15,6 +28,19 @@
 5. Determine whether WMS, WFS, and WMTS endpoints are exposed after approval.
 6. Determine whether tokens or client credentials are issued.
 7. Only configure environment variables after approval.
+
+## 2026 Matrix Expansion Snapshot
+- Total layers: 730
+- New data definitions: 126
+- Cancelled data definitions: 26
+- Open data: 177
+- Tasnif disi: 369
+- Hizmete ozel: 184
+
+Implication for ParselRadar:
+- Layer growth increases future connector opportunity.
+- Data class and authorization constraints still apply.
+- Expansion does not create automatic legal right to production use.
 
 ## Connector State Machine
 - NOT_CONFIGURED
@@ -32,6 +58,17 @@ ACTIVE requires all of the following:
 - passed GetCapabilities test
 - explicit admin activation decision
 - proof artifact
+
+Current governance decision:
+- Keep TUCBS NOT_CONFIGURED.
+- Allowed state after current manual observation is READY_FOR_MANUAL_REVIEW only.
+- Do not move to TEST_PASSED or ACTIVE in this phase.
+
+Future options:
+- Continue individual manual evidence capture.
+- Create Turkish legal entity later if strategically justified.
+- Partner with an authorized Turkish company or institution.
+- Request official access later when business and legal case matures.
 
 ## Environment Placeholders
 Do not fill actual values.

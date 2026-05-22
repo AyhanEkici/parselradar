@@ -18,16 +18,32 @@
 ## 6. Technical Access Status
 - 
 
+### Access Path Type
+Choose one:
+- individual manual evidence
+- company or personnel authorization
+- authorized partner
+- official connector
+
 ## 7. Endpoint Status
 - 
 
 ## 8. Static IP Status
 - 
 
+## 8A. MERSIS Required
+- yes/no/unknown
+
+## 8B. Turkish Legal Entity Required
+- yes/no/unknown
+
 ## 9. GetCapabilities Readiness
 - 
 
 ## 10. Risk Assessment
+- 
+
+## 10A. Recommended Access Route
 - 
 
 ## 11. Decision

@@ -20,6 +20,9 @@ A manual checklist for the project owner to inspect UCBP or TUCBS access after l
 
 ## What To Check
 - user type: individual, company, institution, or other
+- whether MERSIS or company registration is required
+- whether individual-only access is sufficient or limited
+- whether firm or personnel authorization is mandatory
 - whether project or application creation exists
 - whether private sector access is available
 - whether service request is possible

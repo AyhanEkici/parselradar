@@ -1,0 +1,40 @@
+{
+  "phase": "P2.2B-UCBP-ACCESS-CONSTRAINT-UPDATE",
+  "documentationOnly": true,
+  "docs": {
+    "docs/UCBP_ACCESS_CONSTRAINT_RECORD.md": true,
+    "docs/TUCBS_UCBP_ACCESS_STRATEGY.md": true,
+    "docs/CONNECTOR_ACTIVATION_GOVERNANCE.md": true,
+    "docs/EDEVLET_OFFICIAL_EVIDENCE_POLICY.md": true,
+    "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md": true,
+    "docs/UCBP_MANUAL_ACCESS_CHECK_TEMPLATE.md": true,
+    "docs/UCBP_ACCESS_DECISION_RECORD_TEMPLATE.md": true
+  },
+  "checks": {
+    "manualFirmPersonnelObservationRecorded": true,
+    "tcKimlikValueStored": false,
+    "edevletCredentialsStored": false,
+    "sessionCookieTokenCollectionIntroduced": false,
+    "mersisCompanyConstraintDocumented": true,
+    "ownerNoCompanyRegistrationConstraintDocumented": true,
+    "matrix2026ExpansionDocumented": true,
+    "tucbsState": "NOT_CONFIGURED",
+    "activeForbidden": true,
+    "reportSourceLimitationRetained": true,
+    "runtimeCodeChanged": false,
+    "envChanged": false,
+    "connectorActivated": false
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "decision": {
+    "currentTucbsState": "NOT_CONFIGURED",
+    "allowedNextState": "READY_FOR_MANUAL_REVIEW",
+    "activeAllowedNow": false,
+    "recommendedAccessRoute": "continue individual manual evidence capture"
+  },
+  "generatedAt": "2026-05-22T01:20:00.000Z"
+}

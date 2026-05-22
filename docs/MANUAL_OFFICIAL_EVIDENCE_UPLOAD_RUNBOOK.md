@@ -37,6 +37,11 @@ This runbook defines a manual, legitimate workflow for handling official parcel-
 7. Report warning is always shown:
 - User-provided evidence improves confidence but does not replace official legal and technical due diligence.
 
+## Portal Evidence Clarification
+- Individual users may manually download or screenshot evidence from portals where legally permitted.
+- Uploaded portal artifacts remain USER_PROVIDED_OFFICIAL_EVIDENCE.
+- Uploaded portal artifacts are not platform-certified government connector data.
+
 ## Operational Constraints
 - No e-Devlet credential capture.
 - No automated e-Devlet login.

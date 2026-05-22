@@ -26,9 +26,15 @@ This policy defines the legitimate handling model for e-Devlet, UCBP/TUCBS, TKGM
 - Shared user accounts.
 - Hidden scraping.
 - Storing sensitive personal identity data unnecessarily.
+- Using personal e-Devlet account access as backend connector authority.
+- Using a user's personal credentials for platform-wide data access.
 
 ## User-Facing Principle
 ParselRadar provides preliminary real estate intelligence and evidence organization, not official government certification.
+
+## Connector Authority Boundary
+- Personal e-Devlet access may support manual evidence collection only.
+- Personal access cannot be treated as legal or technical authority for shared platform connector activation.
 
 ## Evidence Source Taxonomy
 ParselRadar report labels must distinguish:
