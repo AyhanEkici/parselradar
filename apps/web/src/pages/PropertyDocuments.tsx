@@ -128,6 +128,12 @@ export default function PropertyDocuments() {
     Array<{
       _id: string;
       documentType: string;
+      evidenceType?: string;
+      sourceType?: string;
+      reviewStatus?: string;
+      metadataStatus?: string;
+      supportingEvidenceOnly?: boolean;
+      csvDetectedFields?: string[];
       originalName: string;
       uploadedAt?: string;
       createdAt?: string;
@@ -264,11 +270,29 @@ export default function PropertyDocuments() {
     e.preventDefault();
     if (!id || !selectedFile) return;
 
+    const parsedPreview = csvPreview.parseError
+      ? null
+      : Object.fromEntries(csvPreview.detectedFields.map((entry) => [entry.field, entry.value]));
+    const csvDetectedFields = csvPreview.parseError ? [] : csvPreview.detectedFields.map((entry) => entry.field);
+    const metadataStatus = csvPreview.parseError
+      ? 'MANUAL_REVIEW_REQUIRED'
+      : csvDetectedFields.length > 0
+      ? 'PREVIEW_ONLY'
+      : 'NEEDS_REVIEW';
+
     const formData = new FormData();
     formData.append('documentType', evidenceType);
     formData.append('evidenceType', evidenceType);
     formData.append('sourceType', sourceType);
+    formData.append('reviewStatus', 'NEEDS_REVIEW');
+    formData.append('metadataStatus', metadataStatus);
     formData.append('supportingEvidenceOnly', String(supportingEvidenceOnly));
+    if (parsedPreview && Object.keys(parsedPreview).length > 0) {
+      formData.append('parsedPreview', JSON.stringify(parsedPreview));
+    }
+    if (csvDetectedFields.length > 0) {
+      formData.append('csvDetectedFields', JSON.stringify(csvDetectedFields));
+    }
     formData.append('file', selectedFile);
 
     setUploading(true);
@@ -374,6 +398,16 @@ export default function PropertyDocuments() {
                   {doc.originalName}
                 </div>
                 <div className="mt-1 text-xs text-slate-500">Size: {formatBytes(doc.sizeBytes)}</div>
+                <div className="mt-2 space-y-1 text-xs text-slate-600">
+                  {doc.evidenceType ? <div>Evidence type: {doc.evidenceType}</div> : null}
+                  {doc.sourceType ? <div>Source type: {doc.sourceType}</div> : null}
+                  {doc.reviewStatus ? <div>Review status: {doc.reviewStatus}</div> : null}
+                  {doc.metadataStatus ? <div>Metadata status: {doc.metadataStatus}</div> : null}
+                  {doc.supportingEvidenceOnly ? <div>Supporting evidence only</div> : null}
+                  {Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0 ? (
+                    <div>CSV fields: {doc.csvDetectedFields.join(', ')}</div>
+                  ) : null}
+                </div>
 
                 <div className="mt-3">
                   {doc.isImage && doc.hasFile && previewUrls[doc._id] ? (
