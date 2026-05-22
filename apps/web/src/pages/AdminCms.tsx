@@ -23,19 +23,21 @@ const modules: CmsModule[] = [
     status: 'wired',
     description: 'Manage all submitted properties.',
     href: '/admin/properties',
+    actionLabel: 'Open Properties',
   },
   {
     area: 'Evidence / Documents',
     status: 'partial',
-    description: 'Open a property first, then manage documents.',
+    description: 'Partial but usable: open a property first, then manage documents/evidence.',
     href: '/admin/properties',
-    actionLabel: 'Open Properties',
+    actionLabel: 'Open Properties to manage evidence',
   },
   {
     area: 'Analyses',
     status: 'wired',
-    description: 'Review analyses and operational analysis visibility.',
-    href: '/admin/analyses',
+    description: 'Analysis visibility is linked to individual properties and global admin analysis view.',
+    href: '/admin/properties',
+    actionLabel: 'Open Properties for analysis/result flow',
   },
   {
     area: 'Credits / Ledger',
@@ -151,6 +153,25 @@ export default function AdminCms() {
               </div>
             }
           />
+
+          <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold text-slate-900">Property Operations</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Current evidence and result management is property-scoped. There is no standalone global evidence module yet.
+            </p>
+            <ol className="mt-3 list-decimal pl-5 text-sm text-slate-700 space-y-1">
+              <li>Open CMS</li>
+              <li>Open Properties</li>
+              <li>Select property</li>
+              <li>Open Documents/Evidence</li>
+              <li>Review analysis/result</li>
+            </ol>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link to="/admin/properties" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50">
+                Open Properties
+              </Link>
+            </div>
+          </section>
 
           <div className="rounded-lg border border-slate-200 bg-white overflow-x-auto">
             <table className="w-full min-w-[860px] text-sm">
