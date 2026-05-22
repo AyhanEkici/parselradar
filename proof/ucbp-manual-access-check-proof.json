@@ -1,0 +1,41 @@
+{
+  "phase": "P2.2B-MANUAL",
+  "title": "UCBP / E-DEVLET MANUAL ACCESS CHECK TEMPLATE",
+  "documentationOnly": true,
+  "requiredDocs": {
+    "docs/UCBP_MANUAL_ACCESS_CHECK_TEMPLATE.md": true,
+    "docs/UCBP_ACCESS_EVIDENCE_CAPTURE_FORM.md": true,
+    "docs/UCBP_ACCESS_DECISION_RECORD_TEMPLATE.md": true
+  },
+  "safetyChecks": {
+    "containsCredentialCollectionInstruction": false,
+    "containsTcKimlikCollectionField": false,
+    "containsSessionCookieTokenCollectionInstruction": false,
+    "activatesTucbs": false,
+    "keepsActiveForbidden": true,
+    "definesSafeDecisionStates": true,
+    "runtimeCodeChangedInThisPhase": false,
+    "envChangedInThisPhase": false,
+    "tucbsState": "NOT_CONFIGURED"
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "decisionModel": {
+    "currentTucbsState": "NOT_CONFIGURED",
+    "allowedNextStates": [
+      "READY_FOR_MANUAL_REVIEW",
+      "PENDING_APPROVAL",
+      "READY_FOR_STAGING_TEST"
+    ],
+    "activeAllowedInThisPhase": false
+  },
+  "stagedScope": {
+    "docsAndProofOnly": true,
+    "runtimeFilesAllowed": false,
+    "envFilesAllowed": false
+  },
+  "generatedAt": "2026-05-22T01:05:00.000Z"
+}
