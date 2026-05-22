@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useToast } from '../components/ui';
@@ -42,6 +42,53 @@ import ExecutionConstraintCard from '../components/execution/ExecutionConstraint
 import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
 import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
 import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
+
+type ReadinessStatus =
+  | 'READY'
+  | 'NEEDS_MORE_DATA'
+  | 'NEEDS_PARCEL_IDENTITY'
+  | 'NEEDS_TKGM_CHECK'
+  | 'NEEDS_MUNICIPALITY_CHECK'
+  | 'UNKNOWN';
+
+type DocumentMetadata = {
+  _id: string;
+  documentType?: string;
+  evidenceType?: string;
+  sourceType?: string;
+  metadataStatus?: string;
+  supportingEvidenceOnly?: boolean;
+  parsedPreview?: Record<string, string>;
+  csvDetectedFields?: string[];
+};
+
+type PropertyReadinessData = {
+  listingUrl?: string;
+  askingPriceTRY?: number;
+  pricePerM2?: number;
+  areaM2?: number;
+  il?: string;
+  ilce?: string;
+  mahalleOrKoy?: string;
+  neighborhood?: string;
+  ada?: string;
+  parsel?: string;
+  latitude?: number;
+  longitude?: number;
+};
+
+type ReadinessRow = {
+  label: string;
+  status: ReadinessStatus;
+  message: string;
+  sources: string[];
+};
+
+function statusClasses(status: ReadinessStatus) {
+  if (status === 'READY') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  if (status === 'UNKNOWN') return 'bg-slate-50 text-slate-700 border-slate-200';
+  return 'bg-amber-50 text-amber-700 border-amber-200';
+}
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -117,7 +164,166 @@ export default function PropertyResult() {
     parselInsight: 'idle',
     developerFit: 'idle',
   });
+  const [propertyData, setPropertyData] = useState<PropertyReadinessData | null>(null);
+  const [documents, setDocuments] = useState<DocumentMetadata[]>([]);
+  const [documentMetadataAvailable, setDocumentMetadataAvailable] = useState(true);
   const toast = useToast();
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!id) return;
+
+    const loadReadinessData = async () => {
+      try {
+        const propertyResponse = await apiFetch(`properties/${id}`);
+        if (!cancelled) {
+          setPropertyData((propertyResponse?.property || propertyResponse) as PropertyReadinessData);
+        }
+      } catch {
+        if (!cancelled) setPropertyData(null);
+      }
+
+      try {
+        const docsResponse = await apiFetch(`properties/${id}/documents`);
+        if (cancelled) return;
+        if (Array.isArray(docsResponse)) {
+          setDocuments(docsResponse as DocumentMetadata[]);
+          setDocumentMetadataAvailable(true);
+        } else {
+          setDocuments([]);
+          setDocumentMetadataAvailable(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setDocuments([]);
+          setDocumentMetadataAvailable(false);
+        }
+      }
+    };
+
+    loadReadinessData();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  const readinessRows = useMemo<ReadinessRow[]>(() => {
+    const rows: ReadinessRow[] = [];
+    const docs = documents || [];
+    const hasSupportingOnly = docs.some((doc) => doc.supportingEvidenceOnly);
+    const hasCsvMetadata = docs.some((doc) => Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0);
+
+    const hasListingUrl = Boolean(String(propertyData?.listingUrl || '').trim());
+    const hasPriceContext =
+      typeof propertyData?.askingPriceTRY === 'number' ||
+      typeof propertyData?.pricePerM2 === 'number' ||
+      typeof propertyData?.areaM2 === 'number';
+    const hasLocationContext = Boolean(String(propertyData?.il || '').trim() && String(propertyData?.ilce || '').trim());
+    const hasListingEvidence = docs.some(
+      (doc) => doc.sourceType === 'LISTING_SOURCE' || doc.evidenceType === 'LISTING_SCREENSHOT'
+    );
+    const quickSources: string[] = [];
+    if (hasListingUrl || (hasPriceContext && hasLocationContext)) quickSources.push('user-entered data');
+    if (hasListingEvidence) quickSources.push('uploaded evidence metadata');
+    if (hasCsvMetadata) quickSources.push('CSV preview metadata');
+    if (hasSupportingOnly) quickSources.push('supporting evidence only');
+    const quickReady = hasListingUrl || (hasPriceContext && hasLocationContext) || hasListingEvidence;
+    rows.push({
+      label: 'Hızlı İlan Kontrolü',
+      status: quickReady ? 'READY' : 'NEEDS_MORE_DATA',
+      message: quickReady
+        ? 'İlan bağlamı veya destekleyici ilan kaynağı mevcut.'
+        : 'İlan URL, fiyat/m²/lokasyon veya listing source metadata eksik.',
+      sources: quickSources.length > 0 ? quickSources : ['user-entered data'],
+    });
+
+    const hasParcelIdentity = Boolean(
+      String(propertyData?.il || '').trim() &&
+        String(propertyData?.ilce || '').trim() &&
+        String(propertyData?.mahalleOrKoy || propertyData?.neighborhood || '').trim() &&
+        (String(propertyData?.ada || '').trim() || String(propertyData?.parsel || '').trim())
+    );
+    const hasCoordinateContext =
+      (typeof propertyData?.latitude === 'number' && typeof propertyData?.longitude === 'number') ||
+      docs.some((doc) => {
+        const fields = Array.isArray(doc.csvDetectedFields) ? doc.csvDetectedFields.map((f) => f.toLowerCase()) : [];
+        if (fields.includes('latitude') && fields.includes('longitude')) return true;
+        const parsed = doc.parsedPreview || {};
+        return Boolean(parsed.latitude && parsed.longitude);
+      });
+    const hasTkgmManualEvidence = docs.some(
+      (doc) =>
+        doc.sourceType === 'TKGM_MANUAL_EVIDENCE' ||
+        doc.evidenceType === 'TKGM_SCREENSHOT' ||
+        doc.evidenceType === 'TKGM_EXPORT'
+    );
+    const parcelSources: string[] = [];
+    if (hasParcelIdentity || (typeof propertyData?.latitude === 'number' && typeof propertyData?.longitude === 'number')) {
+      parcelSources.push('user-entered data');
+    }
+    if (hasTkgmManualEvidence) parcelSources.push('uploaded evidence metadata');
+    if (hasCoordinateContext && hasCsvMetadata) parcelSources.push('CSV preview metadata');
+    if (hasSupportingOnly) parcelSources.push('supporting evidence only');
+
+    let parcelStatus: ReadinessStatus = 'READY';
+    let parcelMessage = 'Parsel kimliği, koordinat bağlamı veya TKGM manual evidence mevcut.';
+    if (!(hasParcelIdentity || hasCoordinateContext || hasTkgmManualEvidence)) {
+      if (String(propertyData?.il || '').trim() && String(propertyData?.ilce || '').trim()) {
+        parcelStatus = 'NEEDS_PARCEL_IDENTITY';
+        parcelMessage = 'İl/ilçe mevcut ama mahalle ve ada/parsel kimliği eksik.';
+      } else {
+        parcelStatus = 'NEEDS_TKGM_CHECK';
+        parcelMessage = 'Parsel kimliği veya TKGM manual evidence metadata gerekli.';
+      }
+    }
+    rows.push({
+      label: 'Parsel Insight',
+      status: parcelStatus,
+      message: parcelMessage,
+      sources: parcelSources.length > 0 ? parcelSources : ['user-entered data'],
+    });
+
+    const hasMunicipalityEvidence = docs.some(
+      (doc) =>
+        doc.evidenceType === 'MUNICIPALITY_IMAR_DOCUMENT' ||
+        doc.sourceType === 'MUNICIPALITY_IMAR_EVIDENCE'
+    );
+    const hasEPlanEvidence = docs.some(
+      (doc) => doc.evidenceType === 'E_PLAN_DOCUMENT' || doc.sourceType === 'E_PLAN_EVIDENCE'
+    );
+    const hasZoningDocMetadata = docs.some((doc) => {
+      const type = String(doc.documentType || '').toUpperCase();
+      return type.includes('IMAR') || type.includes('PLAN');
+    });
+    const developerSources: string[] = [];
+    if (hasMunicipalityEvidence || hasEPlanEvidence || hasZoningDocMetadata) {
+      developerSources.push('uploaded evidence metadata');
+    }
+    if (hasCsvMetadata) developerSources.push('CSV preview metadata');
+    if (hasSupportingOnly) developerSources.push('supporting evidence only');
+    const developerReady = hasMunicipalityEvidence || hasEPlanEvidence || hasZoningDocMetadata;
+    rows.push({
+      label: 'Developer Fit',
+      status: developerReady ? 'READY' : 'NEEDS_MUNICIPALITY_CHECK',
+      message: developerReady
+        ? 'İmar/e-plan veya plan ilişkili belge metadata mevcut.'
+        : 'Belediye imar veya e-plan metadata gerekli.',
+      sources: developerSources.length > 0 ? developerSources : ['uploaded evidence metadata'],
+    });
+
+    if (!documentMetadataAvailable) {
+      return rows.map((row) => ({
+        ...row,
+        status: row.status === 'READY' ? 'UNKNOWN' : row.status,
+        message:
+          row.status === 'READY'
+            ? `${row.message} (uploaded evidence metadata not available in this phase)`
+            : row.message,
+      }));
+    }
+
+    return rows;
+  }, [documents, documentMetadataAvailable, propertyData]);
 
   const setActionState = (action: AnalysisActionKey, status: AnalysisActionStatus) => {
     setAnalysisActionStates((prev) => ({ ...prev, [action]: status }));
@@ -191,6 +397,29 @@ export default function PropertyResult() {
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
+      <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Analysis readiness</h3>
+        <div className="mt-2 space-y-2">
+          {readinessRows.map((row) => (
+            <div key={row.label} className="rounded border border-slate-200 bg-white p-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-slate-900">{row.label}</span>
+                <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(row.status)}`}>
+                  {row.status}
+                </span>
+              </div>
+              <div className="mt-1 text-xs text-slate-600">{row.message}</div>
+              <div className="mt-1 flex flex-wrap gap-1">
+                {row.sources.map((source) => (
+                  <span key={`${row.label}-${source}`} className="inline-flex rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] text-slate-600">
+                    {source}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="mb-4 flex flex-wrap gap-2">
         <button
           className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
