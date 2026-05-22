@@ -124,7 +124,27 @@ type PropertyReadinessData = {
   parsel?: string;
   latitude?: number;
   longitude?: number;
+  documents?: unknown[];
+  docs?: unknown[];
+  documentCount?: number;
+  documentsCount?: number;
+  docsCount?: number;
 };
+
+function getPropertyDocumentCount(property: PropertyReadinessData | null): number {
+  if (!property) return 0;
+  if (Array.isArray(property.documents)) return property.documents.length;
+  if (Array.isArray(property.docs)) return property.docs.length;
+
+  const directCounts = [property.documentCount, property.documentsCount, property.docsCount];
+  for (const count of directCounts) {
+    if (typeof count === 'number' && Number.isFinite(count) && count > 0) {
+      return count;
+    }
+  }
+
+  return 0;
+}
 
 type ReadinessRow = {
   label: string;
@@ -258,6 +278,9 @@ export default function PropertyResult() {
   const [propertyData, setPropertyData] = useState<PropertyReadinessData | null>(null);
   const [documents, setDocuments] = useState<DocumentMetadata[]>([]);
   const [documentMetadataAvailable, setDocumentMetadataAvailable] = useState(true);
+  const [documentsLoading, setDocumentsLoading] = useState(true);
+  const [documentsLoaded, setDocumentsLoaded] = useState(false);
+  const [documentsFetchFailed, setDocumentsFetchFailed] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -265,6 +288,12 @@ export default function PropertyResult() {
     if (!id) return;
 
     const loadReadinessData = async () => {
+      if (!cancelled) {
+        setDocumentsLoading(true);
+        setDocumentsLoaded(false);
+        setDocumentsFetchFailed(false);
+      }
+
       try {
         const propertyResponse = await apiFetch(`properties/${id}`);
         if (!cancelled) {
@@ -280,10 +309,16 @@ export default function PropertyResult() {
         const resolvedDocuments = normalizeDocumentsResponse(docsResponse);
         setDocuments(resolvedDocuments);
         setDocumentMetadataAvailable(true);
+        setDocumentsLoading(false);
+        setDocumentsLoaded(true);
+        setDocumentsFetchFailed(false);
       } catch {
         if (!cancelled) {
           setDocuments([]);
           setDocumentMetadataAvailable(false);
+          setDocumentsLoading(false);
+          setDocumentsLoaded(true);
+          setDocumentsFetchFailed(true);
         }
       }
     };
@@ -497,8 +532,10 @@ export default function PropertyResult() {
     const parcelRow = readinessByAction.parselInsight;
     const developerRow = readinessByAction.developerFit;
     const docs = documents || [];
+    const fallbackDocumentCount = getPropertyDocumentCount(propertyData);
+    const isEvidenceCheckPending = documentsLoading || !documentsLoaded;
 
-    const hasUploadedEvidence = docs.length > 0;
+    const hasUploadedEvidence = docs.length > 0 || fallbackDocumentCount > 0;
     const hasSupportingOnly = docs.some((doc) => doc.supportingEvidenceOnly);
     const hasManualReviewRequired = docs.some(
       (doc) => doc.reviewStatus === 'MANUAL_REVIEW_REQUIRED' || doc.metadataStatus === 'MANUAL_REVIEW_REQUIRED'
@@ -534,7 +571,11 @@ export default function PropertyResult() {
       developerStatus !== 'READY_FOR_DEVELOPER_FIT';
 
     const missingEvidence: string[] = [];
-    if (!hasUploadedEvidence) {
+    if (isEvidenceCheckPending) {
+      missingEvidence.push('Kanıt belgeleri kontrol ediliyor...');
+    } else if (documentsFetchFailed) {
+      missingEvidence.push('Belge durumu doğrulanamadı. Lütfen belgeler sayfasını kontrol edin.');
+    } else if (!hasUploadedEvidence) {
       missingEvidence.push('En az bir belge/evidence yüklenmeli.');
     }
     if (quickStatus !== 'READY_FOR_QUICK_CHECK') {
@@ -599,7 +640,15 @@ export default function PropertyResult() {
       hasSupportingOnly,
       showIncompleteReportWarning,
     };
-  }, [documents, documentMetadataAvailable, readinessByAction]);
+  }, [
+    documents,
+    documentMetadataAvailable,
+    documentsFetchFailed,
+    documentsLoaded,
+    documentsLoading,
+    propertyData,
+    readinessByAction,
+  ]);
 
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
