@@ -62,6 +62,21 @@ function readSafe(relPath: string): string {
   return fs.readFileSync(abs, 'utf8');
 }
 
+function readVerifierStatus(relPath: string): 'PASS' | 'FAIL' | 'CONFIG_REQUIRED' | 'MISSING' {
+  const abs = path.join(ROOT, relPath);
+  if (!fs.existsSync(abs)) return 'MISSING';
+  try {
+    const payload = JSON.parse(fs.readFileSync(abs, 'utf8')) as { overallStatus?: string };
+    const normalized = String(payload?.overallStatus || '').toUpperCase();
+    if (normalized === 'PASS') return 'PASS';
+    if (normalized === 'FAIL') return 'FAIL';
+    if (normalized === 'CONFIG_REQUIRED') return 'CONFIG_REQUIRED';
+    return 'MISSING';
+  } catch {
+    return 'MISSING';
+  }
+}
+
 function includesInFile(relPath: string, re: RegExp): boolean {
   const text = readSafe(relPath);
   return re.test(text);
@@ -245,6 +260,16 @@ function main(): void {
   const hasBackupPolicyCode = includesInFile('apps/api/src/config/runtime/backupPolicies.ts', /backupStatus/);
   const hasBackupDoc = includesInFile('docs/PRODUCTION_DEPLOY_CHECKLIST.md', /backup/i);
   const hasRestoreDoc = includesInFile('docs/PRODUCTION_DEPLOY_CHECKLIST.md', /rollback|restore/i);
+  const hasDatabaseBackupPolicyDoc = exists('docs/DATABASE_BACKUP_RPO_RTO_POLICY.md');
+  const hasDatabaseBackupRunbookDoc = exists('docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md');
+  const hasDocumentBackupRunbookDoc = exists('docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md');
+  const hasEvidenceRetentionPolicyDoc = exists('docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md');
+  const hasSmtpLaunchGateDoc = exists('docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md');
+  const hasEmailOpsPolicyDoc = exists('docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md');
+
+  const dbBackupVerifierStatus = readVerifierStatus('proof/p2-4b-database-backup-readiness.json');
+  const documentBackupVerifierStatus = readVerifierStatus('proof/p2-4b-document-backup-readiness.json');
+  const emailVerifierStatus = readVerifierStatus('proof/p2-4b-email-provider-readiness.json');
 
   const hasIncidentDoc = countFilesMatching(docsFiles.map((f) => f), /incident|on-call|pager/i) > 0;
   const hasSupportBoundaryDoc = hasRunbook && includesInFile('docs/U1_PILOT_RUNBOOK.md', /support|escalation/i);
@@ -504,19 +529,27 @@ function main(): void {
       id: 'BKP-001',
       area: 'Backup/recovery',
       title: 'Database backup strategy is documented',
-      status: hasBackupDoc ? 'PARTIAL' : 'MISSING',
-      severity: hasBackupDoc ? 'P1_PRE_LAUNCH_REQUIRED' : 'P1_PRE_LAUNCH_REQUIRED',
-      evidence: ['docs/PRODUCTION_DEPLOY_CHECKLIST.md', 'apps/api/src/config/runtime/backupPolicies.ts'],
-      recommendation: 'Define concrete RPO/RTO, backup owner, and scheduled verification records.',
+      status: hasDatabaseBackupPolicyDoc && hasDatabaseBackupRunbookDoc && dbBackupVerifierStatus === 'PASS' ? 'READY' : hasDatabaseBackupPolicyDoc || hasDatabaseBackupRunbookDoc ? 'PARTIAL' : 'MISSING',
+      severity: hasDatabaseBackupPolicyDoc && hasDatabaseBackupRunbookDoc && dbBackupVerifierStatus === 'PASS' ? 'P2_HARDENING_REQUIRED' : 'P1_PRE_LAUNCH_REQUIRED',
+      evidence: [
+        'docs/DATABASE_BACKUP_RPO_RTO_POLICY.md',
+        'docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md',
+        'proof/p2-4b-database-backup-readiness.json',
+      ],
+      recommendation: 'Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence.',
     },
     {
       id: 'BKP-002',
       area: 'Backup/recovery',
       title: 'File/document backup strategy is documented',
-      status: hasBackupPolicyCode ? 'PARTIAL' : 'MISSING',
-      severity: 'P1_PRE_LAUNCH_REQUIRED',
-      evidence: ['apps/api/src/config/runtime/backupPolicies.ts'],
-      recommendation: 'Add explicit document storage backup policy and tested restore path.',
+      status: hasDocumentBackupRunbookDoc && hasEvidenceRetentionPolicyDoc && documentBackupVerifierStatus === 'PASS' ? 'READY' : hasDocumentBackupRunbookDoc || hasEvidenceRetentionPolicyDoc ? 'PARTIAL' : 'MISSING',
+      severity: hasDocumentBackupRunbookDoc && hasEvidenceRetentionPolicyDoc && documentBackupVerifierStatus === 'PASS' ? 'P2_HARDENING_REQUIRED' : 'P1_PRE_LAUNCH_REQUIRED',
+      evidence: [
+        'docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md',
+        'docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md',
+        'proof/p2-4b-document-backup-readiness.json',
+      ],
+      recommendation: 'Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills.',
     },
     {
       id: 'BKP-003',
@@ -543,10 +576,25 @@ function main(): void {
       id: 'OPS-002',
       area: 'Operational readiness',
       title: 'Production email provider readiness is explicit',
-      status: includesInFile('apps/api/src/services/auth/passwordResetEmailService.ts', /EMAIL_NOT_CONFIGURED|EMAIL_CONFIGURED/) ? 'PARTIAL' : 'MISSING',
-      severity: 'P1_PRE_LAUNCH_REQUIRED',
-      evidence: ['apps/api/src/services/auth/passwordResetEmailService.ts', 'apps/api/src/routes/adminRoutes.ts'],
-      recommendation: 'Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory.',
+      status:
+        hasSmtpLaunchGateDoc && hasEmailOpsPolicyDoc && emailVerifierStatus === 'PASS'
+          ? 'READY'
+          : hasSmtpLaunchGateDoc && hasEmailOpsPolicyDoc && emailVerifierStatus === 'CONFIG_REQUIRED'
+            ? 'PARTIAL'
+            : hasSmtpLaunchGateDoc || hasEmailOpsPolicyDoc
+              ? 'PARTIAL'
+              : 'MISSING',
+      severity:
+        hasSmtpLaunchGateDoc && hasEmailOpsPolicyDoc && emailVerifierStatus === 'PASS'
+          ? 'P2_HARDENING_REQUIRED'
+          : 'P1_PRE_LAUNCH_REQUIRED',
+      evidence: [
+        'docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md',
+        'docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md',
+        'proof/p2-4b-email-provider-readiness.json',
+        'apps/api/src/services/auth/passwordResetEmailService.ts',
+      ],
+      recommendation: 'Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed.',
     },
     {
       id: 'OPS-003',

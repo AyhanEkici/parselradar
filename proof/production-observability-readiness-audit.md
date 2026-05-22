@@ -1,7 +1,7 @@
 # Production Observability Readiness Audit
 
-- generatedAt: 2026-05-22T02:13:30.672Z
-- readinessScore: 77
+- generatedAt: 2026-05-22T20:46:45.203Z
+- readinessScore: 85
 - launchRecommendation: INTERNAL_ALPHA_READY
 - p0Blockers: 0
 - p1Requirements: 2
@@ -24,9 +24,9 @@
   evidence: docs/U1_PILOT_RUNBOOK.md
   recommendation: Maintain on-call owner and escalation mapping per release.
 - [P1_PRE_LAUNCH_REQUIRED] (PARTIAL) Operational readiness - Production email provider readiness is explicit
-  evidence: apps/api/src/services/auth/passwordResetEmailService.ts | apps/api/src/routes/adminRoutes.ts
-  recommendation: Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory.
-- [P2_HARDENING_REQUIRED] (MISSING) Operational readiness - Incident response documentation exists
+  evidence: docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md | docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md | proof/p2-4b-email-provider-readiness.json | apps/api/src/services/auth/passwordResetEmailService.ts
+  recommendation: Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed.
+- [P2_HARDENING_REQUIRED] (PARTIAL) Operational readiness - Incident response documentation exists
   evidence: docs/
   recommendation: Create incident response playbook with severity matrix and communication protocol.
 - [P2_HARDENING_REQUIRED] (PARTIAL) Operational readiness - Support/debug access boundaries documented

@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "generatedAt": "2026-05-22T20:46:45.203Z",
   "phase": "P2.4A",
   "scope": "production-observability-readiness",
-  "readinessScore": 77,
+  "readinessScore": 85,
   "launchRecommendation": "INTERNAL_ALPHA_READY",
   "summary": {
     "countsByStatus": {
       "READY": 5,
-      "PARTIAL": 2,
-      "MISSING": 1,
+      "PARTIAL": 3,
+      "MISSING": 0,
       "NOT_APPLICABLE": 0,
       "BLOCKER": 0
     },
@@ -89,16 +89,18 @@
       "status": "PARTIAL",
       "severity": "P1_PRE_LAUNCH_REQUIRED",
       "evidence": [
-        "apps/api/src/services/auth/passwordResetEmailService.ts",
-        "apps/api/src/routes/adminRoutes.ts"
+        "docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md",
+        "docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md",
+        "proof/p2-4b-email-provider-readiness.json",
+        "apps/api/src/services/auth/passwordResetEmailService.ts"
       ],
-      "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+      "recommendation": "Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed."
     },
     {
       "id": "OPS-003",
       "area": "Operational readiness",
       "title": "Incident response documentation exists",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
         "docs/"
@@ -138,10 +140,12 @@
         "status": "PARTIAL",
         "severity": "P1_PRE_LAUNCH_REQUIRED",
         "evidence": [
-          "apps/api/src/services/auth/passwordResetEmailService.ts",
-          "apps/api/src/routes/adminRoutes.ts"
+          "docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md",
+          "docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md",
+          "proof/p2-4b-email-provider-readiness.json",
+          "apps/api/src/services/auth/passwordResetEmailService.ts"
         ],
-        "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+        "recommendation": "Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed."
       }
     ],
     "p2": [
@@ -185,7 +189,7 @@
         "id": "OPS-003",
         "area": "Operational readiness",
         "title": "Incident response documentation exists",
-        "status": "MISSING",
+        "status": "PARTIAL",
         "severity": "P2_HARDENING_REQUIRED",
         "evidence": [
           "docs/"

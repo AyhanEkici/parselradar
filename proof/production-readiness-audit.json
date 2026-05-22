@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-05-22T02:13:30.671Z",
+  "generatedAt": "2026-05-22T20:46:45.202Z",
   "phase": "P2.4A",
   "scope": "production-readiness-overall",
-  "readinessScore": 87,
+  "readinessScore": 91,
   "launchRecommendation": "INTERNAL_ALPHA_READY",
   "summary": {
     "countsByStatus": {
-      "READY": 27,
-      "PARTIAL": 7,
-      "MISSING": 2,
+      "READY": 29,
+      "PARTIAL": 6,
+      "MISSING": 1,
       "NOT_APPLICABLE": 0,
       "BLOCKER": 0
     },
     "countsBySeverity": {
       "P0_PRODUCTION_BLOCKER": 0,
-      "P1_PRE_LAUNCH_REQUIRED": 10,
-      "P2_HARDENING_REQUIRED": 19,
+      "P1_PRE_LAUNCH_REQUIRED": 8,
+      "P2_HARDENING_REQUIRED": 21,
       "P3_OPERATIONAL_IMPROVEMENT": 6,
       "P4_FUTURE": 1
     },
     "p0Blockers": 0,
-    "p1Requirements": 10,
-    "p2Hardening": 19
+    "p1Requirements": 8,
+    "p2Hardening": 21
   },
   "items": [
     {
@@ -318,24 +318,27 @@
       "id": "BKP-001",
       "area": "Backup/recovery",
       "title": "Database backup strategy is documented",
-      "status": "PARTIAL",
-      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
-        "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
-        "apps/api/src/config/runtime/backupPolicies.ts"
+        "docs/DATABASE_BACKUP_RPO_RTO_POLICY.md",
+        "docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md",
+        "proof/p2-4b-database-backup-readiness.json"
       ],
-      "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
+      "recommendation": "Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence."
     },
     {
       "id": "BKP-002",
       "area": "Backup/recovery",
       "title": "File/document backup strategy is documented",
-      "status": "PARTIAL",
-      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
-        "apps/api/src/config/runtime/backupPolicies.ts"
+        "docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md",
+        "docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md",
+        "proof/p2-4b-document-backup-readiness.json"
       ],
-      "recommendation": "Add explicit document storage backup policy and tested restore path."
+      "recommendation": "Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills."
     },
     {
       "id": "BKP-003",
@@ -366,16 +369,18 @@
       "status": "PARTIAL",
       "severity": "P1_PRE_LAUNCH_REQUIRED",
       "evidence": [
-        "apps/api/src/services/auth/passwordResetEmailService.ts",
-        "apps/api/src/routes/adminRoutes.ts"
+        "docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md",
+        "docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md",
+        "proof/p2-4b-email-provider-readiness.json",
+        "apps/api/src/services/auth/passwordResetEmailService.ts"
       ],
-      "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+      "recommendation": "Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed."
     },
     {
       "id": "OPS-003",
       "area": "Operational readiness",
       "title": "Incident response documentation exists",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
         "docs/"
@@ -516,39 +521,18 @@
         "recommendation": "Keep health/build metadata endpoints wired for deployment diagnostics."
       },
       {
-        "id": "BKP-001",
-        "area": "Backup/recovery",
-        "title": "Database backup strategy is documented",
-        "status": "PARTIAL",
-        "severity": "P1_PRE_LAUNCH_REQUIRED",
-        "evidence": [
-          "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
-          "apps/api/src/config/runtime/backupPolicies.ts"
-        ],
-        "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
-      },
-      {
-        "id": "BKP-002",
-        "area": "Backup/recovery",
-        "title": "File/document backup strategy is documented",
-        "status": "PARTIAL",
-        "severity": "P1_PRE_LAUNCH_REQUIRED",
-        "evidence": [
-          "apps/api/src/config/runtime/backupPolicies.ts"
-        ],
-        "recommendation": "Add explicit document storage backup policy and tested restore path."
-      },
-      {
         "id": "OPS-002",
         "area": "Operational readiness",
         "title": "Production email provider readiness is explicit",
         "status": "PARTIAL",
         "severity": "P1_PRE_LAUNCH_REQUIRED",
         "evidence": [
-          "apps/api/src/services/auth/passwordResetEmailService.ts",
-          "apps/api/src/routes/adminRoutes.ts"
+          "docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md",
+          "docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md",
+          "proof/p2-4b-email-provider-readiness.json",
+          "apps/api/src/services/auth/passwordResetEmailService.ts"
         ],
-        "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+        "recommendation": "Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed."
       },
       {
         "id": "CON-001",
@@ -729,6 +713,32 @@
         "recommendation": "Keep deployment-truth checks in release readiness pipelines."
       },
       {
+        "id": "BKP-001",
+        "area": "Backup/recovery",
+        "title": "Database backup strategy is documented",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/DATABASE_BACKUP_RPO_RTO_POLICY.md",
+          "docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md",
+          "proof/p2-4b-database-backup-readiness.json"
+        ],
+        "recommendation": "Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence."
+      },
+      {
+        "id": "BKP-002",
+        "area": "Backup/recovery",
+        "title": "File/document backup strategy is documented",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md",
+          "docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md",
+          "proof/p2-4b-document-backup-readiness.json"
+        ],
+        "recommendation": "Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills."
+      },
+      {
         "id": "BKP-003",
         "area": "Backup/recovery",
         "title": "Restore and rollback procedures are documented",
@@ -743,7 +753,7 @@
         "id": "OPS-003",
         "area": "Operational readiness",
         "title": "Incident response documentation exists",
-        "status": "MISSING",
+        "status": "PARTIAL",
         "severity": "P2_HARDENING_REQUIRED",
         "evidence": [
           "docs/"

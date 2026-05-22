@@ -1,51 +1,54 @@
 {
-  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "generatedAt": "2026-05-22T20:46:45.203Z",
   "phase": "P2.4A",
   "scope": "production-backup-recovery-readiness",
-  "readinessScore": 60,
-  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "readinessScore": 87,
+  "launchRecommendation": "CONTROLLED_BETA_READY",
   "summary": {
     "countsByStatus": {
-      "READY": 0,
-      "PARTIAL": 3,
+      "READY": 2,
+      "PARTIAL": 1,
       "MISSING": 0,
       "NOT_APPLICABLE": 0,
       "BLOCKER": 0
     },
     "countsBySeverity": {
       "P0_PRODUCTION_BLOCKER": 0,
-      "P1_PRE_LAUNCH_REQUIRED": 2,
-      "P2_HARDENING_REQUIRED": 1,
+      "P1_PRE_LAUNCH_REQUIRED": 0,
+      "P2_HARDENING_REQUIRED": 3,
       "P3_OPERATIONAL_IMPROVEMENT": 0,
       "P4_FUTURE": 0
     },
     "p0Blockers": 0,
-    "p1Requirements": 2,
-    "p2Hardening": 1
+    "p1Requirements": 0,
+    "p2Hardening": 3
   },
   "items": [
     {
       "id": "BKP-001",
       "area": "Backup/recovery",
       "title": "Database backup strategy is documented",
-      "status": "PARTIAL",
-      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
-        "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
-        "apps/api/src/config/runtime/backupPolicies.ts"
+        "docs/DATABASE_BACKUP_RPO_RTO_POLICY.md",
+        "docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md",
+        "proof/p2-4b-database-backup-readiness.json"
       ],
-      "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
+      "recommendation": "Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence."
     },
     {
       "id": "BKP-002",
       "area": "Backup/recovery",
       "title": "File/document backup strategy is documented",
-      "status": "PARTIAL",
-      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
       "evidence": [
-        "apps/api/src/config/runtime/backupPolicies.ts"
+        "docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md",
+        "docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md",
+        "proof/p2-4b-document-backup-readiness.json"
       ],
-      "recommendation": "Add explicit document storage backup policy and tested restore path."
+      "recommendation": "Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills."
     },
     {
       "id": "BKP-003",
@@ -61,32 +64,34 @@
   ],
   "buckets": {
     "p0": [],
-    "p1": [
+    "p1": [],
+    "p2": [
       {
         "id": "BKP-001",
         "area": "Backup/recovery",
         "title": "Database backup strategy is documented",
-        "status": "PARTIAL",
-        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
         "evidence": [
-          "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
-          "apps/api/src/config/runtime/backupPolicies.ts"
+          "docs/DATABASE_BACKUP_RPO_RTO_POLICY.md",
+          "docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md",
+          "proof/p2-4b-database-backup-readiness.json"
         ],
-        "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
+        "recommendation": "Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence."
       },
       {
         "id": "BKP-002",
         "area": "Backup/recovery",
         "title": "File/document backup strategy is documented",
-        "status": "PARTIAL",
-        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
         "evidence": [
-          "apps/api/src/config/runtime/backupPolicies.ts"
+          "docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md",
+          "docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md",
+          "proof/p2-4b-document-backup-readiness.json"
         ],
-        "recommendation": "Add explicit document storage backup policy and tested restore path."
-      }
-    ],
-    "p2": [
+        "recommendation": "Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills."
+      },
       {
         "id": "BKP-003",
         "area": "Backup/recovery",

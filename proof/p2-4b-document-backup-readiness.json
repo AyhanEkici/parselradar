@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-05-22T20:46:15.939Z",
+  "overallStatus": "PASS",
+  "step": "verify:document-backup-readiness",
+  "staticOnly": true,
+  "configMutation": false,
+  "checks": [
+    {
+      "name": "Document backup runbook exists",
+      "pass": true,
+      "detail": "docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md"
+    },
+    {
+      "name": "Evidence retention/deletion policy exists",
+      "pass": true,
+      "detail": "docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md"
+    },
+    {
+      "name": "Runbook contains required backup/restore/sensitive-data controls",
+      "pass": true,
+      "detail": "All required controls documented."
+    },
+    {
+      "name": "Policy contains retention/deletion and sensitive evidence controls",
+      "pass": true,
+      "detail": "Policy sections complete."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-05-22T20:46:13.162Z",
+  "overallStatus": "PASS",
+  "step": "verify:database-backup-readiness",
+  "staticOnly": true,
+  "configMutation": false,
+  "checks": [
+    {
+      "name": "Policy file exists",
+      "pass": true,
+      "detail": "docs/DATABASE_BACKUP_RPO_RTO_POLICY.md"
+    },
+    {
+      "name": "Runbook file exists",
+      "pass": true,
+      "detail": "docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md"
+    },
+    {
+      "name": "Policy contains required RPO/RTO ownership fields",
+      "pass": true,
+      "detail": "All required policy sections present."
+    },
+    {
+      "name": "Runbook contains restore procedure/validation/rollback/drill",
+      "pass": true,
+      "detail": "Runbook structure complete."
+    }
+  ]
+}

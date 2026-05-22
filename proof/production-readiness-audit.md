@@ -1,11 +1,11 @@
 # Production Readiness Audit
 
-- generatedAt: 2026-05-22T02:13:30.671Z
-- readinessScore: 87
+- generatedAt: 2026-05-22T20:46:45.202Z
+- readinessScore: 91
 - launchRecommendation: INTERNAL_ALPHA_READY
 - p0Blockers: 0
-- p1Requirements: 10
-- p2Hardening: 19
+- p1Requirements: 8
+- p2Hardening: 21
 
 ## Items
 - [P1_PRE_LAUNCH_REQUIRED] (READY) Environment validation - Required backend env variables validated at startup
@@ -83,12 +83,12 @@
 - [P2_HARDENING_REQUIRED] (READY) Observability - Deployment-truth verification script exists
   evidence: apps/api/scripts/verifyDeploymentTruth.ts
   recommendation: Keep deployment-truth checks in release readiness pipelines.
-- [P1_PRE_LAUNCH_REQUIRED] (PARTIAL) Backup/recovery - Database backup strategy is documented
-  evidence: docs/PRODUCTION_DEPLOY_CHECKLIST.md | apps/api/src/config/runtime/backupPolicies.ts
-  recommendation: Define concrete RPO/RTO, backup owner, and scheduled verification records.
-- [P1_PRE_LAUNCH_REQUIRED] (PARTIAL) Backup/recovery - File/document backup strategy is documented
-  evidence: apps/api/src/config/runtime/backupPolicies.ts
-  recommendation: Add explicit document storage backup policy and tested restore path.
+- [P2_HARDENING_REQUIRED] (READY) Backup/recovery - Database backup strategy is documented
+  evidence: docs/DATABASE_BACKUP_RPO_RTO_POLICY.md | docs/DATABASE_BACKUP_RESTORE_RUNBOOK.md | proof/p2-4b-database-backup-readiness.json
+  recommendation: Maintain documented RPO/RTO/ownership and execute recurring restore drills with recorded evidence.
+- [P2_HARDENING_REQUIRED] (READY) Backup/recovery - File/document backup strategy is documented
+  evidence: docs/DOCUMENT_FILE_BACKUP_RESTORE_RUNBOOK.md | docs/EVIDENCE_FILE_RETENTION_AND_DELETION_POLICY.md | proof/p2-4b-document-backup-readiness.json
+  recommendation: Keep restore path + retention/deletion policy enforced and validate integrity in recurring drills.
 - [P2_HARDENING_REQUIRED] (PARTIAL) Backup/recovery - Restore and rollback procedures are documented
   evidence: docs/PRODUCTION_DEPLOY_CHECKLIST.md
   recommendation: Run and record periodic restore drills with measurable success criteria.
@@ -96,9 +96,9 @@
   evidence: docs/U1_PILOT_RUNBOOK.md
   recommendation: Maintain on-call owner and escalation mapping per release.
 - [P1_PRE_LAUNCH_REQUIRED] (PARTIAL) Operational readiness - Production email provider readiness is explicit
-  evidence: apps/api/src/services/auth/passwordResetEmailService.ts | apps/api/src/routes/adminRoutes.ts
-  recommendation: Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory.
-- [P2_HARDENING_REQUIRED] (MISSING) Operational readiness - Incident response documentation exists
+  evidence: docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md | docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md | proof/p2-4b-email-provider-readiness.json | apps/api/src/services/auth/passwordResetEmailService.ts
+  recommendation: Provider docs/verifier are in place; launch remains gated until real SMTP/provider + SPF/DKIM/DMARC setup is completed.
+- [P2_HARDENING_REQUIRED] (PARTIAL) Operational readiness - Incident response documentation exists
   evidence: docs/
   recommendation: Create incident response playbook with severity matrix and communication protocol.
 - [P2_HARDENING_REQUIRED] (PARTIAL) Operational readiness - Support/debug access boundaries documented

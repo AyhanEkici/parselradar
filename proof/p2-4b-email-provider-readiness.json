@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-05-22T20:46:32.001Z",
+  "overallStatus": "CONFIG_REQUIRED",
+  "step": "verify:email-provider-readiness",
+  "staticOnly": true,
+  "configMutation": false,
+  "checks": [
+    {
+      "name": "SMTP launch gate doc exists",
+      "pass": true,
+      "detail": "docs/SMTP_EMAIL_PROVIDER_LAUNCH_GATE.md"
+    },
+    {
+      "name": "Email deliverability policy doc exists",
+      "pass": true,
+      "detail": "docs/EMAIL_DELIVERABILITY_AND_OPERATIONAL_POLICY.md"
+    },
+    {
+      "name": "Required SMTP env variable names documented",
+      "pass": true,
+      "detail": "All required env names present."
+    },
+    {
+      "name": "Launch gate includes provider placeholder and deliverability checklist",
+      "pass": true,
+      "detail": "Launch gate checklist complete."
+    },
+    {
+      "name": "No real secrets documented in new email docs",
+      "pass": true,
+      "detail": "No secret-like literals detected."
+    },
+    {
+      "name": "Runtime SMTP env currently configured for launch",
+      "pass": false,
+      "detail": "CONFIG_REQUIRED: SMTP runtime variables are not fully present in current environment."
+    }
+  ]
+}
