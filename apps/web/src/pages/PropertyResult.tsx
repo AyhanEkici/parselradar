@@ -76,6 +76,41 @@ type DocumentMetadata = {
   csvDetectedFields?: string[];
 };
 
+function normalizeDocumentsResponse(payload: unknown): DocumentMetadata[] {
+  if (Array.isArray(payload)) {
+    return payload as DocumentMetadata[];
+  }
+
+  if (payload && typeof payload === 'object') {
+    const obj = payload as {
+      documents?: unknown;
+      items?: unknown;
+      data?: unknown;
+    };
+
+    if (Array.isArray(obj.documents)) {
+      return obj.documents as DocumentMetadata[];
+    }
+
+    if (Array.isArray(obj.items)) {
+      return obj.items as DocumentMetadata[];
+    }
+
+    if (Array.isArray(obj.data)) {
+      return obj.data as DocumentMetadata[];
+    }
+
+    if (obj.data && typeof obj.data === 'object') {
+      const nested = obj.data as { documents?: unknown };
+      if (Array.isArray(nested.documents)) {
+        return nested.documents as DocumentMetadata[];
+      }
+    }
+  }
+
+  return [];
+}
+
 type PropertyReadinessData = {
   listingUrl?: string;
   askingPriceTRY?: number;
@@ -242,19 +277,9 @@ export default function PropertyResult() {
       try {
         const docsResponse = await apiFetch(`properties/${id}/documents`);
         if (cancelled) return;
-        const resolvedDocuments = Array.isArray(docsResponse)
-          ? (docsResponse as DocumentMetadata[])
-          : Array.isArray((docsResponse as { documents?: unknown[] } | null)?.documents)
-          ? (((docsResponse as { documents: unknown[] }).documents || []) as DocumentMetadata[])
-          : null;
-
-        if (resolvedDocuments) {
-          setDocuments(resolvedDocuments);
-          setDocumentMetadataAvailable(true);
-        } else {
-          setDocuments([]);
-          setDocumentMetadataAvailable(false);
-        }
+        const resolvedDocuments = normalizeDocumentsResponse(docsResponse);
+        setDocuments(resolvedDocuments);
+        setDocumentMetadataAvailable(true);
       } catch {
         if (!cancelled) {
           setDocuments([]);
@@ -473,14 +498,14 @@ export default function PropertyResult() {
     const developerRow = readinessByAction.developerFit;
     const docs = documents || [];
 
-    const hasEvidence = docs.length > 0;
+    const hasUploadedEvidence = docs.length > 0;
     const hasSupportingOnly = docs.some((doc) => doc.supportingEvidenceOnly);
     const hasManualReviewRequired = docs.some(
       (doc) => doc.reviewStatus === 'MANUAL_REVIEW_REQUIRED' || doc.metadataStatus === 'MANUAL_REVIEW_REQUIRED'
     );
     const hasRejected = docs.some((doc) => doc.reviewStatus === 'REJECTED' || doc.metadataStatus === 'REJECTED');
     const allPreviewOnlyEvidence =
-      hasEvidence &&
+      hasUploadedEvidence &&
       docs.every((doc) => {
         const review = String(doc.reviewStatus || '').toUpperCase();
         const metadata = String(doc.metadataStatus || '').toUpperCase();
@@ -509,7 +534,7 @@ export default function PropertyResult() {
       developerStatus !== 'READY_FOR_DEVELOPER_FIT';
 
     const missingEvidence: string[] = [];
-    if (!hasEvidence) {
+    if (!hasUploadedEvidence) {
       missingEvidence.push('En az bir belge/evidence yüklenmeli.');
     }
     if (quickStatus !== 'READY_FOR_QUICK_CHECK') {
@@ -529,6 +554,9 @@ export default function PropertyResult() {
     if (!documentMetadataAvailable) {
       reviewWarnings.push('Document readiness unavailable. Upload/review evidence recommended.');
     }
+    if (hasUploadedEvidence && (allPreviewOnlyEvidence || hasManualReviewRequired || hasSupportingOnly)) {
+      reviewWarnings.push('Belge yüklendi, ancak analizde doğrulanmış kanıt olarak kullanılmadan önce inceleme gerekebilir.');
+    }
     if (allPreviewOnlyEvidence) {
       reviewWarnings.push('Evidence metadata PREVIEW_ONLY seviyesinde. Rapor öncesi review gerekli.');
     }
@@ -547,9 +575,9 @@ export default function PropertyResult() {
       overallStatus = 'MANUAL_REVIEW_REQUIRED';
     } else if (hasSupportingOnly && !hasAnyAnalysisReady) {
       overallStatus = 'SUPPORTING_EVIDENCE_ONLY';
-    } else if (hasEvidence && allPreviewOnlyEvidence) {
+    } else if (hasUploadedEvidence && allPreviewOnlyEvidence) {
       overallStatus = 'NEEDS_REVIEWED_EVIDENCE';
-    } else if (hasAnyAnalysisReady && !allAnalysesBlocked && hasEvidence && !allPreviewOnlyEvidence) {
+    } else if (hasAnyAnalysisReady && !allAnalysesBlocked && hasUploadedEvidence && !allPreviewOnlyEvidence) {
       overallStatus = 'READY_FOR_REPORT';
     } else if (parcelStatus === 'NEEDS_PARCEL_IDENTITY') {
       overallStatus = 'NEEDS_PARCEL_IDENTITY';
