@@ -1,0 +1,34 @@
+{
+  "phase": "P2.2D-MANUAL-UCBP-EXPLORATION-WORKFLOW",
+  "documentationOnly": true,
+  "requiredDocs": {
+    "docs/ADMIN_UCBP_CITY_EXPLORATION_WORKFLOW.md": true,
+    "docs/PROVINCE_OPPORTUNITY_FILTERING_MODEL.md": true,
+    "docs/UCBP_MANUAL_EVIDENCE_CAPTURE_STANDARD.md": true
+  },
+  "coverage": {
+    "manualUcbpExplorationWorkflowDocumented": true,
+    "provinceCityFilteringModelDocumented": true,
+    "recommendedLayerCategoriesDocumented": true,
+    "sourceClassificationDocumented": true,
+    "forbiddenActionsDocumented": true,
+    "aiFutureImpactDocumented": true
+  },
+  "securityChecks": {
+    "edevletCredentialAutomationAdded": false,
+    "tcKimlikCollectionAdded": false,
+    "passwordStorageAdded": false,
+    "sessionCookieTokenCaptureAdded": false,
+    "scrapingAdded": false,
+    "connectorActivated": false,
+    "envChanged": false,
+    "runtimeCodeChanged": false,
+    "aiImplementationCodeAdded": false
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "generatedAt": "2026-05-22T03:00:00.000Z"
+}
