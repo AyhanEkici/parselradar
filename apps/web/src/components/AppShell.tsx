@@ -33,6 +33,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {showAuthenticatedNav ? (
               <>
                 <nav className="flex flex-wrap gap-2 text-xs">
+                  <Link to="/dashboard" className="hover:underline">Dashboard</Link>
+                  <Link to="/properties/new" className="hover:underline">Yeni Mülk</Link>
+                  <Link to="/credits" className="hover:underline">Kredi</Link>
                   {isAdmin ? <Link to="/admin/audit-timeline" className="hover:underline">Audit</Link> : null}
                   {isAdmin ? <Link to="/admin/users" className="hover:underline">Users</Link> : null}
                   {isAdmin ? <Link to="/admin/analyses" className="hover:underline">Analyses</Link> : null}

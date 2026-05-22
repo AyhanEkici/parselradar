@@ -1028,6 +1028,30 @@ export default function PropertyDetail() {
         <div className="sticky top-0 z-30 bg-white border-b shadow-sm">
           <div className="max-w-7xl mx-auto px-6 py-3">
             <div className="flex flex-wrap items-center gap-2">
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 rounded text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/reports"
+                className="px-4 py-2 rounded text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300"
+              >
+                Raporlarım
+              </Link>
+              <Link
+                to={`/properties/${resolvedId}/documents`}
+                className="px-4 py-2 rounded text-sm font-semibold bg-blue-100 text-blue-800 hover:bg-blue-200"
+              >
+                Belgeler
+              </Link>
+              <Link
+                to={`/properties/${resolvedId}/result`}
+                className="px-4 py-2 rounded text-sm font-semibold bg-indigo-100 text-indigo-800 hover:bg-indigo-200"
+              >
+                Sonuç
+              </Link>
               <button
                 onClick={saveAnalysis}
                 disabled={investorActionLoading || !latestAnalysis}

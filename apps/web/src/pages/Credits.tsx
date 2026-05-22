@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { useToast } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export default function Credits() {
   const [credits, setCredits] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
@@ -85,6 +87,9 @@ export default function Credits() {
       </div>
       <div className="mt-4">
         <button className="bg-gray-200 px-4 py-2 rounded" disabled={loading} onClick={handleDevAdd}>Dev Only: 10 Kredi Ekle</button>
+      </div>
+      <div className="mt-4">
+        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
       </div>
     </div>
   );

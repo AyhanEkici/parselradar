@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { useToast } from '../components/ui';
 import GovernanceBadge from '../components/governance/GovernanceBadge';
@@ -46,6 +46,7 @@ const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri
 
 export default function PropertyResult() {
   const { id } = useParams();
+  const navigate = useNavigate();
   type AnalysisActionKey = 'quickScore' | 'parselInsight' | 'developerFit';
   type AnalysisActionStatus = 'idle' | 'loading' | 'success' | 'error' | 'rate_limited' | 'needs_more_data';
   interface AnalysisResult {
@@ -312,6 +313,10 @@ export default function PropertyResult() {
       {pdfId && (
         <a className="bg-blue-600 text-white px-4 py-2 rounded" href={`/reports/${pdfId}/download`}>PDF Raporu İndir</a>
       )}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate(`/properties/${id}`)}>Mülk Detayına Dön</button>
+        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
+      </div>
       <div className="mt-6 text-xs text-gray-600 border-t pt-4">{DISCLAIMER}</div>
     </div>
   );

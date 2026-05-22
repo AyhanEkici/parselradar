@@ -338,6 +338,12 @@ export default function PropertyDocuments() {
         </section>
 
         <div className="mt-2 flex flex-wrap gap-2">
+          <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}`)}>
+            Mülk Detayı
+          </AdminButton>
+          <AdminButton variant="secondary" onClick={() => navigate('/dashboard')}>
+            Dashboard
+          </AdminButton>
           <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}/consent`)}>
             Devam: Açık Rıza
           </AdminButton>
