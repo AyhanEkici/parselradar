@@ -1,0 +1,19 @@
+{
+  "generatedAt": "2026-05-22T00:01:47.256Z",
+  "phase": "P2.1C-CLOSEOUT",
+  "results": {
+    "intelligenceRoutes": "NO_MATCH",
+    "AdminScoringDiagnostics": "NO_MATCH",
+    "MEGSIS": "NO_MATCH",
+    "CONNECTOR_TUCBS_WMS_ENDPOINT": "MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE",
+    "CONNECTOR_TUCBS_WMTS_ENDPOINT": "MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE",
+    "CONNECTOR_TUCBS_WFS_ENDPOINT": "MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE"
+  },
+  "interpretation": {
+    "intelligenceRoutes": "absent",
+    "AdminScoringDiagnostics": "absent",
+    "MEGSIS": "not started",
+    "CONNECTOR_TUCBS_*": "allowed as config key names and action guidance only"
+  },
+  "driftConclusion": "No new forbidden drift detected."
+}

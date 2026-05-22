@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-05-22T00:01:47.256Z",
+  "phase": "P2.1C-CLOSEOUT",
+  "classification": {
+    "REQUIRED_P2_1C_FIX": [],
+    "REQUIRED_P2_1C_PROOF": [
+      "proof/p2-1c-closeout-workspace-state.json",
+      "proof/p2-1c-closeout-workspace-state.md",
+      "proof/p2-1c-closeout-file-classification.json",
+      "proof/p2-1c-closeout-file-classification.md",
+      "proof/p2-1c-closeout-no-drift-check.json",
+      "proof/p2-1c-closeout-no-drift-check.md",
+      "proof/p2-1c-closeout-final-command-results.json",
+      "proof/p2-1c-closeout-final-command-results.md",
+      "proof/p2-1c-final-command-results.json",
+      "proof/p2-1c-final-command-results.md"
+    ],
+    "REQUIRED_OGC_PROOF": [
+      "proof/connector-diagnostics-audit.json",
+      "proof/connector-diagnostics-contract.json",
+      "proof/deployment-truth-proof-bundle.json",
+      "proof/deployment-truth-proof-bundle.md",
+      "proof/live-browser-mvp-proof-bundle.json",
+      "proof/live-browser-mvp-runtime.json",
+      "proof/ogc-diagnostics-ui-contract.json",
+      "proof/ogc-live-after-deploy-payload.json",
+      "proof/ogc-live-after-deploy-payload.md",
+      "proof/ogc-live-browser-display-verification.json",
+      "proof/ogc-live-browser-display-verification.md",
+      "proof/ogc-deployed-browser-closeout-final-results.json",
+      "proof/ogc-deployed-browser-closeout-final-results.md"
+    ],
+    "BASELINE_PROOF_OUTPUT": [
+      "proof/auth-shell-consistency.json",
+      "proof/auth-shell-consistency.md",
+      "proof/browser-history-consistency.json",
+      "proof/browser-history-consistency.md",
+      "proof/canonical-auth-validation.json",
+      "proof/mvp-api-contract-audit.json",
+      "proof/mvp-api-contract-audit.md",
+      "proof/mvp-functional-completeness-audit.json",
+      "proof/mvp-functional-completeness-audit.md",
+      "proof/mvp-route-action-map.json",
+      "proof/mvp-route-action-map.md",
+      "proof/navigation-persistence.json",
+      "proof/navigation-persistence.md",
+      "proof/platform-integrity-audit.json",
+      "proof/platform-proof-bundle.json",
+      "proof/platform-proof-bundle.md",
+      "proof/platform-route-checks.json",
+      "proof/rbac-proof-bundle.json",
+      "proof/rbac-proof-bundle.md",
+      "proof/route-wiring-audit.json"
+    ],
+    "PREVIOUS_SESSION_PROOF_OUTPUT": [
+      "proof/p2-1c-file-classification.json",
+      "proof/p2-1c-file-classification.md",
+      "proof/p2-1a-command-results.json",
+      "proof/p2-1a-command-results.md",
+      "proof/p2-1a-drift-audit.json",
+      "proof/p2-1a-drift-audit.md",
+      "proof/p2-1c-final-command-results.json",
+      "proof/p2-1c-final-command-results.md",
+      "proof/p2-1c-no-drift-check.json",
+      "proof/p2-1c-no-drift-check.md",
+      "proof/p2-1c-platform-integrity-failure-analysis.json",
+      "proof/p2-1c-platform-integrity-failure-analysis.md",
+      "proof/p2-1c-workspace-state.json",
+      "proof/p2-1c-workspace-state.md"
+    ],
+    "HELPER_SCRIPT_FROM_PRIOR_PHASE": [
+      "apps/api/scripts/generateP21aDriftAudit.ts",
+      "apps/api/scripts/runP21aBaselineProof.ts"
+    ],
+    "ACCIDENTAL_NOISE": [
+      "apps/api/dist/generated/buildInfo.js",
+      "apps/api/dist/testing/verifyConnectors.js",
+      "apps/api/scripts/verifyAdminUxAndEmail.ts",
+      "apps/api/scripts/verifyAuthUiConsistency.ts",
+      "apps/api/scripts/verifyBrowserHistoryConsistency.ts",
+      "apps/api/scripts/verifyNavigationPersistence.ts",
+      "apps/api/scripts/verifyPostLoginApiStability.ts",
+      "apps/api/src/generated/buildInfo.ts",
+      "apps/api/src/testing/verifyConnectors.ts"
+    ],
+    "UNKNOWN_REQUIRES_REVIEW": []
+  },
+  "commitPolicy": {
+    "allowCommitCategories": [
+      "REQUIRED_P2_1C_PROOF"
+    ],
+    "disallowCommitCategories": [
+      "REQUIRED_OGC_PROOF",
+      "BASELINE_PROOF_OUTPUT",
+      "PREVIOUS_SESSION_PROOF_OUTPUT",
+      "HELPER_SCRIPT_FROM_PRIOR_PHASE",
+      "ACCIDENTAL_NOISE",
+      "UNKNOWN_REQUIRES_REVIEW"
+    ]
+  },
+  "notes": [
+    "Only the P2.1C closeout proof files should be staged for commit.",
+    "The rest of the dirty tree remains intentionally uncommitted and classified."
+  ]
+}
