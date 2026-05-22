@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { logout } from '../lib/auth';
 import { apiFetch } from '../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
-import UserScopedNotice from '../components/UserScopedNotice';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Dashboard() {
@@ -50,7 +49,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Hoşgeldiniz, {user?.name}</h2>
-      <UserScopedNotice />
+      <div className="mb-2 text-sm text-slate-600">Showing only your own submitted properties and reports.</div>
       <div className="mb-2">Kredi bakiyesi: <b>{loadingCredits ? '...' : credits}</b></div>
       {creditsError ? <div className="text-red-600 text-sm mb-2">{creditsError}</div> : null}
       <div className="space-x-2 mt-4">

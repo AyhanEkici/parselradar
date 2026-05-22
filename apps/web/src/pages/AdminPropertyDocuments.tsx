@@ -237,9 +237,17 @@ export default function AdminPropertyDocuments() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
-  const handleUpload = async (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!propertyId || !file) return;
+    const formEl = e.currentTarget;
+    const fileExtension = getFileExtension(file.name);
+    const fileMime = String(file.type || '').toLowerCase();
+    const isCsvUpload = fileExtension === 'csv' || fileMime.includes('csv');
+    if (isCsvUpload) {
+      toast.error('CSV preview is available, but CSV upload is not enabled yet. Export or screenshot evidence can still be uploaded.');
+      return;
+    }
 
     const parsedPreview = csvPreview.parseError
       ? null
@@ -286,6 +294,7 @@ export default function AdminPropertyDocuments() {
       toast.success('Document uploaded');
       setFile(null);
       setCsvPreview({ headers: [], detectedFields: [], parseError: null });
+      if (formEl && typeof formEl.reset === 'function') formEl.reset();
       await fetchDocuments();
     } catch (err) {
       const e = err as { message?: string };
@@ -567,10 +576,16 @@ export default function AdminPropertyDocuments() {
               />
             </label>
 
-            <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !file}>
+            <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !file || isCsvFile}>
               {uploading ? 'Uploading...' : 'Upload'}
             </AdminButton>
           </form>
+
+          {isCsvFile ? (
+            <div className="mt-3 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700">
+              CSV preview is available, but CSV upload is not enabled yet. Export or screenshot evidence can still be uploaded.
+            </div>
+          ) : null}
 
           <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
             Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.

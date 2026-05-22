@@ -6,6 +6,58 @@ interface PropertyForm {
   [key: string]: string | number | undefined;
 }
 
+type Option = { value: string; label: string };
+
+const assetTypeOptions: Option[] = [
+  { value: 'ARSA', label: 'Arsa' },
+  { value: 'TARLA', label: 'Tarla' },
+  { value: 'BAHCE', label: 'Bahce' },
+  { value: 'KONUT', label: 'Konut' },
+  { value: 'TICARI', label: 'Ticari' },
+  { value: 'PROJE', label: 'Proje' },
+  { value: 'DIGER', label: 'Diger' },
+];
+
+const inputMethodOptions: Option[] = [
+  { value: 'ILAN_URL', label: 'Ilan URL' },
+  { value: 'SCREENSHOT_UPLOAD', label: 'Screenshot upload' },
+  { value: 'ADA_PARSEL', label: 'Ada/Parsel' },
+  { value: 'MANUAL_ENTRY', label: 'Manual entry' },
+];
+
+const tapuTypeOptions: Option[] = [
+  { value: 'MUSTAKIL', label: 'Mustakil' },
+  { value: 'HISSELI', label: 'Hisseli' },
+  { value: 'KAT_IRTIFAKI', label: 'Kat irtifaki' },
+  { value: 'KAT_MULKIYETI', label: 'Kat mulkiyeti' },
+  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+];
+
+const zoningStatusOptions: Option[] = [
+  { value: 'IMARLI', label: 'Imarli' },
+  { value: 'IMARSIZ', label: 'Imarsiz' },
+  { value: 'KOY_YERLESIK_ALANI', label: 'Koy yerlesik alani' },
+  { value: 'TARIMSAL', label: 'Tarimsal' },
+  { value: 'BAG_BAHCE', label: 'Bag/Bahce' },
+  { value: 'TICARI', label: 'Ticari' },
+  { value: 'KONUT', label: 'Konut' },
+  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+];
+
+const roadAccessOptions: Option[] = [
+  { value: 'KADASTRO_YOLU', label: 'Kadastro yolu' },
+  { value: 'FIILI_YOL', label: 'Fiili yol' },
+  { value: 'YOL_YOK', label: 'Yol yok' },
+  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+];
+
+const utilityStatusOptions: Option[] = [
+  { value: 'VAR', label: 'Var' },
+  { value: 'YAKIN', label: 'Yakin' },
+  { value: 'YOK', label: 'Yok' },
+  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+];
+
 export default function NewProperty() {
   const DRAFT_KEY = 'parselradar:new-property:draft';
   const TOTAL_STEPS = 3;
@@ -118,11 +170,21 @@ export default function NewProperty() {
         {step === 1 && (
           <>
             <label className="block text-sm font-medium">Varlık Türü *</label>
-            <input className={inputClass('assetType')} name="assetType" placeholder="Varlık Türü" required value={String(form.assetType || '')} onChange={handleChange} />
+            <select className={inputClass('assetType')} name="assetType" required value={String(form.assetType || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {assetTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.assetType && <div className="text-sm text-red-600">{fieldErrors.assetType}</div>}
 
             <label className="block text-sm font-medium">Giriş Yöntemi *</label>
-            <input className={inputClass('inputMethod')} name="inputMethod" placeholder="Giriş Yöntemi" required value={String(form.inputMethod || '')} onChange={handleChange} />
+            <select className={inputClass('inputMethod')} name="inputMethod" required value={String(form.inputMethod || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {inputMethodOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.inputMethod && <div className="text-sm text-red-600">{fieldErrors.inputMethod}</div>}
 
             <input className="w-full border p-2" name="ilanUrl" placeholder="İlan URL" value={String(form.ilanUrl || '')} onChange={handleChange} />
@@ -159,11 +221,21 @@ export default function NewProperty() {
             <input className="w-full border p-2" name="nitelik" placeholder="Nitelik" value={String(form.nitelik || '')} onChange={handleChange} />
 
             <label className="block text-sm font-medium">Tapu Türü *</label>
-            <input className={inputClass('tapuType')} name="tapuType" placeholder="Tapu Türü" required value={String(form.tapuType || '')} onChange={handleChange} />
+            <select className={inputClass('tapuType')} name="tapuType" required value={String(form.tapuType || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {tapuTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.tapuType && <div className="text-sm text-red-600">{fieldErrors.tapuType}</div>}
 
             <label className="block text-sm font-medium">İmar Durumu *</label>
-            <input className={inputClass('zoningStatus')} name="zoningStatus" placeholder="İmar Durumu" required value={String(form.zoningStatus || '')} onChange={handleChange} />
+            <select className={inputClass('zoningStatus')} name="zoningStatus" required value={String(form.zoningStatus || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {zoningStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.zoningStatus && <div className="text-sm text-red-600">{fieldErrors.zoningStatus}</div>}
           </>
         )}
@@ -180,15 +252,30 @@ export default function NewProperty() {
             <input className="w-full border p-2" name="planNotlariText" placeholder="Plan Notları" value={String(form.planNotlariText || '')} onChange={handleChange} />
 
             <label className="block text-sm font-medium">Yol Durumu *</label>
-            <input className={inputClass('roadAccess')} name="roadAccess" placeholder="Yol Durumu" required value={String(form.roadAccess || '')} onChange={handleChange} />
+            <select className={inputClass('roadAccess')} name="roadAccess" required value={String(form.roadAccess || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {roadAccessOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.roadAccess && <div className="text-sm text-red-600">{fieldErrors.roadAccess}</div>}
 
             <label className="block text-sm font-medium">Elektrik *</label>
-            <input className={inputClass('electricity')} name="electricity" placeholder="Elektrik" required value={String(form.electricity || '')} onChange={handleChange} />
+            <select className={inputClass('electricity')} name="electricity" required value={String(form.electricity || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {utilityStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.electricity && <div className="text-sm text-red-600">{fieldErrors.electricity}</div>}
 
             <label className="block text-sm font-medium">Su *</label>
-            <input className={inputClass('water')} name="water" placeholder="Su" required value={String(form.water || '')} onChange={handleChange} />
+            <select className={inputClass('water')} name="water" required value={String(form.water || '')} onChange={handleChange}>
+              <option value="">Select...</option>
+              {utilityStatusOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
             {fieldErrors.water && <div className="text-sm text-red-600">{fieldErrors.water}</div>}
 
             <input className="w-full border p-2" name="villageDistanceText" placeholder="Köy Mesafesi" value={String(form.villageDistanceText || '')} onChange={handleChange} />

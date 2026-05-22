@@ -242,8 +242,14 @@ export default function PropertyResult() {
       try {
         const docsResponse = await apiFetch(`properties/${id}/documents`);
         if (cancelled) return;
-        if (Array.isArray(docsResponse)) {
-          setDocuments(docsResponse as DocumentMetadata[]);
+        const resolvedDocuments = Array.isArray(docsResponse)
+          ? (docsResponse as DocumentMetadata[])
+          : Array.isArray((docsResponse as { documents?: unknown[] } | null)?.documents)
+          ? (((docsResponse as { documents: unknown[] }).documents || []) as DocumentMetadata[])
+          : null;
+
+        if (resolvedDocuments) {
+          setDocuments(resolvedDocuments);
           setDocumentMetadataAvailable(true);
         } else {
           setDocuments([]);
