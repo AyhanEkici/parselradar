@@ -1,0 +1,355 @@
+{
+  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "phase": "P2.4A",
+  "scope": "production-security-readiness",
+  "readinessScore": 94,
+  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "summary": {
+    "countsByStatus": {
+      "READY": 12,
+      "PARTIAL": 2,
+      "MISSING": 0,
+      "NOT_APPLICABLE": 0,
+      "BLOCKER": 0
+    },
+    "countsBySeverity": {
+      "P0_PRODUCTION_BLOCKER": 0,
+      "P1_PRE_LAUNCH_REQUIRED": 5,
+      "P2_HARDENING_REQUIRED": 8,
+      "P3_OPERATIONAL_IMPROVEMENT": 0,
+      "P4_FUTURE": 1
+    },
+    "p0Blockers": 0,
+    "p1Requirements": 5,
+    "p2Hardening": 8
+  },
+  "items": [
+    {
+      "id": "SEC-001",
+      "area": "Auth/security readiness",
+      "title": "JWT secret requirement enforced",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/config/env.ts"
+      ],
+      "recommendation": "Continue mandatory JWT secret enforcement and rotate secrets per environment."
+    },
+    {
+      "id": "SEC-002",
+      "area": "Auth/security readiness",
+      "title": "Cookie/session security settings are explicitly production-hardened",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/controllers/authController.ts",
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+      ],
+      "recommendation": "Explicitly assert secure + strict cookie policy in auth cookie set paths for production."
+    },
+    {
+      "id": "SEC-003",
+      "area": "Auth/security readiness",
+      "title": "Protected route and admin guard coverage exists",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/auth.ts",
+        "apps/api/src/middleware/admin.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Maintain route guard coverage for all sensitive endpoints and admin UI routes."
+    },
+    {
+      "id": "SEC-004",
+      "area": "Auth/security readiness",
+      "title": "Rate limit policies are present on sensitive flows",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/rateLimiter.ts",
+        "apps/api/src/routes/stripeRoutes.ts"
+      ],
+      "recommendation": "Expand coverage and ensure all auth/admin write endpoints are protected by throttling."
+    },
+    {
+      "id": "SEC-005",
+      "area": "Auth/security readiness",
+      "title": "Cross-user data isolation indicators present in test/runbook evidence",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/RUNTIME_SMOKE_TESTS.md"
+      ],
+      "recommendation": "Keep automated ownership assertions in smoke tests and add explicit regression gates in CI."
+    },
+    {
+      "id": "PAY-001",
+      "area": "Payment/Stripe readiness",
+      "title": "Checkout session route exists and is authenticated",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/stripeRoutes.ts",
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Keep authenticated checkout creation and package whitelisting."
+    },
+    {
+      "id": "PAY-002",
+      "area": "Payment/Stripe readiness",
+      "title": "Webhook endpoint and signature verification are implemented",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/index.ts",
+        "apps/api/src/routes/stripeRoutes.ts",
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Do not launch paid flow without verified webhook signatures."
+    },
+    {
+      "id": "PAY-003",
+      "area": "Payment/Stripe readiness",
+      "title": "Credits are granted only on completed payment and guarded for duplicates",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Retain idempotent fulfillment and completed-event-only crediting."
+    },
+    {
+      "id": "PAY-004",
+      "area": "Payment/Stripe readiness",
+      "title": "Admin Stripe session visibility exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/adminRoutes.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Ensure admin troubleshooting path remains available in production."
+    },
+    {
+      "id": "PAY-005",
+      "area": "Payment/Stripe readiness",
+      "title": "Test/live mode clarity documented",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/STRIPE_PRODUCTION_READINESS.md",
+        "docs/DEPLOYMENT_ENV_MATRIX.md"
+      ],
+      "recommendation": "Enforce key/source validation in CI to prevent test/live mixups."
+    },
+    {
+      "id": "CON-001",
+      "area": "Connector safety",
+      "title": "Connector stack defaults to NOT_CONFIGURED for missing endpoints",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/connectors/",
+        "apps/api/src/services/connectors/"
+      ],
+      "recommendation": "Retain fail-safe NOT_CONFIGURED behavior and avoid implicit activation."
+    },
+    {
+      "id": "CON-002",
+      "area": "Connector safety",
+      "title": "Connector activation endpoints remain admin-protected and explicit",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/connectorActivationRoutes.ts"
+      ],
+      "recommendation": "Keep explicit activation workflow and legal approval gates."
+    },
+    {
+      "id": "FUT-001",
+      "area": "AI/future safety",
+      "title": "AI chat is not introduced in current runtime",
+      "status": "READY",
+      "severity": "P4_FUTURE",
+      "evidence": [
+        "apps/api/src",
+        "apps/web/src"
+      ],
+      "recommendation": "Keep AI/chat features out of production scope unless explicitly planned and gated."
+    },
+    {
+      "id": "FUT-002",
+      "area": "AI/future safety",
+      "title": "No unsupported automated e-Devlet or scraper/bot tooling in runtime scope",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src",
+        "apps/web/src"
+      ],
+      "recommendation": "Maintain manual-only governance for unsupported external sources."
+    }
+  ],
+  "buckets": {
+    "p0": [],
+    "p1": [
+      {
+        "id": "SEC-001",
+        "area": "Auth/security readiness",
+        "title": "JWT secret requirement enforced",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/config/env.ts"
+        ],
+        "recommendation": "Continue mandatory JWT secret enforcement and rotate secrets per environment."
+      },
+      {
+        "id": "SEC-003",
+        "area": "Auth/security readiness",
+        "title": "Protected route and admin guard coverage exists",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/auth.ts",
+          "apps/api/src/middleware/admin.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Maintain route guard coverage for all sensitive endpoints and admin UI routes."
+      },
+      {
+        "id": "PAY-002",
+        "area": "Payment/Stripe readiness",
+        "title": "Webhook endpoint and signature verification are implemented",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/index.ts",
+          "apps/api/src/routes/stripeRoutes.ts",
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Do not launch paid flow without verified webhook signatures."
+      },
+      {
+        "id": "PAY-003",
+        "area": "Payment/Stripe readiness",
+        "title": "Credits are granted only on completed payment and guarded for duplicates",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Retain idempotent fulfillment and completed-event-only crediting."
+      },
+      {
+        "id": "CON-001",
+        "area": "Connector safety",
+        "title": "Connector stack defaults to NOT_CONFIGURED for missing endpoints",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/connectors/",
+          "apps/api/src/services/connectors/"
+        ],
+        "recommendation": "Retain fail-safe NOT_CONFIGURED behavior and avoid implicit activation."
+      }
+    ],
+    "p2": [
+      {
+        "id": "SEC-002",
+        "area": "Auth/security readiness",
+        "title": "Cookie/session security settings are explicitly production-hardened",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/controllers/authController.ts",
+          "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+        ],
+        "recommendation": "Explicitly assert secure + strict cookie policy in auth cookie set paths for production."
+      },
+      {
+        "id": "SEC-004",
+        "area": "Auth/security readiness",
+        "title": "Rate limit policies are present on sensitive flows",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/rateLimiter.ts",
+          "apps/api/src/routes/stripeRoutes.ts"
+        ],
+        "recommendation": "Expand coverage and ensure all auth/admin write endpoints are protected by throttling."
+      },
+      {
+        "id": "SEC-005",
+        "area": "Auth/security readiness",
+        "title": "Cross-user data isolation indicators present in test/runbook evidence",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/RUNTIME_SMOKE_TESTS.md"
+        ],
+        "recommendation": "Keep automated ownership assertions in smoke tests and add explicit regression gates in CI."
+      },
+      {
+        "id": "PAY-001",
+        "area": "Payment/Stripe readiness",
+        "title": "Checkout session route exists and is authenticated",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/stripeRoutes.ts",
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Keep authenticated checkout creation and package whitelisting."
+      },
+      {
+        "id": "PAY-004",
+        "area": "Payment/Stripe readiness",
+        "title": "Admin Stripe session visibility exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/adminRoutes.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Ensure admin troubleshooting path remains available in production."
+      },
+      {
+        "id": "PAY-005",
+        "area": "Payment/Stripe readiness",
+        "title": "Test/live mode clarity documented",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/STRIPE_PRODUCTION_READINESS.md",
+          "docs/DEPLOYMENT_ENV_MATRIX.md"
+        ],
+        "recommendation": "Enforce key/source validation in CI to prevent test/live mixups."
+      },
+      {
+        "id": "CON-002",
+        "area": "Connector safety",
+        "title": "Connector activation endpoints remain admin-protected and explicit",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/connectorActivationRoutes.ts"
+        ],
+        "recommendation": "Keep explicit activation workflow and legal approval gates."
+      },
+      {
+        "id": "FUT-002",
+        "area": "AI/future safety",
+        "title": "No unsupported automated e-Devlet or scraper/bot tooling in runtime scope",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src",
+          "apps/web/src"
+        ],
+        "recommendation": "Maintain manual-only governance for unsupported external sources."
+      }
+    ]
+  }
+}

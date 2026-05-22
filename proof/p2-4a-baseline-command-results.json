@@ -1,0 +1,32 @@
+{
+  "phase": "P2.4A",
+  "stage": "STEP_3_BASELINE_MATRIX",
+  "generatedAt": "2026-05-22T02:18:00.000Z",
+  "overallStatus": "PASS",
+  "notes": [
+    "An intermediate rerun showed transient network fetch failures; final completed run in this step passed all required checks.",
+    "verify:platform is WARN and accepted because fail=0."
+  ],
+  "commands": [
+    {"command":"npm run build --prefix apps/api","status":"PASS","evidence":"tsc build complete"},
+    {"command":"npm run build --prefix apps/web","status":"PASS","evidence":"vite build complete"},
+    {"command":"npm run verify:connector-diagnostics-contract","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:connector-diagnostics","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:platform-integrity","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run audit:mvp-completeness","status":"PASS","evidence":"completenessScore=100"},
+    {"command":"npm run verify:deployment-truth","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:live-browser-mvp","status":"PASS","evidence":"pass=5 fail=0"},
+    {"command":"npm run verify:rbac","status":"PASS","evidence":"pass=57 fail=0"},
+    {"command":"npm run verify:platform","status":"WARN","evidence":"warn=12 fail=0"},
+    {"command":"npm run verify:canonical-auth","status":"PASS","evidence":"allAuthMe200=true"},
+    {"command":"npm run verify:live-login-contract","status":"PASS","evidence":"loginStatus=200 meStatus=200"},
+    {"command":"npm run verify:session-persistence","status":"PASS","evidence":"pass=16 fail=0"},
+    {"command":"npm run verify:auth-ui-consistency","status":"PASS","evidence":"pass=11 fail=0"},
+    {"command":"npm run verify:post-login-api","status":"PASS","evidence":"pass=8 fail=0"},
+    {"command":"npm run verify:admin-ux-email","status":"PASS","evidence":"pass=15 fail=0"},
+    {"command":"npm run verify:route-wiring","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:auth-shell","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:navigation-persistence","status":"PASS","evidence":"overallStatus=PASS"},
+    {"command":"npm run verify:browser-history","status":"PASS","evidence":"overallStatus=PASS"}
+  ]
+}

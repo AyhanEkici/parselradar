@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "phase": "P2.4A",
+  "scope": "production-observability-readiness",
+  "readinessScore": 77,
+  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "summary": {
+    "countsByStatus": {
+      "READY": 5,
+      "PARTIAL": 2,
+      "MISSING": 1,
+      "NOT_APPLICABLE": 0,
+      "BLOCKER": 0
+    },
+    "countsBySeverity": {
+      "P0_PRODUCTION_BLOCKER": 0,
+      "P1_PRE_LAUNCH_REQUIRED": 2,
+      "P2_HARDENING_REQUIRED": 5,
+      "P3_OPERATIONAL_IMPROVEMENT": 1,
+      "P4_FUTURE": 0
+    },
+    "p0Blockers": 0,
+    "p1Requirements": 2,
+    "p2Hardening": 5
+  },
+  "items": [
+    {
+      "id": "OBS-001",
+      "area": "Observability",
+      "title": "Health and buildinfo endpoints exist",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/index.ts"
+      ],
+      "recommendation": "Keep health/build metadata endpoints wired for deployment diagnostics."
+    },
+    {
+      "id": "OBS-002",
+      "area": "Observability",
+      "title": "Admin runtime/deployment/observability pages and APIs exist",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/adminRoutes.ts",
+        "apps/api/src/routes/observabilityRoutes.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Retain admin observability access and ensure endpoint health checks in release gates."
+    },
+    {
+      "id": "OBS-003",
+      "area": "Observability",
+      "title": "Audit log infrastructure exists with metadata sanitization",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/models/AuditEvent.ts",
+        "apps/api/src/utils/auditLog.ts"
+      ],
+      "recommendation": "Preserve sanitization and ensure retention/archival policy for audit logs."
+    },
+    {
+      "id": "OBS-004",
+      "area": "Observability",
+      "title": "Deployment-truth verification script exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/scripts/verifyDeploymentTruth.ts"
+      ],
+      "recommendation": "Keep deployment-truth checks in release readiness pipelines."
+    },
+    {
+      "id": "OPS-001",
+      "area": "Operational readiness",
+      "title": "Pilot/support runbook exists",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/U1_PILOT_RUNBOOK.md"
+      ],
+      "recommendation": "Maintain on-call owner and escalation mapping per release."
+    },
+    {
+      "id": "OPS-002",
+      "area": "Operational readiness",
+      "title": "Production email provider readiness is explicit",
+      "status": "PARTIAL",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/services/auth/passwordResetEmailService.ts",
+        "apps/api/src/routes/adminRoutes.ts"
+      ],
+      "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+    },
+    {
+      "id": "OPS-003",
+      "area": "Operational readiness",
+      "title": "Incident response documentation exists",
+      "status": "MISSING",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/"
+      ],
+      "recommendation": "Create incident response playbook with severity matrix and communication protocol."
+    },
+    {
+      "id": "OPS-004",
+      "area": "Operational readiness",
+      "title": "Support/debug access boundaries documented",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/U1_PILOT_RUNBOOK.md"
+      ],
+      "recommendation": "Define who can access admin diagnostics and under what approval path."
+    }
+  ],
+  "buckets": {
+    "p0": [],
+    "p1": [
+      {
+        "id": "OBS-001",
+        "area": "Observability",
+        "title": "Health and buildinfo endpoints exist",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/index.ts"
+        ],
+        "recommendation": "Keep health/build metadata endpoints wired for deployment diagnostics."
+      },
+      {
+        "id": "OPS-002",
+        "area": "Operational readiness",
+        "title": "Production email provider readiness is explicit",
+        "status": "PARTIAL",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/services/auth/passwordResetEmailService.ts",
+          "apps/api/src/routes/adminRoutes.ts"
+        ],
+        "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+      }
+    ],
+    "p2": [
+      {
+        "id": "OBS-002",
+        "area": "Observability",
+        "title": "Admin runtime/deployment/observability pages and APIs exist",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/adminRoutes.ts",
+          "apps/api/src/routes/observabilityRoutes.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Retain admin observability access and ensure endpoint health checks in release gates."
+      },
+      {
+        "id": "OBS-003",
+        "area": "Observability",
+        "title": "Audit log infrastructure exists with metadata sanitization",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/models/AuditEvent.ts",
+          "apps/api/src/utils/auditLog.ts"
+        ],
+        "recommendation": "Preserve sanitization and ensure retention/archival policy for audit logs."
+      },
+      {
+        "id": "OBS-004",
+        "area": "Observability",
+        "title": "Deployment-truth verification script exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/scripts/verifyDeploymentTruth.ts"
+        ],
+        "recommendation": "Keep deployment-truth checks in release readiness pipelines."
+      },
+      {
+        "id": "OPS-003",
+        "area": "Operational readiness",
+        "title": "Incident response documentation exists",
+        "status": "MISSING",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/"
+        ],
+        "recommendation": "Create incident response playbook with severity matrix and communication protocol."
+      },
+      {
+        "id": "OPS-004",
+        "area": "Operational readiness",
+        "title": "Support/debug access boundaries documented",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/U1_PILOT_RUNBOOK.md"
+        ],
+        "recommendation": "Define who can access admin diagnostics and under what approval path."
+      }
+    ]
+  }
+}

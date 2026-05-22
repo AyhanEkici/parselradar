@@ -1,0 +1,62 @@
+{
+  "phase": "P2.4A",
+  "generatedAt": "2026-05-22T02:21:00.000Z",
+  "readinessScore": 87,
+  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "productionBlockers": [],
+  "preLaunchRequirements": [
+    {
+      "id": "BKP-001",
+      "title": "Define concrete database backup RPO/RTO and ownership",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "source": "proof/production-readiness-audit.json"
+    },
+    {
+      "id": "BKP-002",
+      "title": "Define document/file backup and tested restore path",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "source": "proof/production-readiness-audit.json"
+    },
+    {
+      "id": "OPS-002",
+      "title": "Gate production launch on SMTP/email provider readiness",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "source": "proof/production-readiness-audit.json"
+    }
+  ],
+  "securityAuthHardening": [
+    "Expand rate-limit coverage for admin write/auth sensitive endpoints (SEC-004)",
+    "Keep cross-user isolation assertions in CI smoke gate (SEC-005)"
+  ],
+  "paymentCreditHardening": [
+    "Add CI check to prevent Stripe test/live key mix-up (PAY-005)",
+    "Retain webhook idempotency and completed-event-only credit policy (PAY-003)"
+  ],
+  "documentEvidenceHardening": [
+    "Add retention/deletion SOP for sensitive evidence documents (DOC-004)",
+    "Add malware/content scanning to upload flow hardening backlog (DOC-002)"
+  ],
+  "errorLoadingEmptyStateGaps": [
+    "Standardize explicit empty-state messaging across diagnostics and evidence screens"
+  ],
+  "observabilityMonitoringGaps": [
+    "Add log retention + alert routing policy documentation",
+    "Keep deployment-truth and runtime diagnostics in release gate"
+  ],
+  "backupRecoveryGaps": [
+    "Publish restore drill runbook with cadence and success criteria (BKP-003)"
+  ],
+  "operationalAdminGaps": [
+    "Create incident response playbook and severity/communication matrix (OPS-003)",
+    "Define support/debug access boundaries and approval workflow (OPS-004)"
+  ],
+  "futureNonMvpItems": [
+    "AI/chat remains out of scope unless explicitly planned and governed",
+    "Connector expansion remains governed; no default activation"
+  ],
+  "explicitlyNotPromoted": [
+    "No connector activation promoted to P0/P1",
+    "No AI chat promoted to P0/P1",
+    "No scraping promoted to P0/P1"
+  ]
+}

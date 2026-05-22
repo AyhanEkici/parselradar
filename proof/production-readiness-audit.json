@@ -1,0 +1,789 @@
+{
+  "generatedAt": "2026-05-22T02:13:30.671Z",
+  "phase": "P2.4A",
+  "scope": "production-readiness-overall",
+  "readinessScore": 87,
+  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "summary": {
+    "countsByStatus": {
+      "READY": 27,
+      "PARTIAL": 7,
+      "MISSING": 2,
+      "NOT_APPLICABLE": 0,
+      "BLOCKER": 0
+    },
+    "countsBySeverity": {
+      "P0_PRODUCTION_BLOCKER": 0,
+      "P1_PRE_LAUNCH_REQUIRED": 10,
+      "P2_HARDENING_REQUIRED": 19,
+      "P3_OPERATIONAL_IMPROVEMENT": 6,
+      "P4_FUTURE": 1
+    },
+    "p0Blockers": 0,
+    "p1Requirements": 10,
+    "p2Hardening": 19
+  },
+  "items": [
+    {
+      "id": "ENV-001",
+      "area": "Environment validation",
+      "title": "Required backend env variables validated at startup",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/config/env.ts",
+        "apps/api/src/config/envValidator.ts"
+      ],
+      "recommendation": "Keep runtime fail-fast for required env and extend required list for production-only keys."
+    },
+    {
+      "id": "ENV-002",
+      "area": "Environment validation",
+      "title": "Deployment environment matrix documented",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/DEPLOYMENT_ENV_MATRIX.md"
+      ],
+      "recommendation": "Maintain a single source of truth for env separation and ownership."
+    },
+    {
+      "id": "ENV-003",
+      "area": "Environment validation",
+      "title": "Frontend env exposure restricted to safe VITE fields",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/web/src/lib/envValidator.ts",
+        "apps/web/src/lib/api.ts"
+      ],
+      "recommendation": "Continue avoiding secret exposure in frontend bundles and keep explicit validator policy."
+    },
+    {
+      "id": "ENV-004",
+      "area": "Environment validation",
+      "title": "Production deployment checklist exists",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+      ],
+      "recommendation": "Keep checklist aligned with current runtime and release process."
+    },
+    {
+      "id": "PAY-001",
+      "area": "Payment/Stripe readiness",
+      "title": "Checkout session route exists and is authenticated",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/stripeRoutes.ts",
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Keep authenticated checkout creation and package whitelisting."
+    },
+    {
+      "id": "PAY-002",
+      "area": "Payment/Stripe readiness",
+      "title": "Webhook endpoint and signature verification are implemented",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/index.ts",
+        "apps/api/src/routes/stripeRoutes.ts",
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Do not launch paid flow without verified webhook signatures."
+    },
+    {
+      "id": "PAY-003",
+      "area": "Payment/Stripe readiness",
+      "title": "Credits are granted only on completed payment and guarded for duplicates",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/controllers/stripeController.ts"
+      ],
+      "recommendation": "Retain idempotent fulfillment and completed-event-only crediting."
+    },
+    {
+      "id": "PAY-004",
+      "area": "Payment/Stripe readiness",
+      "title": "Admin Stripe session visibility exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/adminRoutes.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Ensure admin troubleshooting path remains available in production."
+    },
+    {
+      "id": "PAY-005",
+      "area": "Payment/Stripe readiness",
+      "title": "Test/live mode clarity documented",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/STRIPE_PRODUCTION_READINESS.md",
+        "docs/DEPLOYMENT_ENV_MATRIX.md"
+      ],
+      "recommendation": "Enforce key/source validation in CI to prevent test/live mixups."
+    },
+    {
+      "id": "SEC-001",
+      "area": "Auth/security readiness",
+      "title": "JWT secret requirement enforced",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/config/env.ts"
+      ],
+      "recommendation": "Continue mandatory JWT secret enforcement and rotate secrets per environment."
+    },
+    {
+      "id": "SEC-002",
+      "area": "Auth/security readiness",
+      "title": "Cookie/session security settings are explicitly production-hardened",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/controllers/authController.ts",
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+      ],
+      "recommendation": "Explicitly assert secure + strict cookie policy in auth cookie set paths for production."
+    },
+    {
+      "id": "SEC-003",
+      "area": "Auth/security readiness",
+      "title": "Protected route and admin guard coverage exists",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/auth.ts",
+        "apps/api/src/middleware/admin.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Maintain route guard coverage for all sensitive endpoints and admin UI routes."
+    },
+    {
+      "id": "SEC-004",
+      "area": "Auth/security readiness",
+      "title": "Rate limit policies are present on sensitive flows",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/rateLimiter.ts",
+        "apps/api/src/routes/stripeRoutes.ts"
+      ],
+      "recommendation": "Expand coverage and ensure all auth/admin write endpoints are protected by throttling."
+    },
+    {
+      "id": "SEC-005",
+      "area": "Auth/security readiness",
+      "title": "Cross-user data isolation indicators present in test/runbook evidence",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/RUNTIME_SMOKE_TESTS.md"
+      ],
+      "recommendation": "Keep automated ownership assertions in smoke tests and add explicit regression gates in CI."
+    },
+    {
+      "id": "DOC-001",
+      "area": "Document/evidence readiness",
+      "title": "Upload route exists with auth protection",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/documentRoutes.ts"
+      ],
+      "recommendation": "Retain auth-required upload and access controls for evidence documents."
+    },
+    {
+      "id": "DOC-002",
+      "area": "Document/evidence readiness",
+      "title": "File type and size controls are present",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/upload.ts"
+      ],
+      "recommendation": "Add malware scanning and stronger content validation before production scale."
+    },
+    {
+      "id": "DOC-003",
+      "area": "Document/evidence readiness",
+      "title": "Evidence source labeling policy exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
+        "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md"
+      ],
+      "recommendation": "Enforce source label completeness checks on upload/review lifecycle."
+    },
+    {
+      "id": "DOC-004",
+      "area": "Document/evidence readiness",
+      "title": "Sensitive data warning and retention policy are explicit",
+      "status": "MISSING",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/LEGAL_BOUNDARIES.md"
+      ],
+      "recommendation": "Add explicit data retention/deletion and sensitive-material handling SOP for operations."
+    },
+    {
+      "id": "UX-001",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain loading states",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithLoading=52"
+      ],
+      "recommendation": "Standardize loading UX coverage across all user/admin surfaces."
+    },
+    {
+      "id": "UX-002",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain error fallback states",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithError=78"
+      ],
+      "recommendation": "Add explicit recoverable error messaging for remaining page-level API flows."
+    },
+    {
+      "id": "UX-003",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain empty-state handling",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithEmpty=19"
+      ],
+      "recommendation": "Add explicit empty-state UX for list, diagnostics, and evidence screens lacking guidance."
+    },
+    {
+      "id": "OBS-001",
+      "area": "Observability",
+      "title": "Health and buildinfo endpoints exist",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/index.ts"
+      ],
+      "recommendation": "Keep health/build metadata endpoints wired for deployment diagnostics."
+    },
+    {
+      "id": "OBS-002",
+      "area": "Observability",
+      "title": "Admin runtime/deployment/observability pages and APIs exist",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/adminRoutes.ts",
+        "apps/api/src/routes/observabilityRoutes.ts",
+        "apps/web/src/App.tsx"
+      ],
+      "recommendation": "Retain admin observability access and ensure endpoint health checks in release gates."
+    },
+    {
+      "id": "OBS-003",
+      "area": "Observability",
+      "title": "Audit log infrastructure exists with metadata sanitization",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/models/AuditEvent.ts",
+        "apps/api/src/utils/auditLog.ts"
+      ],
+      "recommendation": "Preserve sanitization and ensure retention/archival policy for audit logs."
+    },
+    {
+      "id": "OBS-004",
+      "area": "Observability",
+      "title": "Deployment-truth verification script exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/scripts/verifyDeploymentTruth.ts"
+      ],
+      "recommendation": "Keep deployment-truth checks in release readiness pipelines."
+    },
+    {
+      "id": "BKP-001",
+      "area": "Backup/recovery",
+      "title": "Database backup strategy is documented",
+      "status": "PARTIAL",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
+        "apps/api/src/config/runtime/backupPolicies.ts"
+      ],
+      "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
+    },
+    {
+      "id": "BKP-002",
+      "area": "Backup/recovery",
+      "title": "File/document backup strategy is documented",
+      "status": "PARTIAL",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/config/runtime/backupPolicies.ts"
+      ],
+      "recommendation": "Add explicit document storage backup policy and tested restore path."
+    },
+    {
+      "id": "BKP-003",
+      "area": "Backup/recovery",
+      "title": "Restore and rollback procedures are documented",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+      ],
+      "recommendation": "Run and record periodic restore drills with measurable success criteria."
+    },
+    {
+      "id": "OPS-001",
+      "area": "Operational readiness",
+      "title": "Pilot/support runbook exists",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/U1_PILOT_RUNBOOK.md"
+      ],
+      "recommendation": "Maintain on-call owner and escalation mapping per release."
+    },
+    {
+      "id": "OPS-002",
+      "area": "Operational readiness",
+      "title": "Production email provider readiness is explicit",
+      "status": "PARTIAL",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/services/auth/passwordResetEmailService.ts",
+        "apps/api/src/routes/adminRoutes.ts"
+      ],
+      "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+    },
+    {
+      "id": "OPS-003",
+      "area": "Operational readiness",
+      "title": "Incident response documentation exists",
+      "status": "MISSING",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/"
+      ],
+      "recommendation": "Create incident response playbook with severity matrix and communication protocol."
+    },
+    {
+      "id": "OPS-004",
+      "area": "Operational readiness",
+      "title": "Support/debug access boundaries documented",
+      "status": "PARTIAL",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/U1_PILOT_RUNBOOK.md"
+      ],
+      "recommendation": "Define who can access admin diagnostics and under what approval path."
+    },
+    {
+      "id": "CON-001",
+      "area": "Connector safety",
+      "title": "Connector stack defaults to NOT_CONFIGURED for missing endpoints",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/connectors/",
+        "apps/api/src/services/connectors/"
+      ],
+      "recommendation": "Retain fail-safe NOT_CONFIGURED behavior and avoid implicit activation."
+    },
+    {
+      "id": "CON-002",
+      "area": "Connector safety",
+      "title": "Connector activation endpoints remain admin-protected and explicit",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/connectorActivationRoutes.ts"
+      ],
+      "recommendation": "Keep explicit activation workflow and legal approval gates."
+    },
+    {
+      "id": "FUT-001",
+      "area": "AI/future safety",
+      "title": "AI chat is not introduced in current runtime",
+      "status": "READY",
+      "severity": "P4_FUTURE",
+      "evidence": [
+        "apps/api/src",
+        "apps/web/src"
+      ],
+      "recommendation": "Keep AI/chat features out of production scope unless explicitly planned and gated."
+    },
+    {
+      "id": "FUT-002",
+      "area": "AI/future safety",
+      "title": "No unsupported automated e-Devlet or scraper/bot tooling in runtime scope",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src",
+        "apps/web/src"
+      ],
+      "recommendation": "Maintain manual-only governance for unsupported external sources."
+    }
+  ],
+  "buckets": {
+    "p0": [],
+    "p1": [
+      {
+        "id": "ENV-001",
+        "area": "Environment validation",
+        "title": "Required backend env variables validated at startup",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/config/env.ts",
+          "apps/api/src/config/envValidator.ts"
+        ],
+        "recommendation": "Keep runtime fail-fast for required env and extend required list for production-only keys."
+      },
+      {
+        "id": "PAY-002",
+        "area": "Payment/Stripe readiness",
+        "title": "Webhook endpoint and signature verification are implemented",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/index.ts",
+          "apps/api/src/routes/stripeRoutes.ts",
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Do not launch paid flow without verified webhook signatures."
+      },
+      {
+        "id": "PAY-003",
+        "area": "Payment/Stripe readiness",
+        "title": "Credits are granted only on completed payment and guarded for duplicates",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Retain idempotent fulfillment and completed-event-only crediting."
+      },
+      {
+        "id": "SEC-001",
+        "area": "Auth/security readiness",
+        "title": "JWT secret requirement enforced",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/config/env.ts"
+        ],
+        "recommendation": "Continue mandatory JWT secret enforcement and rotate secrets per environment."
+      },
+      {
+        "id": "SEC-003",
+        "area": "Auth/security readiness",
+        "title": "Protected route and admin guard coverage exists",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/auth.ts",
+          "apps/api/src/middleware/admin.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Maintain route guard coverage for all sensitive endpoints and admin UI routes."
+      },
+      {
+        "id": "OBS-001",
+        "area": "Observability",
+        "title": "Health and buildinfo endpoints exist",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/index.ts"
+        ],
+        "recommendation": "Keep health/build metadata endpoints wired for deployment diagnostics."
+      },
+      {
+        "id": "BKP-001",
+        "area": "Backup/recovery",
+        "title": "Database backup strategy is documented",
+        "status": "PARTIAL",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "docs/PRODUCTION_DEPLOY_CHECKLIST.md",
+          "apps/api/src/config/runtime/backupPolicies.ts"
+        ],
+        "recommendation": "Define concrete RPO/RTO, backup owner, and scheduled verification records."
+      },
+      {
+        "id": "BKP-002",
+        "area": "Backup/recovery",
+        "title": "File/document backup strategy is documented",
+        "status": "PARTIAL",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/config/runtime/backupPolicies.ts"
+        ],
+        "recommendation": "Add explicit document storage backup policy and tested restore path."
+      },
+      {
+        "id": "OPS-002",
+        "area": "Operational readiness",
+        "title": "Production email provider readiness is explicit",
+        "status": "PARTIAL",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/services/auth/passwordResetEmailService.ts",
+          "apps/api/src/routes/adminRoutes.ts"
+        ],
+        "recommendation": "Require SMTP readiness checks in release gate and fail deployment if required notifications are mandatory."
+      },
+      {
+        "id": "CON-001",
+        "area": "Connector safety",
+        "title": "Connector stack defaults to NOT_CONFIGURED for missing endpoints",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/connectors/",
+          "apps/api/src/services/connectors/"
+        ],
+        "recommendation": "Retain fail-safe NOT_CONFIGURED behavior and avoid implicit activation."
+      }
+    ],
+    "p2": [
+      {
+        "id": "ENV-003",
+        "area": "Environment validation",
+        "title": "Frontend env exposure restricted to safe VITE fields",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/web/src/lib/envValidator.ts",
+          "apps/web/src/lib/api.ts"
+        ],
+        "recommendation": "Continue avoiding secret exposure in frontend bundles and keep explicit validator policy."
+      },
+      {
+        "id": "PAY-001",
+        "area": "Payment/Stripe readiness",
+        "title": "Checkout session route exists and is authenticated",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/stripeRoutes.ts",
+          "apps/api/src/controllers/stripeController.ts"
+        ],
+        "recommendation": "Keep authenticated checkout creation and package whitelisting."
+      },
+      {
+        "id": "PAY-004",
+        "area": "Payment/Stripe readiness",
+        "title": "Admin Stripe session visibility exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/adminRoutes.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Ensure admin troubleshooting path remains available in production."
+      },
+      {
+        "id": "PAY-005",
+        "area": "Payment/Stripe readiness",
+        "title": "Test/live mode clarity documented",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/STRIPE_PRODUCTION_READINESS.md",
+          "docs/DEPLOYMENT_ENV_MATRIX.md"
+        ],
+        "recommendation": "Enforce key/source validation in CI to prevent test/live mixups."
+      },
+      {
+        "id": "SEC-002",
+        "area": "Auth/security readiness",
+        "title": "Cookie/session security settings are explicitly production-hardened",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/controllers/authController.ts",
+          "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+        ],
+        "recommendation": "Explicitly assert secure + strict cookie policy in auth cookie set paths for production."
+      },
+      {
+        "id": "SEC-004",
+        "area": "Auth/security readiness",
+        "title": "Rate limit policies are present on sensitive flows",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/rateLimiter.ts",
+          "apps/api/src/routes/stripeRoutes.ts"
+        ],
+        "recommendation": "Expand coverage and ensure all auth/admin write endpoints are protected by throttling."
+      },
+      {
+        "id": "SEC-005",
+        "area": "Auth/security readiness",
+        "title": "Cross-user data isolation indicators present in test/runbook evidence",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/RUNTIME_SMOKE_TESTS.md"
+        ],
+        "recommendation": "Keep automated ownership assertions in smoke tests and add explicit regression gates in CI."
+      },
+      {
+        "id": "DOC-001",
+        "area": "Document/evidence readiness",
+        "title": "Upload route exists with auth protection",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/documentRoutes.ts"
+        ],
+        "recommendation": "Retain auth-required upload and access controls for evidence documents."
+      },
+      {
+        "id": "DOC-002",
+        "area": "Document/evidence readiness",
+        "title": "File type and size controls are present",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/upload.ts"
+        ],
+        "recommendation": "Add malware scanning and stronger content validation before production scale."
+      },
+      {
+        "id": "DOC-003",
+        "area": "Document/evidence readiness",
+        "title": "Evidence source labeling policy exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
+          "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md"
+        ],
+        "recommendation": "Enforce source label completeness checks on upload/review lifecycle."
+      },
+      {
+        "id": "DOC-004",
+        "area": "Document/evidence readiness",
+        "title": "Sensitive data warning and retention policy are explicit",
+        "status": "MISSING",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/LEGAL_BOUNDARIES.md"
+        ],
+        "recommendation": "Add explicit data retention/deletion and sensitive-material handling SOP for operations."
+      },
+      {
+        "id": "OBS-002",
+        "area": "Observability",
+        "title": "Admin runtime/deployment/observability pages and APIs exist",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/adminRoutes.ts",
+          "apps/api/src/routes/observabilityRoutes.ts",
+          "apps/web/src/App.tsx"
+        ],
+        "recommendation": "Retain admin observability access and ensure endpoint health checks in release gates."
+      },
+      {
+        "id": "OBS-003",
+        "area": "Observability",
+        "title": "Audit log infrastructure exists with metadata sanitization",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/models/AuditEvent.ts",
+          "apps/api/src/utils/auditLog.ts"
+        ],
+        "recommendation": "Preserve sanitization and ensure retention/archival policy for audit logs."
+      },
+      {
+        "id": "OBS-004",
+        "area": "Observability",
+        "title": "Deployment-truth verification script exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/scripts/verifyDeploymentTruth.ts"
+        ],
+        "recommendation": "Keep deployment-truth checks in release readiness pipelines."
+      },
+      {
+        "id": "BKP-003",
+        "area": "Backup/recovery",
+        "title": "Restore and rollback procedures are documented",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+        ],
+        "recommendation": "Run and record periodic restore drills with measurable success criteria."
+      },
+      {
+        "id": "OPS-003",
+        "area": "Operational readiness",
+        "title": "Incident response documentation exists",
+        "status": "MISSING",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/"
+        ],
+        "recommendation": "Create incident response playbook with severity matrix and communication protocol."
+      },
+      {
+        "id": "OPS-004",
+        "area": "Operational readiness",
+        "title": "Support/debug access boundaries documented",
+        "status": "PARTIAL",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/U1_PILOT_RUNBOOK.md"
+        ],
+        "recommendation": "Define who can access admin diagnostics and under what approval path."
+      },
+      {
+        "id": "CON-002",
+        "area": "Connector safety",
+        "title": "Connector activation endpoints remain admin-protected and explicit",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/connectorActivationRoutes.ts"
+        ],
+        "recommendation": "Keep explicit activation workflow and legal approval gates."
+      },
+      {
+        "id": "FUT-002",
+        "area": "AI/future safety",
+        "title": "No unsupported automated e-Devlet or scraper/bot tooling in runtime scope",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src",
+          "apps/web/src"
+        ],
+        "recommendation": "Maintain manual-only governance for unsupported external sources."
+      }
+    ]
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "phase": "P2.4A",
+  "scope": "production-ux-resilience-readiness",
+  "readinessScore": 86,
+  "launchRecommendation": "CONTROLLED_BETA_READY",
+  "summary": {
+    "countsByStatus": {
+      "READY": 6,
+      "PARTIAL": 0,
+      "MISSING": 1,
+      "NOT_APPLICABLE": 0,
+      "BLOCKER": 0
+    },
+    "countsBySeverity": {
+      "P0_PRODUCTION_BLOCKER": 0,
+      "P1_PRE_LAUNCH_REQUIRED": 0,
+      "P2_HARDENING_REQUIRED": 4,
+      "P3_OPERATIONAL_IMPROVEMENT": 3,
+      "P4_FUTURE": 0
+    },
+    "p0Blockers": 0,
+    "p1Requirements": 0,
+    "p2Hardening": 4
+  },
+  "items": [
+    {
+      "id": "UX-001",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain loading states",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithLoading=52"
+      ],
+      "recommendation": "Standardize loading UX coverage across all user/admin surfaces."
+    },
+    {
+      "id": "UX-002",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain error fallback states",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithError=78"
+      ],
+      "recommendation": "Add explicit recoverable error messaging for remaining page-level API flows."
+    },
+    {
+      "id": "UX-003",
+      "area": "Error/loading/empty resilience",
+      "title": "Core pages contain empty-state handling",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "pagesWithEmpty=19"
+      ],
+      "recommendation": "Add explicit empty-state UX for list, diagnostics, and evidence screens lacking guidance."
+    },
+    {
+      "id": "DOC-001",
+      "area": "Document/evidence readiness",
+      "title": "Upload route exists with auth protection",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/routes/documentRoutes.ts"
+      ],
+      "recommendation": "Retain auth-required upload and access controls for evidence documents."
+    },
+    {
+      "id": "DOC-002",
+      "area": "Document/evidence readiness",
+      "title": "File type and size controls are present",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/middleware/upload.ts"
+      ],
+      "recommendation": "Add malware scanning and stronger content validation before production scale."
+    },
+    {
+      "id": "DOC-003",
+      "area": "Document/evidence readiness",
+      "title": "Evidence source labeling policy exists",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
+        "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md"
+      ],
+      "recommendation": "Enforce source label completeness checks on upload/review lifecycle."
+    },
+    {
+      "id": "DOC-004",
+      "area": "Document/evidence readiness",
+      "title": "Sensitive data warning and retention policy are explicit",
+      "status": "MISSING",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "docs/LEGAL_BOUNDARIES.md"
+      ],
+      "recommendation": "Add explicit data retention/deletion and sensitive-material handling SOP for operations."
+    }
+  ],
+  "buckets": {
+    "p0": [],
+    "p1": [],
+    "p2": [
+      {
+        "id": "DOC-001",
+        "area": "Document/evidence readiness",
+        "title": "Upload route exists with auth protection",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/routes/documentRoutes.ts"
+        ],
+        "recommendation": "Retain auth-required upload and access controls for evidence documents."
+      },
+      {
+        "id": "DOC-002",
+        "area": "Document/evidence readiness",
+        "title": "File type and size controls are present",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/middleware/upload.ts"
+        ],
+        "recommendation": "Add malware scanning and stronger content validation before production scale."
+      },
+      {
+        "id": "DOC-003",
+        "area": "Document/evidence readiness",
+        "title": "Evidence source labeling policy exists",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
+          "docs/MANUAL_OFFICIAL_EVIDENCE_UPLOAD_RUNBOOK.md"
+        ],
+        "recommendation": "Enforce source label completeness checks on upload/review lifecycle."
+      },
+      {
+        "id": "DOC-004",
+        "area": "Document/evidence readiness",
+        "title": "Sensitive data warning and retention policy are explicit",
+        "status": "MISSING",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "docs/LEGAL_BOUNDARIES.md"
+        ],
+        "recommendation": "Add explicit data retention/deletion and sensitive-material handling SOP for operations."
+      }
+    ]
+  }
+}

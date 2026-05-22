@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-05-22T02:13:30.672Z",
+  "phase": "P2.4A",
+  "scope": "production-env-readiness",
+  "readinessScore": 100,
+  "launchRecommendation": "INTERNAL_ALPHA_READY",
+  "summary": {
+    "countsByStatus": {
+      "READY": 4,
+      "PARTIAL": 0,
+      "MISSING": 0,
+      "NOT_APPLICABLE": 0,
+      "BLOCKER": 0
+    },
+    "countsBySeverity": {
+      "P0_PRODUCTION_BLOCKER": 0,
+      "P1_PRE_LAUNCH_REQUIRED": 1,
+      "P2_HARDENING_REQUIRED": 1,
+      "P3_OPERATIONAL_IMPROVEMENT": 2,
+      "P4_FUTURE": 0
+    },
+    "p0Blockers": 0,
+    "p1Requirements": 1,
+    "p2Hardening": 1
+  },
+  "items": [
+    {
+      "id": "ENV-001",
+      "area": "Environment validation",
+      "title": "Required backend env variables validated at startup",
+      "status": "READY",
+      "severity": "P1_PRE_LAUNCH_REQUIRED",
+      "evidence": [
+        "apps/api/src/config/env.ts",
+        "apps/api/src/config/envValidator.ts"
+      ],
+      "recommendation": "Keep runtime fail-fast for required env and extend required list for production-only keys."
+    },
+    {
+      "id": "ENV-002",
+      "area": "Environment validation",
+      "title": "Deployment environment matrix documented",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/DEPLOYMENT_ENV_MATRIX.md"
+      ],
+      "recommendation": "Maintain a single source of truth for env separation and ownership."
+    },
+    {
+      "id": "ENV-003",
+      "area": "Environment validation",
+      "title": "Frontend env exposure restricted to safe VITE fields",
+      "status": "READY",
+      "severity": "P2_HARDENING_REQUIRED",
+      "evidence": [
+        "apps/web/src/lib/envValidator.ts",
+        "apps/web/src/lib/api.ts"
+      ],
+      "recommendation": "Continue avoiding secret exposure in frontend bundles and keep explicit validator policy."
+    },
+    {
+      "id": "ENV-004",
+      "area": "Environment validation",
+      "title": "Production deployment checklist exists",
+      "status": "READY",
+      "severity": "P3_OPERATIONAL_IMPROVEMENT",
+      "evidence": [
+        "docs/PRODUCTION_DEPLOY_CHECKLIST.md"
+      ],
+      "recommendation": "Keep checklist aligned with current runtime and release process."
+    }
+  ],
+  "buckets": {
+    "p0": [],
+    "p1": [
+      {
+        "id": "ENV-001",
+        "area": "Environment validation",
+        "title": "Required backend env variables validated at startup",
+        "status": "READY",
+        "severity": "P1_PRE_LAUNCH_REQUIRED",
+        "evidence": [
+          "apps/api/src/config/env.ts",
+          "apps/api/src/config/envValidator.ts"
+        ],
+        "recommendation": "Keep runtime fail-fast for required env and extend required list for production-only keys."
+      }
+    ],
+    "p2": [
+      {
+        "id": "ENV-003",
+        "area": "Environment validation",
+        "title": "Frontend env exposure restricted to safe VITE fields",
+        "status": "READY",
+        "severity": "P2_HARDENING_REQUIRED",
+        "evidence": [
+          "apps/web/src/lib/envValidator.ts",
+          "apps/web/src/lib/api.ts"
+        ],
+        "recommendation": "Continue avoiding secret exposure in frontend bundles and keep explicit validator policy."
+      }
+    ]
+  }
+}
