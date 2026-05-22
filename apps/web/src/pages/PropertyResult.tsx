@@ -89,6 +89,19 @@ function statusClasses(status: ReadinessStatus) {
   if (status === 'UNKNOWN') return 'bg-slate-50 text-slate-700 border-slate-200';
   return 'bg-amber-50 text-amber-700 border-amber-200';
 }
+
+function readinessStatusLabel(status: ReadinessStatus) {
+  if (status === 'READY') return 'Hazır';
+  if (status === 'NEEDS_MORE_DATA') return 'Eksik veri';
+  if (status === 'NEEDS_PARCEL_IDENTITY') return 'Parsel kimliği gerekli';
+  if (status === 'NEEDS_TKGM_CHECK') return 'TKGM kontrolü gerekli';
+  if (status === 'NEEDS_MUNICIPALITY_CHECK') return 'Belediye/imar kanıtı gerekli';
+  return 'Bilinmiyor';
+}
+
+function isNotReadyStatus(status: ReadinessStatus) {
+  return status !== 'READY' && status !== 'UNKNOWN';
+}
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
 export default function PropertyResult() {
@@ -380,6 +393,24 @@ export default function PropertyResult() {
     return null;
   };
 
+  const readinessByAction = useMemo(() => {
+    const byLabel = new Map(readinessRows.map((row) => [row.label, row]));
+    return {
+      quickScore: byLabel.get('Hızlı İlan Kontrolü') || null,
+      parselInsight: byLabel.get('Parsel Insight') || null,
+      developerFit: byLabel.get('Developer Fit') || null,
+    } as Record<AnalysisActionKey, ReadinessRow | null>;
+  }, [readinessRows]);
+
+  const getActionButtonText = (action: AnalysisActionKey) => {
+    if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
+    const row = readinessByAction[action];
+    if (row && isNotReadyStatus(row.status)) return 'Yine de çalıştır';
+    if (action === 'quickScore') return 'Hızlı İlan Kontrolü';
+    if (action === 'parselInsight') return 'Parsel Insight';
+    return 'Developer Fit';
+  };
+
   const purchasePDF = async () => {
     if (!analysisRunId) return;
     const loadingToastId = toast.loading('PDF satın alma işlemi başlatılıyor...');
@@ -405,7 +436,7 @@ export default function PropertyResult() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-medium text-slate-900">{row.label}</span>
                 <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(row.status)}`}>
-                  {row.status}
+                  {readinessStatusLabel(row.status)}
                 </span>
               </div>
               <div className="mt-1 text-xs text-slate-600">{row.message}</div>
@@ -420,28 +451,42 @@ export default function PropertyResult() {
           ))}
         </div>
       </div>
-      <div className="mb-4 flex flex-wrap gap-2">
-        <button
-          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
-          disabled={analysisActionStates.quickScore === 'loading'}
-          onClick={() => runAnalysisAction('quickScore', `analysis/${id}/quick-score`)}
-        >
-          Hızlı İlan Kontrolü
-        </button>
-        <button
-          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
-          disabled={analysisActionStates.parselInsight === 'loading'}
-          onClick={() => runAnalysisAction('parselInsight', `analysis/${id}/parsel-insight`)}
-        >
-          Parsel Insight
-        </button>
-        <button
-          className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
-          disabled={analysisActionStates.developerFit === 'loading'}
-          onClick={() => runAnalysisAction('developerFit', `analysis/${id}/developer-fit`)}
-        >
-          Developer Fit
-        </button>
+      <div className="mb-4 space-y-2">
+        {([
+          { key: 'quickScore', label: 'Hızlı İlan Kontrolü', endpoint: `analysis/${id}/quick-score` },
+          { key: 'parselInsight', label: 'Parsel Insight', endpoint: `analysis/${id}/parsel-insight` },
+          { key: 'developerFit', label: 'Developer Fit', endpoint: `analysis/${id}/developer-fit` },
+        ] as Array<{ key: AnalysisActionKey; label: string; endpoint: string }>).map((action) => {
+          const row = readinessByAction[action.key];
+          const showHelper =
+            row?.status === 'NEEDS_MORE_DATA' ||
+            row?.status === 'NEEDS_PARCEL_IDENTITY' ||
+            row?.status === 'NEEDS_TKGM_CHECK' ||
+            row?.status === 'NEEDS_MUNICIPALITY_CHECK';
+
+          return (
+            <div key={action.key} className="rounded border border-slate-200 bg-white p-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium text-slate-900">{action.label}</span>
+                  {row ? (
+                    <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(row.status)}`}>
+                      {readinessStatusLabel(row.status)}
+                    </span>
+                  ) : null}
+                </div>
+                <button
+                  className="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-60"
+                  disabled={analysisActionStates[action.key] === 'loading'}
+                  onClick={() => runAnalysisAction(action.key, action.endpoint)}
+                >
+                  {getActionButtonText(action.key)}
+                </button>
+              </div>
+              {showHelper ? <div className="mt-1 text-xs text-amber-700">{row?.message}</div> : null}
+            </div>
+          );
+        })}
       </div>
       <div className="mb-4 text-xs text-slate-600 flex flex-wrap gap-3">
         <span>Hızlı İlan Kontrolü: {getActionCaption('quickScore') || 'Hazır'}</span>
