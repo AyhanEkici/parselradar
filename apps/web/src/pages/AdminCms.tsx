@@ -11,6 +11,13 @@ type CmsModule = {
   actionLabel?: string;
 };
 
+type DisplayStatus = CmsModule['status'] | 'error loading';
+
+type LiveSummary = {
+  users: { loaded: boolean; count: number | null; error: boolean };
+  properties: { loaded: boolean; count: number | null; error: boolean };
+};
+
 const modules: CmsModule[] = [
   {
     area: 'Users',
@@ -73,16 +80,31 @@ const modules: CmsModule[] = [
     status: 'future',
     description: 'Future managed content/pages module. No CRUD in this phase.',
   },
+  {
+    area: 'Public Source Monitor',
+    status: 'future',
+    description: 'Future public-source monitor module. Not wired in this phase.',
+  },
 ];
 
-function statusClasses(status: CmsModule['status']) {
+function statusClasses(status: DisplayStatus) {
   if (status === 'wired') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
   if (status === 'partial') return 'bg-amber-50 text-amber-700 border-amber-200';
+  if (status === 'error loading') return 'bg-rose-50 text-rose-700 border-rose-200';
   if (status === 'not wired yet') return 'bg-slate-50 text-slate-700 border-slate-200';
   return 'bg-indigo-50 text-indigo-700 border-indigo-200';
 }
 
-function statusLabel(status: CmsModule['status']) {
+function statusLabel(status: DisplayStatus) {
+  if (status === 'wired') return 'Wired';
+  if (status === 'partial') return 'Partial';
+  if (status === 'error loading') return 'Error loading';
+  if (status === 'not wired yet') return 'Not wired yet';
+  return 'Future';
+}
+
+function cardStatusLabel(status: DisplayStatus) {
+  if (status === 'error loading') return 'Error loading';
   if (status === 'wired') return 'Wired';
   if (status === 'partial') return 'Partial';
   if (status === 'not wired yet') return 'Not wired yet';
@@ -90,8 +112,10 @@ function statusLabel(status: CmsModule['status']) {
 }
 
 export default function AdminCms() {
-  const [usersCount, setUsersCount] = useState<number | null>(null);
-  const [propertiesCount, setPropertiesCount] = useState<number | null>(null);
+  const [liveSummary, setLiveSummary] = useState<LiveSummary>({
+    users: { loaded: false, count: null, error: false },
+    properties: { loaded: false, count: null, error: false },
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -101,22 +125,54 @@ export default function AdminCms() {
         const usersResponse = await apiFetch('/admin/users?page=1');
         if (cancelled) return;
         if (Array.isArray(usersResponse?.users)) {
-          const totalPages = Number(usersResponse?.totalPages || 1);
-          const pageSize = usersResponse.users.length;
-          setUsersCount(totalPages > 1 && pageSize > 0 ? null : pageSize);
+          setLiveSummary((prev) => ({
+            ...prev,
+            users: {
+              loaded: true,
+              count: usersResponse.users.length,
+              error: false,
+            },
+          }));
+        } else {
+          setLiveSummary((prev) => ({
+            ...prev,
+            users: { loaded: true, count: null, error: false },
+          }));
         }
       } catch {
-        if (!cancelled) setUsersCount(null);
+        if (!cancelled) {
+          setLiveSummary((prev) => ({
+            ...prev,
+            users: { loaded: true, count: null, error: true },
+          }));
+        }
       }
 
       try {
         const propertiesResponse = await apiFetch('/admin/properties');
         if (cancelled) return;
         if (Array.isArray(propertiesResponse)) {
-          setPropertiesCount(propertiesResponse.length);
+          setLiveSummary((prev) => ({
+            ...prev,
+            properties: {
+              loaded: true,
+              count: propertiesResponse.length,
+              error: false,
+            },
+          }));
+        } else {
+          setLiveSummary((prev) => ({
+            ...prev,
+            properties: { loaded: true, count: null, error: false },
+          }));
         }
       } catch {
-        if (!cancelled) setPropertiesCount(null);
+        if (!cancelled) {
+          setLiveSummary((prev) => ({
+            ...prev,
+            properties: { loaded: true, count: null, error: true },
+          }));
+        }
       }
     };
 
@@ -129,11 +185,81 @@ export default function AdminCms() {
   const rows = useMemo(() => {
     return modules.map((module) => {
       let preview = '-';
-      if (module.area === 'Users' && usersCount !== null) preview = `${usersCount} loaded (first page)`;
-      if (module.area === 'Properties' && propertiesCount !== null) preview = `${propertiesCount} loaded`;
+      if (module.area === 'Users') {
+        if (liveSummary.users.error) preview = 'Could not load live count';
+        else if (liveSummary.users.count !== null) preview = `${liveSummary.users.count} loaded (page 1)`;
+        else if (liveSummary.users.loaded) preview = 'Available via admin route';
+      }
+      if (module.area === 'Properties') {
+        if (liveSummary.properties.error) preview = 'Could not load live count';
+        else if (liveSummary.properties.count !== null) preview = `${liveSummary.properties.count} loaded`;
+        else if (liveSummary.properties.loaded) preview = 'Available via admin route';
+      }
       return { ...module, preview };
     });
-  }, [usersCount, propertiesCount]);
+  }, [liveSummary]);
+
+  const healthCards = useMemo(() => {
+    const usersStatus: DisplayStatus = liveSummary.users.error ? 'error loading' : 'wired';
+    const propertiesStatus: DisplayStatus = liveSummary.properties.error ? 'error loading' : 'wired';
+
+    return [
+      {
+        title: 'Users',
+        status: usersStatus,
+        route: '/admin/users',
+        detail: liveSummary.users.error
+          ? 'Could not load live count'
+          : liveSummary.users.count !== null
+          ? `${liveSummary.users.count} loaded (page 1)`
+          : liveSummary.users.loaded
+          ? 'Available via admin route'
+          : 'Loading live count...',
+      },
+      {
+        title: 'Properties',
+        status: propertiesStatus,
+        route: '/admin/properties',
+        detail: liveSummary.properties.error
+          ? 'Could not load live count'
+          : liveSummary.properties.count !== null
+          ? `${liveSummary.properties.count} loaded`
+          : liveSummary.properties.loaded
+          ? 'Available via admin route'
+          : 'Loading live count...',
+      },
+      {
+        title: 'Evidence / Documents',
+        status: 'partial' as DisplayStatus,
+        route: '/admin/properties',
+        detail: 'Property-scoped flow; no standalone global evidence count yet',
+      },
+      {
+        title: 'Analyses',
+        status: 'wired' as DisplayStatus,
+        route: '/admin/analyses',
+        detail: 'Wired via admin analyses route and property-level analysis/result flow',
+      },
+      {
+        title: 'Credits / Stripe',
+        status: 'wired' as DisplayStatus,
+        route: '/admin/credit-ledger',
+        detail: 'Wired via credit ledger and stripe sessions routes',
+      },
+      {
+        title: 'Connectors',
+        status: 'wired' as DisplayStatus,
+        route: '/admin/connectors',
+        detail: 'Wired diagnostics/governance view; no automation claims',
+      },
+      {
+        title: 'Future Modules',
+        status: 'future' as DisplayStatus,
+        route: undefined,
+        detail: 'Aski & Parselasyon Takip, Content/CMS Pages, Public Source Monitor',
+      },
+    ];
+  }, [liveSummary]);
 
   return (
     <AdminLayout title="Admin CMS">
@@ -170,6 +296,32 @@ export default function AdminCms() {
               <Link to="/admin/properties" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50">
                 Open Properties
               </Link>
+            </div>
+          </section>
+
+          <section className="space-y-2">
+            <h3 className="text-sm font-semibold text-slate-900">CMS Live Health Cards</h3>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {healthCards.map((card) => (
+                <div key={card.title} className="rounded-lg border border-slate-200 bg-white p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-sm font-semibold text-slate-900">{card.title}</h4>
+                    <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(card.status)}`}>
+                      {cardStatusLabel(card.status)}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">{card.detail}</p>
+                  <div className="mt-3">
+                    {card.route ? (
+                      <Link to={card.route} className="text-sm text-blue-700 hover:underline">
+                        Open route
+                      </Link>
+                    ) : (
+                      <span className="text-sm text-slate-500">No route yet</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
