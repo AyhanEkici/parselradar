@@ -51,6 +51,19 @@ type ReadinessStatus =
   | 'NEEDS_MUNICIPALITY_CHECK'
   | 'UNKNOWN';
 
+type ReportReadinessStatus =
+  | 'READY_FOR_QUICK_CHECK'
+  | 'READY_FOR_PARCEL_INSIGHT'
+  | 'READY_FOR_DEVELOPER_FIT'
+  | 'READY_FOR_REPORT'
+  | 'NEEDS_MORE_DATA'
+  | 'NEEDS_PARCEL_IDENTITY'
+  | 'NEEDS_TKGM_EVIDENCE'
+  | 'NEEDS_MUNICIPALITY_IMAR_EVIDENCE'
+  | 'NEEDS_REVIEWED_EVIDENCE'
+  | 'SUPPORTING_EVIDENCE_ONLY'
+  | 'MANUAL_REVIEW_REQUIRED';
+
 type DocumentMetadata = {
   _id: string;
   documentType?: string;
@@ -102,6 +115,35 @@ function readinessStatusLabel(status: ReadinessStatus) {
 
 function isNotReadyStatus(status: ReadinessStatus) {
   return status !== 'READY' && status !== 'UNKNOWN';
+}
+
+function reportStatusClasses(status: ReportReadinessStatus) {
+  if (
+    status === 'READY_FOR_REPORT' ||
+    status === 'READY_FOR_QUICK_CHECK' ||
+    status === 'READY_FOR_PARCEL_INSIGHT' ||
+    status === 'READY_FOR_DEVELOPER_FIT'
+  ) {
+    return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  }
+  if (status === 'MANUAL_REVIEW_REQUIRED' || status === 'NEEDS_REVIEWED_EVIDENCE') {
+    return 'bg-rose-50 text-rose-700 border-rose-200';
+  }
+  return 'bg-amber-50 text-amber-700 border-amber-200';
+}
+
+function reportStatusLabel(status: ReportReadinessStatus) {
+  if (status === 'READY_FOR_QUICK_CHECK') return 'Ready for quick check';
+  if (status === 'READY_FOR_PARCEL_INSIGHT') return 'Ready for parcel insight';
+  if (status === 'READY_FOR_DEVELOPER_FIT') return 'Ready for developer fit';
+  if (status === 'READY_FOR_REPORT') return 'Ready for report';
+  if (status === 'NEEDS_MORE_DATA') return 'Needs more data';
+  if (status === 'NEEDS_PARCEL_IDENTITY') return 'Needs parcel identity';
+  if (status === 'NEEDS_TKGM_EVIDENCE') return 'Needs TKGM evidence';
+  if (status === 'NEEDS_MUNICIPALITY_IMAR_EVIDENCE') return 'Needs municipality imar evidence';
+  if (status === 'NEEDS_REVIEWED_EVIDENCE') return 'Needs reviewed evidence';
+  if (status === 'SUPPORTING_EVIDENCE_ONLY') return 'Supporting evidence only';
+  return 'Manual review required';
 }
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 
@@ -419,6 +461,112 @@ export default function PropertyResult() {
     } as Record<AnalysisActionKey, ReadinessRow | null>;
   }, [readinessRows]);
 
+  const reportReadiness = useMemo(() => {
+    const quickRow = readinessByAction.quickScore;
+    const parcelRow = readinessByAction.parselInsight;
+    const developerRow = readinessByAction.developerFit;
+    const docs = documents || [];
+
+    const hasEvidence = docs.length > 0;
+    const hasSupportingOnly = docs.some((doc) => doc.supportingEvidenceOnly);
+    const hasManualReviewRequired = docs.some(
+      (doc) => doc.reviewStatus === 'MANUAL_REVIEW_REQUIRED' || doc.metadataStatus === 'MANUAL_REVIEW_REQUIRED'
+    );
+    const hasRejected = docs.some((doc) => doc.reviewStatus === 'REJECTED' || doc.metadataStatus === 'REJECTED');
+    const allPreviewOnlyEvidence =
+      hasEvidence &&
+      docs.every((doc) => {
+        const review = String(doc.reviewStatus || '').toUpperCase();
+        const metadata = String(doc.metadataStatus || '').toUpperCase();
+        return review === 'PREVIEW_ONLY' || metadata === 'PREVIEW_ONLY';
+      });
+
+    const quickStatus: ReportReadinessStatus =
+      quickRow?.status === 'READY' ? 'READY_FOR_QUICK_CHECK' : 'NEEDS_MORE_DATA';
+    const parcelStatus: ReportReadinessStatus =
+      parcelRow?.status === 'READY'
+        ? 'READY_FOR_PARCEL_INSIGHT'
+        : parcelRow?.status === 'NEEDS_PARCEL_IDENTITY'
+        ? 'NEEDS_PARCEL_IDENTITY'
+        : 'NEEDS_TKGM_EVIDENCE';
+    const developerStatus: ReportReadinessStatus =
+      developerRow?.status === 'READY' ? 'READY_FOR_DEVELOPER_FIT' : 'NEEDS_MUNICIPALITY_IMAR_EVIDENCE';
+
+    const hasAnyAnalysisReady =
+      quickStatus === 'READY_FOR_QUICK_CHECK' ||
+      parcelStatus === 'READY_FOR_PARCEL_INSIGHT' ||
+      developerStatus === 'READY_FOR_DEVELOPER_FIT';
+
+    const allAnalysesBlocked =
+      quickStatus !== 'READY_FOR_QUICK_CHECK' &&
+      parcelStatus !== 'READY_FOR_PARCEL_INSIGHT' &&
+      developerStatus !== 'READY_FOR_DEVELOPER_FIT';
+
+    const missingEvidence: string[] = [];
+    if (!hasEvidence) {
+      missingEvidence.push('En az bir belge/evidence yüklenmeli.');
+    }
+    if (quickStatus !== 'READY_FOR_QUICK_CHECK') {
+      missingEvidence.push('Quick check için ilan URL veya temel listing/property bağlamı gerekli.');
+    }
+    if (parcelStatus === 'NEEDS_PARCEL_IDENTITY') {
+      missingEvidence.push('Parsel insight için ada/parsel kimliği eksik.');
+    }
+    if (parcelStatus === 'NEEDS_TKGM_EVIDENCE') {
+      missingEvidence.push('Parsel insight için koordinat veya TKGM evidence gerekli.');
+    }
+    if (developerStatus !== 'READY_FOR_DEVELOPER_FIT') {
+      missingEvidence.push('Developer fit için belediye imar/e-plan evidence gerekli.');
+    }
+
+    const reviewWarnings: string[] = [];
+    if (!documentMetadataAvailable) {
+      reviewWarnings.push('Document readiness unavailable. Upload/review evidence recommended.');
+    }
+    if (allPreviewOnlyEvidence) {
+      reviewWarnings.push('Evidence metadata PREVIEW_ONLY seviyesinde. Rapor öncesi review gerekli.');
+    }
+    if (hasSupportingOnly) {
+      reviewWarnings.push('Supporting evidence only işaretli belgeler tek başına resmi doğrulama değildir.');
+    }
+    if (hasManualReviewRequired) {
+      reviewWarnings.push('Manual review required statüsünde belge var.');
+    }
+    if (hasRejected) {
+      reviewWarnings.push('Rejected statüsünde belge var, rapor kapsamı etkilenebilir.');
+    }
+
+    let overallStatus: ReportReadinessStatus = 'NEEDS_MORE_DATA';
+    if (!documentMetadataAvailable || hasManualReviewRequired) {
+      overallStatus = 'MANUAL_REVIEW_REQUIRED';
+    } else if (hasSupportingOnly && !hasAnyAnalysisReady) {
+      overallStatus = 'SUPPORTING_EVIDENCE_ONLY';
+    } else if (hasEvidence && allPreviewOnlyEvidence) {
+      overallStatus = 'NEEDS_REVIEWED_EVIDENCE';
+    } else if (hasAnyAnalysisReady && !allAnalysesBlocked && hasEvidence && !allPreviewOnlyEvidence) {
+      overallStatus = 'READY_FOR_REPORT';
+    } else if (parcelStatus === 'NEEDS_PARCEL_IDENTITY') {
+      overallStatus = 'NEEDS_PARCEL_IDENTITY';
+    } else if (parcelStatus === 'NEEDS_TKGM_EVIDENCE') {
+      overallStatus = 'NEEDS_TKGM_EVIDENCE';
+    } else if (developerStatus === 'NEEDS_MUNICIPALITY_IMAR_EVIDENCE') {
+      overallStatus = 'NEEDS_MUNICIPALITY_IMAR_EVIDENCE';
+    }
+
+    const showIncompleteReportWarning = overallStatus !== 'READY_FOR_REPORT';
+
+    return {
+      overallStatus,
+      quickStatus,
+      parcelStatus,
+      developerStatus,
+      missingEvidence,
+      reviewWarnings,
+      hasSupportingOnly,
+      showIncompleteReportWarning,
+    };
+  }, [documents, documentMetadataAvailable, readinessByAction]);
+
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
     const row = readinessByAction[action];
@@ -466,6 +614,71 @@ export default function PropertyResult() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Report readiness</h3>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${reportStatusClasses(reportReadiness.overallStatus)}`}>
+            {reportStatusLabel(reportReadiness.overallStatus)}
+          </span>
+          <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${reportStatusClasses(reportReadiness.quickStatus)}`}>
+            Quick: {reportStatusLabel(reportReadiness.quickStatus)}
+          </span>
+          <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${reportStatusClasses(reportReadiness.parcelStatus)}`}>
+            Parcel: {reportStatusLabel(reportReadiness.parcelStatus)}
+          </span>
+          <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${reportStatusClasses(reportReadiness.developerStatus)}`}>
+            Developer: {reportStatusLabel(reportReadiness.developerStatus)}
+          </span>
+        </div>
+        {reportReadiness.missingEvidence.length > 0 ? (
+          <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2">
+            <div className="text-xs font-medium text-amber-800">Missing evidence</div>
+            <ul className="mt-1 list-disc pl-4 text-xs text-amber-800">
+              {reportReadiness.missingEvidence.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {reportReadiness.reviewWarnings.length > 0 ? (
+          <div className="mt-2 rounded border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">
+            <div className="font-medium">Review warnings</div>
+            <ul className="mt-1 list-disc pl-4">
+              {reportReadiness.reviewWarnings.map((warning) => (
+                <li key={warning}>{warning}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {reportReadiness.hasSupportingOnly ? (
+          <div className="mt-2 text-xs text-amber-700">
+            Supporting evidence warning: Supporting-only belgeler tek başına nihai rapor doğrulaması için yeterli değildir.
+          </div>
+        ) : null}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
+            type="button"
+            onClick={() => navigate(`/properties/${id}/documents`)}
+          >
+            Upload evidence
+          </button>
+          <button
+            className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
+            type="button"
+            onClick={() => navigate(`/properties/${id}/documents`)}
+          >
+            Review documents
+          </button>
+          <button
+            className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
+            type="button"
+            onClick={() => navigate(`/properties/${id}`)}
+          >
+            Back to property
+          </button>
         </div>
       </div>
       <div className="mb-4 space-y-2">
@@ -599,7 +812,14 @@ export default function PropertyResult() {
         </div>
       )}
       {analysisRunId && !pdfId && (
-        <button className="bg-green-600 text-white px-4 py-2 rounded mb-2" onClick={purchasePDF}>PDF Rapor Satın Al</button>
+        <div className="mb-2">
+          <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={purchasePDF}>PDF Rapor Satın Al</button>
+          {reportReadiness.showIncompleteReportWarning ? (
+            <div className="mt-2 text-xs text-amber-700">
+              This report may be incomplete because required evidence is missing or not reviewed.
+            </div>
+          ) : null}
+        </div>
       )}
       {pdfId && (
         <a className="bg-blue-600 text-white px-4 py-2 rounded" href={`/reports/${pdfId}/download`}>PDF Raporu İndir</a>
