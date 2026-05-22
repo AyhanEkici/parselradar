@@ -1,0 +1,21 @@
+{
+  "phase": "P2.1",
+  "step": "no-drift-check",
+  "queries": {
+    "intelligenceRoutes": "MATCHES_ONLY_IN_PRIOR_PROOF_TEXT",
+    "AdminScoringDiagnostics": "MATCHES_ONLY_IN_PRIOR_PROOF_TEXT",
+    "MEGSIS": "MATCHES_ONLY_IN_PRIOR_PROOF_TEXT",
+    "CONNECTOR_TUCBS_WMS_ENDPOINT": "MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF",
+    "CONNECTOR_TUCBS_WMTS_ENDPOINT": "MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF",
+    "CONNECTOR_TUCBS_WFS_ENDPOINT": "MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF"
+  },
+  "interpretation": {
+    "intelligenceRoutes": "No runtime symbol found in source; references are historical proof assertions.",
+    "AdminScoringDiagnostics": "No runtime symbol found in source; references are historical proof assertions.",
+    "MEGSIS": "No implementation started; references are historical proof assertions.",
+    "CONNECTOR_TUCBS_*": "Allowed as env key names, diagnostics guidance, connector config metadata, docs, and proof text.",
+    "tucbsState": "NOT_CONFIGURED"
+  },
+  "driftConclusion": "No forbidden implementation drift detected. TUCBS remains NOT_CONFIGURED and no connector activation action was taken.",
+  "generatedAt": "2026-05-22T01:35:00.000Z"
+}

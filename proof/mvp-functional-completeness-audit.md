@@ -1,11 +1,11 @@
 # MVP Functional Completeness Audit
 
-Generated at: 2026-05-21T20:46:18.359Z
-Baseline commit: 38355679
-MVP completeness score: 49
+Generated at: 2026-05-22T00:55:04.185Z
+MVP completeness score: 89%
+Scoring basis: 125/141 entities COMPLETE
 
 ## Production blockers
-- none
+- [route] /credits: Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session (P0)
 
 ## Partial pages
 - none
@@ -17,38 +17,21 @@ MVP completeness score: 49
 - none
 
 ## Missing APIs
-- POST /admin/deal-pool/:propertyId/accept: No frontend consumer found for this protected API endpoint.
-- POST /admin/deal-pool/:entryId/share: No frontend consumer found for this protected API endpoint.
-- GET /admin/security-overview: No frontend consumer found for this protected API endpoint.
-- POST /analysis/:propertyId/quick-score: No frontend consumer found for this protected API endpoint.
-- POST /analysis/:propertyId/parsel-insight: No frontend consumer found for this protected API endpoint.
-- POST /analysis/:propertyId/developer-fit: No frontend consumer found for this protected API endpoint.
-- GET /auth/session-diagnostics: No frontend consumer found for this protected API endpoint.
-- POST /properties/:propertyId/consent: No frontend consumer found for this protected API endpoint.
-- GET /credits/: No frontend consumer found for this protected API endpoint.
-- POST /credits/dev-add: No frontend consumer found for this protected API endpoint.
-- POST /properties/:propertyId/documents: No frontend consumer found for this protected API endpoint.
-- GET /properties/:propertyId/documents: No frontend consumer found for this protected API endpoint.
-- GET /properties/:propertyId/documents/:documentId/view: No frontend consumer found for this protected API endpoint.
-- GET /properties/:propertyId/documents/:documentId/download: No frontend consumer found for this protected API endpoint.
-- DELETE /properties/:propertyId/documents/:documentId: No frontend consumer found for this protected API endpoint.
-- POST /exports/analysis/:propertyId: No frontend consumer found for this protected API endpoint.
-- GET /investor/dashboard: No frontend consumer found for this protected API endpoint.
-- GET /investor/saved-analyses: No frontend consumer found for this protected API endpoint.
-- POST /investor/saved-analyses: No frontend consumer found for this protected API endpoint.
-- DELETE /investor/saved-analyses/:id: No frontend consumer found for this protected API endpoint.
-- GET /investor/watchlist: No frontend consumer found for this protected API endpoint.
-- POST /investor/watchlist: No frontend consumer found for this protected API endpoint.
-- DELETE /investor/watchlist/:id: No frontend consumer found for this protected API endpoint.
-- GET /notifications: No frontend consumer found for this protected API endpoint.
-- GET /notifications/preferences: No frontend consumer found for this protected API endpoint.
-- PATCH /notifications/preferences: No frontend consumer found for this protected API endpoint.
-- POST /notifications/:id/read: No frontend consumer found for this protected API endpoint.
-- POST /notifications/:id/archive: No frontend consumer found for this protected API endpoint.
-- GET /notifications/digests: No frontend consumer found for this protected API endpoint.
-- POST /notifications/test-event: No frontend consumer found for this protected API endpoint.
+- POST /admin/deal-pool/:propertyId/accept: No frontend consumer detected for protected endpoint.
+- POST /admin/deal-pool/:entryId/share: No frontend consumer detected for protected endpoint.
+- GET /admin/security-overview: No frontend consumer detected for protected endpoint.
+- POST /analysis/:propertyId/parsel-insight: No frontend consumer detected for protected endpoint.
+- POST /analysis/:propertyId/developer-fit: No frontend consumer detected for protected endpoint.
+- GET /auth/session-diagnostics: No frontend consumer detected for protected endpoint.
+- GET /admin/telemetry: No frontend consumer detected for protected endpoint.
+- POST /create-checkout-session: No frontend consumer detected for protected endpoint.
+- ANY /stripe/*: Expected API group missing from route map: /stripe
+- ANY /documents/*: Expected API group missing from route map: /documents
+- ANY /admin/ogc/*: Expected API group missing from route map: /admin/ogc
+- ANY /admin/tucbs/*: Expected API group missing from route map: /admin/tucbs
 
 ## Top 10 next fixes
-1. none
-
-Recommended next phase: P2.2 — MVP Blocker Closure (no connector/TUCBS implementation)
+1. /credits - PRODUCTION_BLOCKER - Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session (P0)
+2. /analyses - DISCONNECTED - Route is missing from App route wiring. (P2)
+3. /properties - DISCONNECTED - Route is missing from App route wiring. (P2)
+4. /admin/property-documents - DISCONNECTED - Route is missing from App route wiring. (P2)

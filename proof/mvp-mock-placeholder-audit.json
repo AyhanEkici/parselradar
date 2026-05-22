@@ -1,0 +1,405 @@
+{
+  "generatedAt": "2026-05-22T00:55:04.185Z",
+  "summary": {
+    "routeRows": 0,
+    "searchFindings": 79
+  },
+  "routeRows": [],
+  "searchFindings": [
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/components/admin/AdminPrimitives.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/components/AppShell.tsx",
+      "count": 27
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/components/auth/ForgotPasswordLink.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/web/src/components/connectors/OgcServiceDiagnosticsCard.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/components/map/ActiveLayerToolbar.tsx",
+      "count": 1
+    },
+    {
+      "rule": "fake",
+      "file": "apps/web/src/components/operatingSystem/TerritorialOperatingSystemCard.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/components/RequireAuth.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/components/RoleGate.tsx",
+      "count": 2
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/AccessDenied.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "count": 3
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/AdminAuditTimeline.tsx",
+      "count": 2
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/web/src/pages/AdminConnectors.tsx",
+      "count": 2
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/AdminDealPool.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/AdminUsers.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "count": 3
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/ForgotPassword.tsx",
+      "count": 2
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/ForgotPassword.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/InvestorDashboard.tsx",
+      "count": 3
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/Login.tsx",
+      "count": 2
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/Login.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "count": 27
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/NotificationInbox.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/NotificationPreferences.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/Organizations.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/Organizations.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/PortfolioDashboard.tsx",
+      "count": 1
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/PortfolioDashboard.tsx",
+      "count": 1
+    },
+    {
+      "rule": "fake",
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "count": 1
+    },
+    {
+      "rule": "fake",
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "count": 1
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/Register.tsx",
+      "count": 3
+    },
+    {
+      "rule": "placeholder",
+      "file": "apps/web/src/pages/ResetPassword.tsx",
+      "count": 4
+    },
+    {
+      "rule": "links to missing routes",
+      "file": "apps/web/src/pages/ResetPassword.tsx",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/connectorContracts.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/connectorStatus.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/connectorTestRunner.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/demographicConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/demographicConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/emailProviderConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/emailProviderConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/infrastructureConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/infrastructureConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/listingConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/listingConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/mapGeocodingConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/mapGeocodingConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/municipalityConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/municipalityConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/municipalityPlanningConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts",
+      "count": 3
+    },
+    {
+      "rule": "not implemented",
+      "file": "apps/api/src/connectors/tkgmConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/tkgmConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/connectors/tkgmProductionConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/controllers/adminController.ts",
+      "count": 5
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/controllers/authController.ts",
+      "count": 3
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/controllers/passwordResetController.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/middleware/auth.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/security/runtimeSecretsValidator.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/connectorActivation/activateConnectorIfEligible.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/connectorActivation/buildConnectorActivationPlan.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/connectorActivation/buildConnectorReadiness.ts",
+      "count": 1
+    },
+    {
+      "rule": "mock",
+      "file": "apps/api/src/services/connectors/demographicConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "mock",
+      "file": "apps/api/src/services/connectors/infrastructureConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "mock",
+      "file": "apps/api/src/services/connectors/listingConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "mock",
+      "file": "apps/api/src/services/connectors/municipalityConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "mock",
+      "file": "apps/api/src/services/connectors/tkgmConnector.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/coordination/municipalSignalCoordinator.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/governance/evidenceStrengthClassifier.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/governance/governanceTypes.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/operatingSystem/territorialOperatingSystem.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/session/canonicalAuthValidator.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/session/sessionIntegrityValidator.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/session/tokenIntegrityValidator.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/testing/platformVerification.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/testing/verifyAuth.ts",
+      "count": 1
+    },
+    {
+      "rule": "official evidence labeling gaps",
+      "file": "apps/api/src/testing/verifyConnectors.ts",
+      "count": 1
+    }
+  ]
+}

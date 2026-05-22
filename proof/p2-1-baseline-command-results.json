@@ -1,0 +1,133 @@
+{
+  "phase": "P2.1",
+  "step": "baseline-safety-matrix",
+  "commands": [
+    {
+      "command": "npm run build --prefix apps/api",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run build --prefix apps/web",
+      "status": "PASS",
+      "notes": [
+        "Vite chunk-size warning only"
+      ]
+    },
+    {
+      "command": "npm run verify:connector-diagnostics-contract",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:connector-diagnostics",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:platform-integrity",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:deployment-truth",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:live-browser-mvp",
+      "status": "PASS",
+      "summary": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "blocked": 0
+      }
+    },
+    {
+      "command": "npm run verify:rbac",
+      "status": "PASS",
+      "summary": {
+        "total": 57,
+        "pass": 57,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:platform",
+      "status": "WARN",
+      "summary": {
+        "checks": 345,
+        "pass": 330,
+        "warn": 12,
+        "fail": 0,
+        "skipped": 3
+      }
+    },
+    {
+      "command": "npm run verify:canonical-auth",
+      "status": "PASS",
+      "summary": {
+        "allAuthMe200": true
+      }
+    },
+    {
+      "command": "npm run verify:live-login-contract",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:session-persistence",
+      "status": "PASS",
+      "summary": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:auth-ui-consistency",
+      "status": "PASS",
+      "summary": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:post-login-api",
+      "status": "PASS",
+      "summary": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:admin-ux-email",
+      "status": "PASS",
+      "summary": {
+        "total": 15,
+        "pass": 15,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:route-wiring",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:auth-shell",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:navigation-persistence",
+      "status": "PASS"
+    },
+    {
+      "command": "npm run verify:browser-history",
+      "status": "PASS"
+    }
+  ],
+  "gateDecision": {
+    "platformIntegrityPass": true,
+    "platformWarnFailCount": 0,
+    "trueFailDetected": false,
+    "allowedToProceedAudit": true
+  },
+  "generatedAt": "2026-05-22T01:45:00.000Z"
+}

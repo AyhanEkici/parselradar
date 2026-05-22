@@ -14,7 +14,7 @@ type Status =
   | 'PRODUCTION_BLOCKER';
 
 type Severity = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-type Priority = 'P0' | 'P1' | 'P2' | 'P3';
+type Priority = 'P0' | 'P1' | 'P2' | 'P3' | 'P4';
 
 type RouteAuditRow = {
   route: string;
@@ -57,6 +57,12 @@ type ApiDef = {
   sourceFile: string;
 };
 
+type SearchFinding = {
+  rule: string;
+  file: string;
+  count: number;
+};
+
 const ROOT = process.cwd();
 const WEB_SRC = path.join(ROOT, 'apps/web/src');
 const API_SRC = path.join(ROOT, 'apps/api/src');
@@ -67,7 +73,6 @@ const APP_SHELL_PATH = path.join(WEB_SRC, 'components/AppShell.tsx');
 const API_INDEX_PATH = path.join(API_SRC, 'index.ts');
 const API_ROUTES_DIR = path.join(API_SRC, 'routes');
 
-const KEYWORD_RE = /TODO|FIXME|mock|placeholder|fake|coming soon|not implemented|console\.log/gi;
 const MOCK_RE = /\bmock\b|mockData|demo data|hardcoded|stubbed/i;
 const PLACEHOLDER_RE = /coming soon|not implemented|todo|fixme|under construction/i;
 
@@ -75,23 +80,29 @@ const SCOPE_ROUTES: Array<{ label: string; route: string }> = [
   { label: 'dashboard', route: '/dashboard' },
   { label: 'credits', route: '/credits' },
   { label: 'reports', route: '/reports' },
-  { label: 'analyses', route: '/admin/analyses' },
+  { label: 'analyses', route: '/analyses' },
   { label: 'investor', route: '/investor' },
   { label: 'saved analyses', route: '/investor/saved-analyses' },
   { label: 'watchlist', route: '/investor/watchlist' },
   { label: 'portfolio', route: '/investor/portfolio' },
   { label: 'organizations', route: '/organizations' },
   { label: 'notifications', route: '/notifications' },
+  { label: 'properties', route: '/properties' },
+  { label: 'property detail', route: '/properties/:id' },
+  { label: 'property documents', route: '/properties/:id/documents' },
   { label: 'admin users', route: '/admin/users' },
   { label: 'admin analyses', route: '/admin/analyses' },
   { label: 'admin credit ledger', route: '/admin/credit-ledger' },
   { label: 'admin stripe sessions', route: '/admin/stripe-sessions' },
   { label: 'admin properties', route: '/admin/properties' },
+  { label: 'admin property documents', route: '/admin/property-documents' },
   { label: 'admin runtime', route: '/admin/runtime' },
   { label: 'admin deployment', route: '/admin/deployment' },
   { label: 'admin observability', route: '/admin/observability' },
   { label: 'admin analytics', route: '/admin/analytics' },
   { label: 'admin connectors', route: '/admin/connectors' },
+  { label: 'admin OGC connectors', route: '/admin/connectors/ogc' },
+  { label: 'admin TUCBS connector', route: '/admin/connectors/tucbs' },
   { label: 'audit timeline', route: '/admin/audit-timeline' },
 ];
 
@@ -102,12 +113,39 @@ const REQUIRED_API_GROUPS = [
   '/stripe',
   '/analysis',
   '/properties',
+  '/documents',
   '/organizations',
   '/notifications',
   '/admin/connectors',
+  '/admin/ogc',
+  '/admin/tucbs',
   '/admin/audit-events',
+  '/admin/runtime',
+  '/admin/deployment',
+  '/admin/observability',
+  '/admin/analytics',
   '/health',
   '/__buildinfo',
+];
+
+const MANDATORY_SEARCH_RULES: Array<{ name: string; re: RegExp }> = [
+  { name: 'TODO', re: /\bTODO\b/gi },
+  { name: 'FIXME', re: /\bFIXME\b/gi },
+  { name: 'mock', re: /\bmock\b/gi },
+  { name: 'placeholder', re: /placeholder/gi },
+  { name: 'fake', re: /\bfake\b/gi },
+  { name: 'demo', re: /\bdemo\b/gi },
+  { name: 'coming soon', re: /coming soon/gi },
+  { name: 'not implemented', re: /not implemented/gi },
+  { name: 'console.log', re: /console\.log\(/gi },
+  { name: 'hardcoded demo data', re: /hardcoded demo data/gi },
+  { name: 'empty buttons', re: /<button[^>]*>\s*<\/button>/gi },
+  { name: 'forms without submit handlers', re: /<form(?![^>]*onSubmit)[^>]*>/gi },
+  { name: 'links to missing routes', re: /to="\/[^"\n]+"/gi },
+  { name: 'try/catch swallowing errors', re: /catch\s*\([^)]*\)\s*\{\s*\}/gi },
+  { name: 'missing loading states', re: /loading\s*:\s*false/gi },
+  { name: 'missing empty states', re: /no data|empty state/gi },
+  { name: 'official evidence labeling gaps', re: /USER_PROVIDED_OFFICIAL_EVIDENCE|VERIFIED_BY_APPROVED_CONNECTOR|PUBLIC_SOURCE|UNVERIFIED|MISSING|NEEDS_MANUAL_REVIEW/g },
 ];
 
 function normalizePath(value: string): string {
@@ -134,13 +172,13 @@ function writeMd(filePath: string, content: string): void {
   fs.writeFileSync(filePath, `${content}\n`, 'utf8');
 }
 
-function listFiles(dir: string, ext: string, out: string[] = []): string[] {
+function listFiles(dir: string, exts: string[], out: string[] = []): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
     const abs = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      listFiles(abs, ext, out);
-    } else if (entry.isFile() && abs.endsWith(ext)) {
+      listFiles(abs, exts, out);
+    } else if (entry.isFile() && exts.some((ext) => abs.endsWith(ext))) {
       out.push(abs);
     }
   }
@@ -201,8 +239,9 @@ function extractApiFetchCalls(text: string): string[] {
   return Array.from(calls).sort();
 }
 
-function extractActions(text: string): { actions: string[]; unboundButtons: number; formsWithoutSubmit: number } {
+function extractActions(text: string): { actions: string[]; unboundButtons: number; formsWithoutSubmit: number; links: string[] } {
   const actions = new Set<string>();
+  const links: string[] = [];
   let unboundButtons = 0;
   let formsWithoutSubmit = 0;
 
@@ -227,9 +266,12 @@ function extractActions(text: string): { actions: string[]; unboundButtons: numb
 
   const linkRe = /<Link to="([^"]+)"/g;
   let l: RegExpExecArray | null;
-  while ((l = linkRe.exec(text)) !== null) actions.add(`link:${l[1]}`);
+  while ((l = linkRe.exec(text)) !== null) {
+    links.push(l[1]);
+    actions.add(`link:${l[1]}`);
+  }
 
-  return { actions: Array.from(actions).slice(0, 12), unboundButtons, formsWithoutSubmit };
+  return { actions: Array.from(actions).slice(0, 16), unboundButtons, formsWithoutSubmit, links };
 }
 
 function parseApiMounts(indexText: string): Map<string, string> {
@@ -248,11 +290,6 @@ function parseApiMounts(indexText: string): Map<string, string> {
     const varName = m[2];
     const file = importMap.get(varName);
     if (file) mounts.set(file, mountPath);
-  }
-
-  // Special-case wrapper mount for stripe routes.
-  if (!mounts.has('stripeRoutes.ts') && /app\.use\(\s*'\/stripe'/.test(indexText)) {
-    mounts.set('stripeRoutes.ts', '/stripe');
   }
 
   return mounts;
@@ -290,8 +327,8 @@ function parseApiRoutes(filePath: string, mountPath: string): ApiDef[] {
 }
 
 function matchesEndpoint(call: string, endpoint: string): boolean {
-  const c = normalizePath(call);
-  const e = normalizePath(endpoint);
+  const c = normalizePath(call.startsWith('/') ? call : `/${call}`);
+  const e = normalizePath(endpoint.startsWith('/') ? endpoint : `/${endpoint}`);
   return c === e || c.startsWith(`${e}/`) || e.startsWith(`${c}/`);
 }
 
@@ -308,8 +345,10 @@ function scoreSeverity(status: Status): { severity: Severity; priority: Priority
     case 'MOCK_DATA':
     case 'DISCONNECTED':
       return { severity: 'MEDIUM', priority: 'P2' };
-    default:
+    case 'PARTIAL':
       return { severity: 'LOW', priority: 'P3' };
+    default:
+      return { severity: 'LOW', priority: 'P4' };
   }
 }
 
@@ -318,6 +357,20 @@ function toMdTable(headers: string[], rows: string[][]): string {
   const sep = `| ${headers.map(() => '---').join(' | ')} |`;
   const body = rows.map((r) => `| ${r.join(' | ')} |`);
   return [head, sep, ...body].join('\n');
+}
+
+function scanMandatoryFindings(files: string[]): SearchFinding[] {
+  const findings: SearchFinding[] = [];
+  for (const file of files) {
+    const text = readText(file);
+    for (const rule of MANDATORY_SEARCH_RULES) {
+      const matches = text.match(rule.re);
+      if (matches && matches.length > 0) {
+        findings.push({ rule: rule.name, file: rel(file), count: matches.length });
+      }
+    }
+  }
+  return findings;
 }
 
 function main() {
@@ -329,7 +382,7 @@ function main() {
   const navMap = parseNav(shellText);
 
   const mounts = parseApiMounts(indexText);
-  const routeFiles = listFiles(API_ROUTES_DIR, '.ts');
+  const routeFiles = listFiles(API_ROUTES_DIR, ['.ts']);
   const apiDefs: ApiDef[] = [];
   for (const rf of routeFiles) {
     const key = path.basename(rf);
@@ -337,7 +390,6 @@ function main() {
     apiDefs.push(...parseApiRoutes(rf, mountPath));
   }
 
-  // Non-router endpoints mounted directly in index.ts.
   if (/app\.get\('\/health'/.test(indexText)) {
     apiDefs.push({ endpoint: '/health', method: 'GET', requiredRole: 'PUBLIC', controller: 'healthController', sourceFile: 'apps/api/src/index.ts' });
   }
@@ -345,9 +397,10 @@ function main() {
     apiDefs.push({ endpoint: '/__buildinfo', method: 'GET', requiredRole: 'PUBLIC', controller: '__buildinfo', sourceFile: 'apps/api/src/index.ts' });
   }
 
-  const webFiles = listFiles(WEB_SRC, '.tsx').concat(listFiles(WEB_SRC, '.ts'));
+  const webFiles = listFiles(WEB_SRC, ['.tsx', '.ts']);
+  const apiFiles = listFiles(API_SRC, ['.ts']);
   const apiCallUsage = new Map<string, string[]>();
-  const keywordHits: Array<{ file: string; hits: string[] }> = [];
+
   for (const wf of webFiles) {
     const text = readText(wf);
     const calls = extractApiFetchCalls(text);
@@ -356,16 +409,15 @@ function main() {
       arr.push(rel(wf));
       apiCallUsage.set(c, arr);
     }
-    const matches = text.match(KEYWORD_RE);
-    if (matches && matches.length > 0) {
-      keywordHits.push({ file: rel(wf), hits: Array.from(new Set(matches.map((x) => x.toLowerCase()))).slice(0, 8) });
-    }
   }
 
   const routeRows: RouteAuditRow[] = [];
-  const routeByPath = new Map(routeDefs.map((r) => [r.route, r]));
+  const routeByPath = new Map(routeDefs.map((r) => [normalizePath(r.route), r]));
+  const knownRoutes = new Set(routeDefs.map((r) => normalizePath(r.route)));
+
   for (const scoped of SCOPE_ROUTES) {
-    const def = routeByPath.get(scoped.route);
+    const normalizedScope = normalizePath(scoped.route);
+    const def = routeByPath.get(normalizedScope);
     if (!def) {
       const status: Status = 'DISCONNECTED';
       const sev = scoreSeverity(status);
@@ -379,7 +431,7 @@ function main() {
         currentStatus: status,
         issue: 'Route is missing from App route wiring.',
         severity: sev.severity,
-        fixRequired: 'Add the missing route or remove dead navigation entry.',
+        fixRequired: 'Add route wiring or remove dead route dependency.',
         priority: sev.priority,
       });
       continue;
@@ -397,9 +449,9 @@ function main() {
         primaryActions: [],
         backendEndpointsUsed: [],
         currentStatus: status,
-        issue: 'Route points to missing page component file.',
+        issue: 'Route references missing page component.',
         severity: sev.severity,
-        fixRequired: 'Restore or replace the page component implementation.',
+        fixRequired: 'Restore component file or point route to existing component.',
         priority: sev.priority,
       });
       continue;
@@ -411,10 +463,8 @@ function main() {
     const hasMock = MOCK_RE.test(pageText);
     const hasPlaceholder = PLACEHOLDER_RE.test(pageText);
 
-    const missingApis = endpoints
-      .map((ep) => ({ raw: ep, normalized: normalizePath(ep.startsWith('/') ? ep : `/${ep}`) }))
-      .filter((ep) => !apiDefs.some((api) => matchesEndpoint(ep.normalized, api.endpoint)))
-      .map((ep) => ep.raw);
+    const missingApis = endpoints.filter((ep) => !apiDefs.some((api) => matchesEndpoint(ep, api.endpoint)));
+    const deadLinks = actions.links.filter((to) => !knownRoutes.has(normalizePath(to)) && !to.startsWith('http'));
 
     let status: Status = 'COMPLETE';
     let issue = 'None';
@@ -423,32 +473,32 @@ function main() {
     if (missingApis.length > 0) {
       status = 'MISSING_BACKEND';
       issue = `Frontend calls missing API endpoints: ${missingApis.join(', ')}`;
-      fixRequired = 'Implement missing backend endpoints or correct frontend API paths.';
-    } else if (actions.unboundButtons > 0 || actions.formsWithoutSubmit > 0) {
+      fixRequired = 'Implement endpoint or correct frontend API path.';
+    } else if (actions.unboundButtons > 0 || actions.formsWithoutSubmit > 0 || deadLinks.length > 0) {
       status = 'BROKEN_ACTION';
-      issue = `Found ${actions.unboundButtons} button(s) without handlers and ${actions.formsWithoutSubmit} form(s) without onSubmit.`;
-      fixRequired = 'Attach handlers to action buttons/forms or remove dead actions.';
+      issue = `Unbound buttons=${actions.unboundButtons}, formsWithoutSubmit=${actions.formsWithoutSubmit}, deadLinks=${deadLinks.length}`;
+      fixRequired = 'Bind handlers, wire form submit, and remove/fix dead links.';
     } else if (hasMock) {
       status = 'MOCK_DATA';
-      issue = 'Mock/fake/demo markers detected in page source.';
-      fixRequired = 'Replace mock data paths with production API-backed data flows.';
+      issue = 'Mock/fake/demo marker detected in page source.';
+      fixRequired = 'Replace mock/demo data with production-backed flow.';
     } else if (hasPlaceholder) {
       status = 'PLACEHOLDER';
-      issue = 'Placeholder or TODO/FIXME markers detected in page source.';
-      fixRequired = 'Complete unfinished implementation and remove placeholder markers.';
+      issue = 'Placeholder/TODO/FIXME marker detected in page source.';
+      fixRequired = 'Complete implementation and remove placeholder markers.';
     } else if (endpoints.length === 0) {
       status = 'PARTIAL';
-      issue = 'No direct apiFetch usage found in page file (child hook/component may own data).';
-      fixRequired = 'Confirm data wiring and ensure loading/empty/error states are fully implemented.';
+      issue = 'No direct apiFetch in page; data flow may be indirect and needs validation.';
+      fixRequired = 'Verify wiring via hooks/components and ensure complete UX states.';
     }
 
     if (
       ['MISSING_BACKEND', 'MISSING_FRONTEND', 'BROKEN_ACTION', 'ROLE_MISMATCH', 'DISCONNECTED'].includes(status) &&
-      ['/dashboard', '/credits', '/reports', '/investor', '/admin/users', '/admin/analyses', '/admin/properties'].includes(scoped.route)
+      ['/dashboard', '/credits', '/reports', '/investor', '/properties', '/admin/users', '/admin/analyses', '/admin/properties'].includes(scoped.route)
     ) {
       status = 'PRODUCTION_BLOCKER';
-      issue = `Core workflow blocker: ${issue}`;
-      fixRequired = `Priority fix required for MVP route ${scoped.route}. ${fixRequired}`;
+      issue = `Core flow blocker: ${issue}`;
+      fixRequired = `Priority fix required for ${scoped.route}. ${fixRequired}`;
     }
 
     const sev = scoreSeverity(status);
@@ -481,12 +531,16 @@ function main() {
 
     if (/UNKNOWN_HANDLER/.test(api.controller)) {
       status = 'PARTIAL';
-      issue = 'Unable to parse controller handler expression.';
-      fixRequired = 'Use explicit controller method references in route definitions.';
+      issue = 'Route parser could not resolve controller expression.';
+      fixRequired = 'Use explicit controller method reference in route definition.';
+    } else if (api.endpoint.startsWith('/admin') && api.requiredRole !== 'ADMIN') {
+      status = 'ROLE_MISMATCH';
+      issue = 'Admin endpoint appears without strict admin middleware match.';
+      fixRequired = 'Enforce admin middleware on endpoint.';
     } else if (consumers.length === 0 && api.requiredRole !== 'PUBLIC') {
       status = 'DISCONNECTED';
-      issue = 'No frontend consumer found for this protected API endpoint.';
-      fixRequired = 'Wire the endpoint into intended UI flow or remove dead API surface.';
+      issue = 'No frontend consumer detected for protected endpoint.';
+      fixRequired = 'Wire endpoint to UI flow or explicitly de-scope.';
     }
 
     const sev = scoreSeverity(status);
@@ -504,22 +558,20 @@ function main() {
     });
   }
 
-  const missingGroups = REQUIRED_API_GROUPS.filter(
-    (group) => !apiDefs.some((api) => api.endpoint.startsWith(group))
-  );
+  const missingGroups = REQUIRED_API_GROUPS.filter((group) => !apiDefs.some((api) => normalizePath(api.endpoint).startsWith(normalizePath(group))));
   for (const group of missingGroups) {
     const status: Status = 'MISSING_BACKEND';
     const sev = scoreSeverity(status);
     apiRows.push({
       endpoint: `${group}/*`,
       method: 'ANY',
-      requiredRole: 'AUTHENTICATED',
+      requiredRole: group.startsWith('/admin') ? 'ADMIN' : 'AUTHENTICATED',
       controller: 'MISSING_GROUP',
       frontendConsumers: [],
       currentStatus: status,
-      issue: `Expected API group missing from backend routes: ${group}`,
+      issue: `Expected API group missing from route map: ${group}`,
       severity: sev.severity,
-      fixRequired: 'Add missing API route group or adjust MVP scope definition.',
+      fixRequired: 'Implement missing API group or document formal out-of-scope decision.',
       priority: sev.priority,
     });
   }
@@ -534,7 +586,8 @@ function main() {
     return acc;
   }, {} as Record<Status, number>);
 
-  const blockers = routeRows.filter((r) => r.currentStatus === 'PRODUCTION_BLOCKER')
+  const blockers = routeRows
+    .filter((r) => r.currentStatus === 'PRODUCTION_BLOCKER')
     .map((r) => ({ scope: 'route', key: r.route, issue: r.issue, priority: r.priority }))
     .concat(
       apiRows
@@ -543,18 +596,20 @@ function main() {
     );
 
   const partialPages = routeRows.filter((r) => r.currentStatus === 'PARTIAL');
-  const placeholderOrMock = routeRows.filter((r) => ['PLACEHOLDER', 'MOCK_DATA'].includes(r.currentStatus));
-  const brokenActions = routeRows.filter((r) => r.currentStatus === 'BROKEN_ACTION');
-  const missingApis = apiRows.filter((a) => ['MISSING_BACKEND', 'DISCONNECTED'].includes(a.currentStatus));
+  const placeholderOrMock = routeRows.filter((r) => r.currentStatus === 'PLACEHOLDER' || r.currentStatus === 'MOCK_DATA');
+  const brokenActions = routeRows.filter((r) => r.currentStatus === 'BROKEN_ACTION' || (r.currentStatus === 'PRODUCTION_BLOCKER' && /Unbound buttons|formsWithoutSubmit|deadLinks/.test(r.issue)));
+  const missingApis = apiRows.filter((a) => a.currentStatus === 'MISSING_BACKEND' || a.currentStatus === 'DISCONNECTED');
+
+  const searchFindings = scanMandatoryFindings([...webFiles, ...apiFiles]);
 
   const totalEntities = routeRows.length + apiRows.length;
   const completeEntities = routeRows.filter((r) => r.currentStatus === 'COMPLETE').length + apiRows.filter((a) => a.currentStatus === 'COMPLETE').length;
   const completenessScore = totalEntities === 0 ? 0 : Math.round((completeEntities / totalEntities) * 100);
 
   const top10 = routeRows
-    .filter((r) => ['PRODUCTION_BLOCKER', 'MISSING_BACKEND', 'MISSING_FRONTEND', 'BROKEN_ACTION', 'ROLE_MISMATCH', 'DISCONNECTED', 'PARTIAL', 'PLACEHOLDER', 'MOCK_DATA'].includes(r.currentStatus))
+    .filter((r) => r.currentStatus !== 'COMPLETE')
     .sort((a, b) => {
-      const p = { P0: 0, P1: 1, P2: 2, P3: 3 } as Record<Priority, number>;
+      const p = { P0: 0, P1: 1, P2: 2, P3: 3, P4: 4 } as Record<Priority, number>;
       const s = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 } as Record<Severity, number>;
       return p[a.priority] - p[b.priority] || s[a.severity] - s[b.severity];
     })
@@ -580,15 +635,37 @@ function main() {
     rows: apiRows,
   };
 
+  const brokenActionsPayload = {
+    generatedAt: new Date().toISOString(),
+    summary: {
+      total: brokenActions.length,
+    },
+    rows: brokenActions,
+  };
+
+  const mockPlaceholderPayload = {
+    generatedAt: new Date().toISOString(),
+    summary: {
+      routeRows: placeholderOrMock.length,
+      searchFindings: searchFindings.length,
+    },
+    routeRows: placeholderOrMock,
+    searchFindings,
+  };
+
   const completenessPayload = {
     generatedAt: new Date().toISOString(),
     phase: 'P2.1 — FULL MVP FUNCTIONAL COMPLETENESS AUDIT',
-    baselineCommit: '38355679',
     completenessScore,
+    scoringBasis: {
+      totalEntities,
+      completeEntities,
+      formula: 'round((completeEntities / totalEntities) * 100)',
+    },
     summary: {
       routes: routeStatusCounts,
       apis: apiStatusCounts,
-      keywordHits,
+      searchFindings: searchFindings.slice(0, 100),
     },
     productionBlockers: blockers,
     partialPages,
@@ -596,27 +673,17 @@ function main() {
     brokenActions,
     missingApis,
     top10NextFixes: top10,
-    recommendedNextPhase: 'P2.2 — MVP Blocker Closure (no connector/TUCBS implementation)',
+    recommendedNextPhase: 'P2.1A-FIX — fix P0/P1 MVP blockers from audit',
   };
 
   writeJson(path.join(PROOF_DIR, 'mvp-route-action-map.json'), routeMapPayload);
   writeJson(path.join(PROOF_DIR, 'mvp-api-contract-audit.json'), apiAuditPayload);
+  writeJson(path.join(PROOF_DIR, 'mvp-broken-actions-audit.json'), brokenActionsPayload);
+  writeJson(path.join(PROOF_DIR, 'mvp-mock-placeholder-audit.json'), mockPlaceholderPayload);
   writeJson(path.join(PROOF_DIR, 'mvp-functional-completeness-audit.json'), completenessPayload);
 
   const routeTable = toMdTable(
-    [
-      'route',
-      'page/component',
-      'requiredRole',
-      'visibleNavLabel',
-      'primaryActions',
-      'backendEndpointsUsed',
-      'currentStatus',
-      'issue',
-      'severity',
-      'fixRequired',
-      'priority',
-    ],
+    ['route', 'page/component', 'requiredRole', 'visibleNavLabel', 'primaryActions', 'backendEndpointsUsed', 'currentStatus', 'issue', 'severity', 'fixRequired', 'priority'],
     routeRows.map((r) => [
       r.route,
       r.pageComponent,
@@ -633,18 +700,7 @@ function main() {
   );
 
   const apiTable = toMdTable(
-    [
-      'endpoint',
-      'method',
-      'requiredRole',
-      'controller',
-      'frontendConsumers',
-      'currentStatus',
-      'issue',
-      'severity',
-      'fixRequired',
-      'priority',
-    ],
+    ['endpoint', 'method', 'requiredRole', 'controller', 'frontendConsumers', 'currentStatus', 'issue', 'severity', 'fixRequired', 'priority'],
     apiRows.map((a) => [
       a.endpoint,
       a.method,
@@ -661,26 +717,46 @@ function main() {
 
   writeMd(
     path.join(PROOF_DIR, 'mvp-route-action-map.md'),
-    [
-      '# MVP Route Action Map',
-      '',
-      `Generated at: ${routeMapPayload.generatedAt}`,
-      `Total routes audited: ${routeRows.length}`,
-      '',
-      routeTable,
-    ].join('\n')
+    ['# MVP Route Action Map', '', `Generated at: ${routeMapPayload.generatedAt}`, `Total routes audited: ${routeRows.length}`, '', routeTable].join('\n')
   );
 
   writeMd(
     path.join(PROOF_DIR, 'mvp-api-contract-audit.md'),
+    ['# MVP API Contract Audit', '', `Generated at: ${apiAuditPayload.generatedAt}`, `Total APIs audited: ${apiRows.length}`, `Missing API groups: ${missingGroups.length ? missingGroups.join(', ') : 'none'}`, '', apiTable].join('\n')
+  );
+
+  writeMd(
+    path.join(PROOF_DIR, 'mvp-broken-actions-audit.md'),
     [
-      '# MVP API Contract Audit',
+      '# MVP Broken Actions Audit',
       '',
-      `Generated at: ${apiAuditPayload.generatedAt}`,
-      `Total APIs audited: ${apiRows.length}`,
-      `Missing API groups: ${missingGroups.length ? missingGroups.join(', ') : 'none'}`,
+      `Generated at: ${brokenActionsPayload.generatedAt}`,
+      `Total broken action rows: ${brokenActions.length}`,
       '',
-      apiTable,
+      ...(brokenActions.length
+        ? brokenActions.map((row) => `- ${row.route}: ${row.issue} (${row.priority})`)
+        : ['- none']),
+    ].join('\n')
+  );
+
+  writeMd(
+    path.join(PROOF_DIR, 'mvp-mock-placeholder-audit.md'),
+    [
+      '# MVP Mock Placeholder Audit',
+      '',
+      `Generated at: ${mockPlaceholderPayload.generatedAt}`,
+      `Route rows flagged: ${placeholderOrMock.length}`,
+      `Mandatory search findings: ${searchFindings.length}`,
+      '',
+      '## Route rows',
+      ...(placeholderOrMock.length
+        ? placeholderOrMock.map((row) => `- ${row.route}: ${row.currentStatus} - ${row.issue}`)
+        : ['- none']),
+      '',
+      '## Search findings (first 80)',
+      ...(searchFindings.length
+        ? searchFindings.slice(0, 80).map((f) => `- ${f.rule}: ${f.file} (count=${f.count})`)
+        : ['- none']),
     ].join('\n')
   );
 
@@ -690,36 +766,26 @@ function main() {
       '# MVP Functional Completeness Audit',
       '',
       `Generated at: ${completenessPayload.generatedAt}`,
-      `Baseline commit: ${completenessPayload.baselineCommit}`,
-      `MVP completeness score: ${completenessScore}`,
+      `MVP completeness score: ${completenessScore}%`,
+      `Scoring basis: ${completeEntities}/${totalEntities} entities COMPLETE`,
       '',
       '## Production blockers',
-      ...(blockers.length
-        ? blockers.map((b) => `- [${b.scope}] ${b.key}: ${b.issue} (${b.priority})`)
-        : ['- none']),
+      ...(blockers.length ? blockers.map((b) => `- [${b.scope}] ${b.key}: ${b.issue} (${b.priority})`) : ['- none']),
       '',
       '## Partial pages',
-      ...(partialPages.length ? partialPages.map((p) => `- ${p.route} (${p.pageComponent}): ${p.issue}`) : ['- none']),
+      ...(partialPages.length ? partialPages.map((p) => `- ${p.route}: ${p.issue}`) : ['- none']),
       '',
       '## Placeholder/mock areas',
-      ...(placeholderOrMock.length
-        ? placeholderOrMock.map((p) => `- ${p.route} (${p.currentStatus}): ${p.issue}`)
-        : ['- none']),
+      ...(placeholderOrMock.length ? placeholderOrMock.map((p) => `- ${p.route}: ${p.issue}`) : ['- none']),
       '',
       '## Broken actions',
       ...(brokenActions.length ? brokenActions.map((b) => `- ${b.route}: ${b.issue}`) : ['- none']),
       '',
       '## Missing APIs',
-      ...(missingApis.length
-        ? missingApis.slice(0, 30).map((m) => `- ${m.method} ${m.endpoint}: ${m.issue}`)
-        : ['- none']),
+      ...(missingApis.length ? missingApis.slice(0, 40).map((m) => `- ${m.method} ${m.endpoint}: ${m.issue}`) : ['- none']),
       '',
       '## Top 10 next fixes',
-      ...(top10.length
-        ? top10.map((t, i) => `${i + 1}. ${t.route} - ${t.status} - ${t.issue} (${t.priority})`)
-        : ['1. none']),
-      '',
-      `Recommended next phase: ${completenessPayload.recommendedNextPhase}`,
+      ...(top10.length ? top10.map((t, i) => `${i + 1}. ${t.route} - ${t.status} - ${t.issue} (${t.priority})`) : ['1. none']),
     ].join('\n')
   );
 
@@ -733,6 +799,8 @@ function main() {
           completeness: 'proof/mvp-functional-completeness-audit.json',
           routeMap: 'proof/mvp-route-action-map.json',
           apiContract: 'proof/mvp-api-contract-audit.json',
+          brokenActions: 'proof/mvp-broken-actions-audit.json',
+          mockPlaceholder: 'proof/mvp-mock-placeholder-audit.json',
         },
       },
       null,

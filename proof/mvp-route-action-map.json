@@ -1,9 +1,11 @@
 {
-  "generatedAt": "2026-05-21T20:46:18.359Z",
+  "generatedAt": "2026-05-22T00:55:04.184Z",
   "summary": {
-    "total": 21,
+    "total": 27,
     "statusCounts": {
-      "COMPLETE": 21
+      "COMPLETE": 23,
+      "PRODUCTION_BLOCKER": 1,
+      "DISCONNECTED": 3
     }
   },
   "rows": [
@@ -25,7 +27,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/credits",
@@ -41,11 +43,11 @@
         "credits/dev-add",
         "stripe/create-checkout-session"
       ],
-      "currentStatus": "COMPLETE",
-      "issue": "None",
-      "severity": "LOW",
-      "fixRequired": "None",
-      "priority": "P3"
+      "currentStatus": "PRODUCTION_BLOCKER",
+      "issue": "Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session",
+      "severity": "CRITICAL",
+      "fixRequired": "Priority fix required for /credits. Implement endpoint or correct frontend API path.",
+      "priority": "P0"
     },
     {
       "route": "/reports",
@@ -64,22 +66,20 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
-      "route": "/admin/analyses",
-      "pageComponent": "AdminAnalyses",
-      "requiredRole": "ADMIN",
-      "visibleNavLabel": "Analyses",
+      "route": "/analyses",
+      "pageComponent": "MISSING_ROUTE",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "-",
       "primaryActions": [],
-      "backendEndpointsUsed": [
-        "/admin/analyses?${params.toString()}"
-      ],
-      "currentStatus": "COMPLETE",
-      "issue": "None",
-      "severity": "LOW",
-      "fixRequired": "None",
-      "priority": "P3"
+      "backendEndpointsUsed": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "Route is missing from App route wiring.",
+      "severity": "MEDIUM",
+      "fixRequired": "Add route wiring or remove dead route dependency.",
+      "priority": "P2"
     },
     {
       "route": "/investor",
@@ -98,7 +98,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/investor/saved-analyses",
@@ -114,7 +114,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/investor/watchlist",
@@ -130,7 +130,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/investor/portfolio",
@@ -138,7 +138,8 @@
       "requiredRole": "AUTHENTICATED",
       "visibleNavLabel": "Portfolio",
       "primaryActions": [
-        "button:{creating ? 'Creating...' : 'Create'}"
+        "button:{creating ? 'Creating...' : 'Create'}",
+        "link:/map/portfolio"
       ],
       "backendEndpointsUsed": [
         "investor/portfolio",
@@ -148,7 +149,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/organizations",
@@ -156,7 +157,8 @@
       "requiredRole": "AUTHENTICATED",
       "visibleNavLabel": "Organizations",
       "primaryActions": [
-        "button:{creating ? 'Creating...' : 'Create'}"
+        "button:{creating ? 'Creating...' : 'Create'}",
+        "link:/map"
       ],
       "backendEndpointsUsed": [
         "organizations"
@@ -165,7 +167,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/notifications",
@@ -187,7 +189,75 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
+    },
+    {
+      "route": "/properties",
+      "pageComponent": "MISSING_ROUTE",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "-",
+      "primaryActions": [],
+      "backendEndpointsUsed": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "Route is missing from App route wiring.",
+      "severity": "MEDIUM",
+      "fixRequired": "Add route wiring or remove dead route dependency.",
+      "priority": "P2"
+    },
+    {
+      "route": "/properties/:id",
+      "pageComponent": "PropertyDetail",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "property detail",
+      "primaryActions": [
+        "button:✕",
+        "button:updateStatus('REVIEWING')} disabled={statusUpdating || statusValue === 'REVIEWING'} className=\"px-4 py-2 rounded text-sm font-semibold bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50\" > 👁 Reviewing",
+        "button:updateStatus('APPROVED')} disabled={statusUpdating || statusValue === 'APPROVED'} className=\"px-4 py-2 rounded text-sm font-semibold bg-green-500 text-white hover:bg-green-600 disabled:opacity-50\" > ✓ Approve",
+        "button:updateStatus('REJECTED')} disabled={statusUpdating || statusValue === 'REJECTED'} className=\"px-4 py-2 rounded text-sm font-semibold bg-red-500 text-white hover:bg-red-600 disabled:opacity-50\" > ✕ Reject",
+        "button:📊 Rerun Analysis",
+        "button:Save Analysis",
+        "button:Add to Watchlist",
+        "button:Add to Portfolio",
+        "button:Export Analysis JSON",
+        "button:Share Analysis to Organization",
+        "button:Add to Shared Workspace Portfolio",
+        "button:Add to Shared Workspace Watchlist",
+        "button:rerunAnalysis()} disabled={rerunLoading} className=\"px-4 py-2 rounded-lg font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50\" > {rerunLoading ? 'Running...' : '🔄 Rerun Analysis'}"
+      ],
+      "backendEndpointsUsed": [
+        "admin/properties/${resolvedId}/status",
+        "analysis/${resolvedId}/quick-score?force=1",
+        "exports/analysis/${resolvedId}",
+        "investor/portfolio/${portfolioId}/items",
+        "investor/saved-analyses",
+        "investor/watchlist",
+        "workspace/${organizationId}/portfolios",
+        "workspace/${organizationId}/shared-analysis",
+        "workspace/${organizationId}/watchlist"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P4"
+    },
+    {
+      "route": "/properties/:id/documents",
+      "pageComponent": "PropertyDocuments",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "property documents",
+      "primaryActions": [
+        "form:present"
+      ],
+      "backendEndpointsUsed": [
+        "properties/${id}",
+        "properties/${id}/documents/${documentId}"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P4"
     },
     {
       "route": "/admin/users",
@@ -205,7 +275,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/analyses",
@@ -220,7 +290,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/credit-ledger",
@@ -235,7 +305,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/stripe-sessions",
@@ -250,7 +320,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/properties",
@@ -265,7 +335,20 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
+    },
+    {
+      "route": "/admin/property-documents",
+      "pageComponent": "MISSING_ROUTE",
+      "requiredRole": "AUTHENTICATED",
+      "visibleNavLabel": "-",
+      "primaryActions": [],
+      "backendEndpointsUsed": [],
+      "currentStatus": "DISCONNECTED",
+      "issue": "Route is missing from App route wiring.",
+      "severity": "MEDIUM",
+      "fixRequired": "Add route wiring or remove dead route dependency.",
+      "priority": "P2"
     },
     {
       "route": "/admin/runtime",
@@ -280,7 +363,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/deployment",
@@ -295,7 +378,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/observability",
@@ -305,13 +388,14 @@
       "primaryActions": [],
       "backendEndpointsUsed": [
         "/admin/analyses?page=1",
-        "/admin/observability"
+        "/admin/observability",
+        "/admin/observability-summary"
       ],
       "currentStatus": "COMPLETE",
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/analytics",
@@ -326,7 +410,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     },
     {
       "route": "/admin/connectors",
@@ -342,7 +426,40 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
+    },
+    {
+      "route": "/admin/connectors/ogc",
+      "pageComponent": "AdminOgcConnectors",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "OGC",
+      "primaryActions": [],
+      "backendEndpointsUsed": [
+        "/admin/connectors/ogc"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P4"
+    },
+    {
+      "route": "/admin/connectors/tucbs",
+      "pageComponent": "AdminTucbsConnector",
+      "requiredRole": "ADMIN",
+      "visibleNavLabel": "TUCBS",
+      "primaryActions": [
+        "button:{ void sync(); }} disabled={syncing} className=\"rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60\" > {syncing ? 'Syncing...' : 'Sync capabilities'}"
+      ],
+      "backendEndpointsUsed": [
+        "/admin/connectors/tucbs",
+        "/admin/connectors/tucbs/sync"
+      ],
+      "currentStatus": "COMPLETE",
+      "issue": "None",
+      "severity": "LOW",
+      "fixRequired": "None",
+      "priority": "P4"
     },
     {
       "route": "/admin/audit-timeline",
@@ -357,7 +474,7 @@
       "issue": "None",
       "severity": "LOW",
       "fixRequired": "None",
-      "priority": "P3"
+      "priority": "P4"
     }
   ]
 }

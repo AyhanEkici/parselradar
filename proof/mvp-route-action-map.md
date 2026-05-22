@@ -1,28 +1,34 @@
 # MVP Route Action Map
 
-Generated at: 2026-05-21T20:46:18.359Z
-Total routes audited: 21
+Generated at: 2026-05-22T00:55:04.184Z
+Total routes audited: 27
 
 | route | page/component | requiredRole | visibleNavLabel | primaryActions | backendEndpointsUsed | currentStatus | issue | severity | fixRequired | priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| /dashboard | Dashboard | AUTHENTICATED | dashboard | button:{ await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap, link:/properties/new, link:/reports, link:/credits | credits | COMPLETE | None | LOW | None | P3 |
-| /credits | Credits | AUTHENTICATED | credits | button:handleCheckout(amount)}>{amount} Kredi, button:Dev Only: 10 Kredi Ekle | credits, credits/dev-add, stripe/create-checkout-session | COMPLETE | None | LOW | None | P3 |
-| /reports | Reports | AUTHENTICATED | reports | button:handlePurchase(r)} > {buyingId === r._id ? 'Satın alınıyor...' : 'PDF Satın Al'}, button:handleDownload(r)} > {downloadingId === r._id ? 'İndiriliyor...' : 'İndir'} | /reports/${report.analysisRunId}/purchase-pdf, reports | COMPLETE | None | LOW | None | P3 |
-| /admin/analyses | AdminAnalyses | ADMIN | Analyses | - | /admin/analyses?${params.toString()} | COMPLETE | None | LOW | None | P3 |
-| /investor | InvestorDashboard | AUTHENTICATED | Investor | link:/investor/saved-analyses, link:/investor/watchlist, link:/investor/portfolio | investor/dashboard | COMPLETE | None | LOW | None | P3 |
-| /investor/saved-analyses | SavedAnalyses | AUTHENTICATED | Saved | - | investor/saved-analyses, investor/saved-analyses/${id} | COMPLETE | None | LOW | None | P3 |
-| /investor/watchlist | Watchlist | AUTHENTICATED | Watchlist | - | investor/watchlist, investor/watchlist/${id} | COMPLETE | None | LOW | None | P3 |
-| /investor/portfolio | PortfolioDashboard | AUTHENTICATED | Portfolio | button:{creating ? 'Creating...' : 'Create'} | investor/portfolio, investor/portfolio/${portfolio._id} | COMPLETE | None | LOW | None | P3 |
-| /organizations | Organizations | AUTHENTICATED | Organizations | button:{creating ? 'Creating...' : 'Create'} | organizations | COMPLETE | None | LOW | None | P3 |
-| /notifications | NotificationInbox | AUTHENTICATED | Notifications | button:Create Test Event, link:/notifications/preferences | notifications, notifications/${id}/archive, notifications/${id}/read, notifications/digests, notifications/test-event | COMPLETE | None | LOW | None | P3 |
-| /admin/users | AdminUsers | ADMIN | Users | - | /admin/audit-events?type=admin_user_role_updated&page=1&limit=5, /admin/email-delivery-state, /admin/users/${targetUserId}/role, /admin/users?${params.toString()} | COMPLETE | None | LOW | None | P3 |
-| /admin/analyses | AdminAnalyses | ADMIN | Analyses | - | /admin/analyses?${params.toString()} | COMPLETE | None | LOW | None | P3 |
-| /admin/credit-ledger | AdminCreditLedger | ADMIN | Credit Ledger | - | /admin/credit-ledger?${params.toString()} | COMPLETE | None | LOW | None | P3 |
-| /admin/stripe-sessions | AdminStripeSessions | ADMIN | Stripe Sessions | - | /admin/stripe-sessions?${params.toString()} | COMPLETE | None | LOW | None | P3 |
-| /admin/properties | AdminProperties | ADMIN | Properties | - | /admin/properties | COMPLETE | None | LOW | None | P3 |
-| /admin/runtime | AdminSystemRuntime | ADMIN | Runtime | - | /admin/runtime | COMPLETE | None | LOW | None | P3 |
-| /admin/deployment | AdminDeploymentOverview | ADMIN | Deployment | - | /admin/deployment | COMPLETE | None | LOW | None | P3 |
-| /admin/observability | AdminObservability | ADMIN | Observability | - | /admin/analyses?page=1, /admin/observability | COMPLETE | None | LOW | None | P3 |
-| /admin/analytics | AdminAnalytics | ADMIN | Analytics | - | /admin/analytics | COMPLETE | None | LOW | None | P3 |
-| /admin/connectors | AdminConnectors | ADMIN | Connectors | - | /admin/connectors, /admin/connectors/audit-trail | COMPLETE | None | LOW | None | P3 |
-| /admin/audit-timeline | AdminAuditTimeline | ADMIN | Audit | - | /admin/audit-events?${params.toString()} | COMPLETE | None | LOW | None | P3 |
+| /dashboard | Dashboard | AUTHENTICATED | dashboard | button:{ await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap, link:/properties/new, link:/reports, link:/credits | credits | COMPLETE | None | LOW | None | P4 |
+| /credits | Credits | AUTHENTICATED | credits | button:handleCheckout(amount)}>{amount} Kredi, button:Dev Only: 10 Kredi Ekle | credits, credits/dev-add, stripe/create-checkout-session | PRODUCTION_BLOCKER | Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session | CRITICAL | Priority fix required for /credits. Implement endpoint or correct frontend API path. | P0 |
+| /reports | Reports | AUTHENTICATED | reports | button:handlePurchase(r)} > {buyingId === r._id ? 'Satın alınıyor...' : 'PDF Satın Al'}, button:handleDownload(r)} > {downloadingId === r._id ? 'İndiriliyor...' : 'İndir'} | /reports/${report.analysisRunId}/purchase-pdf, reports | COMPLETE | None | LOW | None | P4 |
+| /analyses | MISSING_ROUTE | AUTHENTICATED | - | - | - | DISCONNECTED | Route is missing from App route wiring. | MEDIUM | Add route wiring or remove dead route dependency. | P2 |
+| /investor | InvestorDashboard | AUTHENTICATED | Investor | link:/investor/saved-analyses, link:/investor/watchlist, link:/investor/portfolio | investor/dashboard | COMPLETE | None | LOW | None | P4 |
+| /investor/saved-analyses | SavedAnalyses | AUTHENTICATED | Saved | - | investor/saved-analyses, investor/saved-analyses/${id} | COMPLETE | None | LOW | None | P4 |
+| /investor/watchlist | Watchlist | AUTHENTICATED | Watchlist | - | investor/watchlist, investor/watchlist/${id} | COMPLETE | None | LOW | None | P4 |
+| /investor/portfolio | PortfolioDashboard | AUTHENTICATED | Portfolio | button:{creating ? 'Creating...' : 'Create'}, link:/map/portfolio | investor/portfolio, investor/portfolio/${portfolio._id} | COMPLETE | None | LOW | None | P4 |
+| /organizations | Organizations | AUTHENTICATED | Organizations | button:{creating ? 'Creating...' : 'Create'}, link:/map | organizations | COMPLETE | None | LOW | None | P4 |
+| /notifications | NotificationInbox | AUTHENTICATED | Notifications | button:Create Test Event, link:/notifications/preferences | notifications, notifications/${id}/archive, notifications/${id}/read, notifications/digests, notifications/test-event | COMPLETE | None | LOW | None | P4 |
+| /properties | MISSING_ROUTE | AUTHENTICATED | - | - | - | DISCONNECTED | Route is missing from App route wiring. | MEDIUM | Add route wiring or remove dead route dependency. | P2 |
+| /properties/:id | PropertyDetail | AUTHENTICATED | property detail | button:✕, button:updateStatus('REVIEWING')} disabled={statusUpdating || statusValue === 'REVIEWING'} className="px-4 py-2 rounded text-sm font-semibold bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-50" > 👁 Reviewing, button:updateStatus('APPROVED')} disabled={statusUpdating || statusValue === 'APPROVED'} className="px-4 py-2 rounded text-sm font-semibold bg-green-500 text-white hover:bg-green-600 disabled:opacity-50" > ✓ Approve, button:updateStatus('REJECTED')} disabled={statusUpdating || statusValue === 'REJECTED'} className="px-4 py-2 rounded text-sm font-semibold bg-red-500 text-white hover:bg-red-600 disabled:opacity-50" > ✕ Reject, button:📊 Rerun Analysis, button:Save Analysis, button:Add to Watchlist, button:Add to Portfolio, button:Export Analysis JSON, button:Share Analysis to Organization, button:Add to Shared Workspace Portfolio, button:Add to Shared Workspace Watchlist, button:rerunAnalysis()} disabled={rerunLoading} className="px-4 py-2 rounded-lg font-semibold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50" > {rerunLoading ? 'Running...' : '🔄 Rerun Analysis'} | admin/properties/${resolvedId}/status, analysis/${resolvedId}/quick-score?force=1, exports/analysis/${resolvedId}, investor/portfolio/${portfolioId}/items, investor/saved-analyses, investor/watchlist, workspace/${organizationId}/portfolios, workspace/${organizationId}/shared-analysis, workspace/${organizationId}/watchlist | COMPLETE | None | LOW | None | P4 |
+| /properties/:id/documents | PropertyDocuments | AUTHENTICATED | property documents | form:present | properties/${id}, properties/${id}/documents/${documentId} | COMPLETE | None | LOW | None | P4 |
+| /admin/users | AdminUsers | ADMIN | Users | - | /admin/audit-events?type=admin_user_role_updated&page=1&limit=5, /admin/email-delivery-state, /admin/users/${targetUserId}/role, /admin/users?${params.toString()} | COMPLETE | None | LOW | None | P4 |
+| /admin/analyses | AdminAnalyses | ADMIN | Analyses | - | /admin/analyses?${params.toString()} | COMPLETE | None | LOW | None | P4 |
+| /admin/credit-ledger | AdminCreditLedger | ADMIN | Credit Ledger | - | /admin/credit-ledger?${params.toString()} | COMPLETE | None | LOW | None | P4 |
+| /admin/stripe-sessions | AdminStripeSessions | ADMIN | Stripe Sessions | - | /admin/stripe-sessions?${params.toString()} | COMPLETE | None | LOW | None | P4 |
+| /admin/properties | AdminProperties | ADMIN | Properties | - | /admin/properties | COMPLETE | None | LOW | None | P4 |
+| /admin/property-documents | MISSING_ROUTE | AUTHENTICATED | - | - | - | DISCONNECTED | Route is missing from App route wiring. | MEDIUM | Add route wiring or remove dead route dependency. | P2 |
+| /admin/runtime | AdminSystemRuntime | ADMIN | Runtime | - | /admin/runtime | COMPLETE | None | LOW | None | P4 |
+| /admin/deployment | AdminDeploymentOverview | ADMIN | Deployment | - | /admin/deployment | COMPLETE | None | LOW | None | P4 |
+| /admin/observability | AdminObservability | ADMIN | Observability | - | /admin/analyses?page=1, /admin/observability, /admin/observability-summary | COMPLETE | None | LOW | None | P4 |
+| /admin/analytics | AdminAnalytics | ADMIN | Analytics | - | /admin/analytics | COMPLETE | None | LOW | None | P4 |
+| /admin/connectors | AdminConnectors | ADMIN | Connectors | - | /admin/connectors, /admin/connectors/audit-trail | COMPLETE | None | LOW | None | P4 |
+| /admin/connectors/ogc | AdminOgcConnectors | ADMIN | OGC | - | /admin/connectors/ogc | COMPLETE | None | LOW | None | P4 |
+| /admin/connectors/tucbs | AdminTucbsConnector | ADMIN | TUCBS | button:{ void sync(); }} disabled={syncing} className="rounded-md bg-slate-900 px-3 py-2 text-xs font-semibold text-white disabled:opacity-60" > {syncing ? 'Syncing...' : 'Sync capabilities'} | /admin/connectors/tucbs, /admin/connectors/tucbs/sync | COMPLETE | None | LOW | None | P4 |
+| /admin/audit-timeline | AdminAuditTimeline | ADMIN | Audit | - | /admin/audit-events?${params.toString()} | COMPLETE | None | LOW | None | P4 |
