@@ -38,6 +38,115 @@ type DetailResponse = {
   documents?: DocumentItem[];
 };
 
+type CsvPreview = {
+  headers: string[];
+  detectedFields: Array<{ field: string; value: string }>;
+  parseError: string | null;
+};
+
+const evidenceTypeOptions = [
+  'LISTING_SCREENSHOT',
+  'TKGM_SCREENSHOT',
+  'TKGM_EXPORT',
+  'MUNICIPALITY_IMAR_DOCUMENT',
+  'E_PLAN_DOCUMENT',
+  'UCBP_TUCBS_EXPORT',
+  'UCBP_TUCBS_SCREENSHOT',
+  'MAP_LOCATION_CSV',
+  'PHOTO',
+  'OTHER',
+];
+
+const sourceTypeOptions = [
+  'USER_SUBMITTED',
+  'USER_PROVIDED_OFFICIAL_SOURCE_EVIDENCE',
+  'TKGM_MANUAL_EVIDENCE',
+  'MUNICIPALITY_IMAR_EVIDENCE',
+  'E_PLAN_EVIDENCE',
+  'UCBP_TUCBS_INFORMATIONAL_EVIDENCE',
+  'LISTING_SOURCE',
+  'ADMIN_MANUAL_OBSERVATION',
+  'UNKNOWN',
+];
+
+const csvPreviewFields = ['title', 'longitude', 'latitude', '_id_', 'province', 'district', 'neighborhood', 'ada', 'parsel', 'price', 'm2'];
+
+function splitCsvLine(line: string) {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    if (char === '"') {
+      const next = line[i + 1];
+      if (inQuotes && next === '"') {
+        current += '"';
+        i += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  result.push(current.trim());
+  return result;
+}
+
+function parseCsvPreview(content: string): CsvPreview {
+  const lines = content
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length === 0) {
+    return { headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' };
+  }
+
+  const headers = splitCsvLine(lines[0]);
+  if (headers.length === 0) {
+    return { headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' };
+  }
+
+  const firstRow = lines[1] ? splitCsvLine(lines[1]) : [];
+  const headerIndex = new Map(headers.map((header, index) => [header.toLowerCase(), index]));
+
+  const detectedFields = csvPreviewFields
+    .map((field) => {
+      const fieldKey = field.toLowerCase();
+      const idx = headerIndex.get(fieldKey);
+      if (typeof idx === 'number') {
+        return { field, value: firstRow[idx] || '-' };
+      }
+      if (fieldKey === '_id_') {
+        const fallbackIdx = headerIndex.get('_id');
+        if (typeof fallbackIdx === 'number') {
+          return { field, value: firstRow[fallbackIdx] || '-' };
+        }
+      }
+      return null;
+    })
+    .filter((entry): entry is { field: string; value: string } => Boolean(entry));
+
+  return { headers, detectedFields, parseError: null };
+}
+
+function getFileExtension(filename: string) {
+  const normalized = String(filename || '');
+  const index = normalized.lastIndexOf('.');
+  if (index < 0 || index === normalized.length - 1) return 'unknown';
+  return normalized.slice(index + 1).toLowerCase();
+}
+
 function absoluteFileUrl(fileUrl?: string) {
   if (!fileUrl) return '';
   const base = getApiBaseUrl();
@@ -62,28 +171,14 @@ export default function AdminPropertyDocuments() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState('');
-  const [documentType, setDocumentType] = useState('OTHER');
+  const [evidenceType, setEvidenceType] = useState('OTHER');
+  const [sourceType, setSourceType] = useState('ADMIN_MANUAL_OBSERVATION');
+  const [supportingEvidenceOnly, setSupportingEvidenceOnly] = useState(true);
   const [file, setFile] = useState<File | null>(null);
+  const [csvPreview, setCsvPreview] = useState<CsvPreview>({ headers: [], detectedFields: [], parseError: null });
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const toast = useToast();
-
-  const docTypes = [
-    'ONLINE_IMAR_DURUM_BELGESI',
-    'BELEDIYE_IMAR_DURUM_BELGESI',
-    'TAPU_SENEDI',
-    'TAKYIDAT_BELGESI',
-    'TKGM_PARSEL_SCREENSHOT',
-    'E_IMAR_SCREENSHOT',
-    'ILAN_SCREENSHOT',
-    'PLAN_NOTLARI',
-    'RUHSAT',
-    'ISKAN',
-    'KAT_IRTIFAKI_TAPUSU',
-    'KAT_MULKIYETI_TAPUSU',
-    'TAPU_KAYIT_BELGESI',
-    'OTHER',
-  ];
 
   const fetchDocuments = async () => {
     if (!propertyId) return;
@@ -114,7 +209,10 @@ export default function AdminPropertyDocuments() {
     try {
       const authHeader = getAuthHeader();
       const formData = new FormData();
-      formData.append('documentType', documentType);
+      formData.append('documentType', evidenceType);
+      formData.append('evidenceType', evidenceType);
+      formData.append('sourceType', sourceType);
+      formData.append('supportingEvidenceOnly', String(supportingEvidenceOnly));
       formData.append('file', file);
       const response = await fetch(`${getApiBaseUrl()}/properties/${propertyId}/documents`, {
         method: 'POST',
@@ -132,6 +230,7 @@ export default function AdminPropertyDocuments() {
       toast.dismiss(loadingToastId);
       toast.success('Document uploaded');
       setFile(null);
+      setCsvPreview({ headers: [], detectedFields: [], parseError: null });
       await fetchDocuments();
     } catch (err) {
       const e = err as { message?: string };
@@ -224,6 +323,28 @@ export default function AdminPropertyDocuments() {
   if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
+
+  const fileExtension = file ? getFileExtension(file.name) : 'unknown';
+  const fileType = file?.type || 'unknown';
+  const isCsvFile = fileExtension === 'csv' || fileType.toLowerCase().includes('csv');
+
+  const handleFileChange = async (nextFile: File | null) => {
+    setFile(nextFile);
+    setCsvPreview({ headers: [], detectedFields: [], parseError: null });
+
+    if (!nextFile) return;
+    const extension = getFileExtension(nextFile.name);
+    const mime = String(nextFile.type || '').toLowerCase();
+    const shouldParseCsv = extension === 'csv' || mime.includes('csv');
+    if (!shouldParseCsv) return;
+
+    try {
+      const content = await nextFile.text();
+      setCsvPreview(parseCsvPreview(content));
+    } catch {
+      setCsvPreview({ headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' });
+    }
+  };
 
   return (
     <AdminLayout title="Property Documents">
@@ -333,13 +454,28 @@ export default function AdminPropertyDocuments() {
 
           <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
             <label className="text-xs text-slate-600 md:col-span-1">
-              Document type
+              Evidence type
               <select
                 className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
-                value={documentType}
-                onChange={(e) => setDocumentType(e.target.value)}
+                value={evidenceType}
+                onChange={(e) => setEvidenceType(e.target.value)}
               >
-                {docTypes.map((type) => (
+                {evidenceTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="text-xs text-slate-600 md:col-span-1">
+              Source type
+              <select
+                className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
+                value={sourceType}
+                onChange={(e) => setSourceType(e.target.value)}
+              >
+                {sourceTypeOptions.map((type) => (
                   <option key={type} value={type}>
                     {type}
                   </option>
@@ -352,8 +488,8 @@ export default function AdminPropertyDocuments() {
               <input
                 className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
                 type="file"
-                accept=".pdf,.png,.jpg,.jpeg,.webp"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                accept=".pdf,.png,.jpg,.jpeg,.webp,.csv"
+                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
                 required
               />
             </label>
@@ -362,6 +498,66 @@ export default function AdminPropertyDocuments() {
               {uploading ? 'Uploading...' : 'Upload'}
             </AdminButton>
           </form>
+
+          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+            Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.
+          </div>
+
+          <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 space-y-2">
+            <div className="font-semibold text-slate-900">Upload Metadata Preview</div>
+            <div>File name: {file?.name || '-'}</div>
+            <div>File type: {fileType}</div>
+            <div>File extension: {fileExtension}</div>
+            <div>Selected evidence type: {evidenceType}</div>
+            <div>Selected source type: {sourceType}</div>
+            <label className="inline-flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={supportingEvidenceOnly}
+                onChange={(e) => setSupportingEvidenceOnly(e.target.checked)}
+              />
+              Supporting evidence only
+            </label>
+            <div className="text-amber-700">Manual review required</div>
+            {isCsvFile ? <div className="text-slate-600">Preview only / needs confirmation</div> : null}
+          </div>
+
+          {isCsvFile ? (
+            <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm">
+              <div className="font-semibold text-slate-900">CSV Preview</div>
+              {csvPreview.parseError ? (
+                <div className="mt-2 text-rose-700">CSV preview failed — manual review required</div>
+              ) : (
+                <>
+                  <div className="mt-2 text-slate-700">Detected headers: {csvPreview.headers.length > 0 ? csvPreview.headers.join(', ') : '-'}</div>
+                  <div className="mt-2 overflow-x-auto">
+                    <table className="w-full min-w-[420px] border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-50">
+                          <th className="border border-slate-200 px-2 py-1 text-left">Field</th>
+                          <th className="border border-slate-200 px-2 py-1 text-left">Preview value (first row)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {csvPreview.detectedFields.length > 0 ? (
+                          csvPreview.detectedFields.map((entry) => (
+                            <tr key={entry.field}>
+                              <td className="border border-slate-200 px-2 py-1">{entry.field}</td>
+                              <td className="border border-slate-200 px-2 py-1">{entry.value}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td className="border border-slate-200 px-2 py-1" colSpan={2}>No target preview fields found. Manual review required.</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : null}
         </section>
         </AdminSurface>
       </AdminPage>
