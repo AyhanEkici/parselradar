@@ -1,0 +1,29 @@
+{
+  "phase": "P2.2D",
+  "documentationOnly": true,
+  "requiredDocs": {
+    "docs/ADMIN_OPPORTUNITY_SOURCING_WORKFLOW.md": true,
+    "docs/AI_DATA_ROOM_OPPORTUNITY_INTELLIGENCE_STRATEGY.md": true,
+    "docs/OPPORTUNITY_SOURCE_CLASSIFICATION_MODEL.md": true,
+    "docs/ADMIN_EVIDENCE_REVIEW_AND_RANKING_POLICY.md": true
+  },
+  "governanceChecks": {
+    "edevletAutomationForbidden": true,
+    "userCredentialCollectionForbidden": true,
+    "adminManualEvidenceFlowDocumented": true,
+    "aiDataRoomStrategyDocumented": true,
+    "sourceClassificationModelDocumented": true,
+    "opportunityLifecycleDocumented": true,
+    "confidenceScoringDocumented": true,
+    "runtimeCodeChanged": false,
+    "envChanged": false,
+    "connectorActivated": false,
+    "aiImplementationAdded": false
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "generatedAt": "2026-05-22T02:15:00.000Z"
+}
