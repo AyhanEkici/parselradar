@@ -49,6 +49,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   {isAdmin ? <Link to="/admin/mail-diagnostics" className="hover:underline">Mail</Link> : null}
                   {isAdmin ? <Link to="/admin/stripe-diagnostics" className="hover:underline">Stripe</Link> : null}
                   {isAdmin ? <Link to="/admin/analytics" className="hover:underline">Analytics</Link> : null}
+                  {isAdmin ? <Link to="/admin/cms" className="hover:underline">CMS</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors" className="hover:underline">Connectors</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors/tucbs" className="hover:underline">TUCBS</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors/ogc" className="hover:underline">OGC</Link> : null}
