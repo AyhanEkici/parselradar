@@ -1,0 +1,148 @@
+{
+  "phase": "P2.1A-FIX",
+  "generatedAt": "2026-05-22T04:24:27.6292090+03:00",
+  "overallStatus": "PASS",
+  "interpretation": "No forbidden runtime additions detected; TUCBS endpoint keys remain in config/guidance/docs/proof context only and do not imply activation.",
+  "assessments": {
+    "intelligenceRoutes": "MATCHES_ONLY_IN_PROOF",
+    "AdminScoringDiagnostics": "MATCHES_ONLY_IN_PROOF",
+    "MEGSIS": "MATCHES_ONLY_IN_PROOF",
+    "undetected-chromedriver": "MATCHES_ONLY_IN_PROOF",
+    "selenium": "MATCHES_ONLY_IN_PROOF",
+    "captcha": "MATCHES_ONLY_IN_PROOF",
+    "CONNECTOR_TUCBS_WMS_ENDPOINT": "MATCHES_INCLUDE_SOURCE",
+    "CONNECTOR_TUCBS_WMTS_ENDPOINT": "MATCHES_INCLUDE_SOURCE",
+    "CONNECTOR_TUCBS_WFS_ENDPOINT": "MATCHES_INCLUDE_SOURCE"
+  },
+  "summary": {
+    "intelligenceRoutesAllowed": true,
+    "adminScoringDiagnosticsAllowed": true,
+    "megsisNotStarted": true,
+    "seleniumNotIntroduced": true,
+    "captchaNotIntroduced": true,
+    "undetectedChromeDriverNotIntroduced": true,
+    "tucbsEnvKeysOnlyInConfigGuidanceDocsOrProof": true
+  },
+  "queryResults": {
+    "CONNECTOR_TUCBS_WMS_ENDPOINT": {
+      "matchCount": 20,
+      "lines": [
+        "apps/api/dist/config/connectors/connectorEndpointRequirements.js:5:    tucbs_ogc: 'CONNECTOR_TUCBS_WMS_ENDPOINT',",
+        "apps/api/dist/connectors/connectorRegistry.js:12:        endpointEnvKey: 'CONNECTOR_TUCBS_WMS_ENDPOINT',",
+        "apps/api/scripts/verifyConnectorDiagnosticsContract.ts:19:  const keys = ['CONNECTOR_TUCBS_WMS_ENDPOINT', 'CONNECTOR_TUCBS_WMTS_ENDPOINT', 'CONNECTOR_TUCBS_WFS_ENDPOINT'] as const;",
+        "apps/api/src/config/connectors/connectorEndpointRequirements.ts:4:  tucbs_ogc: 'CONNECTOR_TUCBS_WMS_ENDPOINT',",
+        "apps/api/src/connectors/connectorRegistry.ts:10:    endpointEnvKey: 'CONNECTOR_TUCBS_WMS_ENDPOINT',",
+        "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts:31:    WMS: 'Set CONNECTOR_TUCBS_WMS_ENDPOINT to enable WMS capability diagnostics.',",
+        "apps/api/src/connectors/tucbs/tucbsConnector.ts:7:  requiredEnv: ['CONNECTOR_TUCBS_WMS_ENDPOINT'],",
+        "apps/api/src/connectors/tucbs/tucbsConnector.ts:11:    const wms = String(process.env.CONNECTOR_TUCBS_WMS_ENDPOINT || '').trim();",
+        "apps/api/src/connectors/tucbs/tucbsLayerCatalog.ts:33:  const wmsEndpoint = String(process.env.CONNECTOR_TUCBS_WMS_ENDPOINT || '').trim();",
+        "docs/TUCBS_UCBP_ACCESS_STRATEGY.md:76:CONNECTOR_TUCBS_WMS_ENDPOINT=",
+        "proof/connector-diagnostics-contract.json:39:      \"detail\": \"Set CONNECTOR_TUCBS_WMS_ENDPOINT to enable WMS capability diagnostics.\"",
+        "proof/connector-diagnostics-contract.md:11:- PASS - WMS missing endpoint action guidance exists: Set CONNECTOR_TUCBS_WMS_ENDPOINT to enable WMS capability diagnostics.",
+        "proof/p2-1-no-drift-check.json:8:    \"CONNECTOR_TUCBS_WMS_ENDPOINT\": \"MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF\",",
+        "proof/p2-1-no-drift-check.md:7:- CONNECTOR_TUCBS_WMS_ENDPOINT: found in env-key metadata, diagnostics guidance, docs, and proof",
+        "proof/p2-1c-closeout-no-drift-check.json:8:    \"CONNECTOR_TUCBS_WMS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:8:    \"CONNECTOR_TUCBS_WMS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\",",
+        "proof/tucbs-candidate-endpoint-test-results.json:208:      \"recommendedAction\": \"Optional env example only: CONNECTOR_TUCBS_WMS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms\"",
+        "proof/tucbs-candidate-endpoint-test-results.json:337:      \"envKey\": \"CONNECTOR_TUCBS_WMS_ENDPOINT\",",
+        "proof/tucbs-candidate-endpoint-test-results.md:50:- Recommended action: Optional env example only: CONNECTOR_TUCBS_WMS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms",
+        "proof/tucbs-candidate-endpoint-test-results.md:88:- WMS: https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms -> CONNECTOR_TUCBS_WMS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms"
+      ]
+    },
+    "intelligenceRoutes": {
+      "matchCount": 9,
+      "lines": [
+        "proof/p2-1-no-drift-check.json:5:    \"intelligenceRoutes\": \"MATCHES_ONLY_IN_PRIOR_PROOF_TEXT\",",
+        "proof/p2-1-no-drift-check.json:13:    \"intelligenceRoutes\": \"No runtime symbol found in source; references are historical proof assertions.\",",
+        "proof/p2-1-no-drift-check.md:4:- intelligenceRoutes: found only in prior proof files",
+        "proof/p2-1c-closeout-no-drift-check.json:5:    \"intelligenceRoutes\": \"NO_MATCH\",",
+        "proof/p2-1c-closeout-no-drift-check.json:13:    \"intelligenceRoutes\": \"absent\",",
+        "proof/p2-1c-closeout-no-drift-check.md:6:- `intelligenceRoutes`: absent",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:5:    \"intelligenceRoutes\": \"NO_MATCH\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:14:    \"intelligenceRoutes\": \"absent\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.md:6:- `intelligenceRoutes`: absent"
+      ]
+    },
+    "selenium": {
+      "matchCount": 1,
+      "lines": [
+        "proof/sahibinden-source-value-gate-proof.json:13:    \"seleniumAdded\": false,"
+      ]
+    },
+    "CONNECTOR_TUCBS_WFS_ENDPOINT": {
+      "matchCount": 14,
+      "lines": [
+        "apps/api/scripts/verifyConnectorDiagnosticsContract.ts:19:  const keys = ['CONNECTOR_TUCBS_WMS_ENDPOINT', 'CONNECTOR_TUCBS_WMTS_ENDPOINT', 'CONNECTOR_TUCBS_WFS_ENDPOINT'] as const;",
+        "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts:33:    WFS: 'Set CONNECTOR_TUCBS_WFS_ENDPOINT to enable WFS capability diagnostics.',",
+        "apps/api/src/connectors/tucbs/tucbsLayerCatalog.ts:35:  const wfsEndpoint = String(process.env.CONNECTOR_TUCBS_WFS_ENDPOINT || '').trim();",
+        "docs/TUCBS_UCBP_ACCESS_STRATEGY.md:78:CONNECTOR_TUCBS_WFS_ENDPOINT=",
+        "proof/connector-diagnostics-contract.json:69:      \"detail\": \"Set CONNECTOR_TUCBS_WFS_ENDPOINT to enable WFS capability diagnostics.\"",
+        "proof/connector-diagnostics-contract.md:17:- PASS - WFS missing endpoint action guidance exists: Set CONNECTOR_TUCBS_WFS_ENDPOINT to enable WFS capability diagnostics.",
+        "proof/p2-1-no-drift-check.json:10:    \"CONNECTOR_TUCBS_WFS_ENDPOINT\": \"MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF\"",
+        "proof/p2-1-no-drift-check.md:9:- CONNECTOR_TUCBS_WFS_ENDPOINT: found in env-key metadata, diagnostics guidance, docs, and proof",
+        "proof/p2-1c-closeout-no-drift-check.json:10:    \"CONNECTOR_TUCBS_WFS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\"",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:10:    \"CONNECTOR_TUCBS_WFS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\",",
+        "proof/tucbs-candidate-endpoint-test-results.json:258:      \"recommendedAction\": \"Optional env example only: CONNECTOR_TUCBS_WFS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs\"",
+        "proof/tucbs-candidate-endpoint-test-results.json:344:      \"envKey\": \"CONNECTOR_TUCBS_WFS_ENDPOINT\",",
+        "proof/tucbs-candidate-endpoint-test-results.md:66:- Recommended action: Optional env example only: CONNECTOR_TUCBS_WFS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs",
+        "proof/tucbs-candidate-endpoint-test-results.md:89:- WFS: https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs -> CONNECTOR_TUCBS_WFS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs"
+      ]
+    },
+    "MEGSIS": {
+      "matchCount": 10,
+      "lines": [
+        "proof/p2-1-no-drift-check.json:7:    \"MEGSIS\": \"MATCHES_ONLY_IN_PRIOR_PROOF_TEXT\",",
+        "proof/p2-1-no-drift-check.json:15:    \"MEGSIS\": \"No implementation started; references are historical proof assertions.\",",
+        "proof/p2-1-no-drift-check.md:6:- MEGSIS: found only in prior proof files",
+        "proof/p2-1-no-drift-check.md:12:- No forbidden geo-intelligence or MEGSIS implementation symbol appears as active runtime work in this phase.",
+        "proof/p2-1c-closeout-no-drift-check.json:7:    \"MEGSIS\": \"NO_MATCH\",",
+        "proof/p2-1c-closeout-no-drift-check.json:15:    \"MEGSIS\": \"not started\",",
+        "proof/p2-1c-closeout-no-drift-check.md:8:- `MEGSIS`: not started",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:7:    \"MEGSIS\": \"NO_MATCH\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:16:    \"MEGSIS\": \"not started\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.md:8:- `MEGSIS`: not started"
+      ]
+    },
+    "CONNECTOR_TUCBS_WMTS_ENDPOINT": {
+      "matchCount": 10,
+      "lines": [
+        "apps/api/scripts/verifyConnectorDiagnosticsContract.ts:19:  const keys = ['CONNECTOR_TUCBS_WMS_ENDPOINT', 'CONNECTOR_TUCBS_WMTS_ENDPOINT', 'CONNECTOR_TUCBS_WFS_ENDPOINT'] as const;",
+        "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts:32:    WMTS: 'Set CONNECTOR_TUCBS_WMTS_ENDPOINT to enable WMTS capability diagnostics.',",
+        "apps/api/src/connectors/tucbs/tucbsLayerCatalog.ts:34:  const wmtsEndpoint = String(process.env.CONNECTOR_TUCBS_WMTS_ENDPOINT || '').trim();",
+        "docs/TUCBS_UCBP_ACCESS_STRATEGY.md:77:CONNECTOR_TUCBS_WMTS_ENDPOINT=",
+        "proof/connector-diagnostics-contract.json:54:      \"detail\": \"Set CONNECTOR_TUCBS_WMTS_ENDPOINT to enable WMTS capability diagnostics.\"",
+        "proof/connector-diagnostics-contract.md:14:- PASS - WMTS missing endpoint action guidance exists: Set CONNECTOR_TUCBS_WMTS_ENDPOINT to enable WMTS capability diagnostics.",
+        "proof/p2-1-no-drift-check.json:9:    \"CONNECTOR_TUCBS_WMTS_ENDPOINT\": \"MATCHES_IN_CONFIG_KEYS_GUIDANCE_DOCS_AND_PROOF\",",
+        "proof/p2-1-no-drift-check.md:8:- CONNECTOR_TUCBS_WMTS_ENDPOINT: found in env-key metadata, diagnostics guidance, docs, and proof",
+        "proof/p2-1c-closeout-no-drift-check.json:9:    \"CONNECTOR_TUCBS_WMTS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:9:    \"CONNECTOR_TUCBS_WMTS_ENDPOINT\": \"MATCHES_EXIST_AS_CONFIG_KEY_AND_GUIDANCE\","
+      ]
+    },
+    "AdminScoringDiagnostics": {
+      "matchCount": 9,
+      "lines": [
+        "proof/p2-1-no-drift-check.json:6:    \"AdminScoringDiagnostics\": \"MATCHES_ONLY_IN_PRIOR_PROOF_TEXT\",",
+        "proof/p2-1-no-drift-check.json:14:    \"AdminScoringDiagnostics\": \"No runtime symbol found in source; references are historical proof assertions.\",",
+        "proof/p2-1-no-drift-check.md:5:- AdminScoringDiagnostics: found only in prior proof files",
+        "proof/p2-1c-closeout-no-drift-check.json:6:    \"AdminScoringDiagnostics\": \"NO_MATCH\",",
+        "proof/p2-1c-closeout-no-drift-check.json:14:    \"AdminScoringDiagnostics\": \"absent\",",
+        "proof/p2-1c-closeout-no-drift-check.md:7:- `AdminScoringDiagnostics`: absent",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:6:    \"AdminScoringDiagnostics\": \"NO_MATCH\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.json:15:    \"AdminScoringDiagnostics\": \"absent\",",
+        "proof/p2-2a-lite-closeout-no-drift-check.md:7:- `AdminScoringDiagnostics`: absent"
+      ]
+    },
+    "captcha": {
+      "matchCount": 1,
+      "lines": [
+        "proof/sahibinden-source-value-gate-proof.json:15:    \"captchaBypassAdded\": false,"
+      ]
+    },
+    "undetected-chromedriver": {
+      "matchCount": 1,
+      "lines": [
+        "proof/sahibinden-source-value-gate-proof.md:16:- undetected-chromedriver added: no"
+      ]
+    }
+  }
+}

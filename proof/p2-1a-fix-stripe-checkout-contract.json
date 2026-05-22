@@ -1,0 +1,43 @@
+{
+  "phase": "P2.1A-FIX",
+  "generatedAt": "2026-05-22T01:40:00.000Z",
+  "resolutionType": "AUDIT_FALSE_POSITIVE_FIXED",
+  "rootCause": "auditMvpCompleteness parseApiMounts only detected direct app.use('/path', routerVar) mounts and missed wrapped stripe mount forwarding.",
+  "frontend": {
+    "page": "/credits",
+    "call": "apiFetch('stripe/create-checkout-session')",
+    "source": "apps/web/src/pages/Credits.tsx"
+  },
+  "backend": {
+    "mount": "/stripe",
+    "route": "/create-checkout-session",
+    "effectiveEndpoint": "/stripe/create-checkout-session",
+    "method": "POST",
+    "middleware": ["stripeLimiter", "auth"],
+    "controller": "createCheckoutSession",
+    "source": "apps/api/src/routes/stripeRoutes.ts"
+  },
+  "contract": {
+    "requestBody": {
+      "creditAmount": "number (allowed: 25 | 50)"
+    },
+    "successResponse": {
+      "url": "string"
+    },
+    "failureResponses": [
+      "400 invalid/unsupported package",
+      "500 Stripe price ID not configured",
+      "503 Stripe service unavailable"
+    ]
+  },
+  "creditGrantSafety": {
+    "grantCondition": "Only on Stripe webhook checkout.session.completed",
+    "cancelOrFailureGrant": false,
+    "duplicateGrantProtection": "StripeCheckoutSession status gate: fulfill only when status !== PAID"
+  },
+  "evidence": {
+    "targetedAuditScore": 93,
+    "p0CheckoutBlockerPresentAfterFix": false,
+    "apiEndpointDetected": "/stripe/create-checkout-session"
+  }
+}

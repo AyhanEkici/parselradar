@@ -1,0 +1,17 @@
+{
+  "phase": "P2.1A-FIX",
+  "generatedAt": "2026-05-22T01:42:00.000Z",
+  "classification": "AUDIT_FALSE_POSITIVE",
+  "auditExpectedRouteBefore": "/admin/property-documents",
+  "actualWiredRoute": "/admin/properties/:propertyId/documents",
+  "component": "AdminPropertyDocuments",
+  "guards": ["RequireAuth", "AdminOnly"],
+  "resolution": "Updated audit scope route mapping to the real wired route; no UI redesign and no runtime auth guard refactor.",
+  "codeChanges": [
+    "apps/api/scripts/auditMvpCompleteness.ts: SCOPE_ROUTES admin property documents path updated"
+  ],
+  "verification": {
+    "verifyRouteWiring": "PASS",
+    "verifyAdminUxEmail": "PASS"
+  }
+}

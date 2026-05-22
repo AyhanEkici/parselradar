@@ -95,7 +95,7 @@ const SCOPE_ROUTES: Array<{ label: string; route: string }> = [
   { label: 'admin credit ledger', route: '/admin/credit-ledger' },
   { label: 'admin stripe sessions', route: '/admin/stripe-sessions' },
   { label: 'admin properties', route: '/admin/properties' },
-  { label: 'admin property documents', route: '/admin/property-documents' },
+  { label: 'admin property documents', route: '/admin/properties/:propertyId/documents' },
   { label: 'admin runtime', route: '/admin/runtime' },
   { label: 'admin deployment', route: '/admin/deployment' },
   { label: 'admin observability', route: '/admin/observability' },
@@ -113,12 +113,12 @@ const REQUIRED_API_GROUPS = [
   '/stripe',
   '/analysis',
   '/properties',
-  '/documents',
+  '/properties/:propertyId/documents',
   '/organizations',
   '/notifications',
   '/admin/connectors',
-  '/admin/ogc',
-  '/admin/tucbs',
+  '/admin/connectors/ogc',
+  '/admin/connectors/tucbs',
   '/admin/audit-events',
   '/admin/runtime',
   '/admin/deployment',
@@ -290,6 +290,19 @@ function parseApiMounts(indexText: string): Map<string, string> {
     const varName = m[2];
     const file = importMap.get(varName);
     if (file) mounts.set(file, mountPath);
+  }
+
+  const wrappedMountRe = /app\.use\(\s*'([^']+)'\s*,\s*\((?:[^)]*)\)\s*=>\s*\{([\s\S]*?)\}\s*\)/g;
+  let wm: RegExpExecArray | null;
+  while ((wm = wrappedMountRe.exec(indexText)) !== null) {
+    const mountPath = wm[1];
+    const body = wm[2];
+    for (const [varName, file] of importMap.entries()) {
+      const invokeRe = new RegExp(`\\b${varName}\\s*\\(\\s*req\\s*,\\s*res\\s*,\\s*next\\s*\\)`);
+      if (invokeRe.test(body) && !mounts.has(file)) {
+        mounts.set(file, mountPath);
+      }
+    }
   }
 
   return mounts;

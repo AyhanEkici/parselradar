@@ -1,0 +1,50 @@
+{
+  "phase": "P2.1A-FIX",
+  "generatedAt": "2026-05-22T01:41:00.000Z",
+  "groups": [
+    {
+      "group": "/stripe/*",
+      "classification": "AUDIT_FALSE_POSITIVE",
+      "before": "Missing due to mount parser mismatch",
+      "after": "Resolved by wrapped mount detection; /stripe/create-checkout-session is recognized",
+      "connectorActivationChanged": false
+    },
+    {
+      "group": "/documents/*",
+      "classification": "AUDIT_FALSE_POSITIVE",
+      "before": "Audit expected /documents group",
+      "after": "Mapped to existing MVP endpoints under /properties/:propertyId/documents",
+      "connectorActivationChanged": false
+    },
+    {
+      "group": "/admin/ogc/*",
+      "classification": "INTENTIONALLY_NOT_CONFIGURED",
+      "before": "Audit looked for /admin/ogc",
+      "after": "Reconciled to diagnostics route /admin/connectors/ogc; runtime remains NOT_CONFIGURED",
+      "connectorActivationChanged": false
+    },
+    {
+      "group": "/admin/tucbs/*",
+      "classification": "INTENTIONALLY_NOT_CONFIGURED",
+      "before": "Audit looked for /admin/tucbs",
+      "after": "Reconciled to diagnostics route /admin/connectors/tucbs; runtime remains NOT_CONFIGURED",
+      "connectorActivationChanged": false
+    }
+  ],
+  "safety": {
+    "tucbsActivated": false,
+    "ogcActivated": false,
+    "hardcodedEndpointAdded": false,
+    "scraperPathAdded": false,
+    "edevletAutomationAdded": false
+  },
+  "evidence": {
+    "mvpCompletenessScoreAfterFix": 93,
+    "apiContractContains": [
+      "/stripe/create-checkout-session",
+      "/properties/:propertyId/documents",
+      "/admin/connectors/ogc",
+      "/admin/connectors/tucbs"
+    ]
+  }
+}

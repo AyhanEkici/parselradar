@@ -1,346 +1,85 @@
 {
-  "phase": "P2.1",
-  "generatedAt": "2026-05-22T00:57:00.402Z",
-  "completenessScore": 89,
-  "scoringBasis": {
-    "totalEntities": 141,
-    "completeEntities": 125,
-    "formula": "round((completeEntities / totalEntities) * 100)"
-  },
-  "groups": {
-    "production_blockers": [
-      {
-        "priority": "P0",
-        "item": "route: /credits",
-        "reason": "Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session"
-      }
-    ],
-    "partial_pages": [],
-    "placeholder_mock_areas": [],
-    "broken_actions": [],
-    "missing_apis": [
-      {
-        "priority": "P2",
-        "item": "POST /admin/deal-pool/:propertyId/accept",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "POST /admin/deal-pool/:entryId/share",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "GET /admin/security-overview",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "POST /analysis/:propertyId/parsel-insight",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "POST /analysis/:propertyId/developer-fit",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "GET /auth/session-diagnostics",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "GET /admin/telemetry",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P2",
-        "item": "POST /create-checkout-session",
-        "reason": "No frontend consumer detected for protected endpoint."
-      },
-      {
-        "priority": "P1",
-        "item": "ANY /stripe/*",
-        "reason": "Expected API group missing from route map: /stripe"
-      },
-      {
-        "priority": "P1",
-        "item": "ANY /documents/*",
-        "reason": "Expected API group missing from route map: /documents"
-      },
-      {
-        "priority": "P1",
-        "item": "ANY /admin/ogc/*",
-        "reason": "Expected API group missing from route map: /admin/ogc"
-      },
-      {
-        "priority": "P1",
-        "item": "ANY /admin/tucbs/*",
-        "reason": "Expected API group missing from route map: /admin/tucbs"
-      }
-    ],
-    "role_mismatches": [],
-    "payment_credit_report_gaps": [
-      {
-        "priority": "P1",
-        "item": "/credits",
-        "reason": "Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session"
-      }
-    ],
-    "official_evidence_source_labeling_gaps": [
-      {
-        "priority": "P2",
-        "item": "apps/web/src/components/connectors/OgcServiceDiagnosticsCard.tsx",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/web/src/pages/AdminConnectors.tsx",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/web/src/pages/PropertyDetail.tsx",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/connectorContracts.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/connectorStatus.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/connectorTestRunner.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/demographicConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/emailProviderConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/infrastructureConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/listingConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/mapGeocodingConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/municipalityConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/municipalityPlanningConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/ogc/ogcCapabilitiesClient.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/tkgmConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/connectors/tkgmProductionConnector.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/controllers/adminController.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/controllers/authController.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/controllers/passwordResetController.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/middleware/auth.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/security/runtimeSecretsValidator.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/connectorActivation/activateConnectorIfEligible.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/connectorActivation/buildConnectorActivationPlan.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/connectorActivation/buildConnectorReadiness.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/coordination/municipalSignalCoordinator.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/governance/evidenceStrengthClassifier.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/governance/governanceTypes.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/operatingSystem/territorialOperatingSystem.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/services/provenance/sourceReliabilityClassifier.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/session/canonicalAuthValidator.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/session/sessionIntegrityValidator.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/session/tokenIntegrityValidator.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/testing/platformVerification.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/testing/verifyAuth.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      },
-      {
-        "priority": "P2",
-        "item": "apps/api/src/testing/verifyConnectors.ts",
-        "reason": "Evidence source labeling token hits need manual context review."
-      }
-    ],
-    "admin_workflow_gaps": [
-      {
-        "priority": "P2",
-        "item": "/admin/property-documents",
-        "reason": "Route is missing from App route wiring."
-      }
-    ],
-    "connector_readiness_gaps": [],
-    "future_non_mvp_items": [
-      {
-        "priority": "P4",
-        "item": "TUCBS official connector activation",
-        "reason": "Out of MVP scope; separate P2.2C legal/partner access phase."
-      }
-    ]
-  },
-  "top10_next_fixes": [
+  "phase": "P2.1A",
+  "generatedAt": "2026-05-22T01:45:00.000Z",
+  "mvpCompletenessScore": 93,
+  "resolved": [
     {
-      "group": "production_blockers",
       "priority": "P0",
-      "item": "route: /credits",
-      "reason": "Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session"
+      "item": "route: /credits checkout path",
+      "resolution": "Resolved as audit false-positive by fixing wrapped stripe mount parsing. Effective endpoint /stripe/create-checkout-session is now recognized."
     },
     {
-      "group": "missing_apis",
-      "priority": "P1",
-      "item": "ANY /admin/ogc/*",
-      "reason": "Expected API group missing from route map: /admin/ogc"
-    },
-    {
-      "group": "missing_apis",
-      "priority": "P1",
-      "item": "ANY /admin/tucbs/*",
-      "reason": "Expected API group missing from route map: /admin/tucbs"
-    },
-    {
-      "group": "missing_apis",
-      "priority": "P1",
-      "item": "ANY /documents/*",
-      "reason": "Expected API group missing from route map: /documents"
-    },
-    {
-      "group": "missing_apis",
       "priority": "P1",
       "item": "ANY /stripe/*",
-      "reason": "Expected API group missing from route map: /stripe"
+      "resolution": "Reconciled and detected by audit after parser fix."
     },
     {
-      "group": "payment_credit_report_gaps",
       "priority": "P1",
-      "item": "/credits",
-      "reason": "Core flow blocker: Frontend calls missing API endpoints: stripe/create-checkout-session"
+      "item": "ANY /documents/*",
+      "resolution": "Reconciled to existing /properties/:propertyId/documents API group."
     },
     {
-      "group": "admin_workflow_gaps",
+      "priority": "P1",
+      "item": "ANY /admin/ogc/*",
+      "resolution": "Reconciled to /admin/connectors/ogc diagnostics route; remains NOT_CONFIGURED."
+    },
+    {
+      "priority": "P1",
+      "item": "ANY /admin/tucbs/*",
+      "resolution": "Reconciled to /admin/connectors/tucbs diagnostics route; remains NOT_CONFIGURED."
+    },
+    {
+      "priority": "P1",
+      "item": "route: /admin/property-documents",
+      "resolution": "Resolved as route naming false-positive; actual route is /admin/properties/:propertyId/documents under admin/auth guards."
+    }
+  ],
+  "remaining": [
+    {
       "priority": "P2",
-      "item": "/admin/property-documents",
-      "reason": "Route is missing from App route wiring."
+      "item": "/analyses",
+      "reason": "Route missing from App route wiring."
     },
     {
-      "group": "missing_apis",
+      "priority": "P2",
+      "item": "/properties",
+      "reason": "Route missing from App route wiring."
+    },
+    {
+      "priority": "P2",
+      "item": "POST /admin/deal-pool/:propertyId/accept",
+      "reason": "No frontend consumer detected for protected endpoint."
+    },
+    {
+      "priority": "P2",
+      "item": "POST /admin/deal-pool/:entryId/share",
+      "reason": "No frontend consumer detected for protected endpoint."
+    },
+    {
       "priority": "P2",
       "item": "GET /admin/security-overview",
       "reason": "No frontend consumer detected for protected endpoint."
     },
     {
-      "group": "missing_apis",
       "priority": "P2",
-      "item": "GET /admin/telemetry",
+      "item": "POST /analysis/:propertyId/parsel-insight",
       "reason": "No frontend consumer detected for protected endpoint."
     },
     {
-      "group": "missing_apis",
+      "priority": "P2",
+      "item": "POST /analysis/:propertyId/developer-fit",
+      "reason": "No frontend consumer detected for protected endpoint."
+    },
+    {
       "priority": "P2",
       "item": "GET /auth/session-diagnostics",
       "reason": "No frontend consumer detected for protected endpoint."
+    },
+    {
+      "priority": "P2",
+      "item": "GET /admin/telemetry",
+      "reason": "No frontend consumer detected for protected endpoint."
     }
-  ]
+  ],
+  "nextPhaseRecommendation": "P2.1A-FIX-2 — continue remaining P1/P2 wiring blockers with scope control"
 }
