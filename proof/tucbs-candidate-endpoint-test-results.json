@@ -1,0 +1,356 @@
+{
+  "generatedAt": "2026-05-22T00:19:47.026Z",
+  "step": "test:tucbs-candidates",
+  "overallStatus": "WARN",
+  "summary": {
+    "total": 5,
+    "passed": 2,
+    "failed": 3,
+    "testOnly": 2,
+    "manualReviewNeeded": 0
+  },
+  "results": [
+    {
+      "id": "candidate-1",
+      "label": "official TUCBS compatible WMS example",
+      "baseUrl": "https://gis-prod-api.csb.gov.tr/trk_cbsgm_std_il_wms",
+      "capabilitiesUrl": "https://gis-prod-api.csb.gov.tr/trk_cbsgm_std_il_wms?request=GetCapabilities&service=WMS",
+      "classificationBeforeTest": "OFFICIAL_SAMPLE_COMPATIBLE_CANDIDATE",
+      "serviceType": "WMS",
+      "dnsResolved": true,
+      "dnsAddresses": [
+        "212.175.135.214/4"
+      ],
+      "httpsConnected": false,
+      "responseSizeBytes": 0,
+      "latencyMs": 10004,
+      "timeoutHit": true,
+      "xmlParseSuccess": false,
+      "ogcServiceTypeDetected": "UNKNOWN",
+      "serviceTitle": "",
+      "serviceName": "",
+      "layerCount": 0,
+      "firstLayers": [],
+      "crsProjections": [],
+      "operations": [],
+      "serviceException": false,
+      "htmlErrorPage": false,
+      "retriesUsed": 2,
+      "attempts": [
+        {
+          "attempt": 1,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10087,
+          "error": "Request timed out after 10000ms"
+        },
+        {
+          "attempt": 2,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10012,
+          "error": "Request timed out after 10000ms"
+        },
+        {
+          "attempt": 3,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10004,
+          "error": "Request timed out after 10000ms"
+        }
+      ],
+      "status": "FAIL_TIMEOUT",
+      "recommendedAction": "Do not activate. Keep as diagnostic evidence only."
+    },
+    {
+      "id": "candidate-2",
+      "label": "official TUCBS compatible WFS example",
+      "baseUrl": "https://gis-prod-api.csb.gov.tr/trk_cbsgm_std_il_wfs",
+      "capabilitiesUrl": "https://gis-prod-api.csb.gov.tr/trk_cbsgm_std_il_wfs?request=GetCapabilities&service=WFS",
+      "classificationBeforeTest": "OFFICIAL_SAMPLE_COMPATIBLE_CANDIDATE",
+      "serviceType": "WFS",
+      "dnsResolved": true,
+      "dnsAddresses": [
+        "212.175.135.214/4"
+      ],
+      "httpsConnected": false,
+      "responseSizeBytes": 0,
+      "latencyMs": 10014,
+      "timeoutHit": true,
+      "xmlParseSuccess": false,
+      "ogcServiceTypeDetected": "UNKNOWN",
+      "serviceTitle": "",
+      "serviceName": "",
+      "layerCount": 0,
+      "firstLayers": [],
+      "crsProjections": [],
+      "operations": [],
+      "serviceException": false,
+      "htmlErrorPage": false,
+      "retriesUsed": 2,
+      "attempts": [
+        {
+          "attempt": 1,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10017,
+          "error": "Request timed out after 10000ms"
+        },
+        {
+          "attempt": 2,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10008,
+          "error": "Request timed out after 10000ms"
+        },
+        {
+          "attempt": 3,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "212.175.135.214/4"
+          ],
+          "httpsConnected": false,
+          "timeoutHit": true,
+          "responseSizeBytes": 0,
+          "latencyMs": 10014,
+          "error": "Request timed out after 10000ms"
+        }
+      ],
+      "status": "FAIL_TIMEOUT",
+      "recommendedAction": "Do not activate. Keep as diagnostic evidence only."
+    },
+    {
+      "id": "candidate-3",
+      "label": "public TUCBS test WMS example",
+      "baseUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms",
+      "capabilitiesUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms?request=GetCapabilities&service=WMS",
+      "classificationBeforeTest": "PUBLIC_TEST_ONLY_OR_NON_COMPATIBLE_CANDIDATE",
+      "serviceType": "WMS",
+      "dnsResolved": true,
+      "dnsAddresses": [
+        "95.0.28.131/4"
+      ],
+      "httpsConnected": true,
+      "httpStatus": 200,
+      "contentType": "text/xml",
+      "responseSizeBytes": 6581,
+      "latencyMs": 197,
+      "timeoutHit": false,
+      "xmlParseSuccess": true,
+      "ogcServiceTypeDetected": "WMS",
+      "serviceTitle": "WMS",
+      "serviceName": "WMS",
+      "layerCount": 2,
+      "firstLayers": [
+        {
+          "name": "0",
+          "title": "Layers"
+        },
+        {
+          "name": "1",
+          "title": "ILLER"
+        }
+      ],
+      "crsProjections": [
+        "CRS:84",
+        "EPSG:4326"
+      ],
+      "operations": [
+        "GetCapabilities",
+        "GetMap",
+        "GetFeatureInfo",
+        "GetStyles"
+      ],
+      "serviceException": false,
+      "htmlErrorPage": false,
+      "retriesUsed": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "95.0.28.131/4"
+          ],
+          "httpsConnected": true,
+          "timeoutHit": false,
+          "httpStatus": 200,
+          "contentType": "text/xml",
+          "responseSizeBytes": 6581,
+          "latencyMs": 197
+        }
+      ],
+      "status": "PASS_BUT_TEST_ONLY",
+      "recommendedAction": "Optional env example only: CONNECTOR_TUCBS_WMS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms"
+    },
+    {
+      "id": "candidate-4",
+      "label": "public TUCBS test WFS example",
+      "baseUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs",
+      "capabilitiesUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs?request=GetCapabilities&service=WFS",
+      "classificationBeforeTest": "PUBLIC_TEST_ONLY_OR_NON_COMPATIBLE_CANDIDATE",
+      "serviceType": "WFS",
+      "dnsResolved": true,
+      "dnsAddresses": [
+        "95.0.28.131/4"
+      ],
+      "httpsConnected": true,
+      "httpStatus": 200,
+      "contentType": "text/xml",
+      "responseSizeBytes": 5859,
+      "latencyMs": 91,
+      "timeoutHit": false,
+      "xmlParseSuccess": true,
+      "ogcServiceTypeDetected": "WFS",
+      "serviceTitle": "IDARISINIR_HGK_IDARI_SINIRLAR",
+      "serviceName": "WFS",
+      "layerCount": 0,
+      "firstLayers": [],
+      "crsProjections": [],
+      "operations": [
+        "GetCapabilities",
+        "DescribeFeatureType",
+        "GetFeature"
+      ],
+      "serviceException": false,
+      "htmlErrorPage": false,
+      "retriesUsed": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "95.0.28.131/4"
+          ],
+          "httpsConnected": true,
+          "timeoutHit": false,
+          "httpStatus": 200,
+          "contentType": "text/xml",
+          "responseSizeBytes": 5859,
+          "latencyMs": 91
+        }
+      ],
+      "status": "PASS_BUT_TEST_ONLY",
+      "recommendedAction": "Optional env example only: CONNECTOR_TUCBS_WFS_ENDPOINT=https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs"
+    },
+    {
+      "id": "candidate-5",
+      "label": "official Ortofoto WMS example",
+      "baseUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbs_ortofoto_giresun_gorele_test",
+      "capabilitiesUrl": "https://tucbs-public-api.csb.gov.tr/trk_cbs_ortofoto_giresun_gorele_test?request=GetCapabilities&service=WMS",
+      "classificationBeforeTest": "PUBLIC_ORTHOPHOTO_TEST_CANDIDATE",
+      "serviceType": "WMS",
+      "dnsResolved": true,
+      "dnsAddresses": [
+        "95.0.28.131/4"
+      ],
+      "httpsConnected": true,
+      "httpStatus": 500,
+      "contentType": "text/xml;charset=utf-8",
+      "responseSizeBytes": 751,
+      "latencyMs": 105,
+      "timeoutHit": false,
+      "xmlParseSuccess": true,
+      "ogcServiceTypeDetected": "WMS",
+      "serviceTitle": "",
+      "serviceName": "",
+      "layerCount": 0,
+      "firstLayers": [],
+      "crsProjections": [],
+      "operations": [],
+      "serviceException": false,
+      "htmlErrorPage": false,
+      "retriesUsed": 2,
+      "attempts": [
+        {
+          "attempt": 1,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "95.0.28.131/4"
+          ],
+          "httpsConnected": true,
+          "timeoutHit": false,
+          "httpStatus": 500,
+          "contentType": "text/xml;charset=utf-8",
+          "responseSizeBytes": 751,
+          "latencyMs": 38
+        },
+        {
+          "attempt": 2,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "95.0.28.131/4"
+          ],
+          "httpsConnected": true,
+          "timeoutHit": false,
+          "httpStatus": 500,
+          "contentType": "text/xml;charset=utf-8",
+          "responseSizeBytes": 751,
+          "latencyMs": 119
+        },
+        {
+          "attempt": 3,
+          "dnsResolved": true,
+          "dnsAddresses": [
+            "95.0.28.131/4"
+          ],
+          "httpsConnected": true,
+          "timeoutHit": false,
+          "httpStatus": 500,
+          "contentType": "text/xml;charset=utf-8",
+          "responseSizeBytes": 751,
+          "latencyMs": 105
+        }
+      ],
+      "status": "FAIL_HTTP_STATUS",
+      "recommendedAction": "Do not activate. Keep as diagnostic evidence only."
+    }
+  ],
+  "safeEnvExamples": [
+    {
+      "candidateId": "candidate-3",
+      "serviceType": "WMS",
+      "envKey": "CONNECTOR_TUCBS_WMS_ENDPOINT",
+      "envValue": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wms",
+      "note": "Optional env example only; do not activate."
+    },
+    {
+      "candidateId": "candidate-4",
+      "serviceType": "WFS",
+      "envKey": "CONNECTOR_TUCBS_WFS_ENDPOINT",
+      "envValue": "https://tucbs-public-api.csb.gov.tr/trk_cbsgm_test_wfs",
+      "note": "Optional env example only; do not activate."
+    }
+  ],
+  "noMutationConfirmation": {
+    "connectorActivated": false,
+    "hardcodedEndpointsAdded": false,
+    "envChanged": false,
+    "uiChanged": false,
+    "tucbsImplementationStarted": false
+  }
+}

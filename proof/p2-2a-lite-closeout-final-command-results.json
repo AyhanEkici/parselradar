@@ -1,0 +1,160 @@
+{
+  "generatedAt": "2026-05-22T00:22:30.000Z",
+  "phase": "P2.2A-LITE-CLOSEOUT",
+  "commands": [
+    {
+      "command": "npm run test:tucbs-candidates",
+      "status": "WARN",
+      "proof": "proof/tucbs-candidate-endpoint-test-results.json",
+      "summary": {
+        "total": 5,
+        "passed": 2,
+        "failed": 3,
+        "testOnly": 2,
+        "manualReviewNeeded": 0
+      }
+    },
+    {
+      "command": "npm run verify:connector-diagnostics-contract",
+      "status": "PASS",
+      "proof": "proof/connector-diagnostics-contract.json"
+    },
+    {
+      "command": "npm run verify:connector-diagnostics",
+      "status": "PASS",
+      "proof": "proof/connector-diagnostics-audit.json"
+    },
+    {
+      "command": "npm run verify:platform-integrity",
+      "status": "PASS",
+      "proof": "proof/platform-integrity-audit.json"
+    },
+    {
+      "command": "npm run build --prefix apps/api",
+      "status": "PASS",
+      "notes": [
+        "prebuild regenerated apps/api/src/generated/buildInfo.ts",
+        "tsc --build --force completed"
+      ]
+    },
+    {
+      "command": "npm run build --prefix apps/web",
+      "status": "PASS",
+      "notes": [
+        "vite build completed",
+        "chunk size warning reported but build succeeded"
+      ]
+    },
+    {
+      "command": "npm run verify:deployment-truth",
+      "status": "PASS",
+      "proof": "proof/deployment-truth-proof-bundle.json"
+    },
+    {
+      "command": "npm run verify:live-browser-mvp",
+      "status": "PASS",
+      "proof": "proof/live-browser-mvp-runtime.json",
+      "summary": {
+        "total": 5,
+        "pass": 5,
+        "fail": 0,
+        "blocked": 0
+      }
+    },
+    {
+      "command": "npm run verify:rbac",
+      "status": "PASS",
+      "summary": {
+        "total": 57,
+        "pass": 57,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:platform",
+      "status": "WARN",
+      "summary": {
+        "checks": 345,
+        "pass": 330,
+        "warn": 12,
+        "fail": 0,
+        "skipped": 3
+      }
+    },
+    {
+      "command": "npm run verify:canonical-auth",
+      "status": "PASS",
+      "summary": {
+        "freshLoginStatus": 200,
+        "allAuthMe200": true,
+        "noCookieFallbackProof": true,
+        "noSyntheticJwtProof": true
+      }
+    },
+    {
+      "command": "npm run verify:live-login-contract",
+      "status": "PASS",
+      "summary": {
+        "loginStatus": 200,
+        "meStatus": 200
+      }
+    },
+    {
+      "command": "npm run verify:session-persistence",
+      "status": "PASS",
+      "summary": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:auth-ui-consistency",
+      "status": "PASS",
+      "summary": {
+        "total": 11,
+        "pass": 11,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:post-login-api",
+      "status": "PASS",
+      "summary": {
+        "total": 8,
+        "pass": 8,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:admin-ux-email",
+      "status": "PASS",
+      "summary": {
+        "total": 15,
+        "pass": 15,
+        "fail": 0
+      }
+    },
+    {
+      "command": "npm run verify:route-wiring",
+      "status": "PASS",
+      "proof": "proof/route-wiring-audit.json"
+    },
+    {
+      "command": "npm run verify:auth-shell",
+      "status": "PASS",
+      "proof": "proof/auth-shell-consistency.json"
+    },
+    {
+      "command": "npm run verify:navigation-persistence",
+      "status": "PASS",
+      "proof": "proof/navigation-persistence.json"
+    },
+    {
+      "command": "npm run verify:browser-history",
+      "status": "PASS",
+      "proof": "proof/browser-history-consistency.json"
+    }
+  ],
+  "overallConclusion": "The closeout verification matrix completed successfully with expected warnings only."
+}

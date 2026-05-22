@@ -56,6 +56,7 @@
     "verify:layer-catalog": "ts-node apps/api/scripts/verifyLayerCatalog.ts",
     "verify:connector-diagnostics": "ts-node apps/api/scripts/verifyConnectorDiagnostics.ts",
     "verify:connector-diagnostics-contract": "ts-node apps/api/scripts/verifyConnectorDiagnosticsContract.ts",
+    "test:tucbs-candidates": "ts-node apps/api/scripts/testTucbsCandidateEndpoints.ts",
     "verify:map-overlay-integrity": "ts-node apps/api/scripts/verifyMapOverlayIntegrity.ts",
     "verify:read-only-geo-mode": "ts-node apps/api/scripts/verifyReadOnlyGeoMode.ts",
     "verify:external-intelligence-foundation": "ts-node apps/api/scripts/verifyExternalIntelligenceFoundation.ts",
