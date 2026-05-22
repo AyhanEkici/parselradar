@@ -117,6 +117,16 @@ export default function AdminProperties() {
         <AdminHeader
           title="Tüm Mülkler"
           subtitle="Mülkleri durum, lokasyon ve temel metrikleriyle inceleyin"
+          actions={
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <Link to="/admin/cms" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+                Back to CMS
+              </Link>
+              <Link to="/admin/audit-timeline" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+                Back to Admin Panel
+              </Link>
+            </div>
+          }
         />
 
         <AdminToolbar className="justify-between">
@@ -169,8 +179,7 @@ export default function AdminProperties() {
 
               return (
                 <li key={p._id}>
-                  <Link
-                    to={`/admin/properties/${p._id}`}
+                  <div
                     className="block rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md hover:border-slate-300 transition"
                     title={`Mülkü aç: ${p.addressText || p._id}`}
                   >
@@ -200,10 +209,28 @@ export default function AdminProperties() {
                     <div className="mt-3 text-sm text-slate-700">
                       <span className="text-slate-500">Kullanıcı:</span> {resolveUserDisplay(p)}
                     </div>
-                    <div className="mt-2 text-xs text-blue-700 underline">
-                      <Link to={`/admin/analyses?propertyId=${p._id}`}>Bu mülkün analizlerini görüntüle</Link>
+
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <Link
+                        to={`/admin/properties/${p._id}`}
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                      >
+                        Open
+                      </Link>
+                      <Link
+                        to={`/admin/properties/${p._id}/documents`}
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                      >
+                        Evidence / Documents
+                      </Link>
+                      <Link
+                        to={`/properties/${p._id}/result`}
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                      >
+                        Result / Analysis
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 </li>
               );
             })}
