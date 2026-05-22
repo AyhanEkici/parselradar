@@ -1,0 +1,28 @@
+{
+  "phase": "P2.1A-FIX-2",
+  "generatedAt": "2026-05-22T01:50:30.000Z",
+  "items": [
+    {
+      "route": "/analyses",
+      "before": "DISCONNECTED/MISSING_FRONTEND",
+      "action": "Added guarded alias route redirect to /investor/saved-analyses and updated audit handling for Navigate aliases.",
+      "classification": "RESOLVED_BY_ALIAS_WIRING",
+      "after": "COMPLETE"
+    },
+    {
+      "route": "/properties",
+      "before": "DISCONNECTED/MISSING_FRONTEND",
+      "action": "Added guarded alias route redirect to /properties/new and updated audit handling for Navigate aliases.",
+      "classification": "RESOLVED_BY_ALIAS_WIRING",
+      "after": "COMPLETE"
+    }
+  ],
+  "filesChanged": [
+    "apps/web/src/App.tsx",
+    "apps/api/scripts/auditMvpCompleteness.ts"
+  ],
+  "verification": {
+    "verifyRouteWiring": "PASS",
+    "auditMvpCompletenessScore": 100
+  }
+}

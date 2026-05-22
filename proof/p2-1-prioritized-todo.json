@@ -1,7 +1,7 @@
 {
-  "phase": "P2.1A",
-  "generatedAt": "2026-05-22T01:45:00.000Z",
-  "mvpCompletenessScore": 93,
+  "phase": "P2.1A-FIX-2",
+  "generatedAt": "2026-05-22T01:53:00.000Z",
+  "mvpCompletenessScore": 100,
   "resolved": [
     {
       "priority": "P0",
@@ -34,52 +34,6 @@
       "resolution": "Resolved as route naming false-positive; actual route is /admin/properties/:propertyId/documents under admin/auth guards."
     }
   ],
-  "remaining": [
-    {
-      "priority": "P2",
-      "item": "/analyses",
-      "reason": "Route missing from App route wiring."
-    },
-    {
-      "priority": "P2",
-      "item": "/properties",
-      "reason": "Route missing from App route wiring."
-    },
-    {
-      "priority": "P2",
-      "item": "POST /admin/deal-pool/:propertyId/accept",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "POST /admin/deal-pool/:entryId/share",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "GET /admin/security-overview",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "POST /analysis/:propertyId/parsel-insight",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "POST /analysis/:propertyId/developer-fit",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "GET /auth/session-diagnostics",
-      "reason": "No frontend consumer detected for protected endpoint."
-    },
-    {
-      "priority": "P2",
-      "item": "GET /admin/telemetry",
-      "reason": "No frontend consumer detected for protected endpoint."
-    }
-  ],
-  "nextPhaseRecommendation": "P2.1A-FIX-2 — continue remaining P1/P2 wiring blockers with scope control"
+  "remaining": [],
+  "nextPhaseRecommendation": "P2.4 — production readiness"
 }

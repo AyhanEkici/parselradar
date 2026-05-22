@@ -450,6 +450,24 @@ function main() {
       continue;
     }
 
+    if (def.component === 'Navigate') {
+      const sev = scoreSeverity('COMPLETE');
+      routeRows.push({
+        route: scoped.route,
+        pageComponent: 'Navigate',
+        requiredRole: def.requiredRole,
+        visibleNavLabel: navMap.get(scoped.route) || scoped.label,
+        primaryActions: ['redirect:alias-route'],
+        backendEndpointsUsed: [],
+        currentStatus: 'COMPLETE',
+        issue: 'Alias route redirects to canonical path.',
+        severity: sev.severity,
+        fixRequired: 'None',
+        priority: sev.priority,
+      });
+      continue;
+    }
+
     const componentFile = pagePath(def.component);
     if (!componentFile) {
       const status: Status = 'MISSING_FRONTEND';

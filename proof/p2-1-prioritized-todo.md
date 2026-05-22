@@ -1,7 +1,7 @@
-# P2.1 Prioritized TODO (Updated by P2.1A-FIX)
+# P2.1 Prioritized TODO (Updated by P2.1A-FIX-2)
 
-- generatedAt: 2026-05-22T01:45:00.000Z
-- mvpCompletenessScore: 93
+- generatedAt: 2026-05-22T01:53:00.000Z
+- mvpCompletenessScore: 100
 
 ## Resolved P0/P1
 - [P0] /credits checkout contract mismatch: resolved (audit false-positive fixed)
@@ -12,15 +12,7 @@
 - [P1] /admin/property-documents route gap: resolved as route naming false-positive
 
 ## Remaining
-- [P2] /analyses route wiring missing
-- [P2] /properties route wiring missing
-- [P2] POST /admin/deal-pool/:propertyId/accept no frontend consumer
-- [P2] POST /admin/deal-pool/:entryId/share no frontend consumer
-- [P2] GET /admin/security-overview no frontend consumer
-- [P2] POST /analysis/:propertyId/parsel-insight no frontend consumer
-- [P2] POST /analysis/:propertyId/developer-fit no frontend consumer
-- [P2] GET /auth/session-diagnostics no frontend consumer
-- [P2] GET /admin/telemetry no frontend consumer
+- none
 
 ## Next Phase Recommendation
-- P2.1A-FIX-2 — continue remaining P1/P2 wiring blockers with scope control
+- P2.4 — production readiness

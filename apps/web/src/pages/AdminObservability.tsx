@@ -21,13 +21,19 @@ export default function AdminObservability() {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [summary, setSummary] = useState<any>(null);
+  const [telemetry, setTelemetry] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([apiFetch('/admin/observability'), apiFetch('/admin/analyses?page=1'), apiFetch('/admin/observability-summary')])
-      .then(([response, analysesPayload, observabilitySummary]) => {
+    Promise.all([
+      apiFetch('/admin/observability'),
+      apiFetch('/admin/analyses?page=1'),
+      apiFetch('/admin/observability-summary'),
+      apiFetch('/admin/telemetry'),
+    ])
+      .then(([response, analysesPayload, observabilitySummary, telemetryPayload]) => {
         const first = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.autonomyIntelligence || {};
         const execution = (analysesPayload?.analyses || [])[0]?.fullAnalysis?.executionOperatingSystem || {};
         setData({
@@ -42,6 +48,7 @@ export default function AdminObservability() {
           execution,
         });
         setSummary(observabilitySummary);
+        setTelemetry(telemetryPayload);
         setError('');
       })
       .catch((err) => setError(err?.error || err?.message || 'Observability data could not be loaded'))
@@ -75,7 +82,7 @@ export default function AdminObservability() {
                   <ObservabilitySnapshotCard snapshot={data} />
                 </div>
                 <div className="xl:col-span-4">
-                  <TelemetryStatusCard telemetry={data?.telemetry} />
+                  <TelemetryStatusCard telemetry={telemetry || data?.telemetry} />
                 </div>
                 <div className="xl:col-span-4">
                   <TracingStatusCard tracing={data?.tracing?.tracing} />

@@ -111,12 +111,48 @@ export default function PropertyResult() {
   const [pdfId, setPdfId] = useState<string | null>(null);
   const toast = useToast();
 
-  const runAnalysis = async (type: string) => {
+  const runAnalysisEndpoint = async (endpoint: string) => {
     setResult(null);
     setPdfId(null);
     const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
     try {
-      const res = await apiFetch(`analysis/${id}/${type}` , { method: 'POST' });
+      const res = await apiFetch(endpoint, { method: 'POST' });
+      setResult(res);
+      setAnalysisRunId(res.id);
+      toast.dismiss(loadingToastId);
+      toast.success('Analiz tamamlandı');
+    } catch (err) {
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'Analiz başarısız');
+    }
+  };
+
+  const runAnalysis = async (type: string) => {
+    await runAnalysisEndpoint(`analysis/${id}/${type}`);
+  };
+
+  const runParselInsight = async () => {
+    setResult(null);
+    setPdfId(null);
+    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
+    try {
+      const res = await apiFetch(`analysis/${id}/parsel-insight`, { method: 'POST' });
+      setResult(res);
+      setAnalysisRunId(res.id);
+      toast.dismiss(loadingToastId);
+      toast.success('Analiz tamamlandı');
+    } catch (err) {
+      toast.dismiss(loadingToastId);
+      toast.error((err as { error?: string }).error || 'Analiz başarısız');
+    }
+  };
+
+  const runDeveloperFit = async () => {
+    setResult(null);
+    setPdfId(null);
+    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
+    try {
+      const res = await apiFetch(`analysis/${id}/developer-fit`, { method: 'POST' });
       setResult(res);
       setAnalysisRunId(res.id);
       toast.dismiss(loadingToastId);
@@ -146,8 +182,8 @@ export default function PropertyResult() {
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
       <div className="space-x-2 mb-4">
         <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => runAnalysis('quick-score')}>Hızlı İlan Kontrolü</button>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => runAnalysis('parsel-insight')}>Parsel Insight</button>
-        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={() => runAnalysis('developer-fit')}>Developer Fit</button>
+        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runParselInsight}>Parsel Insight</button>
+        <button className="bg-blue-600 text-white px-3 py-1 rounded" onClick={runDeveloperFit}>Developer Fit</button>
       </div>
       {result && (
         <div className="border p-4 rounded mb-4">

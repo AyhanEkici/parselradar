@@ -87,6 +87,8 @@ function AppRoutes() {
       <Route path="/dashboard" element={<RequireAuth>{withBoundary('/dashboard', <Dashboard />)}</RequireAuth>} />
       <Route path="/credits" element={<RequireAuth>{withBoundary('/credits', <Credits />)}</RequireAuth>} />
       <Route path="/reports" element={<RequireAuth>{withBoundary('/reports', <Reports />)}</RequireAuth>} />
+      <Route path="/analyses" element={<RequireAuth><Navigate to="/investor/saved-analyses" replace /></RequireAuth>} />
+      <Route path="/properties" element={<RequireAuth><Navigate to="/properties/new" replace /></RequireAuth>} />
       <Route path="/admin/properties" element={<RequireAuth><AdminOnly>{withBoundary('/admin/properties', <AdminProperties />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/properties/:propertyId" element={<RequireAuth><AdminOnly><PropertyDetail /></AdminOnly></RequireAuth>} />
       <Route path="/admin/properties/:propertyId/documents" element={<RequireAuth><AdminOnly><AdminPropertyDocuments /></AdminOnly></RequireAuth>} />

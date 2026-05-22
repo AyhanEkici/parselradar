@@ -62,14 +62,22 @@ type RuntimeResponse = {
 export default function AdminSystemRuntime() {
   const { user } = useAuth();
   const [data, setData] = useState<RuntimeResponse | null>(null);
+  const [securityOverview, setSecurityOverview] = useState<any>(null);
+  const [sessionDiagnostics, setSessionDiagnostics] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    apiFetch('/admin/runtime')
-      .then((response) => {
-        setData(response as RuntimeResponse);
+    Promise.all([
+      apiFetch('/admin/runtime'),
+      apiFetch('/admin/security-overview'),
+      apiFetch('/auth/session-diagnostics'),
+    ])
+      .then(([runtimeResponse, securityResponse, sessionResponse]) => {
+        setData(runtimeResponse as RuntimeResponse);
+        setSecurityOverview(securityResponse);
+        setSessionDiagnostics(sessionResponse);
         setError('');
       })
       .catch((err) => {
@@ -146,8 +154,12 @@ export default function AdminSystemRuntime() {
 
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
                 <div className="xl:col-span-12">
-                  <SecurityHealthCard securitySignals={data?.securitySignals} />
+                  <SecurityHealthCard securitySignals={securityOverview?.threatSignals || data?.securitySignals} />
                 </div>
+              </div>
+
+              <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                Session diagnostics: {sessionDiagnostics?.code || sessionDiagnostics?.status || 'AVAILABLE'}
               </div>
             </>
           )}

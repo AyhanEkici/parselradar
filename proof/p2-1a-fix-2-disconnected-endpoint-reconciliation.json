@@ -1,0 +1,52 @@
+{
+  "phase": "P2.1A-FIX-2",
+  "generatedAt": "2026-05-22T01:51:00.000Z",
+  "endpoints": [
+    {
+      "endpoint": "POST /admin/deal-pool/:propertyId/accept",
+      "classification": "SHOULD_WIRE_NOW",
+      "action": "Added minimal admin page consumer in AdminDealPool via explicit API action.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "POST /admin/deal-pool/:entryId/share",
+      "classification": "SHOULD_WIRE_NOW",
+      "action": "Added minimal admin page consumer in AdminDealPool with required payload fields.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "GET /admin/security-overview",
+      "classification": "SHOULD_WIRE_NOW",
+      "action": "Wired existing AdminSystemRuntime page to call endpoint and feed security card.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "POST /analysis/:propertyId/parsel-insight",
+      "classification": "FRONTEND_CONSUMER_EXISTS_FALSE_POSITIVE",
+      "action": "Made consumer explicit in PropertyResult with direct apiFetch literal call.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "POST /analysis/:propertyId/developer-fit",
+      "classification": "FRONTEND_CONSUMER_EXISTS_FALSE_POSITIVE",
+      "action": "Made consumer explicit in PropertyResult with direct apiFetch literal call.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "GET /auth/session-diagnostics",
+      "classification": "SHOULD_WIRE_NOW",
+      "action": "Wired existing AdminSystemRuntime page to call endpoint for session diagnostics signal.",
+      "statusAfter": "COMPLETE"
+    },
+    {
+      "endpoint": "GET /admin/telemetry",
+      "classification": "SHOULD_WIRE_NOW",
+      "action": "Wired existing AdminObservability page to call telemetry endpoint.",
+      "statusAfter": "COMPLETE"
+    }
+  ],
+  "verification": {
+    "auditMvpCompletenessScore": 100,
+    "remainingDisconnectedEndpoints": 0
+  }
+}
