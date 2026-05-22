@@ -1,89 +1,145 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiFetch } from '../lib/api';
 import { AdminHeader, AdminLayout, AdminPage, AdminSurface } from '../components/admin';
 
 type CmsModule = {
-  name: string;
-  status: 'wired' | 'partially wired' | 'not wired yet' | 'future module';
+  area: string;
+  status: 'wired' | 'partial' | 'not wired yet' | 'future';
   description: string;
   href?: string;
+  actionLabel?: string;
 };
 
 const modules: CmsModule[] = [
   {
-    name: 'Users',
+    area: 'Users',
     status: 'wired',
-    description: 'Manage user accounts and roles.',
+    description: 'Manage user roles/status and user-level admin visibility.',
     href: '/admin/users',
   },
   {
-    name: 'Properties',
+    area: 'Properties',
     status: 'wired',
-    description: 'Browse and manage submitted properties.',
+    description: 'Manage all submitted properties.',
     href: '/admin/properties',
   },
   {
-    name: 'Evidence / Documents',
-    status: 'partially wired',
+    area: 'Evidence / Documents',
+    status: 'partial',
     description: 'Open a property first, then manage documents.',
+    href: '/admin/properties',
+    actionLabel: 'Open Properties',
   },
   {
-    name: 'Analyses',
+    area: 'Analyses',
     status: 'wired',
-    description: 'Review analysis runs and status.',
+    description: 'Review analyses and operational analysis visibility.',
     href: '/admin/analyses',
   },
   {
-    name: 'Credits / Ledger',
+    area: 'Credits / Ledger',
     status: 'wired',
-    description: 'Inspect credit ledger entries.',
+    description: 'Inspect credit balances and ledger history.',
     href: '/admin/credit-ledger',
   },
   {
-    name: 'Stripe Sessions',
+    area: 'Stripe Sessions',
     status: 'wired',
-    description: 'Inspect Stripe checkout/session records.',
+    description: 'Inspect payment session lifecycle and outcomes.',
     href: '/admin/stripe-sessions',
   },
   {
-    name: 'Analytics',
+    area: 'Analytics',
     status: 'wired',
-    description: 'View analytics overview cards.',
+    description: 'View analytics overview and product/runtime cards.',
     href: '/admin/analytics',
   },
   {
-    name: 'Connectors',
+    area: 'Connectors',
     status: 'wired',
-    description: 'Review connector health and configuration pages.',
+    description: 'Diagnostic/governance only. Not activated data automation.',
     href: '/admin/connectors',
   },
   {
-    name: 'Aski & Parselasyon Takip',
-    status: 'future module',
-    description: 'Coming next.',
+    area: 'Aski & Parselasyon Takip',
+    status: 'future',
+    description: 'Future public-source monitor for CSB/TKGM e-ilan and belediye aski sources.',
   },
   {
-    name: 'Content / CMS Pages',
-    status: 'future module',
-    description: 'Coming next. No CRUD wiring in this phase.',
+    area: 'Content / CMS Pages',
+    status: 'future',
+    description: 'Future managed content/pages module. No CRUD in this phase.',
   },
 ];
 
 function statusClasses(status: CmsModule['status']) {
   if (status === 'wired') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-  if (status === 'partially wired') return 'bg-amber-50 text-amber-700 border-amber-200';
+  if (status === 'partial') return 'bg-amber-50 text-amber-700 border-amber-200';
   if (status === 'not wired yet') return 'bg-slate-50 text-slate-700 border-slate-200';
   return 'bg-indigo-50 text-indigo-700 border-indigo-200';
 }
 
+function statusLabel(status: CmsModule['status']) {
+  if (status === 'wired') return 'Wired';
+  if (status === 'partial') return 'Partial';
+  if (status === 'not wired yet') return 'Not wired yet';
+  return 'Future';
+}
+
 export default function AdminCms() {
+  const [usersCount, setUsersCount] = useState<number | null>(null);
+  const [propertiesCount, setPropertiesCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const usersResponse = await apiFetch('/admin/users?page=1');
+        if (cancelled) return;
+        if (Array.isArray(usersResponse?.users)) {
+          const totalPages = Number(usersResponse?.totalPages || 1);
+          const pageSize = usersResponse.users.length;
+          setUsersCount(totalPages > 1 && pageSize > 0 ? null : pageSize);
+        }
+      } catch {
+        if (!cancelled) setUsersCount(null);
+      }
+
+      try {
+        const propertiesResponse = await apiFetch('/admin/properties');
+        if (cancelled) return;
+        if (Array.isArray(propertiesResponse)) {
+          setPropertiesCount(propertiesResponse.length);
+        }
+      } catch {
+        if (!cancelled) setPropertiesCount(null);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const rows = useMemo(() => {
+    return modules.map((module) => {
+      let preview = '-';
+      if (module.area === 'Users' && usersCount !== null) preview = `${usersCount} loaded (first page)`;
+      if (module.area === 'Properties' && propertiesCount !== null) preview = `${propertiesCount} loaded`;
+      return { ...module, preview };
+    });
+  }, [usersCount, propertiesCount]);
+
   return (
     <AdminLayout title="Admin CMS">
       <AdminPage className="p-0 sm:p-0">
         <AdminSurface className="space-y-4 p-4 sm:p-5">
           <AdminHeader
             title="Admin CMS"
-            subtitle="Manage users, properties, evidence, analyses, credits and operational data from one place."
+            subtitle="Management overview for wired admin routes and upcoming CMS modules."
             actions={
               <div className="flex flex-wrap gap-2 text-sm">
                 <Link to="/admin/audit-timeline" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
@@ -96,25 +152,41 @@ export default function AdminCms() {
             }
           />
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {modules.map((module) => (
-              <section key={module.name} className="rounded-lg border border-slate-200 bg-white p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-sm font-semibold text-slate-900">{module.name}</h3>
-                  <span className={`rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(module.status)}`}>
-                    {module.status}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-slate-600">{module.description}</p>
-                {module.href ? (
-                  <Link to={module.href} className="mt-3 inline-block text-sm text-blue-700 hover:underline">
-                    Open
-                  </Link>
-                ) : (
-                  <span className="mt-3 inline-block text-sm text-slate-500">Not wired yet</span>
-                )}
-              </section>
-            ))}
+          <div className="rounded-lg border border-slate-200 bg-white overflow-x-auto">
+            <table className="w-full min-w-[860px] text-sm">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">Area</th>
+                  <th className="px-3 py-2 text-left font-semibold">Status</th>
+                  <th className="px-3 py-2 text-left font-semibold">Description</th>
+                  <th className="px-3 py-2 text-left font-semibold">Route</th>
+                  <th className="px-3 py-2 text-left font-semibold">Preview</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((module) => (
+                  <tr key={module.area} className="border-b border-slate-100 last:border-0 align-top">
+                    <td className="px-3 py-2 font-medium text-slate-900">{module.area}</td>
+                    <td className="px-3 py-2">
+                      <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${statusClasses(module.status)}`}>
+                        {statusLabel(module.status)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 text-slate-600">{module.description}</td>
+                    <td className="px-3 py-2">
+                      {module.href ? (
+                        <Link to={module.href} className="text-blue-700 hover:underline">
+                          {module.actionLabel || module.href}
+                        </Link>
+                      ) : (
+                        <span className="text-slate-500">Not wired yet</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2 text-slate-600">{module.preview}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </AdminSurface>
       </AdminPage>
