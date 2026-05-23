@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
 import { AdminHeader, AdminLayout, AdminPage, AdminSurface } from '../components/admin';
+import { useAuth } from '../hooks/useAuth';
 
 type CmsModule = {
   area: string;
@@ -112,10 +113,23 @@ function cardStatusLabel(status: DisplayStatus) {
 }
 
 export default function AdminCms() {
+  const { user, isAdmin, authStatus, hasPersistentSession } = useAuth();
   const [liveSummary, setLiveSummary] = useState<LiveSummary>({
     users: { loaded: false, count: null, error: false },
     properties: { loaded: false, count: null, error: false },
   });
+
+  if (authStatus === 'booting' || authStatus === 'checking' || (hasPersistentSession && !user)) {
+    return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum doğrulanıyor...</div>;
+  }
+
+  if (!user || authStatus === 'unauthenticated' || authStatus === 'invalid') {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/access-denied" replace />;
+  }
 
   useEffect(() => {
     let cancelled = false;
