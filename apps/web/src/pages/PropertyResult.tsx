@@ -67,6 +67,7 @@ type ReportReadinessStatus =
 type DocumentMetadata = {
   _id: string;
   originalName?: string;
+  filename?: string;
   documentType?: string;
   evidenceType?: string;
   sourceType?: string;
@@ -75,11 +76,81 @@ type DocumentMetadata = {
   supportingEvidenceOnly?: boolean;
   parsedPreview?: Record<string, string>;
   csvDetectedFields?: string[];
+  metadata?: {
+    evidenceType?: string;
+    sourceType?: string;
+    reviewStatus?: string;
+    metadataStatus?: string;
+    supportingEvidenceOnly?: boolean;
+  };
 };
 
+function normalizeDocumentRecord(raw: unknown): DocumentMetadata | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const source = raw as Record<string, unknown>;
+  const nestedMetadata = source.metadata && typeof source.metadata === 'object'
+    ? (source.metadata as Record<string, unknown>)
+    : undefined;
+
+  const id = String(source._id || source.id || '').trim();
+  if (!id) return null;
+
+  const rootEvidenceType = String(source.evidenceType || '').trim();
+  const rootSourceType = String(source.sourceType || '').trim();
+  const rootReviewStatus = String(source.reviewStatus || '').trim();
+  const rootMetadataStatus = String(source.metadataStatus || '').trim();
+
+  const metadataEvidenceType = String(nestedMetadata?.evidenceType || '').trim();
+  const metadataSourceType = String(nestedMetadata?.sourceType || '').trim();
+  const metadataReviewStatus = String(nestedMetadata?.reviewStatus || '').trim();
+  const metadataMetadataStatus = String(nestedMetadata?.metadataStatus || '').trim();
+
+  const rootSupportingOnly = typeof source.supportingEvidenceOnly === 'boolean' ? source.supportingEvidenceOnly : undefined;
+  const metadataSupportingOnly =
+    typeof nestedMetadata?.supportingEvidenceOnly === 'boolean' ? nestedMetadata.supportingEvidenceOnly : undefined;
+
+  return {
+    _id: id,
+    originalName: String(source.originalName || source.filename || source.name || '').trim() || undefined,
+    filename: String(source.filename || source.originalName || source.name || '').trim() || undefined,
+    documentType: String(source.documentType || source.type || '').trim() || undefined,
+    evidenceType: rootEvidenceType || metadataEvidenceType || undefined,
+    sourceType: rootSourceType || metadataSourceType || undefined,
+    reviewStatus: rootReviewStatus || metadataReviewStatus || undefined,
+    metadataStatus: rootMetadataStatus || metadataMetadataStatus || undefined,
+    supportingEvidenceOnly:
+      typeof rootSupportingOnly === 'boolean'
+        ? rootSupportingOnly
+        : typeof metadataSupportingOnly === 'boolean'
+        ? metadataSupportingOnly
+        : undefined,
+    parsedPreview:
+      source.parsedPreview && typeof source.parsedPreview === 'object' && !Array.isArray(source.parsedPreview)
+        ? (source.parsedPreview as Record<string, string>)
+        : undefined,
+    csvDetectedFields: Array.isArray(source.csvDetectedFields)
+      ? source.csvDetectedFields.map((entry) => String(entry || '').trim()).filter(Boolean)
+      : undefined,
+    metadata: nestedMetadata
+      ? {
+          evidenceType: metadataEvidenceType || undefined,
+          sourceType: metadataSourceType || undefined,
+          reviewStatus: metadataReviewStatus || undefined,
+          metadataStatus: metadataMetadataStatus || undefined,
+          supportingEvidenceOnly: metadataSupportingOnly,
+        }
+      : undefined,
+  };
+}
+
 function normalizeDocumentsResponse(payload: unknown): DocumentMetadata[] {
+  const normalizeArray = (input: unknown[]) =>
+    input
+      .map((entry) => normalizeDocumentRecord(entry))
+      .filter((entry): entry is DocumentMetadata => Boolean(entry));
+
   if (Array.isArray(payload)) {
-    return payload as DocumentMetadata[];
+    return normalizeArray(payload);
   }
 
   if (payload && typeof payload === 'object') {
@@ -90,21 +161,21 @@ function normalizeDocumentsResponse(payload: unknown): DocumentMetadata[] {
     };
 
     if (Array.isArray(obj.documents)) {
-      return obj.documents as DocumentMetadata[];
+      return normalizeArray(obj.documents);
     }
 
     if (Array.isArray(obj.items)) {
-      return obj.items as DocumentMetadata[];
+      return normalizeArray(obj.items);
     }
 
     if (Array.isArray(obj.data)) {
-      return obj.data as DocumentMetadata[];
+      return normalizeArray(obj.data);
     }
 
     if (obj.data && typeof obj.data === 'object') {
       const nested = obj.data as { documents?: unknown };
       if (Array.isArray(nested.documents)) {
-        return nested.documents as DocumentMetadata[];
+        return normalizeArray(nested.documents);
       }
     }
   }
@@ -382,6 +453,7 @@ export default function PropertyResult() {
     if (!id) return;
 
     const loadReadinessData = async () => {
+      let fallbackDocuments: DocumentMetadata[] = [];
       if (!cancelled) {
         setDocumentsLoading(true);
         setDocumentsLoaded(false);
@@ -390,8 +462,14 @@ export default function PropertyResult() {
 
       try {
         const propertyResponse = await apiFetch(`properties/${id}`);
+        const propertyLevelDocuments = normalizeDocumentsResponse(propertyResponse);
+        fallbackDocuments = propertyLevelDocuments;
         if (!cancelled) {
           setPropertyData((propertyResponse?.property || propertyResponse) as PropertyReadinessData);
+          if (propertyLevelDocuments.length > 0) {
+            setDocuments(propertyLevelDocuments);
+            setDocumentMetadataAvailable(true);
+          }
         }
       } catch {
         if (!cancelled) setPropertyData(null);
@@ -401,18 +479,19 @@ export default function PropertyResult() {
         const docsResponse = await apiFetch(`properties/${id}/documents`);
         if (cancelled) return;
         const resolvedDocuments = normalizeDocumentsResponse(docsResponse);
-        setDocuments(resolvedDocuments);
-        setDocumentMetadataAvailable(true);
+        const finalDocuments = resolvedDocuments.length > 0 ? resolvedDocuments : fallbackDocuments;
+        setDocuments(finalDocuments);
+        setDocumentMetadataAvailable(finalDocuments.length > 0);
         setDocumentsLoading(false);
         setDocumentsLoaded(true);
         setDocumentsFetchFailed(false);
       } catch {
         if (!cancelled) {
-          setDocuments([]);
-          setDocumentMetadataAvailable(false);
+          setDocuments(fallbackDocuments);
+          setDocumentMetadataAvailable(fallbackDocuments.length > 0);
           setDocumentsLoading(false);
           setDocumentsLoaded(true);
-          setDocumentsFetchFailed(true);
+          setDocumentsFetchFailed(fallbackDocuments.length === 0);
         }
       }
     };
