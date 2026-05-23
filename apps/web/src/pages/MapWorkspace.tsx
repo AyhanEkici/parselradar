@@ -303,15 +303,21 @@ export default function MapWorkspace({ mode }: { mode: Mode }) {
 
   if (!user) return <div className="p-6">Oturum gerekli</div>;
 
+  const modeLabel = mode === 'portfolio' ? 'Geo Workspace Preview - Portfolio' : 'Geo Workspace Preview';
+
   return (
     <div className="min-h-screen bg-slate-50 p-4">
       <div className="mx-auto max-w-[1500px] space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h1 className="text-2xl font-bold text-slate-900">Geo Workspace</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{modeLabel}</h1>
           <div className="flex gap-2 text-xs">
             <button className="rounded border border-slate-300 bg-white px-3 py-1" onClick={() => navigate('/map')}>map</button>
             <button className="rounded border border-slate-300 bg-white px-3 py-1" onClick={() => navigate('/map/portfolio')}>portfolio</button>
           </div>
+        </div>
+
+        <div className="rounded border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+          Internal beta preview only. No configured layers yet. This workspace is informational and does not provide official GIS, municipality, zoning, TKGM, TUCBS, or CSB proof.
         </div>
 
         <ActiveLayerToolbar

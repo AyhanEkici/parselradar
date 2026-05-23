@@ -134,7 +134,7 @@ export default function GeoAnalysisOverlay({
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <div className="mb-2 text-sm font-semibold text-slate-900">Geo Analysis Overlay</div>
-      <p className="mb-3 text-xs text-slate-600">Real overlay rendering with multi-layer stacking, opacity blending and active analysis highlight.</p>
+      <p className="mb-3 text-xs text-slate-600">Preview overlay rendering with multi-layer stacking, opacity blending and active analysis highlight. Empty groups stay visible so the workspace remains honest about what is configured.</p>
       <div className="rounded border border-slate-300 bg-slate-50 p-2">
         <svg
           viewBox="0 0 100 50"
