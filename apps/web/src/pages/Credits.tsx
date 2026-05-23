@@ -78,6 +78,12 @@ export default function Credits() {
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Kredi Yükle</h2>
+      <p className="text-sm text-slate-700 mb-3">
+        Credit-based access helps you run property pre-checks, organize evidence, and prepare report-ready case context.
+      </p>
+      <p className="text-xs text-slate-600 mb-3">
+        Credits do not guarantee official legal/tapu/imar proof. Official verification remains external and professional.
+      </p>
       <div className="mb-2">Kredi bakiyesi: <b>{credits}</b></div>
       {loadError ? <div className="text-red-600 text-sm mb-2">{loadError}</div> : null}
       <div className="space-x-2 mt-4">
