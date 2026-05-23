@@ -136,3 +136,9 @@ Keep scheduled: `P2.UI-BUNDLE-1 Premium black/premium UI redesign` after functio
 - secret rotation status: ROTATION_REQUIRED (no explicit deployed rotation evidence captured in this phase)
 - deployed smoke continuity: PASS (admin/property/report/admin-route smoke remains valid from prior verified run)
 - public launch status: NOT_READY
+
+## Local SMTP sandbox boundary (P2.LOCAL-SMTP-1)
+- local SMTP sandbox verification is separate from production sender-domain readiness.
+- DNS/SPF/DKIM/DMARC are not required for local sandbox smoke execution.
+- DNS/SPF/DKIM/DMARC remain required for production sender-domain readiness.
+- local SMTP PASS does not imply public launch readiness.
