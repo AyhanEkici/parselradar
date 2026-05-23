@@ -142,3 +142,10 @@ Keep scheduled: `P2.UI-BUNDLE-1 Premium black/premium UI redesign` after functio
 - DNS/SPF/DKIM/DMARC are not required for local sandbox smoke execution.
 - DNS/SPF/DKIM/DMARC remain required for production sender-domain readiness.
 - local SMTP PASS does not imply public launch readiness.
+
+## Controlled beta closeout (P2.BETA-CLOSEOUT-1)
+- Mailtrap/local SMTP delivery debugging deferred in this phase.
+- SMTP, DNS, and secret rotation remain launch blockers.
+- Core product flows remain suitable for controlled-beta validation.
+- Public launch remains NOT_READY.
+- Final later TODO remains scheduled: P2.UI-BUNDLE-1 Premium black/premium UI redesign.
