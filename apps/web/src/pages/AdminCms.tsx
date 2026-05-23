@@ -48,6 +48,12 @@ const modules: CmsModule[] = [
     actionLabel: 'Open Properties for analysis/result flow',
   },
   {
+    area: 'Analysis Reports',
+    status: 'wired',
+    description: 'Central beta review of properties, evidence counts and analysis/report surface status.',
+    href: '/admin/analysis-reports',
+  },
+  {
     area: 'Credits / Ledger',
     status: 'wired',
     description: 'Inspect credit balances and ledger history.',
@@ -253,6 +259,12 @@ export default function AdminCms() {
         status: 'wired' as DisplayStatus,
         route: '/admin/analyses',
         detail: 'Wired via admin analyses route and property-level analysis/result flow',
+      },
+      {
+        title: 'Analysis Reports',
+        status: 'wired' as DisplayStatus,
+        route: '/admin/analysis-reports',
+        detail: 'Central review registry for beta tester properties and report-readiness surface',
       },
       {
         title: 'Credits / Stripe',
