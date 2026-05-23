@@ -82,8 +82,13 @@ When enabled in a future phase, it must be limited to:
 Cron must remain disabled for blocked/permissioned/private connectors.
 
 ### Scheduled Metadata Sync Endpoint (P2.CONNECTOR-2C)
-An admin-protected endpoint exists for safe scheduled metadata sync orchestration:
+An hardened endpoint exists for safe scheduled metadata sync orchestration:
 - `POST /admin/connectors/sync/scheduled`
+
+Trigger security model:
+- Manual admin trigger: authenticated `auth + admin` path.
+- External scheduler trigger: `x-connector-sync-secret` must match `CONNECTOR_SYNC_CRON_SECRET`.
+- Unauthenticated/public calls without valid secret are denied.
 
 Endpoint boundaries:
 - evaluates all registry sources but runs only cron-eligible, `PUBLIC_METADATA_SYNC`, `ACTIVE`, `SAFE_PUBLIC_METADATA`, public-access sources

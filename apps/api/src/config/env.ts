@@ -26,6 +26,7 @@ export const ENV = {
     STRIPE_PRICE_50_CREDITS: process.env.STRIPE_PRICE_50_CREDITS || '',
     ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || '',
+    CONNECTOR_SYNC_CRON_SECRET: process.env.CONNECTOR_SYNC_CRON_SECRET || '',
     PORT: process.env.PORT || '4000',
     API_URL: process.env.API_URL || '',
 };
@@ -40,5 +41,6 @@ export const {
     STRIPE_WEBHOOK_SECRET,
     ADMIN_EMAIL,
     ADMIN_PASSWORD,
+    CONNECTOR_SYNC_CRON_SECRET,
     PORT
 } = ENV;

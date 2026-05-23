@@ -15,6 +15,7 @@ const RECOMMENDED_KEYS = [
   'SMTP_PASS',
   'SMTP_FROM',
   'REDIS_URL',
+  'CONNECTOR_SYNC_CRON_SECRET',
 ];
 
 function hasValue(key: string) {

@@ -117,12 +117,14 @@ export const postAdminConnectorSyncNow = async (req: AuthRequest, res: Response)
 };
 
 export const postAdminConnectorScheduledSync = async (req: AuthRequest, res: Response) => {
-  const result = await runScheduledMetadataSync(req.user?._id?.toString());
+  const actorUserId = req.user?._id?.toString();
+  const actorRole = req.user?.role || 'SYSTEM';
+  const result = await runScheduledMetadataSync(actorUserId);
 
   await logAuditEvent({
     type: 'connector_scheduled_sync_run',
-    actorUserId: req.user!._id.toString(),
-    actorRole: req.user!.role,
+    actorUserId: actorUserId || 'system_cron',
+    actorRole,
     targetType: 'Connector',
     targetId: 'scheduled_metadata_sync',
     message: 'Scheduled metadata sync endpoint executed',

@@ -5,7 +5,10 @@ Define and implement a legal-safe scheduled metadata sync trigger that is limite
 
 ## Endpoint
 - `POST /admin/connectors/sync/scheduled`
-- Protection: existing `auth` + `admin` middleware.
+- Protection: dual-trigger hardening.
+- Manual trigger path: existing `auth` + `admin`.
+- External scheduler path: `x-connector-sync-secret` header must match `CONNECTOR_SYNC_CRON_SECRET`.
+- Unauthenticated/public requests without valid secret are denied.
 - Trigger type recorded as `SCHEDULED` in sync runs.
 
 ## Allowed Sources
@@ -58,7 +61,8 @@ Expected skipped examples in current registry:
 ## External Scheduler Activation (Later)
 Implementation does not activate external cron by itself.
 - Vercel/Railway scheduler wiring is a separate deployment step.
-- Until configured, scheduled sync remains manually triggerable via protected endpoint only.
+- Until configured, scheduled sync remains manually triggerable via admin-auth path.
+- If external cron is configured later, secret-based trigger must be used and secret rotation policy should be followed.
 
 ## Launch Posture
 - Public launch remains `NOT_READY`.

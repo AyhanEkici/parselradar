@@ -1,6 +1,8 @@
-import express from 'express';
+import crypto from 'crypto';
+import express, { NextFunction, Request, Response } from 'express';
 import { auth } from '../middleware/auth';
 import { admin } from '../middleware/admin';
+import { CONNECTOR_SYNC_CRON_SECRET } from '../config/env';
 import {
   getAdminConnectorActivationPlan,
   getAdminConnectorAuditTrail,
@@ -32,12 +34,38 @@ import {
 
 const router = express.Router();
 
+function safeSecretMatch(provided?: string, expected?: string) {
+  const left = Buffer.from(String(provided || ''), 'utf8');
+  const right = Buffer.from(String(expected || ''), 'utf8');
+  if (left.length === 0 || right.length === 0 || left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
+
+function hasValidScheduledSyncSecret(req: Request) {
+  const configuredSecret = String(CONNECTOR_SYNC_CRON_SECRET || '').trim();
+  if (!configuredSecret) return false;
+  const headerSecret = String(req.header('x-connector-sync-secret') || '').trim();
+  return safeSecretMatch(headerSecret, configuredSecret);
+}
+
+function scheduledSyncTriggerGuard(req: Request, res: Response, next: NextFunction) {
+  // Allow scheduler-triggered calls only when secret header matches configured secret.
+  if (hasValidScheduledSyncSecret(req)) {
+    return next();
+  }
+
+  // Preserve manual/admin trigger path with existing auth+admin model.
+  return auth(req as any, res, () => {
+    return admin(req as any, res, next);
+  });
+}
+
 // V17 routes
 router.get('/admin/connectors', auth, admin, getAdminConnectors);
 router.get('/admin/connectors/source-registry', auth, admin, getAdminSourceRegistry);
 router.get('/admin/connectors/catalog', auth, admin, getAdminConnectorCatalog);
 router.get('/admin/connectors/center', auth, admin, getAdminConnectorCenter);
-router.post('/admin/connectors/sync/scheduled', auth, admin, postAdminConnectorScheduledSync);
+router.post('/admin/connectors/sync/scheduled', scheduledSyncTriggerGuard, postAdminConnectorScheduledSync);
 router.get('/admin/connectors/audit-trail', auth, admin, getAdminConnectorAuditTrail);
 router.get('/admin/connectors/tucbs', auth, admin, getAdminTucbsConnector);
 router.post('/admin/connectors/tucbs/sync', auth, admin, postAdminTucbsSync);
