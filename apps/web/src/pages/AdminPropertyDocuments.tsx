@@ -44,12 +44,6 @@ type DetailResponse = {
   documents?: DocumentItem[];
 };
 
-type CsvPreview = {
-  headers: string[];
-  detectedFields: Array<{ field: string; value: string }>;
-  parseError: string | null;
-};
-
 type ReviewStatusValue =
   | 'PREVIEW_ONLY'
   | 'NEEDS_REVIEW'
@@ -57,6 +51,19 @@ type ReviewStatusValue =
   | 'CONFIRMED_BY_ADMIN'
   | 'MANUAL_REVIEW_REQUIRED'
   | 'REJECTED';
+
+type QueueStatus = 'ready' | 'uploading' | 'uploaded' | 'error';
+
+type UploadQueueItem = {
+  id: string;
+  file: File;
+  evidenceType: string;
+  sourceType: string;
+  metadataStatus: 'NEEDS_REVIEW' | 'PREVIEW_ONLY';
+  supportingEvidenceOnly: boolean;
+  status: QueueStatus;
+  error?: string;
+};
 
 const evidenceTypeOptions = [
   'LISTING_SCREENSHOT',
@@ -91,82 +98,75 @@ const sourceTypeOptions = [
   'UNKNOWN',
 ];
 
-const csvPreviewFields = ['title', 'longitude', 'latitude', '_id_', 'province', 'district', 'neighborhood', 'ada', 'parsel', 'price', 'm2'];
-
-function splitCsvLine(line: string) {
-  const result: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i += 1) {
-    const char = line[i];
-    if (char === '"') {
-      const next = line[i + 1];
-      if (inQuotes && next === '"') {
-        current += '"';
-        i += 1;
-      } else {
-        inQuotes = !inQuotes;
-      }
-      continue;
-    }
-
-    if (char === ',' && !inQuotes) {
-      result.push(current.trim());
-      current = '';
-      continue;
-    }
-
-    current += char;
-  }
-
-  result.push(current.trim());
-  return result;
-}
-
-function parseCsvPreview(content: string): CsvPreview {
-  const lines = content
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lines.length === 0) {
-    return { headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' };
-  }
-
-  const headers = splitCsvLine(lines[0]);
-  if (headers.length === 0) {
-    return { headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' };
-  }
-
-  const firstRow = lines[1] ? splitCsvLine(lines[1]) : [];
-  const headerIndex = new Map(headers.map((header, index) => [header.toLowerCase(), index]));
-
-  const detectedFields = csvPreviewFields
-    .map((field) => {
-      const fieldKey = field.toLowerCase();
-      const idx = headerIndex.get(fieldKey);
-      if (typeof idx === 'number') {
-        return { field, value: firstRow[idx] || '-' };
-      }
-      if (fieldKey === '_id_') {
-        const fallbackIdx = headerIndex.get('_id');
-        if (typeof fallbackIdx === 'number') {
-          return { field, value: firstRow[fallbackIdx] || '-' };
-        }
-      }
-      return null;
-    })
-    .filter((entry): entry is { field: string; value: string } => Boolean(entry));
-
-  return { headers, detectedFields, parseError: null };
-}
+const metadataStatusOptions: Array<'NEEDS_REVIEW' | 'PREVIEW_ONLY'> = ['NEEDS_REVIEW', 'PREVIEW_ONLY'];
 
 function getFileExtension(filename: string) {
   const normalized = String(filename || '');
   const index = normalized.lastIndexOf('.');
   if (index < 0 || index === normalized.length - 1) return 'unknown';
   return normalized.slice(index + 1).toLowerCase();
+}
+
+function stripDiacritics(value: string) {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function hasAnyKeyword(text: string, keywords: string[]) {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+function suggestEvidenceMetadata(filename: string, mimeType?: string) {
+  const normalizedName = stripDiacritics(String(filename || '').toLowerCase());
+  const extension = getFileExtension(filename);
+  const normalizedMime = String(mimeType || '').toLowerCase();
+  const metadataStatus: 'NEEDS_REVIEW' | 'PREVIEW_ONLY' =
+    extension === 'csv' || normalizedMime.includes('csv') ? 'PREVIEW_ONLY' : 'NEEDS_REVIEW';
+
+  if (extension === 'kml') {
+    return {
+      evidenceType: 'TKGM_EXPORT_KML',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      metadataStatus,
+    };
+  }
+
+  if (extension === 'geojson' || extension === 'json') {
+    return {
+      evidenceType: 'TKGM_EXPORT_GEOJSON',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      metadataStatus,
+    };
+  }
+
+  if (extension === 'pdf' && normalizedName.includes('tkgm')) {
+    return {
+      evidenceType: 'TKGM_EXPORT_PDF',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      metadataStatus,
+    };
+  }
+
+  if (hasAnyKeyword(normalizedName, ['analiz', 'alimsatim', 'alim', 'satim', 'fiyat', 'price', 'history'])) {
+    return {
+      evidenceType: 'TKGM_PRICE_HISTORY_SCREENSHOT',
+      sourceType: 'TKGM_ANALYSIS_MARKET_SIGNAL',
+      metadataStatus,
+    };
+  }
+
+  if (hasAnyKeyword(normalizedName, ['tkgm', 'parsel', 'kadastro', 'ada'])) {
+    return {
+      evidenceType: 'TKGM_PARCEL_SCREENSHOT',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      metadataStatus,
+    };
+  }
+
+  return {
+    evidenceType: 'OTHER',
+    sourceType: 'USER_SUBMITTED',
+    metadataStatus,
+  };
 }
 
 function statusText(status?: string) {
@@ -215,11 +215,7 @@ export default function AdminPropertyDocuments() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState('');
-  const [evidenceType, setEvidenceType] = useState('OTHER');
-  const [sourceType, setSourceType] = useState('ADMIN_MANUAL_OBSERVATION');
-  const [supportingEvidenceOnly, setSupportingEvidenceOnly] = useState(true);
-  const [file, setFile] = useState<File | null>(null);
-  const [csvPreview, setCsvPreview] = useState<CsvPreview>({ headers: [], detectedFields: [], parseError: null });
+  const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const toast = useToast();
@@ -245,64 +241,86 @@ export default function AdminPropertyDocuments() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
+  const updateQueueItem = (itemId: string, update: Partial<UploadQueueItem>) => {
+    setUploadQueue((prev) => prev.map((item) => (item.id === itemId ? { ...item, ...update } : item)));
+  };
+
+  const removeQueueItem = (itemId: string) => {
+    setUploadQueue((prev) => prev.filter((item) => item.id !== itemId));
+  };
+
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!propertyId || !file) return;
-    const formEl = e.currentTarget;
-    const fileExtension = getFileExtension(file.name);
-    const fileMime = String(file.type || '').toLowerCase();
-    const isCsvUpload = fileExtension === 'csv' || fileMime.includes('csv');
-    if (isCsvUpload) {
-      toast.error('CSV preview is available, but CSV upload is not enabled yet. Export or screenshot evidence can still be uploaded.');
+    if (!propertyId || uploadQueue.length === 0) return;
+
+    const pendingItems = uploadQueue.filter((item) => item.status === 'ready' || item.status === 'error');
+    if (pendingItems.length === 0) {
+      toast.error('No pending files to upload');
       return;
     }
 
-    const parsedPreview = csvPreview.parseError
-      ? null
-      : Object.fromEntries(csvPreview.detectedFields.map((entry) => [entry.field, entry.value]));
-    const csvDetectedFields = csvPreview.parseError ? [] : csvPreview.detectedFields.map((entry) => entry.field);
-    const metadataStatus = csvPreview.parseError
-      ? 'MANUAL_REVIEW_REQUIRED'
-      : csvDetectedFields.length > 0
-      ? 'PREVIEW_ONLY'
-      : 'NEEDS_REVIEW';
-
     setUploading(true);
     const loadingToastId = toast.loading('Belge yükleniyor...');
+    const authHeader = getAuthHeader();
+    let uploadedCount = 0;
+    let failedCount = 0;
+
     try {
-      const authHeader = getAuthHeader();
-      const formData = new FormData();
-      formData.append('documentType', evidenceType);
-      formData.append('evidenceType', evidenceType);
-      formData.append('sourceType', sourceType);
-      formData.append('reviewStatus', 'NEEDS_REVIEW');
-      formData.append('metadataStatus', metadataStatus);
-      formData.append('supportingEvidenceOnly', String(supportingEvidenceOnly));
-      if (parsedPreview && Object.keys(parsedPreview).length > 0) {
-        formData.append('parsedPreview', JSON.stringify(parsedPreview));
+      for (const item of pendingItems) {
+        updateQueueItem(item.id, { status: 'uploading', error: undefined });
+
+        const extension = getFileExtension(item.file.name);
+        const mime = String(item.file.type || '').toLowerCase();
+        if (extension === 'csv' || mime.includes('csv')) {
+          failedCount += 1;
+          updateQueueItem(item.id, {
+            status: 'error',
+            error: 'CSV preview is available, but CSV upload is not enabled yet.',
+          });
+          continue;
+        }
+
+        const formData = new FormData();
+        formData.append('documentType', item.evidenceType);
+        formData.append('evidenceType', item.evidenceType);
+        formData.append('sourceType', item.sourceType);
+        formData.append('reviewStatus', 'NEEDS_REVIEW');
+        formData.append('metadataStatus', item.metadataStatus);
+        formData.append('supportingEvidenceOnly', String(item.supportingEvidenceOnly));
+        formData.append('file', item.file);
+
+        try {
+          const response = await fetch(`${getApiBaseUrl()}/properties/${propertyId}/documents`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+            headers: {
+              ...(authHeader ? { Authorization: authHeader } : {}),
+            },
+          });
+          const text = await response.text();
+          const data = text ? JSON.parse(text) : null;
+          if (!response.ok) {
+            const reqId = data?.requestId ? ` (requestId: ${data.requestId})` : '';
+            throw new Error((data?.error || 'Yükleme başarısız') + reqId);
+          }
+
+          uploadedCount += 1;
+          updateQueueItem(item.id, { status: 'uploaded', error: undefined });
+        } catch (err: any) {
+          failedCount += 1;
+          updateQueueItem(item.id, { status: 'error', error: err?.message || 'Yükleme başarısız' });
+        }
       }
-      if (csvDetectedFields.length > 0) {
-        formData.append('csvDetectedFields', JSON.stringify(csvDetectedFields));
-      }
-      formData.append('file', file);
-      const response = await fetch(`${getApiBaseUrl()}/properties/${propertyId}/documents`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-        headers: {
-          ...(authHeader ? { Authorization: authHeader } : {}),
-        },
-      });
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : null;
-      if (!response.ok) {
-        throw new Error(data?.error || 'Yükleme başarısız');
-      }
+
       toast.dismiss(loadingToastId);
-      toast.success('Document uploaded');
-      setFile(null);
-      setCsvPreview({ headers: [], detectedFields: [], parseError: null });
-      if (formEl && typeof formEl.reset === 'function') formEl.reset();
+      if (uploadedCount > 0 && failedCount === 0) {
+        toast.success(`${uploadedCount} document(s) uploaded`);
+      } else if (uploadedCount > 0 && failedCount > 0) {
+        toast.success(`${uploadedCount} uploaded, ${failedCount} failed`);
+      } else {
+        toast.error('Upload failed');
+      }
       await fetchDocuments();
     } catch (err) {
       const e = err as { message?: string };
@@ -396,27 +414,32 @@ export default function AdminPropertyDocuments() {
     return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
 
-  const fileExtension = file ? getFileExtension(file.name) : 'unknown';
-  const fileType = file?.type || 'unknown';
-  const isCsvFile = fileExtension === 'csv' || fileType.toLowerCase().includes('csv');
+  const handleFileChange = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
 
-  const handleFileChange = async (nextFile: File | null) => {
-    setFile(nextFile);
-    setCsvPreview({ headers: [], detectedFields: [], parseError: null });
+    const incomingItems: UploadQueueItem[] = Array.from(fileList).map((nextFile, index) => {
+      const suggestion = suggestEvidenceMetadata(nextFile.name, nextFile.type);
+      return {
+        id: `${Date.now()}-${index}-${nextFile.name}`,
+        file: nextFile,
+        evidenceType: suggestion.evidenceType,
+        sourceType: suggestion.sourceType,
+        metadataStatus: suggestion.metadataStatus,
+        supportingEvidenceOnly: true,
+        status: 'ready',
+      };
+    });
 
-    if (!nextFile) return;
-    const extension = getFileExtension(nextFile.name);
-    const mime = String(nextFile.type || '').toLowerCase();
-    const shouldParseCsv = extension === 'csv' || mime.includes('csv');
-    if (!shouldParseCsv) return;
-
-    try {
-      const content = await nextFile.text();
-      setCsvPreview(parseCsvPreview(content));
-    } catch {
-      setCsvPreview({ headers: [], detectedFields: [], parseError: 'CSV preview failed — manual review required' });
-    }
+    setUploadQueue((prev) => {
+      const existingKeys = new Set(prev.map((item) => `${item.file.name}-${item.file.size}-${item.file.lastModified}`));
+      const uniqueIncoming = incomingItems.filter(
+        (item) => !existingKeys.has(`${item.file.name}-${item.file.size}-${item.file.lastModified}`)
+      );
+      return [...prev, ...uniqueIncoming];
+    });
   };
+
+  const hasPendingQueueItems = uploadQueue.some((item) => item.status === 'ready' || item.status === 'error');
 
   return (
     <AdminLayout title="Property Documents">
@@ -543,57 +566,21 @@ export default function AdminPropertyDocuments() {
           </AdminToolbar>
 
           <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
-            <label className="text-xs text-slate-600 md:col-span-1">
-              Evidence type
-              <select
-                className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
-                value={evidenceType}
-                onChange={(e) => setEvidenceType(e.target.value)}
-              >
-                {evidenceTypeOptions.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="text-xs text-slate-600 md:col-span-1">
-              Source type
-              <select
-                className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
-                value={sourceType}
-                onChange={(e) => setSourceType(e.target.value)}
-              >
-                {sourceTypeOptions.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="text-xs text-slate-600 md:col-span-2">
-              File
+            <label className="text-xs text-slate-600 md:col-span-3">
+              Files
               <input
                 className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
                 type="file"
+                multiple
                 accept=".pdf,.png,.jpg,.jpeg,.webp,.kml,.geojson,.json,.csv"
-                onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                required
+                onChange={(e) => handleFileChange(e.target.files || null)}
               />
             </label>
 
-            <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !file || isCsvFile}>
-              {uploading ? 'Uploading...' : 'Upload'}
+            <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !hasPendingQueueItems}>
+              {uploading ? 'Uploading...' : 'Upload queued files'}
             </AdminButton>
           </form>
-
-          {isCsvFile ? (
-            <div className="mt-3 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs text-slate-700">
-              CSV preview is available, but CSV upload is not enabled yet. Export or screenshot evidence can still be uploaded.
-            </div>
-          ) : null}
 
           <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
             Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.
@@ -615,61 +602,94 @@ export default function AdminPropertyDocuments() {
           </div>
 
           <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 space-y-2">
-            <div className="font-semibold text-slate-900">Upload Metadata Preview</div>
-            <div>File name: {file?.name || '-'}</div>
-            <div>File type: {fileType}</div>
-            <div>File extension: {fileExtension}</div>
-            <div>Selected evidence type: {evidenceType}</div>
-            <div>Selected source type: {sourceType}</div>
-            <label className="inline-flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={supportingEvidenceOnly}
-                onChange={(e) => setSupportingEvidenceOnly(e.target.checked)}
-              />
-              Supporting evidence only
-            </label>
-            <div className="text-amber-700">Manual review required</div>
-            {isCsvFile ? <div className="text-slate-600">Preview only / needs confirmation</div> : null}
-          </div>
-
-          {isCsvFile ? (
-            <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm">
-              <div className="font-semibold text-slate-900">CSV Preview</div>
-              <div className="mt-1 text-xs text-slate-600">CSV preview only. Coordinates from CSV are not verified. Upload remains supporting evidence only.</div>
-              {csvPreview.parseError ? (
-                <div className="mt-2 text-rose-700">CSV preview failed — manual review required</div>
-              ) : (
-                <>
-                  <div className="mt-2 text-slate-700">Detected headers: {csvPreview.headers.length > 0 ? csvPreview.headers.join(', ') : '-'}</div>
-                  <div className="mt-2 overflow-x-auto">
-                    <table className="w-full min-w-[420px] border-collapse text-xs">
-                      <thead>
-                        <tr className="bg-slate-50">
-                          <th className="border border-slate-200 px-2 py-1 text-left">Field</th>
-                          <th className="border border-slate-200 px-2 py-1 text-left">Preview value (first row)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {csvPreview.detectedFields.length > 0 ? (
-                          csvPreview.detectedFields.map((entry) => (
-                            <tr key={entry.field}>
-                              <td className="border border-slate-200 px-2 py-1">{entry.field}</td>
-                              <td className="border border-slate-200 px-2 py-1">{entry.value}</td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="border border-slate-200 px-2 py-1" colSpan={2}>No target preview fields found. Manual review required.</td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
+            <div className="font-semibold text-slate-900">Upload Queue</div>
+            <div className="text-xs text-slate-600">
+              Suggestions are deterministic and editable. They are supporting metadata suggestions only and not verified facts.
             </div>
-          ) : null}
+            {uploadQueue.length === 0 ? <div className="text-xs text-slate-500">No files queued.</div> : null}
+            <div className="space-y-2">
+              {uploadQueue.map((item) => (
+                <div key={item.id} className="rounded border border-slate-200 p-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="text-sm font-medium text-slate-900 break-all">{item.file.name}</div>
+                    <div className="text-xs text-slate-500">{formatBytes(item.file.size)} • {item.file.type || 'unknown'}</div>
+                  </div>
+                  <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <label className="text-xs text-slate-600">
+                      Suggested evidence type
+                      <select
+                        className="mt-1 block w-full border border-slate-300 rounded-md px-2 py-1.5 text-xs bg-white"
+                        value={item.evidenceType}
+                        onChange={(e) => updateQueueItem(item.id, { evidenceType: e.target.value })}
+                        disabled={item.status === 'uploading' || item.status === 'uploaded'}
+                      >
+                        {evidenceTypeOptions.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-xs text-slate-600">
+                      Suggested source type
+                      <select
+                        className="mt-1 block w-full border border-slate-300 rounded-md px-2 py-1.5 text-xs bg-white"
+                        value={item.sourceType}
+                        onChange={(e) => updateQueueItem(item.id, { sourceType: e.target.value })}
+                        disabled={item.status === 'uploading' || item.status === 'uploaded'}
+                      >
+                        {sourceTypeOptions.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="text-xs text-slate-600">
+                      Suggested metadata status
+                      <select
+                        className="mt-1 block w-full border border-slate-300 rounded-md px-2 py-1.5 text-xs bg-white"
+                        value={item.metadataStatus}
+                        onChange={(e) => updateQueueItem(item.id, { metadataStatus: e.target.value as 'NEEDS_REVIEW' | 'PREVIEW_ONLY' })}
+                        disabled={item.status === 'uploading' || item.status === 'uploaded'}
+                      >
+                        {metadataStatusOptions.map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                    <label className="inline-flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={item.supportingEvidenceOnly}
+                        onChange={(e) => updateQueueItem(item.id, { supportingEvidenceOnly: e.target.checked })}
+                        disabled={item.status === 'uploading' || item.status === 'uploaded'}
+                      />
+                      Supporting evidence only
+                    </label>
+                    <span className="inline-flex rounded border border-slate-300 bg-slate-50 px-2 py-0.5 text-slate-700">
+                      Status: {item.status}
+                    </span>
+                    {item.error ? <span className="text-rose-700">{item.error}</span> : null}
+                  </div>
+                  <div className="mt-2">
+                    <AdminButton
+                      type="button"
+                      variant="danger"
+                      disabled={item.status === 'uploading'}
+                      onClick={() => removeQueueItem(item.id)}
+                    >
+                      Remove from queue
+                    </AdminButton>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
         </AdminSurface>
       </AdminPage>

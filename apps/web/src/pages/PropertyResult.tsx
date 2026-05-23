@@ -796,25 +796,12 @@ export default function PropertyResult() {
     const hasTkgmEvidence = docs.some((doc) => {
       const evidence = String(doc.evidenceType || '').trim();
       const source = String(doc.sourceType || '').trim();
-      return (
-        source === 'TKGM_MANUAL_EVIDENCE' ||
-        source === 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE' ||
-        source === 'TKGM_ANALYSIS_MARKET_SIGNAL' ||
-        evidence === 'TKGM_PARCEL_SCREENSHOT' ||
-        evidence === 'TKGM_ANALYSIS_SCREENSHOT' ||
-        evidence === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
-        evidence === 'TKGM_EXPORT_PDF' ||
-        evidence === 'TKGM_EXPORT_KML' ||
-        evidence === 'TKGM_EXPORT_GEOJSON' ||
-        evidence === 'TKGM_SCREENSHOT' ||
-        evidence === 'TKGM_EXPORT'
-      );
+      return evidence.startsWith('TKGM_') || source.startsWith('TKGM_');
     });
     const hasTkgmPriceHistoryEvidence = docs.some(
       (doc) =>
         String(doc.evidenceType || '').trim() === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
-        (String(doc.sourceType || '').trim() === 'TKGM_ANALYSIS_MARKET_SIGNAL' &&
-          String(doc.evidenceType || '').trim().includes('TKGM'))
+        String(doc.sourceType || '').trim() === 'TKGM_ANALYSIS_MARKET_SIGNAL'
     );
 
     return {
@@ -1018,8 +1005,8 @@ export default function PropertyResult() {
             <li>CSB/imar layer: Not connected yet</li>
             <li>Municipality/e-plan layer: Manual evidence only</li>
             <li>Uploaded evidence: Supporting information only</li>
-            <li>TKGM evidence: {mapLayerReadiness.hasTkgmEvidence ? 'Available (market signal / supporting evidence)' : 'Missing'}</li>
-            <li>TKGM price history screenshot: {mapLayerReadiness.hasTkgmPriceHistoryEvidence ? 'Available (market signal / supporting evidence)' : 'Missing'}</li>
+            <li>TKGM evidence: {mapLayerReadiness.hasTkgmEvidence ? 'Available (TKGM market signal / supporting evidence)' : 'Missing'}</li>
+            <li>TKGM price history screenshot: {mapLayerReadiness.hasTkgmPriceHistoryEvidence ? 'Available (TKGM market signal / supporting evidence)' : 'Missing'}</li>
           </ul>
         </div>
 
