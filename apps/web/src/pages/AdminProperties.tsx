@@ -26,6 +26,8 @@ interface Property {
   grossAreaM2?: number;
   ownerName?: string;
   ownerUserId?: string;
+  dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';
+  professionalContactAllowed?: boolean;
   userId?:
     | string
     | {
@@ -63,6 +65,12 @@ function resolveUserDisplay(property: Property) {
   if (property.ownerName) return property.ownerName;
   if (property.ownerUserId) return shortenId(property.ownerUserId);
   return '-';
+}
+
+function consentStatusLabel(status?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN') {
+  if (status === 'OPTED_IN') return 'Opted in';
+  if (status === 'DECLINED') return 'Declined';
+  return 'Not asked';
 }
 
 export default function AdminProperties() {
@@ -208,6 +216,15 @@ export default function AdminProperties() {
 
                     <div className="mt-3 text-sm text-slate-700">
                       <span className="text-slate-500">Kullanıcı:</span> {resolveUserDisplay(p)}
+                    </div>
+
+                    <div className="mt-2 text-xs text-slate-700 space-y-1">
+                      <div>
+                        <span className="text-slate-500">Deal-flow consent:</span> {consentStatusLabel(p.dealFlowConsentStatus)}
+                      </div>
+                      <div>
+                        <span className="text-slate-500">Professional contact:</span> {p.professionalContactAllowed ? 'Allowed' : 'Not allowed'}
+                      </div>
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2 text-xs">

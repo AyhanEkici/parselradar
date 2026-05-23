@@ -35,5 +35,9 @@ export const PropertySubmissionCreateInputSchema = z.object({
   electricity: z.nativeEnum(UtilityStatus),
   water: z.nativeEnum(UtilityStatus),
   villageDistanceText: z.string().optional(),
+  dealFlowConsentStatus: z.enum(['NOT_ASKED', 'DECLINED', 'OPTED_IN']).optional(),
+  dealFlowConsentAt: z.coerce.date().optional(),
+  dealFlowConsentScope: z.array(z.string()).optional(),
+  professionalContactAllowed: z.boolean().optional(),
   status: z.string().optional(),
 });

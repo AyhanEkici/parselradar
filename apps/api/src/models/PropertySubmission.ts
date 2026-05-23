@@ -34,6 +34,10 @@ export interface IPropertySubmission extends Document {
   electricity: string;
   water: string;
   villageDistanceText?: string;
+  dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';
+  dealFlowConsentAt?: Date;
+  dealFlowConsentScope?: string[];
+  professionalContactAllowed?: boolean;
   lastSpatialRefresh?: Date;
   lastMarketRefresh?: Date;
   lastTrendRefresh?: Date;
@@ -80,6 +84,10 @@ const PropertySubmissionSchema = new Schema<IPropertySubmission>({
   electricity: { type: String, required: true },
   water: { type: String, required: true },
   villageDistanceText: { type: String },
+  dealFlowConsentStatus: { type: String, enum: ['NOT_ASKED', 'DECLINED', 'OPTED_IN'], default: 'NOT_ASKED' },
+  dealFlowConsentAt: { type: Date },
+  dealFlowConsentScope: { type: [String], default: [] },
+  professionalContactAllowed: { type: Boolean, default: false },
   lastSpatialRefresh: { type: Date },
   lastMarketRefresh: { type: Date },
   lastTrendRefresh: { type: Date },

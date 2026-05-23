@@ -3,7 +3,7 @@ import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 
 interface PropertyForm {
-  [key: string]: string | number | undefined;
+  [key: string]: string | number | boolean | string[] | undefined;
 }
 
 type Option = { value: string; label: string };
@@ -67,6 +67,8 @@ export default function NewProperty() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [draftMessage, setDraftMessage] = useState('');
   const [hasDraft, setHasDraft] = useState(false);
+  const [allowDealFlowMatching, setAllowDealFlowMatching] = useState(false);
+  const [allowProfessionalContact, setAllowProfessionalContact] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -128,6 +130,15 @@ export default function NewProperty() {
       delete clientFields.createdAt;
       delete clientFields.updatedAt;
       delete clientFields.pricePerM2;
+      const dealFlowConsentScope = allowDealFlowMatching
+        ? ['PROFESSIONAL_MATCHING', ...(allowProfessionalContact ? ['PROFESSIONAL_CONTACT'] : [])]
+        : [];
+
+      clientFields.dealFlowConsentStatus = allowDealFlowMatching ? 'OPTED_IN' : 'NOT_ASKED';
+      clientFields.dealFlowConsentAt = allowDealFlowMatching ? new Date().toISOString() : undefined;
+      clientFields.dealFlowConsentScope = dealFlowConsentScope;
+      clientFields.professionalContactAllowed = allowDealFlowMatching ? allowProfessionalContact : false;
+
       const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(clientFields) });
       window.localStorage.removeItem(DRAFT_KEY);
       setHasDraft(false);
@@ -279,6 +290,39 @@ export default function NewProperty() {
             {fieldErrors.water && <div className="text-sm text-red-600">{fieldErrors.water}</div>}
 
             <input className="w-full border p-2" name="villageDistanceText" placeholder="Köy Mesafesi" value={String(form.villageDistanceText || '')} onChange={handleChange} />
+
+            <div className="mt-4 rounded border border-sky-200 bg-sky-50 p-3">
+              <h3 className="text-sm font-semibold text-sky-900">Optional professional matching</h3>
+              <p className="mt-1 text-xs text-sky-800 leading-relaxed">
+                You can allow ParselRadar to use this property case for future professional review or matching with relevant real-estate professionals. This is optional. Your data will not be shared as a hidden backdoor.
+              </p>
+              <label className="mt-3 flex items-start gap-2 text-sm text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={allowDealFlowMatching}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setAllowDealFlowMatching(checked);
+                    if (!checked) setAllowProfessionalContact(false);
+                  }}
+                  className="mt-1"
+                />
+                <span>I allow ParselRadar to use this property case for future opt-in professional matching.</span>
+              </label>
+              <label className="mt-2 flex items-start gap-2 text-sm text-slate-800">
+                <input
+                  type="checkbox"
+                  checked={allowProfessionalContact}
+                  onChange={(e) => setAllowProfessionalContact(e.target.checked)}
+                  disabled={!allowDealFlowMatching}
+                  className="mt-1"
+                />
+                <span>I allow a professional to contact me about this property case.</span>
+              </label>
+              <p className="mt-2 text-xs text-slate-600">
+                Default is private. You can create this property without opting in.
+              </p>
+            </div>
           </>
         )}
 

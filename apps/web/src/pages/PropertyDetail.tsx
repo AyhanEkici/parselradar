@@ -277,6 +277,10 @@ export default function PropertyDetail() {
     longitude?: number;
     coordinateSource?: 'exact' | 'approximate' | 'district_center_fallback';
     geocodeConfidence?: number;
+    dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';
+    dealFlowConsentAt?: string;
+    dealFlowConsentScope?: string[];
+    professionalContactAllowed?: boolean;
     lastSpatialRefresh?: string;
     lastMarketRefresh?: string;
     lastTrendRefresh?: string;
@@ -927,6 +931,14 @@ export default function PropertyDetail() {
     }
   };
 
+  const consentStatusLabel =
+    property.dealFlowConsentStatus === 'OPTED_IN'
+      ? 'Opted in'
+      : property.dealFlowConsentStatus === 'DECLINED'
+      ? 'Declined'
+      : 'Not asked';
+  const contactStatusLabel = property.professionalContactAllowed ? 'Allowed' : 'Not allowed';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Hero Section */}
@@ -1107,6 +1119,21 @@ export default function PropertyDetail() {
       )}
 
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900">Deal-flow sharing status</h2>
+          <p className="mt-1 text-sm text-slate-600">You can keep this private. Sharing is optional.</p>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="rounded border border-slate-200 bg-slate-50 p-3 text-sm">
+              <div className="text-slate-500">Deal-flow consent</div>
+              <div className="font-semibold text-slate-900">{consentStatusLabel}</div>
+            </div>
+            <div className="rounded border border-slate-200 bg-slate-50 p-3 text-sm">
+              <div className="text-slate-500">Professional contact</div>
+              <div className="font-semibold text-slate-900">{contactStatusLabel}</div>
+            </div>
+          </div>
+        </section>
+
         {/* Analysis Section */}
         {latestAnalysis && (
           <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-md">

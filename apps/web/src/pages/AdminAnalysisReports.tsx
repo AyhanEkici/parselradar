@@ -24,6 +24,8 @@ type AdminProperty = {
   ilce?: string;
   status?: string;
   userId?: string | { _id?: string; email?: string; name?: string };
+  dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';
+  professionalContactAllowed?: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -65,9 +67,17 @@ type RegistryRow = {
   evidenceStatusText: string;
   analysisRunStatusText: string;
   reportReadinessText: string;
+  dealFlowConsentText: string;
+  professionalContactText: string;
   betaIssueStatusText: string;
   lastUpdatedText: string;
 };
+
+function consentStatusLabel(status?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN') {
+  if (status === 'OPTED_IN') return 'Opted in';
+  if (status === 'DECLINED') return 'Declined';
+  return 'Not asked';
+}
 
 function toUserId(userId: AdminProperty['userId']): string {
   if (!userId) return '';
@@ -210,6 +220,8 @@ export default function AdminAnalysisReports() {
             evidenceStatusText,
             analysisRunStatusText,
             reportReadinessText,
+            dealFlowConsentText: consentStatusLabel(property.dealFlowConsentStatus),
+            professionalContactText: property.professionalContactAllowed ? 'Allowed' : 'Not allowed',
             betaIssueStatusText: 'Not available from current endpoint',
             lastUpdatedText: formatDate(property.updatedAt || property.createdAt || detail?.latestAnalysis?.createdAt),
           };
@@ -288,6 +300,8 @@ export default function AdminAnalysisReports() {
                     <th className="px-3 py-2">Evidence</th>
                     <th className="px-3 py-2">Analysis Runs</th>
                     <th className="px-3 py-2">Report Readiness</th>
+                    <th className="px-3 py-2">Deal-flow Consent</th>
+                    <th className="px-3 py-2">Professional Contact</th>
                     <th className="px-3 py-2">Beta Issue/Test Status</th>
                     <th className="px-3 py-2">Last Updated</th>
                     <th className="px-3 py-2">Actions</th>
@@ -311,6 +325,8 @@ export default function AdminAnalysisReports() {
                       </td>
                       <td className="px-3 py-2 align-top text-slate-700">{row.analysisRunStatusText}</td>
                       <td className="px-3 py-2 align-top text-slate-700">{row.reportReadinessText}</td>
+                      <td className="px-3 py-2 align-top text-slate-700">{row.dealFlowConsentText}</td>
+                      <td className="px-3 py-2 align-top text-slate-700">{row.professionalContactText}</td>
                       <td className="px-3 py-2 align-top text-slate-700">{row.betaIssueStatusText}</td>
                       <td className="px-3 py-2 align-top text-slate-700">{row.lastUpdatedText}</td>
                       <td className="px-3 py-2 align-top">
