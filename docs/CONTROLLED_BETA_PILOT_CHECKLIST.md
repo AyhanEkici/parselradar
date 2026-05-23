@@ -3,6 +3,7 @@
 ## 1) Beta Status
 - User-flow: CONTROLLED_BETA_CANDIDATE
 - Admin access: VERIFIED
+- Known tester beta status: READY_FOR_KNOWN_TESTERS
 - Public launch: NOT_READY
 
 ## 2) Who May Be Invited
