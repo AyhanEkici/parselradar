@@ -611,6 +611,15 @@ export default function AdminDealFlow() {
 
           <div className="text-sm text-slate-600">{filteredRows.length} case(s) after filters</div>
 
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">Lead quality legend</div>
+            <div className="mt-1">STRONG_SIGNAL = opted in + contact allowed + evidence/core data available.</div>
+            <div>REVIEWABLE = enough core data for admin review.</div>
+            <div>NEEDS_EVIDENCE = missing supporting evidence.</div>
+            <div>LOW_INFORMATION = insufficient property/evidence data.</div>
+            <div>NOT_ELIGIBLE = no opt-in consent.</div>
+          </div>
+
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}
           {loading ? <div className="text-sm text-slate-500">Loading professional deal-flow dashboard...</div> : null}
 
@@ -653,6 +662,7 @@ export default function AdminDealFlow() {
                         <div className="text-xs text-slate-600">{row.areaText}</div>
                       </td>
                       <td className="px-3 py-2 align-top">
+                        <div className="text-xs font-medium text-slate-800">Lead Quality: {row.leadQuality}</div>
                         <AdminStatusPill tone={leadQualityTone(row.leadQuality)}>{row.leadQualityText}</AdminStatusPill>
                         <div className="mt-1 text-[11px] text-slate-500">Internal triage signal only.</div>
                       </td>

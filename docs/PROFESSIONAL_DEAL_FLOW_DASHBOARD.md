@@ -45,6 +45,13 @@ Result count is shown after filtering to avoid hidden/ambiguous empty states.
 ## Lead-Quality Signal Definitions
 Lead-quality labels are deterministic internal triage signals only (not investment score, valuation, or advice):
 
+Canonical labels are rendered visibly per row as:
+- Lead Quality: STRONG_SIGNAL
+- Lead Quality: REVIEWABLE
+- Lead Quality: NEEDS_EVIDENCE
+- Lead Quality: LOW_INFORMATION
+- Lead Quality: NOT_ELIGIBLE
+
 - NOT_ELIGIBLE:
   - consent is not OPTED_IN
 
