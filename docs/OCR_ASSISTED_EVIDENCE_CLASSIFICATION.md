@@ -1,117 +1,99 @@
 # OCR ASSISTED EVIDENCE CLASSIFICATION
 
 ## Purpose
-Define a safe OCR-assisted evidence intelligence contract for future document and screenshot analysis.
+Define a safe OCR-assisted evidence intelligence contract for document/screenshot triage without creating official-proof claims.
 
-Current phase status:
-- planned / not active yet
-- suggestions only when implemented
-- no official verification
-- no external sharing
-- no public-launch-ready claim
+## Runtime Feasibility Decision (P2.OCR-BUNDLE-2)
+Selected path: `DOCS_ONLY`.
 
-## Supported Input Types
-Planned support covers:
-- screenshots/images
-- PDFs if supported later
-- KML/GeoJSON/CSV metadata
-- TKGM screenshots
-- tapu documents
-- municipality/e-Imar/e-Plan documents
-- price/history screenshots
+Decision code: `OCR_RUNTIME_REQUIRES_SEPARATE_DEPENDENCY_DECISION`.
 
-## Suggested Document Categories
-Suggested evidence categories may include:
-- TAPU_DOCUMENT
-- IMAR_DURUM_DOCUMENT
-- MUNICIPALITY_EPLAN_SCREENSHOT
-- TKGM_PARCEL_SCREENSHOT
-- TKGM_ANALYSIS_SCREENSHOT
-- TKGM_PRICE_HISTORY_SCREENSHOT
-- LISTING_SCREENSHOT
-- PRICE_COMPARABLE_EVIDENCE
-- KML_GEOJSON_EXPORT
-- CSV_COORDINATE_EVIDENCE
-- OTHER
+Reason:
+- No existing lightweight OCR dependency is currently present in web/api packages.
+- Adding OCR runtime now would require introducing and validating a new dependency and browser/runtime compatibility matrix.
+- This phase remains controlled and does not expand runtime risk surface until a dedicated dependency decision is approved.
 
-## Suggested Source Categories
-Suggested source categories may include:
-- TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE
-- TKGM_ANALYSIS_MARKET_SIGNAL
-- MUNICIPALITY_EPLAN_EVIDENCE
-- USER_SUBMITTED
-- LISTING_PORTAL_SCREENSHOT
-- MANUAL_SUPPORTING_EVIDENCE
+## Supported File Types (Current + Planned)
+Current upload flow supports evidence submission and manual classification for:
+- images/screenshots
+- PDFs
+- KML/GeoJSON/CSV metadata artifacts (as governed by current upload constraints)
 
-## Extractable Fields
-Future OCR-assisted extraction may suggest:
-- il
-- ilce
-- mahalle/koy
+Planned OCR focus (later phase):
+- image-based screenshots/documents first
+- PDF OCR only after explicit performance and dependency validation
+
+## Deterministic Suggestion Rules (When OCR Text Is Available)
+The following rules are suggestions only and must remain editable.
+
+`TAPU_DOCUMENT` signals:
+- tapu
+- taşınmaz
 - ada
 - parsel
-- m2 / yuzolcumu
-- nitelik
-- tapu type
-- imar status if visible
-- coordinates if visible
-- price / asking price
-- source name
-- evidence date
-- OCR confidence
-- extraction confidence
+- yüzölçümü
+- malik
 
-## Output Shape
-Future OCR-assisted outputs should remain suggestion metadata only:
-- suggestedDocumentCategory
-- suggestedSourceCategory
-- extractedFields
-- ocrConfidence
-- extractionConfidence
-- requiresConfirmation
-- reviewStatus
+`IMAR_DURUM_DOCUMENT` signals:
+- imar durumu
+- yapılaşma
+- emsal
+- taks
+- kaks
+- belediye
 
-Example shape:
+`TKGM_PARCEL_SCREENSHOT` signals:
+- parsel sorgu
+- tkgm
+- ada/parsel
+- mahalle/köy
 
-```json
-{
-  "suggestedDocumentCategory": "TKGM_PARCEL_SCREENSHOT",
-  "suggestedSourceCategory": "TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE",
-  "extractedFields": {
-    "il": "Istanbul",
-    "ilce": "Kadikoy",
-    "ada": "123",
-    "parsel": "45"
-  },
-  "ocrConfidence": 0.71,
-  "extractionConfidence": 0.68,
-  "requiresConfirmation": true,
-  "reviewStatus": "NEEDS_REVIEW"
-}
-```
+`TKGM_PRICE_HISTORY_SCREENSHOT` signals:
+- alım satım
+- istatistik
+- fiyat
+- analiz
+- piyasa
 
-## Safety Rules
-OCR-assisted evidence intelligence must follow these rules:
+`LISTING_SCREENSHOT` signals:
+- sahibinden
+- emlakjet
+- hepsiemlak
+- ilan
+- fiyat
+
+## Output Contract (Suggestion Metadata Only)
+When OCR runtime is later enabled, output must stay in suggestion metadata:
+- extractedTextPreview
+- ocrConfidence (if available)
+- suggestedEvidenceType
+- suggestedSourceType
+- requiresConfirmation=true
+- reviewStatus=`NEEDS_REVIEW` or `MANUAL_REVIEW_REQUIRED`
+
+Low-confidence outputs must display: `Manual review required`.
+
+## Safety Boundaries
+Mandatory boundaries for this capability:
 - suggestions only
-- user/admin confirmation required
-- no official verification
+- user/admin confirmation required before upload classification is finalized
+- no automatic official verification
 - no legal/tapu/imar proof claim
-- no investment advice
-- no automatic buy recommendation
-- no external sharing
-- no professional marketplace automation
+- no user-facing buy advice
+- no automatic BUY label generation from OCR text
+- no external OCR/AI API
+- no server-side third-party image upload
+- no scraping
 - no TKGM/TUCBS/CSB automation
 - no e-Devlet automation
-- no third-party image upload by default
+- no external sharing
+- no marketplace automation
 
-## Operational Boundaries
-When runtime OCR is added later:
-- uploaded files remain inside ParselRadar-controlled processing unless separately approved
-- confidence must be shown as uncertain suggestion metadata, not fact
-- evidence classification must remain editable
-- admin/user review must be able to reject OCR suggestions
-- official and professional follow-up remains external
+## Not Implemented Yet
+This phase does not implement:
+- live OCR extraction runtime (web or api)
+- automatic evidence/source assignment from OCR text
+- official verification workflows
+- admin BUY/WATCH runtime activation from OCR
 
-## Current Implementation Decision
-This phase does not enable live OCR runtime.
-It only defines the contract and safe UI positioning for future OCR-assisted classification.
+Public launch readiness remains: `NOT_READY`.

@@ -42,6 +42,10 @@ Suggested inputs for future signal calculation:
 - missing critical documents
 - OCR confidence
 
+OCR note:
+- OCR extracted text may later feed admin-only internal triage features.
+- OCR-derived signals must remain explainable, reviewable, and manually overridable.
+
 ## Suggested Meaning
 - BUY_CANDIDATE_INTERNAL: strong internal opportunity pattern, still requires human review and no user-facing buy claim
 - WATCHLIST: promising but incomplete case worth monitoring
@@ -71,3 +75,4 @@ Signal outputs should stay explainable and reviewable.
 ## Current Implementation Decision
 This phase defines the signal model only.
 Live admin opportunity scoring based on OCR is not active yet.
+`BUY_CANDIDATE_INTERNAL` / `WATCHLIST` runtime activation is not enabled in this phase unless explicitly implemented in a later scoped change.
