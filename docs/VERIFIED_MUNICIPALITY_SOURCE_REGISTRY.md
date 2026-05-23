@@ -55,6 +55,18 @@ A source can be marked verified only when all checks are complete:
 - No fake municipality URLs are allowed in seeded entries.
 - Placeholder entries must remain `NOT_CONFIGURED` until manual verification is completed.
 
+## Guidance Surfacing Note (P2.CONNECTOR-2A.1)
+- Verified Kayseri municipality sources are now surfaced in these UI guidance surfaces:
+  - Property result page source guidance summary
+  - User property documents intent guidance panel
+  - Admin property documents intent guidance panel
+- Surfacing remains guidance-only and manual-only:
+  - "Official public source to check manually"
+  - "This is guidance only, not automated zoning verification"
+  - "Upload a screenshot/document as supporting evidence after checking the source"
+- If district-level source is not configured, UI falls back to city-level (province) source when available.
+- Blocked/access-gated sources (login/CAPTCHA/e-Devlet) are shown as blocked references only and are not used for automated verification.
+
 ## Current Status
 Public launch readiness remains `NOT_READY`.
 

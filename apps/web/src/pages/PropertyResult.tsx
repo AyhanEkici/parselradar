@@ -42,7 +42,12 @@ import ExecutionConstraintCard from '../components/execution/ExecutionConstraint
 import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
 import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
 import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
-import { getMunicipalitySource } from '../lib/municipalitySourceRegistry';
+import {
+  getMunicipalityBlockedSource,
+  getMunicipalityPublicSourceStatus,
+  getMunicipalitySource,
+  MunicipalityPublicSourceStatus,
+} from '../lib/municipalitySourceRegistry';
 
 type ReadinessStatus =
   | 'READY'
@@ -101,6 +106,9 @@ type EvidenceGuidance = {
   warning?: string;
   placeholder?: string;
   sourceUnavailableNote?: string;
+  sourcePublicStatus?: MunicipalityPublicSourceStatus;
+  blockedSourceStatus?: MunicipalityPublicSourceStatus;
+  blockedSourceNote?: string;
 };
 
 function intentActionLabel(intent: EvidenceIntent) {
@@ -184,28 +192,37 @@ function buildEvidenceGuidance(intent: EvidenceIntent, property: PropertyReadine
       ['MUNICIPALITY_IMAR_EVIDENCE', 'E_PLAN_EVIDENCE'].includes(String(doc.sourceType || '').trim())
     );
     const sourceRegistry = getMunicipalitySource(property?.il, property?.ilce);
+    const blockedSource = getMunicipalityBlockedSource(property?.il, property?.ilce);
+    const publicStatus = getMunicipalityPublicSourceStatus(sourceRegistry.source);
     const hasVerifiedSource = sourceRegistry.status === 'VERIFIED_OFFICIAL_SOURCE' && Boolean(sourceRegistry.source?.url);
     return {
       sourceLabel: hasVerifiedSource
-        ? `Verified source: ${sourceRegistry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
-        : 'Municipality e-Imar / e-Plan / Imar Durumu',
-      sourceActionLabel: hasVerifiedSource ? 'Open official source' : 'Open municipality guidance',
+        ? `Official public source to check manually: ${sourceRegistry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
+        : 'Official public source to check manually: Municipality e-Imar / e-Plan / Imar Durumu',
+      sourceActionLabel: hasVerifiedSource ? 'Open official public source' : 'Open municipality guidance',
       sourceUrl: hasVerifiedSource ? sourceRegistry.source?.url : undefined,
       guidanceSteps: [
         municipalityContext
           ? `Relevant municipality/district: ${municipalityContext}`
           : 'Relevant municipality/district should be identified from property location.',
+        'Official public source to check manually.',
         'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
         'If online e-Imar is unavailable, request an imar durum document from municipality.',
-        'Upload screenshot/PDF/document as supporting evidence only.',
+        'This is guidance only, not automated zoning verification.',
+        'Upload a screenshot/document as supporting evidence after checking the source.',
       ],
       expectedEvidenceType: hasMunicipalEvidenceType ? 'MUNICIPALITY_IMAR_DOCUMENT' : 'OTHER',
       expectedSourceType: hasMunicipalSourceType ? 'MUNICIPALITY_IMAR_EVIDENCE' : 'USER_SUBMITTED',
-      warning: 'ParselRadar does not confirm official zoning status automatically.',
+      warning: 'This is guidance only, not automated zoning verification.',
       placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
       sourceUnavailableNote: hasVerifiedSource
-        ? `Registry status: ${sourceRegistry.status}`
+        ? `Public source status: ${publicStatus}`
         : 'Exact municipality source URL is not configured yet.',
+      sourcePublicStatus: publicStatus,
+      blockedSourceStatus: blockedSource?.status,
+      blockedSourceNote: blockedSource
+        ? `${blockedSource.sourceLabel}: ${blockedSource.reason}`
+        : undefined,
     };
   }
 
@@ -1363,7 +1380,7 @@ export default function PropertyResult() {
   const sourceGuidanceSummaryRows = useMemo(() => {
     return reportReadiness.missingEvidenceActions.slice(0, 6).map((item) => {
       const guidance = buildEvidenceGuidance(item.intent, propertyData, documents);
-      const sourceStatus = guidance.sourceUrl ? 'VERIFIED_OFFICIAL_SOURCE' : 'NOT_CONFIGURED';
+      const sourceStatus = guidance.sourcePublicStatus || 'NOT_CONFIGURED';
       return { item, guidance, sourceStatus };
     });
   }, [documents, propertyData, reportReadiness.missingEvidenceActions]);
@@ -1553,9 +1570,11 @@ export default function PropertyResult() {
                 <div key={`recap-${item.key}`} className="rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
                   <div className="font-medium text-slate-900">{item.message}</div>
                   <div className="mt-1">Where to get it: {guidance.sourceLabel}</div>
-                  <div className="mt-1">Source URL status: {sourceStatus}</div>
+                  <div className="mt-1">Public source status: {sourceStatus}</div>
+                  {guidance.blockedSourceStatus ? <div className="mt-1">Blocked source status: {guidance.blockedSourceStatus}</div> : null}
                   <div className="mt-1">What to upload: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
                   {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
+                  {guidance.blockedSourceNote ? <div className="mt-1">{guidance.blockedSourceNote}</div> : null}
                   {!guidance.sourceUrl ? (
                     <div className="mt-1">Use the official website of the relevant municipality/district and search for e-Imar, e-Plan or Imar Durumu.</div>
                   ) : null}

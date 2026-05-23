@@ -14,7 +14,12 @@ import {
 } from '../components/admin';
 import { useToast } from '../components/ui';
 import { getAuthHeader } from '../lib/authStorage';
-import { getMunicipalitySource, MunicipalitySourceStatus } from '../lib/municipalitySourceRegistry';
+import {
+  getMunicipalityBlockedSource,
+  getMunicipalityPublicSourceStatus,
+  getMunicipalitySource,
+  MunicipalityPublicSourceStatus,
+} from '../lib/municipalitySourceRegistry';
 
 type DocumentItem = {
   _id: string;
@@ -84,7 +89,9 @@ type UploadIntentPreset = {
   sourceUnavailableNote?: string;
   placeholder?: string;
   note?: string;
-  registryStatus?: MunicipalitySourceStatus;
+  registryStatus?: MunicipalityPublicSourceStatus;
+  blockedRegistryStatus?: MunicipalityPublicSourceStatus;
+  blockedSourceNote?: string;
 };
 
 const evidenceTypeOptions = [
@@ -159,6 +166,8 @@ function resolveUploadIntentPreset(intent: string | null, province?: string, dis
 
   if (normalized === 'MUNICIPAL_ZONING') {
     const registry = getMunicipalitySource(province, district);
+    const blockedSource = getMunicipalityBlockedSource(province, district);
+    const publicStatus = getMunicipalityPublicSourceStatus(registry.source);
     const hasVerifiedSource = registry.status === 'VERIFIED_OFFICIAL_SOURCE' && Boolean(registry.source?.url);
     const preferredMunicipalEvidenceType = evidenceTypeOptions.includes('MUNICIPALITY_IMAR_SCREENSHOT')
       ? 'MUNICIPALITY_IMAR_SCREENSHOT'
@@ -166,21 +175,27 @@ function resolveUploadIntentPreset(intent: string | null, province?: string, dis
     return {
       label: 'Upload municipal/e-plan evidence',
       sourceLabel: hasVerifiedSource
-        ? `Verified source: ${registry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
-        : 'Municipality e-Imar / e-Plan / Imar Durumu',
+        ? `Official public source to check manually: ${registry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
+        : 'Official public source to check manually: Municipality e-Imar / e-Plan / Imar Durumu',
       evidenceType: preferredMunicipalEvidenceType,
       sourceType: 'USER_SUBMITTED',
-      sourceActionLabel: hasVerifiedSource ? 'Open official source' : 'Open municipality guidance',
+      sourceActionLabel: hasVerifiedSource ? 'Open official public source' : 'Open municipality guidance',
       sourceUrl: hasVerifiedSource ? registry.source?.url : undefined,
       guidanceSteps: [
+        'Official public source to check manually.',
         'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
         'If no online service exists, request an imar durum belgesi from municipality.',
-        'Capture screenshot/PDF/document for upload.',
+        'This is guidance only, not automated zoning verification.',
+        'Upload a screenshot/document as supporting evidence after checking the source.',
       ],
       sourceUnavailableNote: hasVerifiedSource ? undefined : 'Exact municipality source URL is not configured yet.',
       placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
-      note: 'Manual supporting evidence only.',
-      registryStatus: registry.status,
+      note: 'This is guidance only, not automated zoning verification.',
+      registryStatus: publicStatus,
+      blockedRegistryStatus: blockedSource?.status,
+      blockedSourceNote: blockedSource
+        ? `${blockedSource.sourceLabel}: ${blockedSource.reason}`
+        : undefined,
     };
   }
 
@@ -706,7 +721,10 @@ export default function AdminPropertyDocuments() {
             <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">
               <div className="font-semibold text-blue-900">You are uploading for: {intentPreset.label}</div>
               <div className="mt-1">Recommended source: {intentPreset.sourceLabel}</div>
-              <div className="mt-1">Registry status: {intentPreset.registryStatus || 'NOT_CONFIGURED'}</div>
+              <div className="mt-1">Public source status: {intentPreset.registryStatus || 'NOT_CONFIGURED'}</div>
+              {intentPreset.blockedRegistryStatus ? (
+                <div className="mt-1">Blocked source status: {intentPreset.blockedRegistryStatus}</div>
+              ) : null}
               <div className="mt-1">Where to obtain it:</div>
               <ul className="mt-1 list-disc pl-4">
                 {intentPreset.guidanceSteps.map((step) => (
@@ -714,10 +732,11 @@ export default function AdminPropertyDocuments() {
                 ))}
               </ul>
               {intentPreset.sourceUnavailableNote ? <div className="mt-1">{intentPreset.sourceUnavailableNote}</div> : null}
+              {intentPreset.blockedSourceNote ? <div className="mt-1">{intentPreset.blockedSourceNote}</div> : null}
               {intentPreset.placeholder ? <div className="mt-1">{intentPreset.placeholder}</div> : null}
               <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
               <div>Suggested source type: {intentPreset.sourceType}</div>
-              <div className="mt-1">Upload screenshot/PDF/document to ParselRadar as supporting evidence only.</div>
+              <div className="mt-1">Upload a screenshot/document as supporting evidence after checking the source.</div>
               {intentPreset.sourceUrl ? (
                 <a
                   className="mt-2 inline-flex rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100"
