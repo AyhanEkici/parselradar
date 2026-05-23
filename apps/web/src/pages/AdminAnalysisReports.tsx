@@ -267,6 +267,7 @@ export default function AdminAnalysisReports() {
             Analysis run registry source: <span className="font-semibold">/admin/analyses</span>. Report-readiness registry: <span className="font-semibold">partial / analysis-run endpoint not wired yet for explicit report-readiness state</span>.
             <div className="mt-1">Map/layer registry status is informational only. TKGM, TUCBS and CSB/imar layers are not connected in this phase.</div>
             <div className="mt-1">Coordinate preview may be available from uploaded CSV metadata; official map/layer integrations are not connected.</div>
+            <div className="mt-1">Missing-evidence source guidance is manual-only: TKGM Parsel Sorgu and municipality e-Imar/e-Plan/Imar Durumu directions are informational support, not automated external access or official verification.</div>
           </div>
 
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}

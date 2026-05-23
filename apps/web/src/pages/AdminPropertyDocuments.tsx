@@ -74,8 +74,14 @@ type UploadIntent =
 
 type UploadIntentPreset = {
   label: string;
+  sourceLabel: string;
   evidenceType: string;
   sourceType: string;
+  guidanceSteps: string[];
+  sourceActionLabel: string;
+  sourceUrl?: string;
+  sourceUnavailableNote?: string;
+  placeholder?: string;
   note?: string;
 };
 
@@ -121,16 +127,31 @@ function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | 
   if (normalized === 'PARCEL_IDENTITY') {
     return {
       label: 'Upload parcel identity evidence',
+      sourceLabel: 'TKGM Parsel Sorgu',
       evidenceType: 'TKGM_PARCEL_SCREENSHOT',
       sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Search by il/ilce/mahalle/ada/parsel if available.',
+        'Capture screenshot/export PDF/KML/GeoJSON if available.',
+      ],
     };
   }
 
   if (normalized === 'TKGM_PARCEL') {
     return {
       label: 'Upload TKGM parcel evidence',
+      sourceLabel: 'TKGM Parsel Sorgu',
       evidenceType: 'TKGM_PARCEL_SCREENSHOT',
       sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Review parcel details and capture screenshot/export evidence.',
+      ],
     };
   }
 
@@ -140,8 +161,17 @@ function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | 
       : 'OTHER';
     return {
       label: 'Upload municipal/e-plan evidence',
+      sourceLabel: 'Municipality e-Imar / e-Plan / Imar Durumu',
       evidenceType: preferredMunicipalEvidenceType,
       sourceType: 'USER_SUBMITTED',
+      sourceActionLabel: 'Open municipality guidance',
+      guidanceSteps: [
+        'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
+        'If no online service exists, request an imar durum belgesi from municipality.',
+        'Capture screenshot/PDF/document for upload.',
+      ],
+      sourceUnavailableNote: 'Exact municipality source URL not configured yet.',
+      placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
       note: 'Manual supporting evidence only.',
     };
   }
@@ -149,16 +179,30 @@ function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | 
   if (normalized === 'TKGM_PRICE_HISTORY') {
     return {
       label: 'Upload TKGM price-history screenshot',
+      sourceLabel: 'TKGM Parsel Sorgu Analiz / Alim-Satim Istatistikleri',
       evidenceType: 'TKGM_PRICE_HISTORY_SCREENSHOT',
       sourceType: 'TKGM_ANALYSIS_MARKET_SIGNAL',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Use analysis/price-history/statistics tab if available.',
+        'Capture screenshot as market signal evidence.',
+      ],
+      note: 'Market signal only, not official valuation proof.',
     };
   }
 
   if (normalized === 'GENERAL_SUPPORTING_EVIDENCE') {
     return {
       label: 'Upload supporting evidence',
+      sourceLabel: 'Manual supporting evidence',
       evidenceType: 'OTHER',
       sourceType: 'USER_SUBMITTED',
+      sourceActionLabel: 'Open guidance',
+      guidanceSteps: [
+        'Upload relevant screenshots, PDFs, official letters, listing screenshots, or supporting documents.',
+      ],
     };
   }
 
@@ -647,9 +691,37 @@ export default function AdminPropertyDocuments() {
 
           {intentPreset ? (
             <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">
-              <div className="font-semibold text-blue-900">Upload requested evidence: {intentPreset.label}</div>
+              <div className="font-semibold text-blue-900">You are uploading for: {intentPreset.label}</div>
+              <div className="mt-1">Recommended source: {intentPreset.sourceLabel}</div>
+              <div className="mt-1">Where to obtain it:</div>
+              <ul className="mt-1 list-disc pl-4">
+                {intentPreset.guidanceSteps.map((step) => (
+                  <li key={`${intentPreset.label}-${step}`}>{step}</li>
+                ))}
+              </ul>
+              {intentPreset.sourceUnavailableNote ? <div className="mt-1">{intentPreset.sourceUnavailableNote}</div> : null}
+              {intentPreset.placeholder ? <div className="mt-1">{intentPreset.placeholder}</div> : null}
               <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
               <div>Suggested source type: {intentPreset.sourceType}</div>
+              <div className="mt-1">Upload screenshot/PDF/document to ParselRadar as supporting evidence only.</div>
+              {intentPreset.sourceUrl ? (
+                <a
+                  className="mt-2 inline-flex rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100"
+                  href={intentPreset.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {intentPreset.sourceActionLabel}
+                </a>
+              ) : (
+                <button
+                  className="mt-2 rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 opacity-60"
+                  type="button"
+                  disabled
+                >
+                  {intentPreset.sourceActionLabel}
+                </button>
+              )}
               {intentPreset.note ? <div className="mt-1">{intentPreset.note}</div> : null}
             </div>
           ) : null}

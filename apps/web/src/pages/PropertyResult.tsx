@@ -79,6 +79,18 @@ type EvidenceActionItem = {
   note?: string;
 };
 
+type EvidenceGuidance = {
+  sourceLabel: string;
+  sourceActionLabel: string;
+  sourceUrl?: string;
+  guidanceSteps: string[];
+  expectedEvidenceType: string;
+  expectedSourceType: string;
+  warning?: string;
+  placeholder?: string;
+  sourceUnavailableNote?: string;
+};
+
 function intentActionLabel(intent: EvidenceIntent) {
   if (intent === 'PARCEL_IDENTITY') return 'Upload parcel identity evidence';
   if (intent === 'MUNICIPAL_ZONING') return 'Upload municipal/e-plan evidence';
@@ -113,6 +125,99 @@ function classifyReviewWarningIntent(message: string): EvidenceIntent {
     return 'GENERAL_SUPPORTING_EVIDENCE';
   }
   return 'GENERAL_SUPPORTING_EVIDENCE';
+}
+
+function buildEvidenceGuidance(intent: EvidenceIntent, property: PropertyReadinessData | null, docs: DocumentMetadata[]): EvidenceGuidance {
+  const municipalityContext = [String(property?.ilce || '').trim(), String(property?.il || '').trim()]
+    .filter(Boolean)
+    .join(' / ');
+
+  if (intent === 'PARCEL_IDENTITY') {
+    return {
+      sourceLabel: 'TKGM Parsel Sorgu',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Search by il/ilce/mahalle/ada/parsel if available.',
+        'Capture screenshot/export PDF/KML/GeoJSON if available.',
+        'Upload to ParselRadar as supporting evidence only.',
+      ],
+      expectedEvidenceType: 'TKGM_PARCEL_SCREENSHOT',
+      expectedSourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+    };
+  }
+
+  if (intent === 'TKGM_PARCEL') {
+    return {
+      sourceLabel: 'TKGM Parsel Sorgu',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Review parcel details using available inputs.',
+        'Capture screenshot/export evidence if available.',
+        'Upload to ParselRadar as supporting evidence only.',
+      ],
+      expectedEvidenceType: 'TKGM_PARCEL_SCREENSHOT',
+      expectedSourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+    };
+  }
+
+  if (intent === 'MUNICIPAL_ZONING') {
+    const hasMunicipalEvidenceType = docs.some((doc) =>
+      ['MUNICIPALITY_IMAR_DOCUMENT', 'E_PLAN_DOCUMENT'].includes(String(doc.evidenceType || '').trim())
+    );
+    const hasMunicipalSourceType = docs.some((doc) =>
+      ['MUNICIPALITY_IMAR_EVIDENCE', 'E_PLAN_EVIDENCE'].includes(String(doc.sourceType || '').trim())
+    );
+    return {
+      sourceLabel: 'Municipality e-Imar / e-Plan / Imar Durumu',
+      sourceActionLabel: 'Open municipality guidance',
+      guidanceSteps: [
+        municipalityContext
+          ? `Relevant municipality/district: ${municipalityContext}`
+          : 'Relevant municipality/district should be identified from property location.',
+        'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
+        'If online e-Imar is unavailable, request an imar durum document from municipality.',
+        'Upload screenshot/PDF/document as supporting evidence only.',
+      ],
+      expectedEvidenceType: hasMunicipalEvidenceType ? 'MUNICIPALITY_IMAR_DOCUMENT' : 'OTHER',
+      expectedSourceType: hasMunicipalSourceType ? 'MUNICIPALITY_IMAR_EVIDENCE' : 'USER_SUBMITTED',
+      warning: 'ParselRadar does not confirm official zoning status automatically.',
+      placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
+      sourceUnavailableNote: 'Exact municipality source URL not configured yet.',
+    };
+  }
+
+  if (intent === 'TKGM_PRICE_HISTORY') {
+    return {
+      sourceLabel: 'TKGM Parsel Sorgu Analiz / Alim-Satim Istatistikleri',
+      sourceActionLabel: 'Open TKGM Parsel Sorgu',
+      sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+      guidanceSteps: [
+        'Open TKGM Parsel Sorgu manually.',
+        'Use analysis/price-history/statistics tab if available.',
+        'Capture screenshot as market signal.',
+        'Upload as supporting market evidence only.',
+      ],
+      expectedEvidenceType: 'TKGM_PRICE_HISTORY_SCREENSHOT',
+      expectedSourceType: 'TKGM_ANALYSIS_MARKET_SIGNAL',
+      warning: 'Market signal only, not official valuation proof.',
+    };
+  }
+
+  return {
+    sourceLabel: 'Manual supporting evidence',
+    sourceActionLabel: 'Open guidance',
+    guidanceSteps: [
+      'Upload relevant screenshots, PDFs, official letters, listing screenshots, or supporting documents.',
+      'Ensure the uploaded file clearly supports the missing evidence context.',
+      'Upload as supporting evidence only.',
+    ],
+    expectedEvidenceType: 'OTHER',
+    expectedSourceType: 'USER_SUBMITTED',
+  };
 }
 
 type DocumentMetadata = {
@@ -502,6 +607,13 @@ export default function PropertyResult() {
   const getDocumentsIntentUrl = (intent: EvidenceIntent) => {
     const encodedIntent = encodeURIComponent(intent);
     return `/properties/${id}/documents?intent=${encodedIntent}&returnTo=result`;
+  };
+
+  const openGuidanceSource = (intent: EvidenceIntent) => {
+    const guidance = buildEvidenceGuidance(intent, propertyData, documents);
+    if (guidance.sourceUrl) {
+      window.open(guidance.sourceUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   useEffect(() => {
@@ -1059,13 +1171,44 @@ export default function PropertyResult() {
               {reportReadiness.missingEvidenceActions.map((item) => (
                 <li key={item.key}>
                   <div>{item.message}</div>
-                  <button
-                    className="mt-1 rounded border border-amber-300 bg-white px-2 py-1 text-[11px] font-medium text-amber-800 hover:bg-amber-100"
-                    type="button"
-                    onClick={() => navigate(getDocumentsIntentUrl(item.intent))}
-                  >
-                    {item.actionLabel}
-                  </button>
+                  <div className="mt-1 rounded border border-amber-200 bg-white p-2 text-[11px] text-amber-900">
+                    {(() => {
+                      const guidance = buildEvidenceGuidance(item.intent, propertyData, documents);
+                      return (
+                        <>
+                          <div className="font-semibold">Where to get this</div>
+                          <div className="mt-1">Source: {guidance.sourceLabel}</div>
+                          <ul className="mt-1 list-disc pl-4">
+                            {guidance.guidanceSteps.map((step) => (
+                              <li key={`${item.key}-${step}`}>{step}</li>
+                            ))}
+                          </ul>
+                          <div className="mt-1">Upload back to ParselRadar as supporting evidence only.</div>
+                          <div className="mt-1">Expected upload mapping: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
+                          {guidance.warning ? <div className="mt-1">{guidance.warning}</div> : null}
+                          {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
+                          {guidance.placeholder ? <div className="mt-1">{guidance.placeholder}</div> : null}
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            <button
+                              className="rounded border border-amber-300 bg-white px-2 py-1 font-medium text-amber-800 hover:bg-amber-100 disabled:opacity-60"
+                              type="button"
+                              onClick={() => openGuidanceSource(item.intent)}
+                              disabled={!guidance.sourceUrl}
+                            >
+                              {guidance.sourceActionLabel}
+                            </button>
+                            <button
+                              className="rounded border border-amber-300 bg-white px-2 py-1 font-medium text-amber-800 hover:bg-amber-100"
+                              type="button"
+                              onClick={() => navigate(getDocumentsIntentUrl(item.intent))}
+                            >
+                              Upload this evidence
+                            </button>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
                   {item.note ? <div className="mt-1 text-[11px] text-amber-700">{item.note}</div> : null}
                 </li>
               ))}
