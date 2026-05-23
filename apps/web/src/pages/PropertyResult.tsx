@@ -64,6 +64,57 @@ type ReportReadinessStatus =
   | 'SUPPORTING_EVIDENCE_ONLY'
   | 'MANUAL_REVIEW_REQUIRED';
 
+type EvidenceIntent =
+  | 'PARCEL_IDENTITY'
+  | 'MUNICIPAL_ZONING'
+  | 'TKGM_PARCEL'
+  | 'TKGM_PRICE_HISTORY'
+  | 'GENERAL_SUPPORTING_EVIDENCE';
+
+type EvidenceActionItem = {
+  key: string;
+  message: string;
+  intent: EvidenceIntent;
+  actionLabel: string;
+  note?: string;
+};
+
+function intentActionLabel(intent: EvidenceIntent) {
+  if (intent === 'PARCEL_IDENTITY') return 'Upload parcel identity evidence';
+  if (intent === 'MUNICIPAL_ZONING') return 'Upload municipal/e-plan evidence';
+  if (intent === 'TKGM_PARCEL') return 'Upload TKGM parcel evidence';
+  if (intent === 'TKGM_PRICE_HISTORY') return 'Upload TKGM price-history screenshot';
+  return 'Upload supporting evidence';
+}
+
+function classifyMissingEvidenceIntent(message: string): EvidenceIntent {
+  const normalized = String(message || '').toLowerCase();
+  if (normalized.includes('ada/parsel') || normalized.includes('parsel kimliği')) {
+    return 'PARCEL_IDENTITY';
+  }
+  if (normalized.includes('koordinat') || normalized.includes('tkgm evidence')) {
+    return 'TKGM_PARCEL';
+  }
+  if (normalized.includes('price-history') || normalized.includes('market signal')) {
+    return 'TKGM_PRICE_HISTORY';
+  }
+  if (normalized.includes('belediye imar') || normalized.includes('e-plan')) {
+    return 'MUNICIPAL_ZONING';
+  }
+  return 'GENERAL_SUPPORTING_EVIDENCE';
+}
+
+function classifyReviewWarningIntent(message: string): EvidenceIntent {
+  const normalized = String(message || '').toLowerCase();
+  if (normalized.includes('preview_only') || normalized.includes('review') || normalized.includes('document readiness unavailable')) {
+    return 'GENERAL_SUPPORTING_EVIDENCE';
+  }
+  if (normalized.includes('supporting evidence only')) {
+    return 'GENERAL_SUPPORTING_EVIDENCE';
+  }
+  return 'GENERAL_SUPPORTING_EVIDENCE';
+}
+
 type DocumentMetadata = {
   _id: string;
   originalName?: string;
@@ -448,6 +499,11 @@ export default function PropertyResult() {
   const [documentsFetchFailed, setDocumentsFetchFailed] = useState(false);
   const toast = useToast();
 
+  const getDocumentsIntentUrl = (intent: EvidenceIntent) => {
+    const encodedIntent = encodeURIComponent(intent);
+    return `/properties/${id}/documents?intent=${encodedIntent}&returnTo=result`;
+  };
+
   useEffect(() => {
     let cancelled = false;
     if (!id) return;
@@ -721,6 +777,11 @@ export default function PropertyResult() {
         const metadata = String(doc.metadataStatus || '').toUpperCase();
         return review === 'PREVIEW_ONLY' || metadata === 'PREVIEW_ONLY';
       });
+    const hasTkgmPriceHistoryEvidence = docs.some(
+      (doc) =>
+        String(doc.evidenceType || '').trim() === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
+        String(doc.sourceType || '').trim() === 'TKGM_ANALYSIS_MARKET_SIGNAL'
+    );
 
     const quickStatus: ReportReadinessStatus =
       quickRow?.status === 'READY' ? 'READY_FOR_QUICK_CHECK' : 'NEEDS_MORE_DATA';
@@ -763,6 +824,20 @@ export default function PropertyResult() {
     if (developerStatus !== 'READY_FOR_DEVELOPER_FIT') {
       missingEvidence.push('Developer fit için belediye imar/e-plan evidence gerekli.');
     }
+    if (!hasTkgmPriceHistoryEvidence) {
+      missingEvidence.push('TKGM market signal için price-history screenshot önerilir.');
+    }
+
+    const missingEvidenceActions: EvidenceActionItem[] = missingEvidence.map((message, index) => {
+      const intent = classifyMissingEvidenceIntent(message);
+      return {
+        key: `missing-${index}-${intent}`,
+        message,
+        intent,
+        actionLabel: intentActionLabel(intent),
+        note: intent === 'MUNICIPAL_ZONING' ? 'Manual supporting evidence only.' : undefined,
+      };
+    });
 
     const reviewWarnings: string[] = [];
     if (!documentMetadataAvailable) {
@@ -783,6 +858,16 @@ export default function PropertyResult() {
     if (hasRejected) {
       reviewWarnings.push('Rejected statüsünde belge var, rapor kapsamı etkilenebilir.');
     }
+
+    const reviewWarningActions: EvidenceActionItem[] = reviewWarnings.map((message, index) => {
+      const intent = classifyReviewWarningIntent(message);
+      return {
+        key: `warning-${index}-${intent}`,
+        message,
+        intent,
+        actionLabel: intentActionLabel(intent),
+      };
+    });
 
     let overallStatus: ReportReadinessStatus = 'NEEDS_MORE_DATA';
     if (!documentMetadataAvailable || hasManualReviewRequired) {
@@ -809,7 +894,9 @@ export default function PropertyResult() {
       parcelStatus,
       developerStatus,
       missingEvidence,
+      missingEvidenceActions,
       reviewWarnings,
+      reviewWarningActions,
       hasSupportingOnly,
       showIncompleteReportWarning,
     };
@@ -969,8 +1056,18 @@ export default function PropertyResult() {
           <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2">
             <div className="text-xs font-medium text-amber-800">Missing evidence</div>
             <ul className="mt-1 list-disc pl-4 text-xs text-amber-800">
-              {reportReadiness.missingEvidence.map((item) => (
-                <li key={item}>{item}</li>
+              {reportReadiness.missingEvidenceActions.map((item) => (
+                <li key={item.key}>
+                  <div>{item.message}</div>
+                  <button
+                    className="mt-1 rounded border border-amber-300 bg-white px-2 py-1 text-[11px] font-medium text-amber-800 hover:bg-amber-100"
+                    type="button"
+                    onClick={() => navigate(getDocumentsIntentUrl(item.intent))}
+                  >
+                    {item.actionLabel}
+                  </button>
+                  {item.note ? <div className="mt-1 text-[11px] text-amber-700">{item.note}</div> : null}
+                </li>
               ))}
             </ul>
           </div>
@@ -979,8 +1076,17 @@ export default function PropertyResult() {
           <div className="mt-2 rounded border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">
             <div className="font-medium">Review warnings</div>
             <ul className="mt-1 list-disc pl-4">
-              {reportReadiness.reviewWarnings.map((warning) => (
-                <li key={warning}>{warning}</li>
+              {reportReadiness.reviewWarningActions.map((warning) => (
+                <li key={warning.key}>
+                  <div>{warning.message}</div>
+                  <button
+                    className="mt-1 rounded border border-rose-300 bg-white px-2 py-1 text-[11px] font-medium text-rose-800 hover:bg-rose-100"
+                    type="button"
+                    onClick={() => navigate(getDocumentsIntentUrl(warning.intent))}
+                  >
+                    {warning.actionLabel}
+                  </button>
+                </li>
               ))}
             </ul>
           </div>
@@ -1002,14 +1108,14 @@ export default function PropertyResult() {
           <button
             className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
             type="button"
-            onClick={() => navigate(`/properties/${id}/documents`)}
+            onClick={() => navigate(getDocumentsIntentUrl('GENERAL_SUPPORTING_EVIDENCE'))}
           >
             Upload evidence
           </button>
           <button
             className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
             type="button"
-            onClick={() => navigate(`/properties/${id}/documents`)}
+            onClick={() => navigate(getDocumentsIntentUrl('GENERAL_SUPPORTING_EVIDENCE'))}
           >
             Review documents
           </button>
@@ -1170,7 +1276,38 @@ export default function PropertyResult() {
                   {getActionButtonText(action.key)}
                 </button>
               </div>
-              {showHelper ? <div className="mt-1 text-xs text-amber-700">{row?.message}</div> : null}
+              {showHelper ? (
+                <div className="mt-1 text-xs text-amber-700">
+                  <div>{row?.message}</div>
+                  <button
+                    className="mt-1 rounded border border-amber-300 bg-white px-2 py-1 text-[11px] font-medium text-amber-800 hover:bg-amber-100"
+                    type="button"
+                    onClick={() => {
+                      const rowStatus = row?.status;
+                      const intent: EvidenceIntent =
+                        rowStatus === 'NEEDS_PARCEL_IDENTITY'
+                          ? 'PARCEL_IDENTITY'
+                          : rowStatus === 'NEEDS_TKGM_CHECK'
+                          ? 'TKGM_PARCEL'
+                          : rowStatus === 'NEEDS_MUNICIPALITY_CHECK'
+                          ? 'MUNICIPAL_ZONING'
+                          : 'GENERAL_SUPPORTING_EVIDENCE';
+                      navigate(getDocumentsIntentUrl(intent));
+                    }}
+                  >
+                    {row?.status === 'NEEDS_PARCEL_IDENTITY'
+                      ? 'Upload parcel identity evidence'
+                      : row?.status === 'NEEDS_TKGM_CHECK'
+                      ? 'Upload TKGM parcel evidence'
+                      : row?.status === 'NEEDS_MUNICIPALITY_CHECK'
+                      ? 'Upload municipal/e-plan evidence'
+                      : 'Upload supporting evidence'}
+                  </button>
+                  {row?.status === 'NEEDS_MUNICIPALITY_CHECK' ? (
+                    <div className="mt-1 text-[11px] text-amber-700">Manual supporting evidence only.</div>
+                  ) : null}
+                </div>
+              ) : null}
             </div>
           );
         })}

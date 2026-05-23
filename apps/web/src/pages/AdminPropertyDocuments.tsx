@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { apiFetch, getApiBaseUrl } from '../lib/api';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -65,6 +65,20 @@ type UploadQueueItem = {
   error?: string;
 };
 
+type UploadIntent =
+  | 'PARCEL_IDENTITY'
+  | 'MUNICIPAL_ZONING'
+  | 'TKGM_PARCEL'
+  | 'TKGM_PRICE_HISTORY'
+  | 'GENERAL_SUPPORTING_EVIDENCE';
+
+type UploadIntentPreset = {
+  label: string;
+  evidenceType: string;
+  sourceType: string;
+  note?: string;
+};
+
 const evidenceTypeOptions = [
   'LISTING_SCREENSHOT',
   'TKGM_PARCEL_SCREENSHOT',
@@ -99,6 +113,57 @@ const sourceTypeOptions = [
 ];
 
 const metadataStatusOptions: Array<'NEEDS_REVIEW' | 'PREVIEW_ONLY'> = ['NEEDS_REVIEW', 'PREVIEW_ONLY'];
+
+function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | null {
+  const normalized = String(intent || '').toUpperCase() as UploadIntent;
+  if (!normalized) return null;
+
+  if (normalized === 'PARCEL_IDENTITY') {
+    return {
+      label: 'Upload parcel identity evidence',
+      evidenceType: 'TKGM_PARCEL_SCREENSHOT',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+    };
+  }
+
+  if (normalized === 'TKGM_PARCEL') {
+    return {
+      label: 'Upload TKGM parcel evidence',
+      evidenceType: 'TKGM_PARCEL_SCREENSHOT',
+      sourceType: 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+    };
+  }
+
+  if (normalized === 'MUNICIPAL_ZONING') {
+    const preferredMunicipalEvidenceType = evidenceTypeOptions.includes('MUNICIPALITY_IMAR_SCREENSHOT')
+      ? 'MUNICIPALITY_IMAR_SCREENSHOT'
+      : 'OTHER';
+    return {
+      label: 'Upload municipal/e-plan evidence',
+      evidenceType: preferredMunicipalEvidenceType,
+      sourceType: 'USER_SUBMITTED',
+      note: 'Manual supporting evidence only.',
+    };
+  }
+
+  if (normalized === 'TKGM_PRICE_HISTORY') {
+    return {
+      label: 'Upload TKGM price-history screenshot',
+      evidenceType: 'TKGM_PRICE_HISTORY_SCREENSHOT',
+      sourceType: 'TKGM_ANALYSIS_MARKET_SIGNAL',
+    };
+  }
+
+  if (normalized === 'GENERAL_SUPPORTING_EVIDENCE') {
+    return {
+      label: 'Upload supporting evidence',
+      evidenceType: 'OTHER',
+      sourceType: 'USER_SUBMITTED',
+    };
+  }
+
+  return null;
+}
 
 function getFileExtension(filename: string) {
   const normalized = String(filename || '');
@@ -209,6 +274,8 @@ function formatBytes(bytes?: number) {
 
 export default function AdminPropertyDocuments() {
   const { propertyId } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [title, setTitle] = useState('');
@@ -218,7 +285,10 @@ export default function AdminPropertyDocuments() {
   const [uploadQueue, setUploadQueue] = useState<UploadQueueItem[]>([]);
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
+  const [showReturnToResult, setShowReturnToResult] = useState(false);
   const toast = useToast();
+  const intentPreset = useMemo(() => resolveUploadIntentPreset(searchParams.get('intent')), [searchParams]);
+  const returnToResult = String(searchParams.get('returnTo') || '').toLowerCase() === 'result';
 
   const fetchDocuments = async () => {
     if (!propertyId) return;
@@ -321,6 +391,9 @@ export default function AdminPropertyDocuments() {
       } else {
         toast.error('Upload failed');
       }
+      if (uploadedCount > 0 && returnToResult) {
+        setShowReturnToResult(true);
+      }
       await fetchDocuments();
     } catch (err) {
       const e = err as { message?: string };
@@ -418,7 +491,14 @@ export default function AdminPropertyDocuments() {
     if (!fileList || fileList.length === 0) return;
 
     const incomingItems: UploadQueueItem[] = Array.from(fileList).map((nextFile, index) => {
-      const suggestion = suggestEvidenceMetadata(nextFile.name, nextFile.type);
+      const baseSuggestion = suggestEvidenceMetadata(nextFile.name, nextFile.type);
+      const suggestion = intentPreset
+        ? {
+            ...baseSuggestion,
+            evidenceType: intentPreset.evidenceType,
+            sourceType: intentPreset.sourceType,
+          }
+        : baseSuggestion;
       return {
         id: `${Date.now()}-${index}-${nextFile.name}`,
         file: nextFile,
@@ -565,6 +645,15 @@ export default function AdminPropertyDocuments() {
             <h3 className="text-sm font-semibold text-slate-800">Upload New Documents</h3>
           </AdminToolbar>
 
+          {intentPreset ? (
+            <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">
+              <div className="font-semibold text-blue-900">Upload requested evidence: {intentPreset.label}</div>
+              <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
+              <div>Suggested source type: {intentPreset.sourceType}</div>
+              {intentPreset.note ? <div className="mt-1">{intentPreset.note}</div> : null}
+            </div>
+          ) : null}
+
           <form onSubmit={handleUpload} className="grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
             <label className="text-xs text-slate-600 md:col-span-3">
               Files
@@ -585,6 +674,19 @@ export default function AdminPropertyDocuments() {
           <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
             Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.
           </div>
+
+          {showReturnToResult && returnToResult ? (
+            <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+              <div className="font-semibold text-emerald-900">Upload completed</div>
+              <button
+                type="button"
+                className="mt-2 inline-flex rounded border border-emerald-300 bg-white px-2.5 py-1.5 text-xs font-medium text-emerald-800 hover:bg-emerald-100"
+                onClick={() => navigate(`/properties/${propertyId}/result`)}
+              >
+                Return to result
+              </button>
+            </div>
+          ) : null}
 
           <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
             <div className="font-semibold text-slate-900">TKGM Evidence Capture</div>
