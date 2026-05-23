@@ -54,6 +54,12 @@ const modules: CmsModule[] = [
     href: '/admin/analysis-reports',
   },
   {
+    area: 'Professional Deal-Flow',
+    status: 'wired',
+    description: 'Review opt-in property cases for future professional matching. No external sharing active.',
+    href: '/admin/deal-flow',
+  },
+  {
     area: 'Credits / Ledger',
     status: 'wired',
     description: 'Inspect credit balances and ledger history.',
@@ -265,6 +271,12 @@ export default function AdminCms() {
         status: 'wired' as DisplayStatus,
         route: '/admin/analysis-reports',
         detail: 'Central review registry for beta tester properties and report-readiness surface',
+      },
+      {
+        title: 'Professional Deal-Flow',
+        status: 'wired' as DisplayStatus,
+        route: '/admin/deal-flow',
+        detail: 'Internal preview shell for opt-in case visibility and future professional intake readiness',
       },
       {
         title: 'Credits / Stripe',

@@ -14,6 +14,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminAnalyses from './pages/AdminAnalyses';
 import AdminCreditLedger from './pages/AdminCreditLedger';
 import AdminStripeSessions from './pages/AdminStripeSessions';
+import AdminDealFlow from './pages/AdminDealFlow';
 import AdminPropertyDocuments from './pages/AdminPropertyDocuments';
 import AdminSystemRuntime from './pages/AdminSystemRuntime';
 import AdminDeploymentOverview from './pages/AdminDeploymentOverview';
@@ -105,6 +106,7 @@ function AppRoutes() {
       <Route path="/admin/analyses" element={<RequireAuth><AdminOnly>{withBoundary('/admin/analyses', <AdminAnalyses />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/credit-ledger" element={<RequireAuth><AdminOnly><AdminCreditLedger /></AdminOnly></RequireAuth>} />
       <Route path="/admin/stripe-sessions" element={<RequireAuth><AdminOnly><AdminStripeSessions /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/deal-flow" element={<RequireAuth><AdminOnly>{withBoundary('/admin/deal-flow', <AdminDealFlow />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/runtime" element={<RequireAuth><AdminOnly><AdminSystemRuntime /></AdminOnly></RequireAuth>} />
       <Route path="/admin/runtime-health" element={<RequireAuth><AdminOnly>{withBoundary('/admin/runtime-health', <AdminRuntimeHealth />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/deployment" element={<RequireAuth><AdminOnly><AdminDeploymentOverview /></AdminOnly></RequireAuth>} />

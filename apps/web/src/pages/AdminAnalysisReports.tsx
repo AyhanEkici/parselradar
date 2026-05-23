@@ -269,6 +269,9 @@ export default function AdminAnalysisReports() {
                 <Link to="/admin/cms" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
                   Back to CMS
                 </Link>
+                <Link to="/admin/deal-flow" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+                  Professional Deal-Flow
+                </Link>
                 <Link to="/admin/properties" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
                   Open Properties
                 </Link>
