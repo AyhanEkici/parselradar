@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { login } from '../lib/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui';
-import ForgotPasswordLink from '../components/auth/ForgotPasswordLink';
 import { useAuth } from '../hooks/useAuth';
 import { getAuthToken, getStoredUser, setAuthSession } from '../lib/authStorage';
 
@@ -100,7 +99,11 @@ export default function Login() {
 
       <div className="mt-4 text-center">
         <div className="space-y-2">
-          <ForgotPasswordLink />
+          <div>
+            <Link to="/forgot-password" className="text-blue-600">
+              Sifremi unuttum
+            </Link>
+          </div>
           <div>
             <Link to="/register" className="text-blue-600">
               Kayıt Ol
