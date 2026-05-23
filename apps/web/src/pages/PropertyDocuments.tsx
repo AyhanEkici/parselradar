@@ -329,6 +329,10 @@ export default function PropertyDocuments() {
     () => resolveUploadIntentPreset(searchParams.get('intent'), propertyLocation.province, propertyLocation.district),
     [searchParams, propertyLocation]
   );
+  const municipalityGuidancePreset = useMemo(
+    () => resolveUploadIntentPreset('MUNICIPAL_ZONING', propertyLocation.province, propertyLocation.district),
+    [propertyLocation]
+  );
   const returnToResult = String(searchParams.get('returnTo') || '').toLowerCase() === 'result';
 
   function absoluteFileUrl(fileUrl?: string) {
@@ -704,6 +708,41 @@ export default function PropertyDocuments() {
           <AdminToolbar className="justify-between mb-3">
             <h3 className="text-sm font-semibold text-slate-800">Upload New Documents</h3>
           </AdminToolbar>
+
+          {municipalityGuidancePreset ? (
+            <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">
+              <div className="font-semibold text-blue-900">Municipality source guidance</div>
+              <div className="mt-1">{municipalityGuidancePreset.sourceLabel}</div>
+              <div className="mt-1">Public source status: {municipalityGuidancePreset.registryStatus || 'NOT_CONFIGURED'}</div>
+              <div className="mt-1">Official public source to check manually</div>
+              <div className="mt-1">This is guidance only, not automated zoning verification</div>
+              <div className="mt-1">Upload a screenshot/document as supporting evidence after checking the source</div>
+              {municipalityGuidancePreset.blockedRegistryStatus ? (
+                <div className="mt-1">Blocked source status: {municipalityGuidancePreset.blockedRegistryStatus}</div>
+              ) : null}
+              {municipalityGuidancePreset.blockedSourceNote ? (
+                <div className="mt-1">Blocked source: login/CAPTCHA/e-Devlet required</div>
+              ) : null}
+              {municipalityGuidancePreset.sourceUrl ? (
+                <a
+                  className="mt-2 inline-flex rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100"
+                  href={municipalityGuidancePreset.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {municipalityGuidancePreset.sourceActionLabel}
+                </a>
+              ) : (
+                <button
+                  className="mt-2 rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 opacity-60"
+                  type="button"
+                  disabled
+                >
+                  {municipalityGuidancePreset.sourceActionLabel}
+                </button>
+              )}
+            </div>
+          ) : null}
 
           {intentPreset ? (
             <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">

@@ -8,6 +8,15 @@ This document records P2.CONNECTOR-2A.1 implementation details for surfacing ver
 - User property documents page: intent-based upload guidance panel.
 - Admin property documents page: intent-based upload guidance panel.
 
+## Documents Panel Visibility Update (P2.CONNECTOR-2B.4)
+- User/Admin documents pages now render a municipality source guidance block even when no upload intent query is present.
+- The block remains guidance-only and includes required safety text:
+  - "Official public source to check manually"
+  - "This is guidance only, not automated zoning verification"
+  - "Upload a screenshot/document as supporting evidence after checking the source"
+- If a known access-gated source exists for the location, blocked messaging is shown:
+  - "Blocked source: login/CAPTCHA/e-Devlet required"
+
 ## Required Wording Rules
 The MUNICIPAL_ZONING guidance now uses the following mandatory wording:
 - "Official public source to check manually"
