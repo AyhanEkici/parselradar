@@ -14,6 +14,7 @@ import { sensitiveDataScanner } from '../security/sensitiveDataScanner';
 import { exportGovernanceEngine } from '../security/exportGovernanceEngine';
 import { exportAuditEngine } from '../audit/exportAuditEngine';
 import { logAuditEvent } from '../utils/auditLog';
+import ConnectorSyncRun from '../models/ConnectorSyncRun';
 
 const PDF_COST = 5;
 
@@ -83,6 +84,11 @@ export const purchasePDF = async (req: AuthRequest, res: Response) => {
 export const getReports = async (req: AuthRequest, res: Response) => {
   const user = requireAuthUser(req);
   const reports = await Report.find(reportOwnerScope(user, {})).lean();
+  const latestSafeSync = await ConnectorSyncRun.findOne({
+    status: 'SUCCESS',
+  })
+    .sort({ finishedAt: -1 })
+    .lean();
   const fieldScan = sensitiveDataScanner({
     fields: reports.length > 0 ? Object.keys(reports[0] || {}) : [],
   });
@@ -160,6 +166,13 @@ export const getReports = async (req: AuthRequest, res: Response) => {
         reviewQueueDepth: full.autonomyIntelligence?.operations?.reviewQueue?.queueDepth,
         suppressionActiveRules: full.autonomyIntelligence?.operations?.suppression?.activeCount,
         cadenceMinutes: full.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes,
+        reportEvidencePolicy: {
+          usesOnlyProvenSyncedMetadataAndSupportingEvidence: true,
+          fakeOfficialResultClaimsAllowed: false,
+          automatedOfficialZoningVerification: false,
+          lastSafeMetadataSyncAt: latestSafeSync?.finishedAt || null,
+          note: 'Report enrichment uses synced metadata/supporting evidence only; no fake official result claims.',
+        },
         executionReadiness: full.executionOperatingSystem?.executionReadiness,
         executionDeterministic: full.executionOperatingSystem?.deterministic,
         executionGovernanceState: full.executionOperatingSystem?.governanceState,

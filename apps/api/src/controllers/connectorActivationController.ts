@@ -19,6 +19,14 @@ import { buildConnectorActivationAudit } from '../services/connectorActivation/b
 import ConnectorSourceApproval from '../models/ConnectorSourceApproval';
 import { logAuditEvent } from '../utils/auditLog';
 import { getTucbsLayerCatalog, getTucbsLayerHealth, patchLayerVisibility, syncTucbsLayerCatalog } from '../connectors/tucbs/tucbsLayerCatalog';
+import {
+  CONNECTOR_SOURCE_REGISTRY,
+  findConnectorSourceRegistry,
+} from '../config/connectors/sourceRegistryCatalog';
+import {
+  buildAdminConnectorCenter,
+  runConnectorSyncNow,
+} from '../services/connectorActivation/connectorSyncEngine';
 
 export const getAdminConnectors = async (_req: AuthRequest, res: Response) => {
   const readiness = buildConnectorReadiness();
@@ -29,6 +37,74 @@ export const getAdminConnectors = async (_req: AuthRequest, res: Response) => {
     connectors: readiness.connectors,
     summary: readiness.summary,
     legalRegistry,
+  });
+};
+
+export const getAdminSourceRegistry = async (_req: AuthRequest, res: Response) => {
+  return res.json({
+    generatedAt: new Date().toISOString(),
+    sources: CONNECTOR_SOURCE_REGISTRY,
+  });
+};
+
+export const getAdminConnectorCatalog = async (_req: AuthRequest, res: Response) => {
+  const entries = CONNECTOR_SOURCE_REGISTRY.map((source) => ({
+    connectorKey: source.connectorKey,
+    sourceName: source.sourceName,
+    services: source.services,
+    mode: source.syncSafety === 'SAFE_PUBLIC_METADATA' ? 'metadata-only/open-data/getcapabilities' : 'blocked',
+    sourceStatus: source.status,
+    legalClassification: source.legalClassification,
+    blockedReason: source.blockedReason,
+  }));
+
+  return res.json({
+    generatedAt: new Date().toISOString(),
+    entries,
+  });
+};
+
+export const getAdminConnectorCenter = async (_req: AuthRequest, res: Response) => {
+  const center = await buildAdminConnectorCenter();
+  return res.json(center);
+};
+
+export const postAdminConnectorSyncNow = async (req: AuthRequest, res: Response) => {
+  const connector = findConnectorByKey(req.params.connectorKey);
+  if (!connector) return res.status(404).json({ error: 'Connector not found' });
+
+  const sourceRegistry = findConnectorSourceRegistry(req.params.connectorKey);
+  const run = await runConnectorSyncNow(req.params.connectorKey, req.user?._id?.toString(), 'MANUAL');
+
+  await logAuditEvent({
+    type: 'connector_sync_run',
+    actorUserId: req.user!._id.toString(),
+    actorRole: req.user!.role,
+    targetType: 'Connector',
+    targetId: req.params.connectorKey,
+    message: `Connector sync now executed for ${req.params.connectorKey}`,
+    metadata: {
+      source: sourceRegistry?.sourceName,
+      sourceUrl: sourceRegistry?.officialUrl,
+      status: run.status,
+      triggerMode: run.triggerMode,
+      responseSummary: run.responseSummary,
+      error: run.error,
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: run.status === 'SUCCESS',
+  });
+
+  return res.json({
+    connectorKey: req.params.connectorKey,
+    run: {
+      status: run.status,
+      startedAt: run.startedAt,
+      finishedAt: run.finishedAt,
+      error: run.error || null,
+      responseSummary: run.responseSummary || null,
+    },
   });
 };
 

@@ -23,17 +23,25 @@ import {
   getAdminGeoDiagnostics,
   getGeoLayers,
   getGeoDiagnostics,
+  getAdminConnectorCenter,
+  getAdminConnectorCatalog,
+  getAdminSourceRegistry,
+  postAdminConnectorSyncNow,
 } from '../controllers/connectorActivationController';
 
 const router = express.Router();
 
 // V17 routes
 router.get('/admin/connectors', auth, admin, getAdminConnectors);
+router.get('/admin/connectors/source-registry', auth, admin, getAdminSourceRegistry);
+router.get('/admin/connectors/catalog', auth, admin, getAdminConnectorCatalog);
+router.get('/admin/connectors/center', auth, admin, getAdminConnectorCenter);
 router.get('/admin/connectors/audit-trail', auth, admin, getAdminConnectorAuditTrail);
 router.get('/admin/connectors/tucbs', auth, admin, getAdminTucbsConnector);
 router.post('/admin/connectors/tucbs/sync', auth, admin, postAdminTucbsSync);
 router.get('/admin/connectors/ogc', auth, admin, getAdminOgcConnectors);
 router.get('/admin/connectors/:connectorKey/activation-plan', auth, admin, getAdminConnectorActivationPlan);
+router.post('/admin/connectors/:connectorKey/sync-now', auth, admin, postAdminConnectorSyncNow);
 
 // V19 extended detail route (replaces V17 GET /:connectorKey with activation state)
 router.get('/admin/connectors/:connectorKey', auth, admin, getAdminConnectorActivationState);

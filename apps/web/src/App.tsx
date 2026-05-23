@@ -27,6 +27,7 @@ import AdminCms from './pages/AdminCms';
 import AdminAnalysisReports from './pages/AdminAnalysisReports';
 import AdminConnectors from './pages/AdminConnectors';
 import AdminConnectorDetail from './pages/AdminConnectorDetail';
+import AdminConnectorCenter from './pages/AdminConnectorCenter';
 import AdminTucbsConnector from './pages/AdminTucbsConnector';
 import AdminOgcConnectors from './pages/AdminOgcConnectors';
 import AdminLayers from './pages/AdminLayers';
@@ -117,6 +118,7 @@ function AppRoutes() {
       <Route path="/admin/cms" element={<RequireAuth><AdminOnly>{withBoundary('/admin/cms', <AdminCms />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/analysis-reports" element={<RequireAuth><AdminOnly>{withBoundary('/admin/analysis-reports', <AdminAnalysisReports />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors" element={<RequireAuth><AdminOnly><AdminConnectors /></AdminOnly></RequireAuth>} />
+      <Route path="/admin/connectors/center" element={<RequireAuth><AdminOnly>{withBoundary('/admin/connectors/center', <AdminConnectorCenter />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors/tucbs" element={<RequireAuth><AdminOnly>{withBoundary('/admin/connectors/tucbs', <AdminTucbsConnector />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors/ogc" element={<RequireAuth><AdminOnly>{withBoundary('/admin/connectors/ogc', <AdminOgcConnectors />)}</AdminOnly></RequireAuth>} />
       <Route path="/admin/connectors/:connectorKey" element={<RequireAuth><AdminOnly><AdminConnectorDetail /></AdminOnly></RequireAuth>} />

@@ -56,6 +56,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   {isAdmin ? <Link to="/admin/analytics" className={navLinkClass('/admin/analytics')}>Analytics</Link> : null}
                   {isAdmin ? <Link to="/admin/cms" className={navLinkClass('/admin/cms')}>CMS</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors" className={navLinkClass('/admin/connectors')}>Connectors</Link> : null}
+                  {isAdmin ? <Link to="/admin/connectors/center" className={navLinkClass('/admin/connectors/center')}>Connector Center</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors/tucbs" className={navLinkClass('/admin/connectors/tucbs')}>TUCBS</Link> : null}
                   {isAdmin ? <Link to="/admin/connectors/ogc" className={navLinkClass('/admin/connectors/ogc')}>OGC</Link> : null}
                   {isAdmin ? <Link to="/admin/layers" className={navLinkClass('/admin/layers')}>Layers</Link> : null}
