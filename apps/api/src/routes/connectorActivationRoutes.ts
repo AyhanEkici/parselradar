@@ -27,6 +27,7 @@ import {
   getAdminConnectorCatalog,
   getAdminSourceRegistry,
   postAdminConnectorSyncNow,
+  postAdminConnectorScheduledSync,
 } from '../controllers/connectorActivationController';
 
 const router = express.Router();
@@ -36,6 +37,7 @@ router.get('/admin/connectors', auth, admin, getAdminConnectors);
 router.get('/admin/connectors/source-registry', auth, admin, getAdminSourceRegistry);
 router.get('/admin/connectors/catalog', auth, admin, getAdminConnectorCatalog);
 router.get('/admin/connectors/center', auth, admin, getAdminConnectorCenter);
+router.post('/admin/connectors/sync/scheduled', auth, admin, postAdminConnectorScheduledSync);
 router.get('/admin/connectors/audit-trail', auth, admin, getAdminConnectorAuditTrail);
 router.get('/admin/connectors/tucbs', auth, admin, getAdminTucbsConnector);
 router.post('/admin/connectors/tucbs/sync', auth, admin, postAdminTucbsSync);

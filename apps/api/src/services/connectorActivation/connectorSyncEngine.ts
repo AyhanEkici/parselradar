@@ -7,6 +7,90 @@ import { syncTucbsLayerCatalog } from '../../connectors/tucbs/tucbsLayerCatalog'
 
 type SyncTriggerMode = 'MANUAL' | 'SCHEDULED';
 
+type ScheduledSyncSkipReason =
+  | 'SKIPPED_MANUAL_GUIDANCE'
+  | 'SKIPPED_PERMISSION_REQUIRED'
+  | 'SKIPPED_CRON_INELIGIBLE'
+  | 'SKIPPED_NOT_PUBLIC_METADATA_SYNC'
+  | 'SKIPPED_UNSAFE_SYNC_POLICY'
+  | 'SKIPPED_INACTIVE_CONNECTOR';
+
+function isBlockedOrPermissionedAccessStatus(accessStatus?: string) {
+  const normalized = String(accessStatus || '').toUpperCase();
+  return (
+    normalized.includes('BLOCKED') ||
+    normalized.includes('PERMISSION') ||
+    normalized.includes('EDEVLET') ||
+    normalized.includes('LOGIN') ||
+    normalized.includes('CAPTCHA')
+  );
+}
+
+function canRunScheduledMetadataSync(entry: (typeof CONNECTOR_SOURCE_REGISTRY)[number]) {
+  if (!entry.cronEligible) {
+    return { allowed: false, reason: 'SKIPPED_CRON_INELIGIBLE' as ScheduledSyncSkipReason };
+  }
+
+  if (entry.legalMode !== 'PUBLIC_METADATA_SYNC') {
+    return { allowed: false, reason: 'SKIPPED_NOT_PUBLIC_METADATA_SYNC' as ScheduledSyncSkipReason };
+  }
+
+  if (entry.activationState !== 'ACTIVE') {
+    return { allowed: false, reason: 'SKIPPED_INACTIVE_CONNECTOR' as ScheduledSyncSkipReason };
+  }
+
+  if (entry.syncSafety !== 'SAFE_PUBLIC_METADATA') {
+    return { allowed: false, reason: 'SKIPPED_UNSAFE_SYNC_POLICY' as ScheduledSyncSkipReason };
+  }
+
+  if (entry.manualActionRequired) {
+    return { allowed: false, reason: 'SKIPPED_MANUAL_GUIDANCE' as ScheduledSyncSkipReason };
+  }
+
+  if (isBlockedOrPermissionedAccessStatus(entry.accessStatus)) {
+    return { allowed: false, reason: 'SKIPPED_PERMISSION_REQUIRED' as ScheduledSyncSkipReason };
+  }
+
+  return { allowed: true as const };
+}
+
+async function createScheduledPolicySkip(
+  entry: (typeof CONNECTOR_SOURCE_REGISTRY)[number],
+  reason: ScheduledSyncSkipReason,
+  userId?: string,
+) {
+  const startedAt = new Date();
+  const finishedAt = new Date();
+  const reasonMessages: Record<ScheduledSyncSkipReason, string> = {
+    SKIPPED_MANUAL_GUIDANCE: 'Manual public source guidance only. Scheduled sync skipped.',
+    SKIPPED_PERMISSION_REQUIRED: 'Blocked/login/CAPTCHA/e-Devlet/permissioned source. Scheduled sync skipped.',
+    SKIPPED_CRON_INELIGIBLE: 'Source is not cron eligible. Scheduled sync skipped.',
+    SKIPPED_NOT_PUBLIC_METADATA_SYNC: 'Source legal mode is not PUBLIC_METADATA_SYNC. Scheduled sync skipped.',
+    SKIPPED_UNSAFE_SYNC_POLICY: 'Source sync safety is not SAFE_PUBLIC_METADATA. Scheduled sync skipped.',
+    SKIPPED_INACTIVE_CONNECTOR: 'Connector activation state is not ACTIVE. Scheduled sync skipped.',
+  };
+
+  return ConnectorSyncRun.create({
+    connectorKey: entry.connectorKey,
+    sourceName: entry.sourceName,
+    sourceUrl: entry.officialUrl,
+    triggerMode: 'SCHEDULED',
+    status: 'SKIPPED',
+    startedAt,
+    finishedAt,
+    runByUserId: userId,
+    error: reasonMessages[reason],
+    responseSummary: {
+      reason,
+      legalMode: entry.legalMode,
+      accessStatus: entry.accessStatus,
+      activationState: entry.activationState,
+      syncSafety: entry.syncSafety,
+      noPropertyLevelVerification: true,
+    },
+  });
+}
+
 function buildNextSyncAt(cronCadenceMinutes?: number, lastFinishedAt?: Date) {
   if (!cronCadenceMinutes || !lastFinishedAt) return null;
   return new Date(lastFinishedAt.getTime() + cronCadenceMinutes * 60 * 1000).toISOString();
@@ -154,15 +238,21 @@ export async function buildAdminConnectorCenter() {
     .lean();
 
   const latestByConnector = new Map<string, any>();
+  const latestScheduledByConnector = new Map<string, any>();
   for (const run of runs) {
     if (!latestByConnector.has(run.connectorKey)) {
       latestByConnector.set(run.connectorKey, run);
+    }
+    if (run.triggerMode === 'SCHEDULED' && !latestScheduledByConnector.has(run.connectorKey)) {
+      latestScheduledByConnector.set(run.connectorKey, run);
     }
   }
 
   const items = CONNECTOR_SOURCE_REGISTRY.map((entry) => {
     const latest = latestByConnector.get(entry.connectorKey);
+    const latestScheduled = latestScheduledByConnector.get(entry.connectorKey);
     const lastSyncAt = latest?.finishedAt ? new Date(latest.finishedAt).toISOString() : null;
+    const lastScheduledSyncAt = latestScheduled?.finishedAt ? new Date(latestScheduled.finishedAt).toISOString() : null;
     const nextSyncAt = entry.cronEligible ? buildNextSyncAt(entry.cronCadenceMinutes, latest?.finishedAt) : null;
     return {
       connectorKey: entry.connectorKey,
@@ -190,6 +280,14 @@ export async function buildAdminConnectorCenter() {
           }
         : null,
       nextSync: nextSyncAt,
+      lastScheduledSync: latestScheduled
+        ? {
+            status: latestScheduled.status,
+            timestamp: lastScheduledSyncAt,
+            error: latestScheduled.error || null,
+          }
+        : null,
+      scheduledSyncActive: false,
       failureReason: latest?.status === 'FAILED' || latest?.status === 'BLOCKED' ? latest.error || null : null,
       manualActionRequired: entry.manualActionRequired,
       cron: {
@@ -203,4 +301,49 @@ export async function buildAdminConnectorCenter() {
     generatedAt: new Date().toISOString(),
     items,
   };
+}
+
+export async function runScheduledMetadataSync(userId?: string) {
+  const summary = {
+    totalSources: CONNECTOR_SOURCE_REGISTRY.length,
+    eligible: 0,
+    skipped: 0,
+    passed: 0,
+    failed: 0,
+    noPropertyLevelVerification: true,
+    runs: [] as Array<{
+      connectorKey: string;
+      status: string;
+      reason?: string;
+      error?: string | null;
+    }>,
+  };
+
+  for (const entry of CONNECTOR_SOURCE_REGISTRY) {
+    const policy = canRunScheduledMetadataSync(entry);
+    if (!policy.allowed) {
+      const skipRun = await createScheduledPolicySkip(entry, policy.reason, userId);
+      summary.skipped += 1;
+      summary.runs.push({
+        connectorKey: entry.connectorKey,
+        status: skipRun.status,
+        reason: String(skipRun.responseSummary && (skipRun.responseSummary as any).reason ? (skipRun.responseSummary as any).reason : policy.reason),
+        error: skipRun.error || null,
+      });
+      continue;
+    }
+
+    summary.eligible += 1;
+    const run = await runConnectorSyncNow(entry.connectorKey, userId, 'SCHEDULED');
+    if (run.status === 'SUCCESS') summary.passed += 1;
+    if (run.status === 'FAILED') summary.failed += 1;
+    if (run.status === 'SKIPPED' || run.status === 'BLOCKED') summary.skipped += 1;
+    summary.runs.push({
+      connectorKey: entry.connectorKey,
+      status: run.status,
+      error: run.error || null,
+    });
+  }
+
+  return summary;
 }

@@ -81,6 +81,20 @@ When enabled in a future phase, it must be limited to:
 
 Cron must remain disabled for blocked/permissioned/private connectors.
 
+### Scheduled Metadata Sync Endpoint (P2.CONNECTOR-2C)
+An admin-protected endpoint exists for safe scheduled metadata sync orchestration:
+- `POST /admin/connectors/sync/scheduled`
+
+Endpoint boundaries:
+- evaluates all registry sources but runs only cron-eligible, `PUBLIC_METADATA_SYNC`, `ACTIVE`, `SAFE_PUBLIC_METADATA`, public-access sources
+- skips manual-guidance, blocked/login/CAPTCHA/e-Devlet, and non-eligible sources with explicit skip reasons
+- never performs property-level verification
+- returns summary counters (`totalSources`, `eligible`, `skipped`, `passed`, `failed`, `noPropertyLevelVerification`)
+
+Scheduler status:
+- No external scheduler is activated by this implementation.
+- Vercel/Railway cron wiring remains a separate deployment operation.
+
 ## 8) Legal and Safety Boundaries
 Hard boundaries remain:
 - no scraping

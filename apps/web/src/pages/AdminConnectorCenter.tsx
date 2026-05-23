@@ -27,6 +27,12 @@ type CenterItem = {
     source: string;
   } | null;
   nextSync: string | null;
+  lastScheduledSync: {
+    status: string;
+    timestamp: string | null;
+    error: string | null;
+  } | null;
+  scheduledSyncActive: boolean;
   failureReason: string | null;
   manualActionRequired: boolean;
   cron: {
@@ -107,6 +113,10 @@ export default function AdminConnectorCenter() {
             Manual public source guidance. Not automated property verification. Upload supporting evidence after checking the source.
           </div>
 
+          <div className="rounded border border-indigo-200 bg-indigo-50 p-3 text-xs text-indigo-900">
+            Scheduled sync is metadata-only and not official property verification. External scheduler is not active unless separately configured.
+          </div>
+
           {error ? <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div> : null}
           {loading ? <div className="text-sm text-slate-600">Yukleniyor...</div> : null}
 
@@ -127,6 +137,8 @@ export default function AdminConnectorCenter() {
                     <th className="px-3 py-2 text-left font-semibold">Services</th>
                     <th className="px-3 py-2 text-left font-semibold">Last Sync</th>
                     <th className="px-3 py-2 text-left font-semibold">Next Sync</th>
+                    <th className="px-3 py-2 text-left font-semibold">Cron Eligible</th>
+                    <th className="px-3 py-2 text-left font-semibold">Last Scheduled Sync</th>
                     <th className="px-3 py-2 text-left font-semibold">Failure Reason</th>
                     <th className="px-3 py-2 text-left font-semibold">Manual Action</th>
                     <th className="px-3 py-2 text-left font-semibold">Action</th>
@@ -162,6 +174,12 @@ export default function AdminConnectorCenter() {
                         <div>Time: {item.lastSync?.timestamp || 'N/A'}</div>
                       </td>
                       <td className="px-3 py-2 text-slate-700">{item.nextSync || 'N/A'}</td>
+                      <td className="px-3 py-2 text-slate-700">{item.cron.eligible ? 'YES' : 'NO'}</td>
+                      <td className="px-3 py-2 text-slate-700">
+                        <div>Status: {item.lastScheduledSync?.status || 'N/A'}</div>
+                        <div>Time: {item.lastScheduledSync?.timestamp || 'N/A'}</div>
+                        <div>Active: {item.scheduledSyncActive ? 'YES' : 'NO'}</div>
+                      </td>
                       <td className="px-3 py-2 text-rose-700">{item.failureReason || 'N/A'}</td>
                       <td className="px-3 py-2 text-slate-700">
                         <div>{item.manualActionRequired ? 'REQUIRED' : 'NONE'}</div>

@@ -26,6 +26,7 @@ import {
 import {
   buildAdminConnectorCenter,
   runConnectorSyncNow,
+  runScheduledMetadataSync,
 } from '../services/connectorActivation/connectorSyncEngine';
 
 export const getAdminConnectors = async (_req: AuthRequest, res: Response) => {
@@ -113,6 +114,34 @@ export const postAdminConnectorSyncNow = async (req: AuthRequest, res: Response)
       responseSummary: run.responseSummary || null,
     },
   });
+};
+
+export const postAdminConnectorScheduledSync = async (req: AuthRequest, res: Response) => {
+  const result = await runScheduledMetadataSync(req.user?._id?.toString());
+
+  await logAuditEvent({
+    type: 'connector_scheduled_sync_run',
+    actorUserId: req.user!._id.toString(),
+    actorRole: req.user!.role,
+    targetType: 'Connector',
+    targetId: 'scheduled_metadata_sync',
+    message: 'Scheduled metadata sync endpoint executed',
+    metadata: {
+      summary: {
+        totalSources: result.totalSources,
+        eligible: result.eligible,
+        skipped: result.skipped,
+        passed: result.passed,
+        failed: result.failed,
+        noPropertyLevelVerification: true,
+      },
+    },
+    ip: req.ip,
+    userAgent: req.get('user-agent'),
+    success: result.failed === 0,
+  });
+
+  return res.json(result);
 };
 
 export const getAdminConnectorByKey = async (req: AuthRequest, res: Response) => {
