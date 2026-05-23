@@ -81,6 +81,16 @@ When enabled in a future phase, it must be limited to:
 
 Cron must remain disabled for blocked/permissioned/private connectors.
 
+### External Scheduler Activation (P2.CONNECTOR-2C.4)
+External scheduler activation is implemented through GitHub Actions.
+
+Rules:
+- schedule cadence is daily at 03:15 UTC
+- scheduler calls the Railway endpoint only through the secret header
+- the secret value stays in GitHub Actions secrets
+- no scheduled job may target manual-guidance or blocked sources
+- no scheduled job may perform TKGM or e-İmar automation
+
 ### Scheduled Metadata Sync Endpoint (P2.CONNECTOR-2C)
 An hardened endpoint exists for safe scheduled metadata sync orchestration:
 - `POST /admin/connectors/sync/scheduled`
@@ -97,8 +107,8 @@ Endpoint boundaries:
 - returns summary counters (`totalSources`, `eligible`, `skipped`, `passed`, `failed`, `noPropertyLevelVerification`)
 
 Scheduler status:
-- No external scheduler is activated by this implementation.
-- Vercel/Railway cron wiring remains a separate deployment operation.
+- External scheduler is activated via the GitHub Actions scheduled workflow.
+- The external scheduler remains metadata-only and uses the Railway endpoint secret header.
 
 ## 8) Legal and Safety Boundaries
 Hard boundaries remain:

@@ -59,10 +59,12 @@ Expected skipped examples in current registry:
   - `noPropertyLevelVerification: true`
 
 ## External Scheduler Activation (Later)
-Implementation does not activate external cron by itself.
-- Vercel/Railway scheduler wiring is a separate deployment step.
-- Until configured, scheduled sync remains manually triggerable via admin-auth path.
-- If external cron is configured later, secret-based trigger must be used and secret rotation policy should be followed.
+External scheduler activation is defined through a GitHub Actions scheduled workflow.
+- Cadence: daily at 03:15 UTC.
+- The workflow calls the Railway endpoint with `x-connector-sync-secret`.
+- The secret value stays in GitHub Actions secrets and must never be committed.
+- If the workflow is disabled, the admin-auth path remains available for manual runs.
+- Rolling back means disabling the workflow and removing the matching GitHub Actions secret if needed.
 
 ## Launch Posture
 - Public launch remains `NOT_READY`.
