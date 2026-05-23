@@ -747,6 +747,12 @@ export default function AdminPropertyDocuments() {
             Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.
           </div>
 
+          <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">OCR-assisted classification</div>
+            <div className="mt-1">Planned / not active yet. Current suggestions are filename-based and require admin confirmation.</div>
+            <div className="mt-1">Future OCR or AI suggestions will remain internal suggestion metadata only and will not provide official verification.</div>
+          </div>
+
           {showReturnToResult && returnToResult ? (
             <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
               <div className="font-semibold text-emerald-900">Upload completed</div>
@@ -779,6 +785,9 @@ export default function AdminPropertyDocuments() {
             <div className="font-semibold text-slate-900">Upload Queue</div>
             <div className="text-xs text-slate-600">
               Suggestions are deterministic and editable. They are supporting metadata suggestions only and not verified facts.
+            </div>
+            <div className="text-xs text-slate-600">
+              OCR-assisted classification is planned but not active in this phase.
             </div>
             {uploadQueue.length === 0 ? <div className="text-xs text-slate-500">No files queued.</div> : null}
             <div className="space-y-2">

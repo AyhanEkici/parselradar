@@ -620,6 +620,12 @@ export default function AdminDealFlow() {
             <div>NOT_ELIGIBLE = no opt-in consent.</div>
           </div>
 
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">Admin opportunity signal</div>
+            <div className="mt-1">Not available until OCR/intelligence run is implemented.</div>
+            <div className="mt-1">Current view shows lead quality only. No buy recommendation or external sharing is active.</div>
+          </div>
+
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}
           {loading ? <div className="text-sm text-slate-500">Loading professional deal-flow dashboard...</div> : null}
 
