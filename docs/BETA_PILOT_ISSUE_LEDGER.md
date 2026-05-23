@@ -20,8 +20,8 @@ Use this ledger to record findings from the first known tester pilot run.
 ## Ledger
 | ID | Date | Reporter | Role | Area | Severity | URL | Expected | Actual | Status | Owner | Fix phase | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| PR-BETA-001 | 2026-05-23 | security.retest.20260523@example.com | TESTER | Readiness/Report | P2_PRODUCT_ISSUE | https://parselradar.vercel.app/properties/6a10f759a8b3299fd6fa9401/result | Readiness summary blocks should match per-analysis state cards | Same screen shows "Parsel kimligi gerekli" and "Belediye/imar kaniti gerekli" while footer chips show "Parsel Insight: Hazir" and "Developer Fit: Hazir" | OPEN | Product+API | P2.BETA-5 | Confusing mixed-state messaging may cause wrong go/no-go understanding |
-| PR-BETA-002 | 2026-05-23 | security.retest.20260523@example.com | TESTER | Auth/Login Copy | P3_POLISH | https://parselradar.vercel.app/login | Login helper links should be consistent Turkish UX copy | "Wachtwoord vergeten?" appears in Dutch on Turkish login screen | OPEN | Web UX | P2.BETA-5 | Copy inconsistency creates trust/confusion issue for first-time testers |
+| PR-BETA-001 | 2026-05-23 | security.retest.20260523@example.com | TESTER | Readiness/Report | P2_PRODUCT_ISSUE | https://parselradar.vercel.app/properties/6a10f759a8b3299fd6fa9401/result | Readiness summary blocks should match per-analysis state cards | Same screen shows "Parsel kimligi gerekli" and "Belediye/imar kaniti gerekli" while footer chips show "Parsel Insight: Hazir" and "Developer Fit: Hazir" | TRIAGED | Product+API | P2.BETA-6 | Continue beta with monitoring for 2-3 testers; not a core-flow blocker but should be fixed before wider pilot |
+| PR-BETA-002 | 2026-05-23 | security.retest.20260523@example.com | TESTER | Auth/Login Copy | P3_POLISH | https://parselradar.vercel.app/login | Login helper links should be consistent Turkish UX copy | "Wachtwoord vergeten?" appears in Dutch on Turkish login screen | TRIAGED | Web UX | P2.BETA-7 | Future polish; does not block 2-3 tester expansion |
 
 ## Usage Rules
 - Create one row per reproducible finding.
