@@ -56,7 +56,7 @@ const modules: CmsModule[] = [
   {
     area: 'Professional Deal-Flow',
     status: 'wired',
-    description: 'Review opt-in property cases for future professional matching. No external sharing active.',
+    description: 'Review opt-in property cases with filters, lead-quality triage and readiness signals. No external sharing active.',
     href: '/admin/deal-flow',
   },
   {
@@ -276,7 +276,7 @@ export default function AdminCms() {
         title: 'Professional Deal-Flow',
         status: 'wired' as DisplayStatus,
         route: '/admin/deal-flow',
-        detail: 'Internal preview shell for opt-in case visibility and future professional intake readiness',
+        detail: 'Internal preview with consent/contact filters and lead-quality triage for future professional intake readiness',
       },
       {
         title: 'Credits / Stripe',

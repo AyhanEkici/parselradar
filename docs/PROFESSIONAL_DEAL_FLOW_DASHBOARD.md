@@ -33,6 +33,77 @@ For each property (based on current endpoint availability):
   - Result/Report
   - Admin Analysis Registry
 
+## Filters
+Dashboard filters currently include:
+- tabs: All, Opted in, Contact allowed, Needs evidence, Ready for review
+- city/location text search (address, city, district, neighborhood)
+- asset type filter
+- sort options: newest, oldest, highest asking price
+
+Result count is shown after filtering to avoid hidden/ambiguous empty states.
+
+## Lead-Quality Signal Definitions
+Lead-quality labels are deterministic internal triage signals only (not investment score, valuation, or advice):
+
+- NOT_ELIGIBLE:
+  - consent is not OPTED_IN
+
+- STRONG_SIGNAL:
+  - opted in
+  - contact allowed
+  - evidence uploaded
+  - has price or area
+  - has location
+
+- REVIEWABLE:
+  - opted in
+  - has location
+  - has either evidence or price/area
+
+- NEEDS_EVIDENCE:
+  - opted in
+  - missing documents/evidence
+
+- LOW_INFORMATION:
+  - opted in
+  - missing most core location/property/evidence inputs
+
+## Evidence / Readiness Signals
+Each case displays:
+- consent status
+- professional contact permission
+- evidence status:
+  - Evidence uploaded
+  - Needs evidence
+  - Evidence status unavailable
+- report/readiness status:
+  - Report reviewable
+  - Needs missing evidence
+  - Readiness unavailable
+- market signal:
+  - TKGM market signal present
+  - Market signal missing
+  - Not available from current endpoint
+
+Missing evidence is shown as a deterministic counter-style status:
+- Missing evidence count: 0
+- Missing evidence count: 1+
+- Not available from current endpoint
+
+## Next-Action Guidance
+Each row provides a primary operator guidance state:
+- Request missing evidence
+- Review result/report
+- Contact allowed user
+- Keep internal only
+- Not eligible for deal-flow without consent
+
+Action links remain internal review tools only:
+- Open Property
+- Documents
+- Result/Report
+- Admin Analysis Registry
+
 Summary cards include:
 - Total opt-in cases
 - Contact allowed
@@ -46,6 +117,7 @@ This phase does not implement:
 - lead transfer to professionals
 - professional account onboarding
 - marketplace automation
+- automated lead sending/outreach
 - payment flow changes
 - OCR/scraping automation
 - TKGM/TUCBS/CSB automation

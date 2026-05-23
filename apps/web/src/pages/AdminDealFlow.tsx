@@ -4,6 +4,7 @@ import { apiFetch } from '../lib/api';
 import {
   AdminEmptyState,
   AdminHeader,
+  AdminInput,
   AdminLayout,
   AdminPage,
   AdminStatusPill,
@@ -49,29 +50,63 @@ type PropertyDetailEnvelope = {
   }>;
 };
 
+type LeadQualityLabel = 'STRONG_SIGNAL' | 'REVIEWABLE' | 'NEEDS_EVIDENCE' | 'LOW_INFORMATION' | 'NOT_ELIGIBLE';
+
+type EvidenceSignal = 'EVIDENCE_UPLOADED' | 'NEEDS_EVIDENCE' | 'UNAVAILABLE';
+
+type ReadinessSignal = 'REPORT_REVIEWABLE' | 'NEEDS_MISSING_EVIDENCE' | 'UNAVAILABLE';
+
+type MarketSignal = 'TKGM_MARKET_SIGNAL_PRESENT' | 'MARKET_SIGNAL_MISSING' | 'UNAVAILABLE';
+
+type NextAction =
+  | 'REQUEST_MISSING_EVIDENCE'
+  | 'REVIEW_RESULT_REPORT'
+  | 'CONTACT_ALLOWED_USER'
+  | 'KEEP_INTERNAL_ONLY'
+  | 'NOT_ELIGIBLE_WITHOUT_CONSENT';
+
 type DealFlowRow = {
   propertyId: string;
   propertyTitle: string;
   location: string;
+  city: string;
+  district: string;
+  neighborhood: string;
   userDisplay: string;
   assetTypeText: string;
+  askingPriceValue: number | null;
   askingPriceText: string;
+  areaValue: number | null;
   areaText: string;
   consentStatusText: string;
   consentAtText: string;
   contactPermissionText: string;
-  evidenceReadinessText: string;
-  missingEvidenceText: string;
+  evidenceSignal: EvidenceSignal;
+  evidenceSignalText: string;
+  readinessSignal: ReadinessSignal;
+  readinessSignalText: string;
+  missingEvidenceCountText: string;
+  marketSignal: MarketSignal;
   marketSignalText: string;
   analysisRunsText: string;
+  analysisRunsCount: number;
   updatedText: string;
+  updatedAtEpoch: number;
+  leadQuality: LeadQualityLabel;
+  leadQualityText: string;
+  nextAction: NextAction;
+  nextActionText: string;
   isOptedIn: boolean;
   contactAllowed: boolean;
   needsEvidence: boolean;
   readyForReview: boolean;
+  hasLocation: boolean;
+  hasPriceOrArea: boolean;
 };
 
 type FilterKey = 'ALL' | 'OPTED_IN' | 'CONTACT_ALLOWED' | 'NEEDS_EVIDENCE' | 'READY_FOR_REVIEW';
+
+type SortKey = 'NEWEST' | 'OLDEST' | 'HIGHEST_PRICE';
 
 function formatDate(value?: string) {
   if (!value) return 'Not available from current endpoint';
@@ -116,9 +151,19 @@ function toneForReadiness(text: string): 'success' | 'warning' | 'info' | 'neutr
 }
 
 function summarizeMarketSignal(detail: PropertyDetailEnvelope | null) {
-  if (!detail) return 'Not available from current endpoint';
+  if (!detail) {
+    return {
+      signal: 'UNAVAILABLE' as MarketSignal,
+      text: 'Not available from current endpoint',
+    };
+  }
   const docs = Array.isArray(detail.documents) ? detail.documents : [];
-  if (docs.length === 0) return 'Missing';
+  if (docs.length === 0) {
+    return {
+      signal: 'MARKET_SIGNAL_MISSING' as MarketSignal,
+      text: 'Market signal missing',
+    };
+  }
 
   const hasTkgmParcel = docs.some((doc) => {
     const type = String(doc.documentType || '').toUpperCase();
@@ -132,10 +177,79 @@ function summarizeMarketSignal(detail: PropertyDetailEnvelope | null) {
     return type.includes('PRICE_HISTORY') || name.includes('PRICE') || name.includes('SATIM') || name.includes('TKGM');
   });
 
-  if (hasTkgmParcel && hasTkgmMarketSignal) return 'TKGM parcel + market signal evidence';
-  if (hasTkgmMarketSignal) return 'TKGM market signal evidence only';
-  if (hasTkgmParcel) return 'TKGM parcel evidence only';
-  return 'Supporting evidence only';
+  if (hasTkgmMarketSignal) {
+    return {
+      signal: 'TKGM_MARKET_SIGNAL_PRESENT' as MarketSignal,
+      text: hasTkgmParcel ? 'TKGM market signal present (parcel evidence also present)' : 'TKGM market signal present',
+    };
+  }
+
+  return {
+    signal: 'MARKET_SIGNAL_MISSING' as MarketSignal,
+    text: hasTkgmParcel ? 'Market signal missing (TKGM parcel evidence only)' : 'Market signal missing',
+  };
+}
+
+function leadQualityText(label: LeadQualityLabel) {
+  if (label === 'STRONG_SIGNAL') return 'STRONG_SIGNAL';
+  if (label === 'REVIEWABLE') return 'REVIEWABLE';
+  if (label === 'NEEDS_EVIDENCE') return 'NEEDS_EVIDENCE';
+  if (label === 'LOW_INFORMATION') return 'LOW_INFORMATION';
+  return 'NOT_ELIGIBLE';
+}
+
+function leadQualityTone(label: LeadQualityLabel): 'success' | 'warning' | 'danger' | 'info' | 'neutral' {
+  if (label === 'STRONG_SIGNAL') return 'success';
+  if (label === 'REVIEWABLE') return 'info';
+  if (label === 'NEEDS_EVIDENCE') return 'warning';
+  if (label === 'LOW_INFORMATION') return 'warning';
+  return 'neutral';
+}
+
+function evidenceSignalText(value: EvidenceSignal) {
+  if (value === 'EVIDENCE_UPLOADED') return 'Evidence uploaded';
+  if (value === 'NEEDS_EVIDENCE') return 'Needs evidence';
+  return 'Evidence status unavailable';
+}
+
+function readinessSignalText(value: ReadinessSignal) {
+  if (value === 'REPORT_REVIEWABLE') return 'Report reviewable';
+  if (value === 'NEEDS_MISSING_EVIDENCE') return 'Needs missing evidence';
+  return 'Readiness unavailable';
+}
+
+function marketSignalTone(value: MarketSignal): 'success' | 'warning' | 'neutral' {
+  if (value === 'TKGM_MARKET_SIGNAL_PRESENT') return 'success';
+  if (value === 'MARKET_SIGNAL_MISSING') return 'warning';
+  return 'neutral';
+}
+
+function nextActionText(value: NextAction) {
+  if (value === 'NOT_ELIGIBLE_WITHOUT_CONSENT') return 'Not eligible for deal-flow without consent';
+  if (value === 'REQUEST_MISSING_EVIDENCE') return 'Request missing evidence';
+  if (value === 'REVIEW_RESULT_REPORT') return 'Review result/report';
+  if (value === 'CONTACT_ALLOWED_USER') return 'Contact allowed user';
+  return 'Keep internal only';
+}
+
+function calculateLeadQuality(input: {
+  isOptedIn: boolean;
+  contactAllowed: boolean;
+  hasEvidence: boolean;
+  evidenceUnavailable: boolean;
+  hasLocation: boolean;
+  hasPriceOrArea: boolean;
+}): LeadQualityLabel {
+  const { isOptedIn, contactAllowed, hasEvidence, evidenceUnavailable, hasLocation, hasPriceOrArea } = input;
+  if (!isOptedIn) return 'NOT_ELIGIBLE';
+  if (evidenceUnavailable && !hasLocation && !hasPriceOrArea) return 'LOW_INFORMATION';
+  if (!hasEvidence) {
+    if (!hasLocation && !hasPriceOrArea) return 'LOW_INFORMATION';
+    return 'NEEDS_EVIDENCE';
+  }
+  if (contactAllowed && hasLocation && hasPriceOrArea) return 'STRONG_SIGNAL';
+  if (hasLocation && (hasEvidence || hasPriceOrArea)) return 'REVIEWABLE';
+  return 'LOW_INFORMATION';
 }
 
 export default function AdminDealFlow() {
@@ -144,6 +258,9 @@ export default function AdminDealFlow() {
   const [error, setError] = useState('');
   const [rows, setRows] = useState<DealFlowRow[]>([]);
   const [filter, setFilter] = useState<FilterKey>('ALL');
+  const [locationQuery, setLocationQuery] = useState('');
+  const [assetTypeFilter, setAssetTypeFilter] = useState('ALL');
+  const [sortKey, setSortKey] = useState<SortKey>('NEWEST');
 
   if (authStatus === 'booting' || authStatus === 'checking' || (hasPersistentSession && !user)) {
     return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum dogrulaniyor...</div>;
@@ -206,11 +323,24 @@ export default function AdminDealFlow() {
           const propertyId = String(property._id);
           const detail = detailMap.get(propertyId) || null;
           const evidenceCount = Array.isArray(detail?.documents) ? detail.documents.length : null;
+          const evidenceUnavailable = evidenceCount === null;
+          const hasEvidence = typeof evidenceCount === 'number' && evidenceCount > 0;
           const analysisCount = analysisCountByProperty.get(propertyId) || 0;
           const isOptedIn = property.dealFlowConsentStatus === 'OPTED_IN';
           const contactAllowed = Boolean(property.professionalContactAllowed);
+          const city = String(property.il || '').trim();
+          const district = String(property.ilce || '').trim();
+          const neighborhood = String(property.mahalleOrKoy || '').trim();
+          const hasLocation = Boolean(city || district || neighborhood);
+
+          const askingPriceValue = typeof property.askingPriceTRY === 'number' && Number.isFinite(property.askingPriceTRY)
+            ? property.askingPriceTRY
+            : null;
+          const areaValue = typeof property.areaM2 === 'number' && Number.isFinite(property.areaM2) ? property.areaM2 : null;
+          const hasPriceOrArea = askingPriceValue !== null || areaValue !== null;
+
           const needsEvidence = evidenceCount === 0;
-          const readyForReview = isOptedIn && contactAllowed && typeof evidenceCount === 'number' && evidenceCount > 0;
+          const readyForReview = isOptedIn && hasEvidence && analysisCount > 0;
 
           const uid = toUserId(property.userId);
           const mappedUser = uid ? userMap.get(uid) : null;
@@ -220,42 +350,78 @@ export default function AdminDealFlow() {
             ? `${mappedUser.name || mappedUser.email || mappedUser._id}${mappedUser.email && mappedUser.name ? ` (${mappedUser.email})` : ''}`
             : embeddedUser?.email || embeddedUser?.name || (uid ? shortenId(uid) : 'Not available from current endpoint');
 
-          const evidenceReadinessText =
-            evidenceCount === null
-              ? 'Not available from current endpoint'
-              : readyForReview
-              ? 'Ready for review'
-              : evidenceCount > 0
-              ? 'Partial supporting evidence'
-              : 'Needs evidence';
+          const evidenceSignal: EvidenceSignal =
+            evidenceUnavailable ? 'UNAVAILABLE' : hasEvidence ? 'EVIDENCE_UPLOADED' : 'NEEDS_EVIDENCE';
+          const readinessSignal: ReadinessSignal = evidenceUnavailable
+            ? 'UNAVAILABLE'
+            : readyForReview
+            ? 'REPORT_REVIEWABLE'
+            : 'NEEDS_MISSING_EVIDENCE';
 
-          const missingEvidenceText =
-            evidenceCount === null
-              ? 'Not available from current endpoint'
-              : evidenceCount === 0
-              ? 'Missing evidence: 1+ required'
-              : 'Missing evidence: 0 (has uploads)';
+          const missingEvidenceCountText = evidenceUnavailable
+            ? 'Not available from current endpoint'
+            : hasEvidence
+            ? 'Missing evidence count: 0'
+            : 'Missing evidence count: 1+';
+
+          const market = summarizeMarketSignal(detail);
+
+          const leadQuality = calculateLeadQuality({
+            isOptedIn,
+            contactAllowed,
+            hasEvidence,
+            evidenceUnavailable,
+            hasLocation,
+            hasPriceOrArea,
+          });
+
+          const nextAction: NextAction = !isOptedIn
+            ? 'NOT_ELIGIBLE_WITHOUT_CONSENT'
+            : !hasEvidence
+            ? 'REQUEST_MISSING_EVIDENCE'
+            : analysisCount > 0
+            ? contactAllowed
+              ? 'CONTACT_ALLOWED_USER'
+              : 'REVIEW_RESULT_REPORT'
+            : 'KEEP_INTERNAL_ONLY';
 
           return {
             propertyId,
             propertyTitle: property.addressText || 'Not available from current endpoint',
-            location: [property.il, property.ilce, property.mahalleOrKoy].filter(Boolean).join(' / ') || 'Not available from current endpoint',
+            location: [city, district, neighborhood].filter(Boolean).join(' / ') || 'Not available from current endpoint',
+            city,
+            district,
+            neighborhood,
             userDisplay,
             assetTypeText: property.assetType || 'Not available from current endpoint',
-            askingPriceText: formatMoney(property.askingPriceTRY),
-            areaText: typeof property.areaM2 === 'number' ? `${property.areaM2} m2` : '-',
+            askingPriceValue,
+            askingPriceText: formatMoney(askingPriceValue || undefined),
+            areaValue,
+            areaText: areaValue !== null ? `${areaValue} m2` : '-',
             consentStatusText: consentStatusLabel(property.dealFlowConsentStatus),
             consentAtText: formatDate(property.dealFlowConsentAt),
             contactPermissionText: contactAllowed ? 'Allowed' : 'Not allowed',
-            evidenceReadinessText,
-            missingEvidenceText,
-            marketSignalText: summarizeMarketSignal(detail),
+            evidenceSignal,
+            evidenceSignalText: evidenceSignalText(evidenceSignal),
+            readinessSignal,
+            readinessSignalText: readinessSignalText(readinessSignal),
+            missingEvidenceCountText,
+            marketSignal: market.signal,
+            marketSignalText: market.text,
             analysisRunsText: `${analysisCount} run(s)`,
+            analysisRunsCount: analysisCount,
             updatedText: formatDate(property.updatedAt || property.createdAt),
+            updatedAtEpoch: new Date(property.updatedAt || property.createdAt || 0).getTime() || 0,
+            leadQuality,
+            leadQualityText: leadQualityText(leadQuality),
+            nextAction,
+            nextActionText: nextActionText(nextAction),
             isOptedIn,
             contactAllowed,
             needsEvidence,
             readyForReview,
+            hasLocation,
+            hasPriceOrArea,
           };
         });
 
@@ -291,12 +457,44 @@ export default function AdminDealFlow() {
   }, [rows]);
 
   const filteredRows = useMemo(() => {
-    if (filter === 'OPTED_IN') return rows.filter((row) => row.isOptedIn);
-    if (filter === 'CONTACT_ALLOWED') return rows.filter((row) => row.contactAllowed);
-    if (filter === 'NEEDS_EVIDENCE') return rows.filter((row) => row.needsEvidence);
-    if (filter === 'READY_FOR_REVIEW') return rows.filter((row) => row.readyForReview);
-    return rows;
-  }, [filter, rows]);
+    const normalizedLocationQuery = locationQuery.trim().toLowerCase();
+
+    let next = rows.filter((row) => {
+      if (filter === 'OPTED_IN' && !row.isOptedIn) return false;
+      if (filter === 'CONTACT_ALLOWED' && !row.contactAllowed) return false;
+      if (filter === 'NEEDS_EVIDENCE' && !row.needsEvidence) return false;
+      if (filter === 'READY_FOR_REVIEW' && !row.readyForReview) return false;
+
+      if (assetTypeFilter !== 'ALL') {
+        const asset = String(row.assetTypeText || '').trim().toUpperCase();
+        if (asset !== assetTypeFilter) return false;
+      }
+
+      if (normalizedLocationQuery) {
+        const haystack = `${row.propertyTitle} ${row.location} ${row.city} ${row.district} ${row.neighborhood}`.toLowerCase();
+        if (!haystack.includes(normalizedLocationQuery)) return false;
+      }
+
+      return true;
+    });
+
+    next = [...next].sort((a, b) => {
+      if (sortKey === 'OLDEST') {
+        return a.updatedAtEpoch - b.updatedAtEpoch;
+      }
+      if (sortKey === 'HIGHEST_PRICE') {
+        return (b.askingPriceValue || -1) - (a.askingPriceValue || -1);
+      }
+      return b.updatedAtEpoch - a.updatedAtEpoch;
+    });
+
+    return next;
+  }, [assetTypeFilter, filter, locationQuery, rows, sortKey]);
+
+  const assetTypeOptions = useMemo(() => {
+    const options = Array.from(new Set(rows.map((row) => String(row.assetTypeText || '').trim().toUpperCase()).filter(Boolean))).sort();
+    return options;
+  }, [rows]);
 
   return (
     <AdminLayout title="Professional Deal-Flow">
@@ -373,6 +571,46 @@ export default function AdminDealFlow() {
             ))}
           </div>
 
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600">City / location search</label>
+              <AdminInput
+                placeholder="Search city, district, neighborhood, address"
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600">Asset type</label>
+              <select
+                className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+                value={assetTypeFilter}
+                onChange={(e) => setAssetTypeFilter(e.target.value)}
+              >
+                <option value="ALL">All asset types</option>
+                {assetTypeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600">Sort order</label>
+              <select
+                className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+              >
+                <option value="NEWEST">Newest first</option>
+                <option value="OLDEST">Oldest first</option>
+                <option value="HIGHEST_PRICE">Highest asking price</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="text-sm text-slate-600">{filteredRows.length} case(s) after filters</div>
+
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}
           {loading ? <div className="text-sm text-slate-500">Loading professional deal-flow dashboard...</div> : null}
 
@@ -390,10 +628,12 @@ export default function AdminDealFlow() {
                     <th className="px-3 py-2">Property / Location</th>
                     <th className="px-3 py-2">User</th>
                     <th className="px-3 py-2">Asset / Price / Area</th>
+                    <th className="px-3 py-2">Lead Quality</th>
                     <th className="px-3 py-2">Consent</th>
                     <th className="px-3 py-2">Contact Permission</th>
                     <th className="px-3 py-2">Evidence / Readiness</th>
                     <th className="px-3 py-2">Market Signal / TKGM</th>
+                    <th className="px-3 py-2">Next Action</th>
                     <th className="px-3 py-2">Dates</th>
                     <th className="px-3 py-2">Actions</th>
                   </tr>
@@ -412,6 +652,10 @@ export default function AdminDealFlow() {
                         <div className="text-xs text-slate-600">{row.askingPriceText}</div>
                         <div className="text-xs text-slate-600">{row.areaText}</div>
                       </td>
+                      <td className="px-3 py-2 align-top">
+                        <AdminStatusPill tone={leadQualityTone(row.leadQuality)}>{row.leadQualityText}</AdminStatusPill>
+                        <div className="mt-1 text-[11px] text-slate-500">Internal triage signal only.</div>
+                      </td>
                       <td className="px-3 py-2 align-top text-slate-700">
                         <div>{row.consentStatusText}</div>
                         <div className="text-xs text-slate-500">At: {row.consentAtText}</div>
@@ -421,12 +665,21 @@ export default function AdminDealFlow() {
                       </td>
                       <td className="px-3 py-2 align-top text-slate-700">
                         <div className="mb-1">
-                          <AdminStatusPill tone={toneForReadiness(row.evidenceReadinessText)}>{row.evidenceReadinessText}</AdminStatusPill>
+                          <AdminStatusPill tone={toneForReadiness(row.evidenceSignalText)}>{row.evidenceSignalText}</AdminStatusPill>
                         </div>
-                        <div className="text-xs text-slate-500">{row.missingEvidenceText}</div>
-                        <div className="text-xs text-slate-500">Analysis: {row.analysisRunsText}</div>
+                        <div className="mb-1">
+                          <AdminStatusPill tone={toneForReadiness(row.readinessSignalText)}>{row.readinessSignalText}</AdminStatusPill>
+                        </div>
+                        <div className="text-xs text-slate-500">{row.missingEvidenceCountText}</div>
+                        <div className="text-xs text-slate-500">Analysis runs: {row.analysisRunsText}</div>
                       </td>
-                      <td className="px-3 py-2 align-top text-slate-700">{row.marketSignalText}</td>
+                      <td className="px-3 py-2 align-top text-slate-700">
+                        <AdminStatusPill tone={marketSignalTone(row.marketSignal)}>{row.marketSignalText}</AdminStatusPill>
+                      </td>
+                      <td className="px-3 py-2 align-top text-slate-700">
+                        <div>{row.nextActionText}</div>
+                        {row.contactAllowed ? <div className="text-xs text-slate-500">Contact allowed (no automated outreach).</div> : null}
+                      </td>
                       <td className="px-3 py-2 align-top text-xs text-slate-600">{row.updatedText}</td>
                       <td className="px-3 py-2 align-top">
                         <div className="flex flex-col gap-1">
@@ -470,6 +723,7 @@ export default function AdminDealFlow() {
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
             <div>No hidden data use. This view only reflects admin-accessible consented property metadata.</div>
             <div>No external sharing is active yet. No lead transfer is performed from this dashboard.</div>
+            <div>No professional account marketplace or automated lead distribution is active in this phase.</div>
             <div>No official valuation, legal, tapu, cadastral, municipality, or zoning proof claim is made.</div>
           </div>
         </AdminSurface>
