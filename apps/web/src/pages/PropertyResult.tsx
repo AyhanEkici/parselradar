@@ -42,6 +42,7 @@ import ExecutionConstraintCard from '../components/execution/ExecutionConstraint
 import DecisionConfidenceCard from '../components/decisioning/DecisionConfidenceCard';
 import RegionalCoordinationCard from '../components/decisioning/RegionalCoordinationCard';
 import TerritorialOperatingSystemCard from '../components/operatingSystem/TerritorialOperatingSystemCard';
+import { getMunicipalitySource } from '../lib/municipalitySourceRegistry';
 
 type ReadinessStatus =
   | 'READY'
@@ -182,9 +183,14 @@ function buildEvidenceGuidance(intent: EvidenceIntent, property: PropertyReadine
     const hasMunicipalSourceType = docs.some((doc) =>
       ['MUNICIPALITY_IMAR_EVIDENCE', 'E_PLAN_EVIDENCE'].includes(String(doc.sourceType || '').trim())
     );
+    const sourceRegistry = getMunicipalitySource(property?.il, property?.ilce);
+    const hasVerifiedSource = sourceRegistry.status === 'VERIFIED_OFFICIAL_SOURCE' && Boolean(sourceRegistry.source?.url);
     return {
-      sourceLabel: 'Municipality e-Imar / e-Plan / Imar Durumu',
-      sourceActionLabel: 'Open municipality guidance',
+      sourceLabel: hasVerifiedSource
+        ? `Verified source: ${sourceRegistry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
+        : 'Municipality e-Imar / e-Plan / Imar Durumu',
+      sourceActionLabel: hasVerifiedSource ? 'Open official source' : 'Open municipality guidance',
+      sourceUrl: hasVerifiedSource ? sourceRegistry.source?.url : undefined,
       guidanceSteps: [
         municipalityContext
           ? `Relevant municipality/district: ${municipalityContext}`
@@ -197,7 +203,9 @@ function buildEvidenceGuidance(intent: EvidenceIntent, property: PropertyReadine
       expectedSourceType: hasMunicipalSourceType ? 'MUNICIPALITY_IMAR_EVIDENCE' : 'USER_SUBMITTED',
       warning: 'ParselRadar does not confirm official zoning status automatically.',
       placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
-      sourceUnavailableNote: 'Exact municipality source URL not configured yet.',
+      sourceUnavailableNote: hasVerifiedSource
+        ? `Registry status: ${sourceRegistry.status}`
+        : 'Exact municipality source URL is not configured yet.',
     };
   }
 

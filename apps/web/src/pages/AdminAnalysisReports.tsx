@@ -288,6 +288,7 @@ export default function AdminAnalysisReports() {
             <div className="mt-1">Map/layer registry status is informational only. TKGM, TUCBS and CSB/imar layers are not connected in this phase.</div>
             <div className="mt-1">Coordinate preview may be available from uploaded CSV metadata; official map/layer integrations are not connected.</div>
             <div className="mt-1">Missing-evidence source guidance is manual-only: TKGM Parsel Sorgu and municipality e-Imar/e-Plan/Imar Durumu directions are informational support, not automated external access or official verification.</div>
+            <div className="mt-1">Municipality source registry policy: verified/manual-only entries. No fake municipality URLs, no scraping, no auto-search, and no automated official verification claims.</div>
           </div>
 
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}

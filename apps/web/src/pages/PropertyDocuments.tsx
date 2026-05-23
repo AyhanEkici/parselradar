@@ -12,6 +12,7 @@ import {
 } from '../components/admin';
 import { useToast } from '../components/ui';
 import { getAuthHeader } from '../lib/authStorage';
+import { getMunicipalitySource, MunicipalitySourceStatus } from '../lib/municipalitySourceRegistry';
 
 type ReviewStatusValue =
   | 'PREVIEW_ONLY'
@@ -52,6 +53,7 @@ type UploadIntentPreset = {
   sourceUnavailableNote?: string;
   placeholder?: string;
   note?: string;
+  registryStatus?: MunicipalitySourceStatus;
 };
 
 const evidenceTypeOptions = [
@@ -89,7 +91,7 @@ const sourceTypeOptions = [
 
 const metadataStatusOptions: Array<'NEEDS_REVIEW' | 'PREVIEW_ONLY'> = ['NEEDS_REVIEW', 'PREVIEW_ONLY'];
 
-function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | null {
+function resolveUploadIntentPreset(intent: string | null, province?: string, district?: string): UploadIntentPreset | null {
   const normalized = String(intent || '').toUpperCase() as UploadIntent;
   if (!normalized) return null;
 
@@ -125,23 +127,29 @@ function resolveUploadIntentPreset(intent: string | null): UploadIntentPreset | 
   }
 
   if (normalized === 'MUNICIPAL_ZONING') {
+    const registry = getMunicipalitySource(province, district);
+    const hasVerifiedSource = registry.status === 'VERIFIED_OFFICIAL_SOURCE' && Boolean(registry.source?.url);
     const preferredMunicipalEvidenceType = evidenceTypeOptions.includes('MUNICIPALITY_IMAR_SCREENSHOT')
       ? 'MUNICIPALITY_IMAR_SCREENSHOT'
       : 'OTHER';
     return {
       label: 'Upload municipal/e-plan evidence',
-      sourceLabel: 'Municipality e-Imar / e-Plan / Imar Durumu',
+      sourceLabel: hasVerifiedSource
+        ? `Verified source: ${registry.source?.sourceLabel || 'Municipality e-Imar / e-Plan / Imar Durumu'}`
+        : 'Municipality e-Imar / e-Plan / Imar Durumu',
       evidenceType: preferredMunicipalEvidenceType,
       sourceType: 'USER_SUBMITTED',
-      sourceActionLabel: 'Open municipality guidance',
+      sourceActionLabel: hasVerifiedSource ? 'Open official source' : 'Open municipality guidance',
+      sourceUrl: hasVerifiedSource ? registry.source?.url : undefined,
       guidanceSteps: [
         'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
         'If no online service exists, request an imar durum belgesi from municipality.',
         'Capture screenshot/PDF/document for upload.',
       ],
-      sourceUnavailableNote: 'Exact municipality source URL not configured yet.',
+      sourceUnavailableNote: hasVerifiedSource ? undefined : 'Exact municipality source URL is not configured yet.',
       placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
       note: 'Manual supporting evidence only.',
+      registryStatus: registry.status,
     };
   }
 
@@ -299,9 +307,13 @@ export default function PropertyDocuments() {
   const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const [showReturnToResult, setShowReturnToResult] = useState(false);
+  const [propertyLocation, setPropertyLocation] = useState<{ province?: string; district?: string }>({});
   const navigate = useNavigate();
   const toast = useToast();
-  const intentPreset = useMemo(() => resolveUploadIntentPreset(searchParams.get('intent')), [searchParams]);
+  const intentPreset = useMemo(
+    () => resolveUploadIntentPreset(searchParams.get('intent'), propertyLocation.province, propertyLocation.district),
+    [searchParams, propertyLocation]
+  );
   const returnToResult = String(searchParams.get('returnTo') || '').toLowerCase() === 'result';
 
   function absoluteFileUrl(fileUrl?: string) {
@@ -337,8 +349,11 @@ export default function PropertyDocuments() {
           fileMissing?: boolean;
           sizeBytes?: number;
         }>;
+        il?: string;
+        ilce?: string;
       };
       setDocuments(Array.isArray(data.documents) ? data.documents : []);
+      setPropertyLocation({ province: data.il, district: data.ilce });
     } catch (err) {
       const e = err as { error?: string; message?: string };
       toast.error(e.error || e.message || 'Belge listesi alınamadı');
@@ -679,6 +694,7 @@ export default function PropertyDocuments() {
             <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800">
               <div className="font-semibold text-blue-900">You are uploading for: {intentPreset.label}</div>
               <div className="mt-1">Recommended source: {intentPreset.sourceLabel}</div>
+              <div className="mt-1">Registry status: {intentPreset.registryStatus || 'NOT_CONFIGURED'}</div>
               <div className="mt-1">Where to obtain it:</div>
               <ul className="mt-1 list-disc pl-4">
                 {intentPreset.guidanceSteps.map((step) => (
