@@ -1,36 +1,92 @@
 name: Scheduled Metadata Sync
 
 on:
-  schedule:
-    - cron: '15 3 * * *'
   workflow_dispatch:
+  schedule:
+    - cron: "15 3 * * *"
 
 permissions:
   contents: read
 
 jobs:
-  trigger:
+  scheduled-metadata-sync:
+    name: Run safe scheduled metadata sync
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+
     steps:
-      - name: Trigger safe scheduled metadata sync
+      - name: Call Railway scheduled metadata sync endpoint
         env:
-          RAILWAY_API_BASE_URL: https://parselradar-production.up.railway.app
           CONNECTOR_SYNC_CRON_SECRET: ${{ secrets.CONNECTOR_SYNC_CRON_SECRET }}
+          CONNECTOR_SYNC_ENDPOINT: https://parselradar-production.up.railway.app/admin/connectors/sync/scheduled
+        shell: bash
         run: |
           set -euo pipefail
 
           if [ -z "${CONNECTOR_SYNC_CRON_SECRET:-}" ]; then
-            echo "CONNECTOR_SYNC_CRON_SECRET is required"
+            echo "CONNECTOR_SYNC_CRON_SECRET is not configured"
             exit 1
           fi
 
           response_file="$(mktemp)"
-          http_status="$(curl -sS -o "$response_file" -w '%{http_code}' \
-            -X POST \
-            -H 'Content-Type: application/json' \
-            -H "x-connector-sync-secret: $CONNECTOR_SYNC_CRON_SECRET" \
-            -d '{}' \
-            "$RAILWAY_API_BASE_URL/admin/connectors/sync/scheduled")"
+          status_file="$(mktemp)"
 
-          python -c "import json, pathlib, sys; p=pathlib.Path(sys.argv[1]); s=int(sys.argv[2]); t=p.read_text(encoding='utf-8').strip(); (s == 200) or (_ for _ in ()).throw(SystemExit(f'Unexpected status: {s}')); r=json.loads(t); r.get('noPropertyLevelVerification') or (_ for _ in ()).throw(SystemExit('noPropertyLevelVerification is not true')); print(f\"Scheduled metadata sync succeeded: status={s}, eligible={r.get('eligible')}, skipped={r.get('skipped')}, passed={r.get('passed')}, failed={r.get('failed')}\")" "$response_file" "$http_status"
+          http_status="$(
+            curl --silent --show-error --location \
+              --request POST "${CONNECTOR_SYNC_ENDPOINT}" \
+              --header "Content-Type: application/json" \
+              --header "x-connector-sync-secret: ${CONNECTOR_SYNC_CRON_SECRET}" \
+              --data "{}" \
+              --output "${response_file}" \
+              --write-out "%{http_code}"
+          )"
+
+          printf "%s" "${http_status}" > "${status_file}"
+
+          node - "${response_file}" "${status_file}" <<'NODE'
+          const fs = require("fs");
+
+          const responseFile = process.argv[2];
+          const statusFile = process.argv[3];
+
+          const httpStatus = Number(fs.readFileSync(statusFile, "utf8"));
+          const responseText = fs.readFileSync(responseFile, "utf8");
+
+          if (httpStatus !== 200) {
+            throw new Error(`Unexpected HTTP status: ${httpStatus}`);
+          }
+
+          const response = JSON.parse(responseText);
+
+          if (response.noPropertyLevelVerification !== true) {
+            throw new Error("noPropertyLevelVerification must be true");
+          }
+
+          const serialized = JSON.stringify(response).toLowerCase();
+          const forbiddenTerms = [
+            "official-proof",
+            "official proof",
+            "valuation",
+            "buy advice",
+            "buy/sell",
+            "secret",
+            "token"
+          ];
+
+          for (const term of forbiddenTerms) {
+            if (serialized.includes(term)) {
+              throw new Error(`Forbidden response term detected: ${term}`);
+            }
+          }
+
+          console.log(
+            [
+              "Scheduled metadata sync verified",
+              `eligible=${response.eligible}`,
+              `skipped=${response.skipped}`,
+              `passed=${response.passed}`,
+              `failed=${response.failed}`,
+              "noPropertyLevelVerification=true"
+            ].join(" | ")
+          );
+          NODE
