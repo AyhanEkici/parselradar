@@ -29,6 +29,12 @@ type ReviewStatusValue =
 
 const evidenceTypeOptions = [
   'LISTING_SCREENSHOT',
+  'TKGM_PARCEL_SCREENSHOT',
+  'TKGM_ANALYSIS_SCREENSHOT',
+  'TKGM_PRICE_HISTORY_SCREENSHOT',
+  'TKGM_EXPORT_PDF',
+  'TKGM_EXPORT_KML',
+  'TKGM_EXPORT_GEOJSON',
   'TKGM_SCREENSHOT',
   'TKGM_EXPORT',
   'MUNICIPALITY_IMAR_DOCUMENT',
@@ -44,6 +50,8 @@ const sourceTypeOptions = [
   'USER_SUBMITTED',
   'USER_PROVIDED_OFFICIAL_SOURCE_EVIDENCE',
   'TKGM_MANUAL_EVIDENCE',
+  'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+  'TKGM_ANALYSIS_MARKET_SIGNAL',
   'MUNICIPALITY_IMAR_EVIDENCE',
   'E_PLAN_EVIDENCE',
   'UCBP_TUCBS_INFORMATIONAL_EVIDENCE',
@@ -561,7 +569,7 @@ export default function PropertyDocuments() {
               <input
                 className="block w-full border border-slate-300 rounded-md px-2.5 py-2 text-sm bg-white"
                 type="file"
-                accept=".pdf,.png,.jpg,.jpeg,.webp,.csv"
+                accept=".pdf,.png,.jpg,.jpeg,.webp,.kml,.geojson,.json,.csv"
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
                 required
               />
@@ -580,6 +588,21 @@ export default function PropertyDocuments() {
 
           <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
             Uploaded evidence is supporting informational evidence only. It is not official legal, tapu, cadastral or zoning confirmation and must be reviewed before being used as verified analysis input.
+          </div>
+
+          <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">TKGM Evidence Capture</div>
+            <div className="mt-1">
+              TKGM evidence is uploaded manually by the user/admin and is supporting informational evidence only. ParselRadar does not automate TKGM access, does not bypass restrictions, and does not confirm official legal/tapu/cadastral/zoning proof.
+            </div>
+            <a
+              className="mt-2 inline-flex rounded border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+              href="https://parselsorgu.tkgm.gov.tr/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open TKGM Parsel Sorgu
+            </a>
           </div>
 
           <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 space-y-2">

@@ -793,6 +793,30 @@ export default function PropertyResult() {
       new Set(docs.map((doc) => String(doc.sourceType || '').trim()).filter(Boolean))
     ).slice(0, 4);
 
+    const hasTkgmEvidence = docs.some((doc) => {
+      const evidence = String(doc.evidenceType || '').trim();
+      const source = String(doc.sourceType || '').trim();
+      return (
+        source === 'TKGM_MANUAL_EVIDENCE' ||
+        source === 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE' ||
+        source === 'TKGM_ANALYSIS_MARKET_SIGNAL' ||
+        evidence === 'TKGM_PARCEL_SCREENSHOT' ||
+        evidence === 'TKGM_ANALYSIS_SCREENSHOT' ||
+        evidence === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
+        evidence === 'TKGM_EXPORT_PDF' ||
+        evidence === 'TKGM_EXPORT_KML' ||
+        evidence === 'TKGM_EXPORT_GEOJSON' ||
+        evidence === 'TKGM_SCREENSHOT' ||
+        evidence === 'TKGM_EXPORT'
+      );
+    });
+    const hasTkgmPriceHistoryEvidence = docs.some(
+      (doc) =>
+        String(doc.evidenceType || '').trim() === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
+        (String(doc.sourceType || '').trim() === 'TKGM_ANALYSIS_MARKET_SIGNAL' &&
+          String(doc.evidenceType || '').trim().includes('TKGM'))
+    );
+
     return {
       locationIdentity,
       parcelIdentity,
@@ -805,6 +829,8 @@ export default function PropertyResult() {
       evidenceStatus,
       distinctEvidenceTypes,
       distinctSourceTypes,
+      hasTkgmEvidence,
+      hasTkgmPriceHistoryEvidence,
     };
   }, [csvCoordinatePreview, documents, documentsFetchFailed, documentsLoading, propertyData]);
 
@@ -899,6 +925,14 @@ export default function PropertyResult() {
           </div>
         ) : null}
         <div className="mt-3 flex flex-wrap gap-2">
+          <a
+            className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
+            href="https://parselsorgu.tkgm.gov.tr/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open TKGM Parsel Sorgu
+          </a>
           <button
             className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
             type="button"
@@ -984,7 +1018,13 @@ export default function PropertyResult() {
             <li>CSB/imar layer: Not connected yet</li>
             <li>Municipality/e-plan layer: Manual evidence only</li>
             <li>Uploaded evidence: Supporting information only</li>
+            <li>TKGM evidence: {mapLayerReadiness.hasTkgmEvidence ? 'Available (market signal / supporting evidence)' : 'Missing'}</li>
+            <li>TKGM price history screenshot: {mapLayerReadiness.hasTkgmPriceHistoryEvidence ? 'Available (market signal / supporting evidence)' : 'Missing'}</li>
           </ul>
+        </div>
+
+        <div className="mt-2 rounded border border-slate-200 bg-white p-2 text-xs text-slate-700">
+          TKGM evidence is uploaded manually by the user/admin and is supporting informational evidence only. ParselRadar does not automate TKGM access, does not bypass restrictions, and does not confirm official legal/tapu/cadastral/zoning proof.
         </div>
 
         <div className="mt-2 rounded border border-slate-200 bg-white p-2">
