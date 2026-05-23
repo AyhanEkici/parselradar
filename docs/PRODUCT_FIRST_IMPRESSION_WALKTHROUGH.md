@@ -222,3 +222,14 @@ Observed posture:
 
 ## 17) Final Founder Impression
 ParselRadar already feels like a serious controlled-beta evidence workspace with strong trust posture and clear manual-official boundaries. The core product story is believable and operationally useful for early users. The biggest risk before outsider demos is not integrity but polish: route consistency, mobile scanning comfort, and reducing visible "partial" states so first-time users feel confidence faster.
+
+## 18) Closeout Note (P2.PRODUCT-FIRST-IMPRESSION-3)
+- PR-PROD-002 addressed with mobile scanability improvements on dense admin surfaces.
+- PR-PROD-003 addressed with clearer scheduler wording in Connector Center:
+- External scheduler configured.
+- First GitHub Actions run not yet verified.
+- Scheduled sync is metadata-only.
+- No property-level official verification.
+- Manual/blocked sources are skipped.
+- Workflow YAML diagnostics for `.github/workflows/scheduled-metadata-sync.yml` were fixed in repository.
+- Public launch remains `NOT_READY`.

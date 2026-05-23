@@ -35,3 +35,5 @@ Activation date: 2026-05-24
 ## Status
 - Public launch remains `NOT_READY`.
 - Controlled beta remains `READY_FOR_CONTROLLED_BETA_CONTINUATION`.
+- Workflow YAML diagnostics for `.github/workflows/scheduled-metadata-sync.yml` are addressed in repo.
+- First successful GitHub Actions scheduled run is still `NOT_YET_VERIFIED` in this phase.

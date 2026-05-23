@@ -34,10 +34,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <>
       {shellVisible ? (
         <div className="premium-shell w-full mb-4">
-          <div className="max-w-5xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
+          <div className="max-w-5xl mx-auto px-4 py-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
             {showAuthenticatedNav ? (
               <>
-                <nav className="flex flex-wrap gap-2 text-xs">
+                <div className="w-full overflow-x-auto">
+                <nav className="flex w-max gap-2 whitespace-nowrap text-xs pb-1">
                   <Link to="/dashboard" className={navLinkClass('/dashboard')}>Dashboard</Link>
                   <Link to="/properties/new" className={navLinkClass('/properties/new')}>Yeni Mülk</Link>
                   <Link to="/credits" className={navLinkClass('/credits')}>Kredi</Link>
@@ -71,8 +72,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   <Link to="/organizations" className={navLinkClass('/organizations')}>Organizations</Link>
                   <Link to="/notifications" className={navLinkClass('/notifications')}>Notifications</Link>
                 </nav>
+                </div>
 
-                <div className="ml-auto flex items-center gap-2 text-xs">
+                <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2 text-xs">
                   <span className="premium-muted truncate max-w-[180px]" title={user?.email || ''}>
                     {identityDisplay}
                   </span>

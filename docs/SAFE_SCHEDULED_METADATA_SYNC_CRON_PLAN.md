@@ -69,3 +69,5 @@ External scheduler activation is defined through a GitHub Actions scheduled work
 ## Launch Posture
 - Public launch remains `NOT_READY`.
 - Controlled beta can continue with metadata-only scheduled sync guardrails.
+- Workflow YAML diagnostics are fixed in repository workflow definition.
+- First successful GitHub Actions scheduled run remains `NOT_YET_VERIFIED` until a fresh successful execution is confirmed.

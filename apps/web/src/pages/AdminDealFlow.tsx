@@ -636,7 +636,52 @@ export default function AdminDealFlow() {
           ) : null}
 
           {!loading && filteredRows.length > 0 ? (
-            <div className="overflow-auto rounded-lg border border-slate-200">
+            <div className="space-y-3">
+              <div className="grid gap-3 md:hidden">
+                {filteredRows.map((row) => (
+                  <article key={`${row.propertyId}-mobile`} className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+                    <div className="font-semibold text-slate-900 break-words">{row.propertyTitle}</div>
+                    <div className="mt-1 text-xs text-slate-600">{row.location}</div>
+                    <div className="mt-1 text-[11px] font-mono text-slate-500">{row.propertyId}</div>
+
+                    <div className="mt-2 grid grid-cols-1 gap-1 text-xs text-slate-700">
+                      <div><span className="font-medium">User:</span> {row.userDisplay}</div>
+                      <div><span className="font-medium">Asset:</span> {row.assetTypeText} | {row.askingPriceText} | {row.areaText}</div>
+                      <div><span className="font-medium">Consent:</span> {row.consentStatusText}</div>
+                      <div><span className="font-medium">Contact:</span> {row.contactPermissionText}</div>
+                      <div><span className="font-medium">Evidence:</span> {row.evidenceSignalText}</div>
+                      <div><span className="font-medium">Readiness:</span> {row.readinessSignalText}</div>
+                      <div><span className="font-medium">Market:</span> {row.marketSignalText}</div>
+                      <div><span className="font-medium">Next action:</span> {row.nextActionText}</div>
+                      <div><span className="font-medium">Updated:</span> {row.updatedText}</div>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <AdminStatusPill tone={leadQualityTone(row.leadQuality)}>{row.leadQualityText}</AdminStatusPill>
+                      <Link
+                        to={`/admin/properties/${row.propertyId}`}
+                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                      >
+                        Open Property
+                      </Link>
+                      <Link
+                        to={`/admin/properties/${row.propertyId}/documents`}
+                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                      >
+                        Documents
+                      </Link>
+                      <Link
+                        to={`/properties/${row.propertyId}/result`}
+                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                      >
+                        Result/Report
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <div className="hidden overflow-auto rounded-lg border border-slate-200 md:block">
               <table className="min-w-full divide-y divide-slate-200 bg-white text-sm">
                 <thead className="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
                   <tr>
@@ -729,6 +774,7 @@ export default function AdminDealFlow() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           ) : null}
 
