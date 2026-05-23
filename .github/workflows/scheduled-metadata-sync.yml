@@ -33,25 +33,25 @@ jobs:
             -d '{}' \
             "$RAILWAY_API_BASE_URL/admin/connectors/sync/scheduled")"
 
-          python - "$response_file" "$http_status" <<'PY'
-import json
-import pathlib
-import sys
+            python - "$response_file" "$http_status" <<'PY'
+            import json
+            import pathlib
+            import sys
 
-response_path = pathlib.Path(sys.argv[1])
-http_status = int(sys.argv[2])
-response_text = response_path.read_text(encoding='utf-8').strip()
+            response_path = pathlib.Path(sys.argv[1])
+            http_status = int(sys.argv[2])
+            response_text = response_path.read_text(encoding='utf-8').strip()
 
-if http_status != 200:
-    raise SystemExit(f'Unexpected status: {http_status}')
+            if http_status != 200:
+              raise SystemExit(f'Unexpected status: {http_status}')
 
-response = json.loads(response_text)
-if not response.get('noPropertyLevelVerification'):
-    raise SystemExit('noPropertyLevelVerification is not true')
+            response = json.loads(response_text)
+            if not response.get('noPropertyLevelVerification'):
+              raise SystemExit('noPropertyLevelVerification is not true')
 
-print(
-    f"Scheduled metadata sync succeeded: status={http_status}, "
-    f"eligible={response.get('eligible')}, skipped={response.get('skipped')}, "
-    f"passed={response.get('passed')}, failed={response.get('failed')}"
-)
-PY
+            print(
+              f"Scheduled metadata sync succeeded: status={http_status}, "
+              f"eligible={response.get('eligible')}, skipped={response.get('skipped')}, "
+              f"passed={response.get('passed')}, failed={response.get('failed')}"
+            )
+            PY
