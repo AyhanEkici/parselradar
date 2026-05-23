@@ -2,12 +2,14 @@
 
 ## Status Summary
 - user-flow status: CONTROLLED_BETA_CANDIDATE
+- admin access status: VERIFIED
+- controlled beta pilot status: READY_FOR_KNOWN_TESTERS
 - public launch status: NOT_READY
 - email provider readiness: CONFIG_REQUIRED
 - SPF/DKIM/DMARC status: CONFIG_REQUIRED
 - database backup restore readiness: PASS
 - document/file restore readiness: PASS
-- admin deployed test account status: ADMIN_DEPLOYMENT_TEST_ACCOUNT_MISSING
+- admin deployed test account status: VERIFIED_FOR_CONTROLLED_BETA
 
 ## Evidence Sources
 - `npm run verify:email-provider-readiness` -> `proof/p2-4b-email-provider-readiness.json` (`overallStatus: CONFIG_REQUIRED`)
@@ -25,10 +27,11 @@
 2. Configure deployment secret store values for SMTP and notification sender variables.
 3. Complete DNS authentication setup and proof capture for SPF, DKIM, and DMARC.
 4. Execute a production-like email dry-run and record bounce/complaint handling evidence.
-5. Provision or restore deployed admin smoke-test account and confirm admin login path.
+5. Rotate temporary admin smoke-test password after each test cycle and remove stale test accounts.
 6. Re-run operational verifiers and `audit:production-readiness` after configuration changes.
 7. Use the deployed admin test account runbook for controlled beta only and rotate/remove credentials after smoke completion.
 8. Execute the controlled beta preflight checklist before inviting any tester.
+9. Rotate MongoDB database-user password before real public launch.
 
 ## Operational Runbooks
 - `docs/DEPLOYED_ADMIN_TEST_ACCOUNT_RUNBOOK.md`
