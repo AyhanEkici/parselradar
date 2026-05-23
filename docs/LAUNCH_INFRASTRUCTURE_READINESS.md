@@ -112,3 +112,15 @@ Public launch remains blocked until all are true:
 
 ## Later product TODO
 Keep scheduled: `P2.UI-BUNDLE-1 Premium black/premium UI redesign` after functional completion.
+
+## Deployed smoke closeout status (P2.LAUNCH-INFRA-4B)
+- homepage smoke: PASS
+- admin login smoke: PASS
+- property/documents/report smoke: PASS
+- admin CMS/report/deal-flow smoke: PASS
+- route separation smoke (logged-out/non-admin to admin routes): PASS
+- SMTP/password-reset smoke: PENDING (non-leaking response PASS; inbox/provider delivery not confirmed in this phase)
+- DNS status: DNS_CONFIG_REQUIRED (no verified SPF/DKIM/DMARC provider proof captured in this phase)
+- Stripe smoke: PASS (credits page + checkout initiation reached Stripe checkout)
+- secrets exposed in UI/proofs during smoke: NO
+- public launch status: NOT_READY
