@@ -606,6 +606,7 @@ export default function PropertyDocuments() {
           {selectedFile && (getFileExtension(selectedFile.name) === 'csv' || String(selectedFile.type || '').toLowerCase().includes('csv')) ? (
             <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm">
               <div className="font-semibold text-slate-900">CSV Preview</div>
+              <div className="mt-1 text-xs text-slate-600">CSV preview only. Coordinates from CSV are not verified. Upload remains supporting evidence only.</div>
               {csvPreview.parseError ? (
                 <div className="mt-2 text-rose-700">CSV preview failed — manual review required</div>
               ) : (

@@ -66,6 +66,7 @@ type ReportReadinessStatus =
 
 type DocumentMetadata = {
   _id: string;
+  originalName?: string;
   documentType?: string;
   evidenceType?: string;
   sourceType?: string;
@@ -211,6 +212,88 @@ function toFiniteNumber(input: unknown): number | null {
     return Number.isFinite(parsed) ? parsed : null;
   }
   return null;
+}
+
+function isPlausibleLatitude(value: number) {
+  return value >= -90 && value <= 90;
+}
+
+function isPlausibleLongitude(value: number) {
+  return value >= -180 && value <= 180;
+}
+
+function normalizeStatusValue(status?: string) {
+  const normalized = String(status || '').trim();
+  return normalized || 'Not available from current endpoint';
+}
+
+function normalizeCoordinatePreview(docs: DocumentMetadata[]) {
+  const acceptedPairs: Array<[string, string]> = [
+    ['latitude', 'longitude'],
+    ['lat', 'lng'],
+    ['lat', 'lon'],
+  ];
+
+  let firstValid: {
+    latitude: number;
+    longitude: number;
+    sourceDocumentName: string;
+    metadataStatus: string;
+    reviewStatus: string;
+    supportingEvidenceOnly: boolean;
+  } | null = null;
+  let validCount = 0;
+  let hasCoordinateMetadata = false;
+
+  for (const doc of docs) {
+    const parsed = (doc.parsedPreview || {}) as Record<string, unknown>;
+    const fields = Array.isArray(doc.csvDetectedFields)
+      ? doc.csvDetectedFields.map((field) => String(field).toLowerCase())
+      : [];
+    const fieldHintFound =
+      (fields.includes('latitude') && fields.includes('longitude')) ||
+      (fields.includes('lat') && fields.includes('lng')) ||
+      (fields.includes('lat') && fields.includes('lon'));
+
+    for (const [latKey, lngKey] of acceptedPairs) {
+      const rawLat = parsed[latKey];
+      const rawLng = parsed[lngKey];
+      if (rawLat != null || rawLng != null || fieldHintFound) {
+        hasCoordinateMetadata = true;
+      }
+
+      if (rawLat == null || rawLng == null) continue;
+      const latitude = toFiniteNumber(rawLat);
+      const longitude = toFiniteNumber(rawLng);
+      if (latitude === null || longitude === null) continue;
+      if (!isPlausibleLatitude(latitude) || !isPlausibleLongitude(longitude)) continue;
+
+      validCount += 1;
+      if (!firstValid) {
+        firstValid = {
+          latitude,
+          longitude,
+          sourceDocumentName: String(doc.originalName || doc.documentType || doc._id || 'Unknown document'),
+          metadataStatus: normalizeStatusValue(doc.metadataStatus),
+          reviewStatus: normalizeStatusValue(doc.reviewStatus),
+          supportingEvidenceOnly: Boolean(doc.supportingEvidenceOnly),
+        };
+      }
+      break;
+    }
+  }
+
+  return {
+    hasCoordinateMetadata,
+    hasValidCoordinates: Boolean(firstValid),
+    latitude: firstValid?.latitude ?? null,
+    longitude: firstValid?.longitude ?? null,
+    sourceDocumentName: firstValid?.sourceDocumentName ?? 'Not available from current endpoint',
+    metadataStatus: firstValid?.metadataStatus ?? 'Not available from current endpoint',
+    reviewStatus: firstValid?.reviewStatus ?? 'Not available from current endpoint',
+    supportingEvidenceOnly: firstValid?.supportingEvidenceOnly ?? true,
+    validCount,
+  };
 }
 
 export default function PropertyResult() {
@@ -661,6 +744,8 @@ export default function PropertyResult() {
     readinessByAction,
   ]);
 
+  const csvCoordinatePreview = useMemo(() => normalizeCoordinatePreview(documents || []), [documents]);
+
   const mapLayerReadiness = useMemo(() => {
     const docs = documents || [];
     const fallbackDocumentCount = getPropertyDocumentCount(propertyData);
@@ -679,27 +764,9 @@ export default function PropertyResult() {
     const userLng = toFiniteNumber(propertyData?.longitude);
     const hasUserCoordinates = userLat !== null && userLng !== null;
 
-    let csvLat: number | null = null;
-    let csvLng: number | null = null;
-    let csvCoordinateDetected = false;
-
-    for (const doc of docs) {
-      const parsed = doc.parsedPreview || {};
-      const parsedLat = toFiniteNumber(parsed.latitude || parsed.lat);
-      const parsedLng = toFiniteNumber(parsed.longitude || parsed.lng || parsed.lon);
-      const fields = Array.isArray(doc.csvDetectedFields)
-        ? doc.csvDetectedFields.map((field) => String(field).toLowerCase())
-        : [];
-      if (parsedLat !== null && parsedLng !== null) {
-        csvCoordinateDetected = true;
-        csvLat = parsedLat;
-        csvLng = parsedLng;
-        break;
-      }
-      if (fields.includes('latitude') && fields.includes('longitude')) {
-        csvCoordinateDetected = true;
-      }
-    }
+    const csvLat = csvCoordinatePreview.latitude;
+    const csvLng = csvCoordinatePreview.longitude;
+    const csvCoordinateDetected = csvCoordinatePreview.hasCoordinateMetadata;
 
     const effectiveLat = hasUserCoordinates ? userLat : csvLat;
     const effectiveLng = hasUserCoordinates ? userLng : csvLng;
@@ -739,7 +806,7 @@ export default function PropertyResult() {
       distinctEvidenceTypes,
       distinctSourceTypes,
     };
-  }, [documents, documentsFetchFailed, documentsLoading, propertyData]);
+  }, [csvCoordinatePreview, documents, documentsFetchFailed, documentsLoading, propertyData]);
 
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
@@ -918,6 +985,49 @@ export default function PropertyResult() {
             <li>Municipality/e-plan layer: Manual evidence only</li>
             <li>Uploaded evidence: Supporting information only</li>
           </ul>
+        </div>
+
+        <div className="mt-2 rounded border border-slate-200 bg-white p-2">
+          <div className="text-xs font-medium text-slate-700">CSV Coordinate Preview</div>
+          {documentsFetchFailed ? (
+            <div className="mt-1 text-xs text-slate-600">No CSV coordinate metadata available.</div>
+          ) : csvCoordinatePreview.hasValidCoordinates ? (
+            <div className="mt-1 space-y-1 text-xs text-slate-700">
+              <div>Latitude: {csvCoordinatePreview.latitude}</div>
+              <div>Longitude: {csvCoordinatePreview.longitude}</div>
+              <div>Source: uploaded CSV preview</div>
+              <div>Source document: {csvCoordinatePreview.sourceDocumentName}</div>
+              <div>Metadata status: {csvCoordinatePreview.metadataStatus}</div>
+              <div>Review status: {csvCoordinatePreview.reviewStatus}</div>
+              <div>Preview only / needs confirmation</div>
+              {csvCoordinatePreview.supportingEvidenceOnly ? (
+                <div>Upload remains supporting evidence only</div>
+              ) : null}
+              {csvCoordinatePreview.validCount > 1 ? (
+                <div>{csvCoordinatePreview.validCount} CSV coordinate preview(s) detected. Showing first valid preview.</div>
+              ) : null}
+              <div className="mt-2 rounded border border-slate-200 bg-slate-50 p-3">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded border border-dashed border-slate-300 bg-white">
+                  <div className="relative h-10 w-10">
+                    <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-slate-300" />
+                    <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-slate-300" />
+                    <div className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-500 bg-slate-700" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-1 space-y-1 text-xs text-slate-700">
+              <div>Coordinates missing</div>
+              <div>Upload a CSV with latitude/longitude fields for preview.</div>
+              {!csvCoordinatePreview.hasCoordinateMetadata ? (
+                <div>No CSV coordinate metadata available.</div>
+              ) : null}
+            </div>
+          )}
+          <div className="mt-2 text-xs text-slate-600">
+            CSV coordinate preview is informational only. It is not official cadastral, tapu, zoning, municipal or legal proof.
+          </div>
         </div>
 
         <div className="mt-2 text-xs text-slate-600">{MAP_LAYER_DISCLAIMER}</div>
