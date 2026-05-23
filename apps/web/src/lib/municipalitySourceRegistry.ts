@@ -28,6 +28,47 @@ export type MunicipalitySourceLookup = {
 };
 
 const municipalitySourceRegistry: MunicipalitySourceEntry[] = [
+  {
+    province: 'KAYSERI',
+    district: 'KAYSERI',
+    sourceLabel: 'Kayseri Buyuksehir Belediyesi Kent Bilgi Sistemi / Kent Rehberi',
+    sourceType: 'OFFICIAL_MUNICIPALITY_ZONING_INQUIRY',
+    url: 'https://cbs.kayseri.bel.tr/Kayseri-Kent-Rehberi',
+    status: 'VERIFIED_OFFICIAL_SOURCE',
+    lastCheckedAt: '2026-05-23',
+    notes: 'Public CBS and kent rehberi page manually verified. Guidance-only source to check; not automated zoning verification or property-level proof.',
+  },
+  {
+    province: 'KAYSERI',
+    district: 'KOCASINAN',
+    sourceLabel: 'Kocasinan Belediyesi E-Imar',
+    sourceType: 'MUNICIPALITY_E_IMAR',
+    url: 'https://cbs.kocasinan.bel.tr/user/',
+    status: 'VERIFIED_OFFICIAL_SOURCE',
+    lastCheckedAt: '2026-05-23',
+    notes: 'Public e-imar query page manually verified. Page states results are informational only and have no legal validity.',
+  },
+  {
+    province: 'KAYSERI',
+    district: 'MELIKGAZI',
+    sourceLabel: 'Melikgazi Belediyesi CBS',
+    sourceType: 'OFFICIAL_MUNICIPALITY_ZONING_INQUIRY',
+    url: 'https://cbs.melikgazi.bel.tr/portal/apps/webappviewer/index.html?id=9999a7e224d24b0d96b93911530cb4d3',
+    status: 'VERIFIED_OFFICIAL_SOURCE',
+    lastCheckedAt: '2026-05-23',
+    notes: 'Public CBS map manually verified. Separate D-Imar page exists but is blocked by login and CAPTCHA, so no automated or authenticated source use is allowed.',
+  },
+  {
+    province: 'KAYSERI',
+    district: 'TALAS',
+    sourceLabel: 'Talas Belediyesi Uygulama Imar Planlari',
+    sourceType: 'MUNICIPALITY_E_PLAN',
+    url: 'https://www.talas.bel.tr/uygulama-imar-planlari',
+    status: 'VERIFIED_OFFICIAL_SOURCE',
+    lastCheckedAt: '2026-05-23',
+    notes: 'Public imar plan listing page manually verified on the official municipality website. Guidance-only source to check; not automated zoning verification.',
+  },
+
   // Placeholder entry only. Keep as NOT_CONFIGURED until manually verified.
   {
     province: 'ISTANBUL',
