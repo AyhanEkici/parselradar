@@ -133,6 +133,7 @@ function AppRoutes() {
       <Route path="/properties/:id/documents" element={<RequireAuth><PropertyDocuments /></RequireAuth>} />
       <Route path="/properties/:id/consent" element={<RequireAuth><PropertyConsent /></RequireAuth>} />
       <Route path="/properties/:id/result" element={<RequireAuth><PropertyResult /></RequireAuth>} />
+      <Route path="/properties/:id/report" element={<RequireAuth><PropertyResult /></RequireAuth>} />
       <Route path="/investor" element={<RequireAuth>{withBoundary('/investor', <InvestorDashboard />)}</RequireAuth>} />
       <Route path="/investor/saved-analyses" element={<RequireAuth><SavedAnalyses /></RequireAuth>} />
       <Route path="/investor/watchlist" element={<RequireAuth><Watchlist /></RequireAuth>} />
