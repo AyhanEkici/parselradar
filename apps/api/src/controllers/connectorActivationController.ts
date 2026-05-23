@@ -51,9 +51,16 @@ export const getAdminConnectorCatalog = async (_req: AuthRequest, res: Response)
   const entries = CONNECTOR_SOURCE_REGISTRY.map((source) => ({
     connectorKey: source.connectorKey,
     sourceName: source.sourceName,
+    provider: source.provider,
+    municipality: source.municipality || null,
+    province: source.province || null,
+    district: source.district || null,
+    sourceType: source.sourceType,
     services: source.services,
-    mode: source.syncSafety === 'SAFE_PUBLIC_METADATA' ? 'metadata-only/open-data/getcapabilities' : 'blocked',
+    mode: source.legalMode,
     sourceStatus: source.status,
+    accessStatus: source.accessStatus,
+    activationState: source.activationState,
     legalClassification: source.legalClassification,
     blockedReason: source.blockedReason,
   }));
@@ -71,9 +78,9 @@ export const getAdminConnectorCenter = async (_req: AuthRequest, res: Response) 
 
 export const postAdminConnectorSyncNow = async (req: AuthRequest, res: Response) => {
   const connector = findConnectorByKey(req.params.connectorKey);
-  if (!connector) return res.status(404).json({ error: 'Connector not found' });
-
   const sourceRegistry = findConnectorSourceRegistry(req.params.connectorKey);
+  if (!connector && !sourceRegistry) return res.status(404).json({ error: 'Connector not found' });
+
   const run = await runConnectorSyncNow(req.params.connectorKey, req.user?._id?.toString(), 'MANUAL');
 
   await logAuditEvent({

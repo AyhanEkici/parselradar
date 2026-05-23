@@ -67,6 +67,13 @@ A source can be marked verified only when all checks are complete:
 - If district-level source is not configured, UI falls back to city-level (province) source when available.
 - Blocked/access-gated sources (login/CAPTCHA/e-Devlet) are shown as blocked references only and are not used for automated verification.
 
+## Connector Center Surfacing Note (P2.CONNECTOR-2B.2)
+- Verified Kayseri municipality sources are also surfaced in Admin Connector Center.
+- They are exposed as manual/public-source guidance connectors for governance visibility only.
+- Manual guidance and blocked sources are not automation targets:
+  - manual guidance sync requests are policy-skipped,
+  - blocked/login/CAPTCHA/e-Devlet sources remain blocked references.
+
 ## Current Status
 Public launch readiness remains `NOT_READY`.
 

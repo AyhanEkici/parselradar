@@ -104,6 +104,20 @@ Kayseri municipality source usage remains guidance-only:
 - supporting evidence upload after manual check
 - no automated municipality zoning verification
 
+### Admin Connector Center Surfacing (P2.CONNECTOR-2B.2)
+Verified Kayseri municipality sources are surfaced in Admin Connector Center as connector-center governance entries:
+- Kayseri Buyuksehir Kent Rehberi
+- Kocasinan Belediyesi e-Imar
+- Melikgazi CBS Map
+- Talas Uygulama Imar Planlari
+- Melikgazi D-Imar (blocked reference)
+
+Connector-center behavior for these entries:
+- Manual/public-source guidance connectors are visible with legal mode and access status metadata.
+- Manual guidance connectors do not execute automated source sync; sync-now is disabled in UI and policy-skipped in API.
+- Blocked source entries remain reference-only with explicit reason: login/CAPTCHA/e-Devlet required.
+- No official property-level verification is produced from these entries.
+
 ## Launch Status
 Public launch readiness remains NOT_READY.
 Controlled beta continues with legal-safe, metadata-first connector operation.

@@ -32,6 +32,46 @@ export async function runConnectorSyncNow(connectorKey: string, userId?: string,
     });
   }
 
+  if (registry.manualActionRequired && registry.legalMode === 'MANUAL_GUIDANCE') {
+    const finishedAt = new Date();
+    return ConnectorSyncRun.create({
+      connectorKey,
+      sourceName: registry.sourceName,
+      sourceUrl: registry.officialUrl,
+      triggerMode,
+      status: 'SKIPPED',
+      startedAt,
+      finishedAt,
+      runByUserId: userId,
+      error: 'Manual public source guidance only. Sync skipped by policy.',
+      responseSummary: {
+        reason: 'SKIPPED_MANUAL_GUIDANCE',
+        legalMode: registry.legalMode,
+        accessStatus: registry.accessStatus,
+      },
+    });
+  }
+
+  if (registry.legalMode === 'BLOCKED') {
+    const finishedAt = new Date();
+    return ConnectorSyncRun.create({
+      connectorKey,
+      sourceName: registry.sourceName,
+      sourceUrl: registry.officialUrl,
+      triggerMode,
+      status: 'SKIPPED',
+      startedAt,
+      finishedAt,
+      runByUserId: userId,
+      error: registry.blockedReason || 'Blocked source requires login/CAPTCHA/e-Devlet access.',
+      responseSummary: {
+        reason: 'SKIPPED_PERMISSION_REQUIRED',
+        legalMode: registry.legalMode,
+        accessStatus: registry.accessStatus,
+      },
+    });
+  }
+
   if (registry.syncSafety !== 'SAFE_PUBLIC_METADATA') {
     const finishedAt = new Date();
     return ConnectorSyncRun.create({
@@ -128,7 +168,15 @@ export async function buildAdminConnectorCenter() {
       connectorKey: entry.connectorKey,
       sourceName: entry.sourceName,
       officialUrl: entry.officialUrl,
+      provider: entry.provider,
+      municipality: entry.municipality || null,
+      province: entry.province || null,
+      district: entry.district || null,
+      sourceType: entry.sourceType,
       sourceStatus: entry.status,
+      legalMode: entry.legalMode,
+      accessStatus: entry.accessStatus,
+      activationState: entry.activationState,
       legalClassification: entry.legalClassification,
       services: entry.services,
       syncSafety: entry.syncSafety,
