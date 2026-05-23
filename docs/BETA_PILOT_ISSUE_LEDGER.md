@@ -28,3 +28,13 @@ Use this ledger to record findings from the first known tester pilot run.
 - Link the exact URL and include minimal reproduction notes.
 - Update status and owner during triage.
 - Keep P0_BLOCKER and P1_FLOW_BLOCKER items visible until VERIFIED or WONT_FIX.
+
+## P2.BETA-PILOT-2 - Real Controlled Beta Tester Round
+
+Use the table below for real-tester onboarding round tracking. Do not invent tester feedback; use placeholders until real tester execution starts.
+
+| Tester ID / alias | Date | Role | Device | Flow completed | Issue summary | Severity P0/P1/P2/P3 | Status OPEN/TRIAGED/FIXED/DEFERRED | Owner | Fix phase | Expand testers allowed: yes/no | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| TBD-TESTER-01 | TBD | Buyer/Investor | TBD | TBD | Placeholder only - waiting for real tester run | TBD | OPEN | TBD | P2.BETA-PILOT-2 | no | Replace with real observation after session |
+| TBD-TESTER-02 | TBD | Buyer/Investor | TBD | TBD | Placeholder only - waiting for real tester run | TBD | OPEN | TBD | P2.BETA-PILOT-2 | no | Replace with real observation after session |
+| TBD-TESTER-03 | TBD | Professional/Agent (if available) | TBD | TBD | Placeholder only - waiting for real tester run | TBD | OPEN | TBD | P2.BETA-PILOT-2 | no | Optional third tester slot |
