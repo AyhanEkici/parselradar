@@ -29,6 +29,12 @@
 - secret rotation gate: ROTATION_REQUIRED (no explicit rotation confirmation + no post-rotation smoke verification in this phase)
 - public launch gate: NOT_READY
 
+### Next operator action
+- Next action is manual deployed environment setup and secret rotation execution via runbook:
+  - `docs/DEPLOYED_ENV_AND_SECRET_ROTATION_RUNBOOK.md`
+- Important: local shell presence audit does not represent deployed Vercel/production env state.
+- Production launch remains `NOT_READY` until deployed env, SMTP/DNS verification, and post-rotation smoke checks pass.
+
 ### Current classification
 - SMTP status: SMTP_CONFIG_REQUIRED
 - Email flow status: EMAIL_FLOW_PARTIAL
@@ -103,3 +109,6 @@ Public launch remains blocked until all are true:
 - Never print secret values in logs/proof bundles/docs.
 - Only presence/state checks (`PRESENT`/`MISSING`, configured/not-configured) are allowed in repository evidence.
 - Secret changes must be applied only in approved secret stores and tracked in operational runbooks.
+
+## Later product TODO
+Keep scheduled: `P2.UI-BUNDLE-1 Premium black/premium UI redesign` after functional completion.

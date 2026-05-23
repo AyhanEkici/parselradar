@@ -22,6 +22,7 @@
     "verify:runtime-boot": "ts-node apps/api/scripts/verifyRuntimeBoot.ts",
     "verify:railway-runtime": "ts-node apps/api/scripts/verifyRailwayRuntimeHealth.ts",
     "verify:deployment-truth": "ts-node apps/api/scripts/verifyDeploymentTruth.ts",
+    "launch:env": "ts-node apps/api/scripts/verifyLaunchEnvPresence.ts",
     "check:auth-routes": "ts-node apps/api/scripts/check-auth-routes.ts",
     "auth:diagnose": "ts-node apps/api/scripts/diagnoseAuthUsers.ts",
     "auth:verify-passwordhash": "ts-node apps/api/scripts/verifyPasswordHashField.ts",
