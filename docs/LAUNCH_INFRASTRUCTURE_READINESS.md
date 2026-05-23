@@ -6,6 +6,29 @@
 - DNS: CONFIG_REQUIRED
 - Secret rotation: REQUIRED
 
+### Current env presence audit (non-secret, shell-level)
+- env presence check completed: yes
+- present keys: none
+- missing keys (names only):
+  - MONGODB_URI
+  - JWT_SECRET
+  - CLIENT_URL
+  - API_URL
+  - SMTP_HOST
+  - SMTP_PORT
+  - SMTP_USER
+  - SMTP_PASSWORD
+  - SMTP_FROM
+  - SMTP_SECURE
+  - STRIPE_SECRET_KEY
+  - STRIPE_WEBHOOK_SECRET
+
+### Gate classification after current audit
+- SMTP gate: SMTP_CONFIG_REQUIRED
+- DNS gate: DNS_CONFIG_REQUIRED (SPF/DKIM/DMARC proof not supplied in this phase)
+- secret rotation gate: ROTATION_REQUIRED (no explicit rotation confirmation + no post-rotation smoke verification in this phase)
+- public launch gate: NOT_READY
+
 ### Current classification
 - SMTP status: SMTP_CONFIG_REQUIRED
 - Email flow status: EMAIL_FLOW_PARTIAL
