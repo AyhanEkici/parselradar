@@ -124,3 +124,15 @@ Keep scheduled: `P2.UI-BUNDLE-1 Premium black/premium UI redesign` after functio
 - Stripe smoke: PASS (credits page + checkout initiation reached Stripe checkout)
 - secrets exposed in UI/proofs during smoke: NO
 - public launch status: NOT_READY
+
+## SMTP + DNS verification closeout (P2.LAUNCH-INFRA-5)
+- SMTP env presence check (shell-level, non-secret): completed
+- SMTP env keys status: SMTP_HOST MISSING, SMTP_PORT MISSING, SMTP_USER MISSING, SMTP_PASSWORD MISSING, SMTP_FROM MISSING, SMTP_SECURE MISSING
+- SMTP delivery smoke: PENDING (forgot-password non-leaking response PASS; mailbox/provider delivery confirmation not captured in this phase)
+- SPF status: SPF_CONFIG_REQUIRED
+- DKIM status: DKIM_CONFIG_REQUIRED
+- DMARC status: DMARC_CONFIG_REQUIRED
+- overall DNS status: DNS_CONFIG_REQUIRED
+- secret rotation status: ROTATION_REQUIRED (no explicit deployed rotation evidence captured in this phase)
+- deployed smoke continuity: PASS (admin/property/report/admin-route smoke remains valid from prior verified run)
+- public launch status: NOT_READY
