@@ -3,7 +3,7 @@
 ## Status Summary
 - user-flow status: CONTROLLED_BETA_READY
 - admin access status: VERIFIED
-- controlled beta pilot status: READY_FOR_CONTROLLED_BETA
+- controlled beta pilot status: CONTROLLED_BETA_WITH_CAUTION
 - public launch status: NOT_READY
 - email provider readiness: CONFIG_REQUIRED
 - SPF/DKIM/DMARC status: CONFIG_REQUIRED
@@ -13,6 +13,7 @@
 - real tester onboarding phase: P2.BETA-PILOT-2_NEXT
 - premium UI verification status: UI_VERIFIED
 - mobile status: PARTIAL_MONITOR_DURING_PILOT
+- synthetic beta QA status: AGENT_SYNTHETIC_QA_COMPLETED
 
 ## Evidence Sources
 - `npm run verify:email-provider-readiness` -> `proof/p2-4b-email-provider-readiness.json` (`overallStatus: CONFIG_REQUIRED`)
@@ -27,11 +28,12 @@
 - No SMTP credentials or DNS secrets are stored in this repository.
 
 ## Current Controlled Beta Operations Note
-- Controlled beta remains READY_FOR_CONTROLLED_BETA.
+- Controlled beta remains CONTROLLED_BETA_WITH_CAUTION after synthetic QA.
 - Public launch remains NOT_READY.
 - SMTP/DNS/secret rotation remain deferred launch blockers.
 - Mobile experience is PARTIAL and should be observed during the real tester pilot.
 - Premium UI is verified for controlled beta usage.
+- Synthetic QA found no P0/P1 blockers and identified non-blocking P3 polish issues tracked in the pilot ledger.
 
 ## Required Manual/Operator Actions
 1. Select and approve production SMTP provider account and owner.
