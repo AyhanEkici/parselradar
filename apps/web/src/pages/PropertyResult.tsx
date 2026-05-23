@@ -201,6 +201,17 @@ function reportStatusLabel(status: ReportReadinessStatus) {
   return 'Manual review required';
 }
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
+const MAP_LAYER_DISCLAIMER =
+  'Map, layer and parcel visuals are informational only. No official cadastral, tapu, zoning or municipal proof is confirmed unless explicitly reviewed from an official source.';
+
+function toFiniteNumber(input: unknown): number | null {
+  if (typeof input === 'number' && Number.isFinite(input)) return input;
+  if (typeof input === 'string') {
+    const parsed = Number(input.replace(',', '.').trim());
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
 
 export default function PropertyResult() {
   const { id } = useParams();
@@ -650,6 +661,86 @@ export default function PropertyResult() {
     readinessByAction,
   ]);
 
+  const mapLayerReadiness = useMemo(() => {
+    const docs = documents || [];
+    const fallbackDocumentCount = getPropertyDocumentCount(propertyData);
+    const evidenceCount = docs.length > 0 ? docs.length : fallbackDocumentCount;
+    const locationIdentity = {
+      province: String(propertyData?.il || '').trim(),
+      district: String(propertyData?.ilce || '').trim(),
+      neighborhood: String(propertyData?.mahalleOrKoy || propertyData?.neighborhood || '').trim(),
+    };
+    const parcelIdentity = {
+      ada: String(propertyData?.ada || '').trim(),
+      parsel: String(propertyData?.parsel || '').trim(),
+    };
+
+    const userLat = toFiniteNumber(propertyData?.latitude);
+    const userLng = toFiniteNumber(propertyData?.longitude);
+    const hasUserCoordinates = userLat !== null && userLng !== null;
+
+    let csvLat: number | null = null;
+    let csvLng: number | null = null;
+    let csvCoordinateDetected = false;
+
+    for (const doc of docs) {
+      const parsed = doc.parsedPreview || {};
+      const parsedLat = toFiniteNumber(parsed.latitude || parsed.lat);
+      const parsedLng = toFiniteNumber(parsed.longitude || parsed.lng || parsed.lon);
+      const fields = Array.isArray(doc.csvDetectedFields)
+        ? doc.csvDetectedFields.map((field) => String(field).toLowerCase())
+        : [];
+      if (parsedLat !== null && parsedLng !== null) {
+        csvCoordinateDetected = true;
+        csvLat = parsedLat;
+        csvLng = parsedLng;
+        break;
+      }
+      if (fields.includes('latitude') && fields.includes('longitude')) {
+        csvCoordinateDetected = true;
+      }
+    }
+
+    const effectiveLat = hasUserCoordinates ? userLat : csvLat;
+    const effectiveLng = hasUserCoordinates ? userLng : csvLng;
+    const hasCoordinates = effectiveLat !== null && effectiveLng !== null;
+
+    const coordinateStatus = hasUserCoordinates
+      ? 'Available from user input'
+      : hasCoordinates
+      ? 'Available from uploaded CSV preview'
+      : 'Missing';
+
+    const evidenceStatus = documentsLoading
+      ? 'Checking uploaded evidence...'
+      : evidenceCount > 0
+      ? 'Available from uploaded evidence metadata'
+      : documentsFetchFailed
+      ? 'Not available from current endpoint'
+      : 'Missing';
+
+    const distinctEvidenceTypes = Array.from(
+      new Set(docs.map((doc) => String(doc.evidenceType || doc.documentType || '').trim()).filter(Boolean))
+    ).slice(0, 4);
+    const distinctSourceTypes = Array.from(
+      new Set(docs.map((doc) => String(doc.sourceType || '').trim()).filter(Boolean))
+    ).slice(0, 4);
+
+    return {
+      locationIdentity,
+      parcelIdentity,
+      hasCoordinates,
+      effectiveLat,
+      effectiveLng,
+      csvCoordinateDetected,
+      coordinateStatus,
+      evidenceCount,
+      evidenceStatus,
+      distinctEvidenceTypes,
+      distinctSourceTypes,
+    };
+  }, [documents, documentsFetchFailed, documentsLoading, propertyData]);
+
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
     const row = readinessByAction[action];
@@ -763,6 +854,73 @@ export default function PropertyResult() {
             Back to property
           </button>
         </div>
+      </div>
+      <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Map &amp; Layer Readiness</h3>
+        <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+          <div className="rounded border border-slate-200 bg-white p-2">
+            <div className="text-xs font-medium text-slate-700">Location identity</div>
+            <div className="mt-1 text-xs text-slate-600">Province: {mapLayerReadiness.locationIdentity.province || 'Missing'}</div>
+            <div className="text-xs text-slate-600">District: {mapLayerReadiness.locationIdentity.district || 'Missing'}</div>
+            <div className="text-xs text-slate-600">Neighborhood: {mapLayerReadiness.locationIdentity.neighborhood || 'Missing'}</div>
+          </div>
+          <div className="rounded border border-slate-200 bg-white p-2">
+            <div className="text-xs font-medium text-slate-700">Ada/parsel identity</div>
+            <div className="mt-1 text-xs text-slate-600">Ada: {mapLayerReadiness.parcelIdentity.ada || 'Missing'}</div>
+            <div className="text-xs text-slate-600">Parsel: {mapLayerReadiness.parcelIdentity.parsel || 'Missing'}</div>
+            <div className="mt-1 text-xs text-amber-700">Needs official/manual confirmation</div>
+          </div>
+          <div className="rounded border border-slate-200 bg-white p-2">
+            <div className="text-xs font-medium text-slate-700">Coordinate availability</div>
+            <div className="mt-1 text-xs text-slate-600">Status: {mapLayerReadiness.coordinateStatus}</div>
+            {mapLayerReadiness.hasCoordinates ? (
+              <>
+                <div className="text-xs text-slate-600">Latitude: {mapLayerReadiness.effectiveLat}</div>
+                <div className="text-xs text-slate-600">Longitude: {mapLayerReadiness.effectiveLng}</div>
+              </>
+            ) : (
+              <div className="text-xs text-amber-700">Coordinates missing</div>
+            )}
+            {mapLayerReadiness.csvCoordinateDetected ? (
+              <div className="mt-1 text-xs text-slate-600">CSV coordinate preview detected</div>
+            ) : null}
+          </div>
+          <div className="rounded border border-slate-200 bg-white p-2">
+            <div className="text-xs font-medium text-slate-700">Uploaded evidence availability</div>
+            <div className="mt-1 text-xs text-slate-600">Count: {mapLayerReadiness.evidenceCount}</div>
+            <div className="text-xs text-slate-600">Status: {mapLayerReadiness.evidenceStatus}</div>
+            <div className="mt-1 text-xs text-slate-600">
+              Evidence types: {mapLayerReadiness.distinctEvidenceTypes.length > 0 ? mapLayerReadiness.distinctEvidenceTypes.join(', ') : 'Not available from current endpoint'}
+            </div>
+            <div className="text-xs text-slate-600">
+              Source types: {mapLayerReadiness.distinctSourceTypes.length > 0 ? mapLayerReadiness.distinctSourceTypes.join(', ') : 'Not available from current endpoint'}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-2 rounded border border-slate-200 bg-white p-2">
+          <div className="text-xs font-medium text-slate-700">Map placeholder</div>
+          {mapLayerReadiness.hasCoordinates ? (
+            <div className="mt-1 rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+              Coordinate point available ({mapLayerReadiness.effectiveLat}, {mapLayerReadiness.effectiveLng}). No official cadastral boundary or parcel polygon is connected.
+            </div>
+          ) : (
+            <div className="mt-1 rounded border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">Coordinates missing</div>
+          )}
+        </div>
+
+        <div className="mt-2 rounded border border-slate-200 bg-white p-2">
+          <div className="text-xs font-medium text-slate-700">Layer connection status</div>
+          <ul className="mt-1 space-y-1 text-xs text-slate-600">
+            <li>TKGM layer: Not connected yet</li>
+            <li>TUCBS layer: Not connected yet</li>
+            <li>CSB/imar layer: Not connected yet</li>
+            <li>Municipality/e-plan layer: Manual evidence only</li>
+            <li>Uploaded evidence: Supporting information only</li>
+          </ul>
+        </div>
+
+        <div className="mt-2 text-xs text-slate-600">{MAP_LAYER_DISCLAIMER}</div>
       </div>
       <div className="mb-4 space-y-2">
         {([

@@ -265,6 +265,7 @@ export default function AdminAnalysisReports() {
 
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
             Analysis run registry source: <span className="font-semibold">/admin/analyses</span>. Report-readiness registry: <span className="font-semibold">partial / analysis-run endpoint not wired yet for explicit report-readiness state</span>.
+            <div className="mt-1">Map/layer registry status is informational only. TKGM, TUCBS and CSB/imar layers are not connected in this phase.</div>
           </div>
 
           {error ? <div className="rounded border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div> : null}
