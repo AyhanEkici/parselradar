@@ -206,9 +206,14 @@ export default function AdminAnalysisReports() {
 
           const analysisRunStatusText = buildAnalysisRunStatus(detail, propertyRuns.length);
 
-          const reportReadinessText = detail
-            ? 'Not available from current endpoint'
-            : 'Not available from current endpoint';
+          const reportReadinessText =
+            evidenceCount === null
+              ? 'Not available from current endpoint'
+              : evidenceCount === 0
+              ? 'Needs evidence (0 uploaded)'
+              : propertyRuns.length > 0
+              ? 'Partial readiness (evidence + analysis runs)'
+              : 'Evidence uploaded; analysis-run readiness pending';
 
           return {
             propertyId,

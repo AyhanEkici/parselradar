@@ -79,6 +79,17 @@ type EvidenceActionItem = {
   note?: string;
 };
 
+type EvidenceMatrixStatus = 'PRESENT' | 'MISSING' | 'NEEDS_REVIEW';
+
+type EvidenceMatrixRow = {
+  key: string;
+  label: string;
+  status: EvidenceMatrixStatus;
+  sourceTypeLabel: string;
+  reviewStatusLabel: string;
+  intentIfMissing?: EvidenceIntent;
+};
+
 type EvidenceGuidance = {
   sourceLabel: string;
   sourceActionLabel: string;
@@ -427,6 +438,26 @@ function reportStatusLabel(status: ReportReadinessStatus) {
   if (status === 'NEEDS_REVIEWED_EVIDENCE') return 'Needs reviewed evidence';
   if (status === 'SUPPORTING_EVIDENCE_ONLY') return 'Supporting evidence only';
   return 'Manual review required';
+}
+
+function evidenceMatrixStatusClasses(status: EvidenceMatrixStatus) {
+  if (status === 'PRESENT') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  if (status === 'NEEDS_REVIEW') return 'bg-amber-50 text-amber-700 border-amber-200';
+  return 'bg-rose-50 text-rose-700 border-rose-200';
+}
+
+function evidenceMatrixStatusLabel(status: EvidenceMatrixStatus) {
+  if (status === 'PRESENT') return 'Present';
+  if (status === 'NEEDS_REVIEW') return 'Needs review';
+  return 'Missing';
+}
+
+function toTitleCaseFromCode(value: string) {
+  return value
+    .toLowerCase()
+    .split('_')
+    .map((part) => (part ? `${part[0].toUpperCase()}${part.slice(1)}` : part))
+    .join(' ');
 }
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 const MAP_LAYER_DISCLAIMER =
@@ -1099,6 +1130,186 @@ export default function PropertyResult() {
     };
   }, [csvCoordinatePreview, documents, documentsFetchFailed, documentsLoading, propertyData]);
 
+  const evidenceMatrixRows = useMemo<EvidenceMatrixRow[]>(() => {
+    const docs = documents || [];
+    const hasAnyReviewWarning = (groupDocs: DocumentMetadata[]) =>
+      groupDocs.some((doc) => {
+        const review = String(doc.reviewStatus || '').toUpperCase();
+        const metadata = String(doc.metadataStatus || '').toUpperCase();
+        return review === 'NEEDS_REVIEW' || review === 'PREVIEW_ONLY' || metadata === 'NEEDS_REVIEW' || metadata === 'PREVIEW_ONLY';
+      });
+
+    const summarizeSources = (groupDocs: DocumentMetadata[]) => {
+      const values = Array.from(
+        new Set(
+          groupDocs
+            .map((doc) => String(doc.sourceType || '').trim())
+            .filter(Boolean)
+        )
+      );
+      return values.length > 0 ? values.join(', ') : 'Not available from current endpoint';
+    };
+
+    const summarizeReview = (groupDocs: DocumentMetadata[]) => {
+      const values = Array.from(
+        new Set(
+          groupDocs
+            .map((doc) => String(doc.reviewStatus || doc.metadataStatus || '').trim().toUpperCase())
+            .filter(Boolean)
+        )
+      );
+      return values.length > 0 ? values.map((value) => toTitleCaseFromCode(value)).join(', ') : 'Not available from current endpoint';
+    };
+
+    const resolveStatus = (groupDocs: DocumentMetadata[], fallbackPresent = false): EvidenceMatrixStatus => {
+      if (groupDocs.length === 0 && !fallbackPresent) return 'MISSING';
+      if (hasAnyReviewWarning(groupDocs)) return 'NEEDS_REVIEW';
+      return 'PRESENT';
+    };
+
+    const parcelIdentityDocs = docs.filter((doc) => {
+      const evidenceType = String(doc.evidenceType || '').trim();
+      const sourceType = String(doc.sourceType || '').trim();
+      return evidenceType === 'TKGM_PARCEL_SCREENSHOT' || sourceType === 'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE';
+    });
+
+    const tkgmParcelDocs = docs.filter((doc) => {
+      const evidenceType = String(doc.evidenceType || '').trim();
+      return evidenceType === 'TKGM_PARCEL_SCREENSHOT' || evidenceType === 'TKGM_EXPORT_PDF' || evidenceType === 'TKGM_EXPORT_KML' || evidenceType === 'TKGM_EXPORT_GEOJSON';
+    });
+
+    const tkgmPriceDocs = docs.filter((doc) => {
+      const evidenceType = String(doc.evidenceType || '').trim();
+      const sourceType = String(doc.sourceType || '').trim();
+      return evidenceType === 'TKGM_PRICE_HISTORY_SCREENSHOT' || sourceType === 'TKGM_ANALYSIS_MARKET_SIGNAL';
+    });
+
+    const municipalityDocs = docs.filter((doc) => {
+      const evidenceType = String(doc.evidenceType || '').trim();
+      const sourceType = String(doc.sourceType || '').trim();
+      return (
+        evidenceType === 'MUNICIPALITY_IMAR_DOCUMENT' ||
+        evidenceType === 'E_PLAN_DOCUMENT' ||
+        sourceType === 'MUNICIPALITY_IMAR_EVIDENCE' ||
+        sourceType === 'E_PLAN_EVIDENCE'
+      );
+    });
+
+    const generalSupportingDocs = docs.filter((doc) => {
+      const sourceType = String(doc.sourceType || '').trim();
+      const evidenceType = String(doc.evidenceType || '').trim();
+      return sourceType === 'USER_SUBMITTED' || evidenceType === 'OTHER' || evidenceType === 'PHOTO' || evidenceType === 'LISTING_SCREENSHOT';
+    });
+
+    const fallbackDocumentCount = getPropertyDocumentCount(propertyData);
+    const uploadCount = docs.length > 0 ? docs.length : fallbackDocumentCount;
+
+    return [
+      {
+        key: 'parcel-identity',
+        label: 'Parcel identity evidence',
+        status: resolveStatus(parcelIdentityDocs, Boolean(propertyData?.ada || propertyData?.parsel)),
+        sourceTypeLabel: summarizeSources(parcelIdentityDocs),
+        reviewStatusLabel: summarizeReview(parcelIdentityDocs),
+        intentIfMissing: 'PARCEL_IDENTITY',
+      },
+      {
+        key: 'tkgm-parcel',
+        label: 'TKGM parcel evidence',
+        status: resolveStatus(tkgmParcelDocs),
+        sourceTypeLabel: summarizeSources(tkgmParcelDocs),
+        reviewStatusLabel: summarizeReview(tkgmParcelDocs),
+        intentIfMissing: 'TKGM_PARCEL',
+      },
+      {
+        key: 'tkgm-price',
+        label: 'TKGM price-history / market signal evidence',
+        status: resolveStatus(tkgmPriceDocs),
+        sourceTypeLabel: summarizeSources(tkgmPriceDocs),
+        reviewStatusLabel: summarizeReview(tkgmPriceDocs),
+        intentIfMissing: 'TKGM_PRICE_HISTORY',
+      },
+      {
+        key: 'municipality',
+        label: 'Municipality/e-Imar/e-Plan evidence',
+        status: resolveStatus(municipalityDocs),
+        sourceTypeLabel: summarizeSources(municipalityDocs),
+        reviewStatusLabel: summarizeReview(municipalityDocs),
+        intentIfMissing: 'MUNICIPAL_ZONING',
+      },
+      {
+        key: 'general-supporting',
+        label: 'General supporting evidence',
+        status: resolveStatus(generalSupportingDocs),
+        sourceTypeLabel: summarizeSources(generalSupportingDocs),
+        reviewStatusLabel: summarizeReview(generalSupportingDocs),
+        intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
+      },
+      {
+        key: 'csv-coordinate',
+        label: 'CSV coordinate preview evidence',
+        status: csvCoordinatePreview.hasCoordinateMetadata
+          ? csvCoordinatePreview.hasValidCoordinates
+            ? 'PRESENT'
+            : 'NEEDS_REVIEW'
+          : 'MISSING',
+        sourceTypeLabel: csvCoordinatePreview.hasCoordinateMetadata ? 'CSV preview metadata' : 'Not available from current endpoint',
+        reviewStatusLabel: csvCoordinatePreview.hasCoordinateMetadata
+          ? `${csvCoordinatePreview.metadataStatus} / ${csvCoordinatePreview.reviewStatus}`
+          : 'Not available from current endpoint',
+        intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
+      },
+      {
+        key: 'upload-count',
+        label: 'Uploaded documents count',
+        status: uploadCount > 0 ? 'PRESENT' : 'MISSING',
+        sourceTypeLabel: uploadCount > 0 ? `${uploadCount} document(s)` : '0 document(s)',
+        reviewStatusLabel: uploadCount > 0 ? 'Review status varies by document' : 'No uploaded documents',
+        intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
+      },
+    ];
+  }, [csvCoordinatePreview, documents, propertyData]);
+
+  const readinessSummary = useMemo(() => {
+    const needsOfficialReview =
+      reportReadiness.overallStatus === 'MANUAL_REVIEW_REQUIRED' ||
+      reportReadiness.overallStatus === 'NEEDS_REVIEWED_EVIDENCE' ||
+      reportReadiness.overallStatus === 'SUPPORTING_EVIDENCE_ONLY';
+
+    const summaryLabel =
+      reportReadiness.overallStatus === 'READY_FOR_REPORT'
+        ? 'Ready'
+        : needsOfficialReview
+        ? 'Needs official review'
+        : 'Needs evidence';
+
+    return {
+      summaryLabel,
+      missingCriticalEvidence: reportReadiness.missingEvidence.slice(0, 4),
+      supportingEvidenceAvailable: (documents || []).length > 0 || getPropertyDocumentCount(propertyData) > 0,
+      manualReviewRequired: needsOfficialReview || reportReadiness.reviewWarnings.length > 0,
+    };
+  }, [documents, propertyData, reportReadiness]);
+
+  const marketSignalSummary = useMemo(() => {
+    const docs = documents || [];
+    const tkgmPriceHistoryDocs = docs.filter(
+      (doc) =>
+        String(doc.evidenceType || '').trim() === 'TKGM_PRICE_HISTORY_SCREENSHOT' ||
+        String(doc.sourceType || '').trim() === 'TKGM_ANALYSIS_MARKET_SIGNAL'
+    );
+
+    return {
+      hasTkgmPriceHistory: tkgmPriceHistoryDocs.length > 0,
+      tkgmPriceHistoryNames: tkgmPriceHistoryDocs.map((doc) => doc.originalName || doc.filename || doc._id),
+      hasCsvSignal: csvCoordinatePreview.hasCoordinateMetadata,
+      hasPriceContext:
+        typeof propertyData?.askingPriceTRY === 'number' ||
+        typeof propertyData?.pricePerM2 === 'number' ||
+        typeof propertyData?.areaM2 === 'number',
+    };
+  }, [csvCoordinatePreview.hasCoordinateMetadata, documents, propertyData]);
+
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
     const row = readinessByAction[action];
@@ -1148,6 +1359,112 @@ export default function PropertyResult() {
           ))}
         </div>
       </div>
+
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Evidence Matrix</h3>
+        <div className="mt-2 space-y-2">
+          {evidenceMatrixRows.map((row) => (
+            <div key={row.key} className="rounded border border-slate-200 bg-slate-50 p-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-slate-900">{row.label}</span>
+                <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${evidenceMatrixStatusClasses(row.status)}`}>
+                  {evidenceMatrixStatusLabel(row.status)}
+                </span>
+              </div>
+              <div className="mt-1 text-xs text-slate-600">Source type: {row.sourceTypeLabel}</div>
+              <div className="text-xs text-slate-600">Review status: {row.reviewStatusLabel}</div>
+              {row.status === 'MISSING' && row.intentIfMissing ? (
+                <button
+                  className="mt-2 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100"
+                  type="button"
+                  onClick={() => navigate(getDocumentsIntentUrl(row.intentIfMissing!))}
+                >
+                  {intentActionLabel(row.intentIfMissing)}
+                </button>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Readiness summary</h3>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className={`inline-flex rounded border px-2 py-0.5 text-xs font-medium ${reportStatusClasses(reportReadiness.overallStatus)}`}>
+            {readinessSummary.summaryLabel}
+          </span>
+          <span className="inline-flex rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-700">
+            Supporting evidence available: {readinessSummary.supportingEvidenceAvailable ? 'Yes' : 'No'}
+          </span>
+          <span className="inline-flex rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-700">
+            Manual review required: {readinessSummary.manualReviewRequired ? 'Yes' : 'No'}
+          </span>
+        </div>
+        {readinessSummary.missingCriticalEvidence.length > 0 ? (
+          <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2">
+            <div className="text-xs font-medium text-amber-800">Missing critical evidence</div>
+            <ul className="mt-1 list-disc pl-4 text-xs text-amber-800">
+              {readinessSummary.missingCriticalEvidence.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Market signals</h3>
+        <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-slate-700">
+          <li>TKGM price-history screenshot: {marketSignalSummary.hasTkgmPriceHistory ? 'Present' : 'Missing'}</li>
+          <li>CSV signal preview metadata: {marketSignalSummary.hasCsvSignal ? 'Present' : 'Missing'}</li>
+          <li>Price/comparable context: {marketSignalSummary.hasPriceContext ? 'Present' : 'Missing'}</li>
+        </ul>
+        {marketSignalSummary.tkgmPriceHistoryNames.length > 0 ? (
+          <div className="mt-2 text-xs text-slate-600">
+            TKGM price-history evidence files: {marketSignalSummary.tkgmPriceHistoryNames.join(', ')}
+          </div>
+        ) : null}
+        <div className="mt-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+          Market signals are supporting evidence only and do not represent official valuation proof.
+        </div>
+      </div>
+
+      {reportReadiness.missingEvidenceActions.length > 0 ? (
+        <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+          <h3 className="text-sm font-semibold text-slate-900">Source guidance recap</h3>
+          <div className="mt-2 space-y-2">
+            {reportReadiness.missingEvidenceActions.slice(0, 4).map((item) => {
+              const guidance = buildEvidenceGuidance(item.intent, propertyData, documents);
+              return (
+                <div key={`recap-${item.key}`} className="rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+                  <div className="font-medium text-slate-900">{item.message}</div>
+                  <div className="mt-1">Where to get it: {guidance.sourceLabel}</div>
+                  <div className="mt-1">What to upload: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
+                  {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      className="rounded border border-slate-300 bg-white px-2 py-1 font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-60"
+                      type="button"
+                      onClick={() => openGuidanceSource(item.intent)}
+                      disabled={!guidance.sourceUrl}
+                    >
+                      {guidance.sourceActionLabel}
+                    </button>
+                    <button
+                      className="rounded border border-slate-300 bg-white px-2 py-1 font-medium text-slate-700 hover:bg-slate-100"
+                      type="button"
+                      onClick={() => navigate(getDocumentsIntentUrl(item.intent))}
+                    >
+                      Upload this evidence
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       <div className="mb-4 rounded border border-slate-200 bg-white p-3">
         <h3 className="text-sm font-semibold text-slate-900">Report readiness</h3>
         <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -1564,6 +1881,9 @@ export default function PropertyResult() {
       <div className="mt-3 flex flex-wrap gap-2">
         <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate(`/properties/${id}`)}>Mülk Detayına Dön</button>
         <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
+      </div>
+      <div className="mt-4 rounded border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+        ParselRadar provides informational evidence organization and pre-check readiness. It does not replace official TKGM, municipality, tapu, zoning, legal, valuation or professional verification.
       </div>
       <div className="mt-6 text-xs text-gray-600 border-t pt-4">{DISCLAIMER}</div>
     </div>
