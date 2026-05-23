@@ -10,6 +10,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const roleLabel = String(user?.role || '').toUpperCase() || 'USER';
   const isPublicRoute =
+    location.pathname === '/' ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
     location.pathname === '/forgot-password' ||

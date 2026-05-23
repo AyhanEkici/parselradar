@@ -47,6 +47,7 @@ import PortfolioDetail from './pages/PortfolioDetail';
 import PortfolioAnalytics from './pages/PortfolioAnalytics';
 import Organizations from './pages/Organizations';
 import OrganizationDetail from './pages/OrganizationDetail';
+import PublicHomepage from './pages/PublicHomepage';
 import WorkspaceDashboard from './pages/WorkspaceDashboard';
 import WorkspacePortfolio from './pages/WorkspacePortfolio';
 import WorkspaceWatchlist from './pages/WorkspaceWatchlist';
@@ -69,7 +70,11 @@ function RootRedirect() {
     return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum dogrulaniyor...</div>;
   }
 
-  return <Navigate to={user ? '/dashboard' : '/login'} replace />;
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <PublicHomepage />;
 }
 
 function AppRoutes() {
