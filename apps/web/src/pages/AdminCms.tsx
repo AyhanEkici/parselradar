@@ -132,7 +132,7 @@ export default function AdminCms() {
   });
 
   if (authStatus === 'booting' || authStatus === 'checking' || (hasPersistentSession && !user)) {
-    return <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">Oturum doğrulanıyor...</div>;
+    return <div className="premium-admin premium-surface max-w-md mx-auto mt-20 p-6 rounded shadow">Oturum doğrulanıyor...</div>;
   }
 
   if (!user || authStatus === 'unauthenticated' || authStatus === 'invalid') {
@@ -301,7 +301,7 @@ export default function AdminCms() {
 
   return (
     <AdminLayout title="Admin CMS">
-      <AdminPage className="p-0 sm:p-0">
+      <AdminPage className="premium-admin p-0 sm:p-0">
         <AdminSurface className="space-y-4 p-4 sm:p-5">
           <AdminHeader
             title="Admin CMS"

@@ -38,9 +38,9 @@ const professionals = [
 
 export default function PublicHomepage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
+    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-slate-100">
       <div className="mx-auto max-w-6xl px-4 pb-16 pt-10 sm:px-6 sm:pt-16 lg:px-8">
-        <section className="relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/70 p-8 sm:p-12">
+        <section className="relative overflow-hidden rounded-3xl border border-cyan-900/40 bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950/80 p-8 sm:p-12 shadow-[0_24px_50px_rgba(0,0,0,0.45)]">
           <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 left-8 h-56 w-56 rounded-full bg-emerald-400/20 blur-3xl" />
 

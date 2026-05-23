@@ -1,3 +1,183 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--pr-bg: #05070d;
+	--pr-surface-1: #0b111d;
+	--pr-surface-2: #111a2b;
+	--pr-surface-3: #162238;
+	--pr-border: #22314c;
+	--pr-text: #d9e5ff;
+	--pr-text-muted: #8fa3c8;
+	--pr-accent: #52c7ff;
+	--pr-accent-strong: #1da9f7;
+}
+
+html,
+body,
+#root {
+	background: radial-gradient(circle at 20% -10%, #0d1a31 0%, #05070d 45%, #05070d 100%);
+	color: var(--pr-text);
+}
+
+body {
+	margin: 0;
+}
+
+.premium-shell {
+	background: linear-gradient(180deg, #0b111d 0%, #070b14 100%);
+	border-bottom: 1px solid var(--pr-border);
+	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.premium-shell a {
+	color: #b9c9ea;
+	border-radius: 999px;
+	padding: 0.2rem 0.5rem;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.premium-shell a:hover {
+	color: #ecf4ff;
+	background: rgba(82, 199, 255, 0.12);
+}
+
+.premium-shell .is-active-nav {
+	color: #ecf4ff;
+	background: rgba(82, 199, 255, 0.2);
+	border: 1px solid rgba(82, 199, 255, 0.35);
+}
+
+.premium-surface {
+	background: linear-gradient(165deg, var(--pr-surface-2) 0%, #0b1322 70%);
+	border: 1px solid var(--pr-border);
+	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+}
+
+.premium-muted {
+	color: var(--pr-text-muted);
+}
+
+.premium-accent {
+	color: var(--pr-accent);
+}
+
+.premium-action {
+	background: linear-gradient(135deg, var(--pr-accent) 0%, var(--pr-accent-strong) 100%);
+	color: #03101d;
+	border: 1px solid rgba(82, 199, 255, 0.35);
+}
+
+.premium-outline {
+	border: 1px solid var(--pr-border);
+	background: rgba(16, 25, 41, 0.8);
+	color: var(--pr-text);
+}
+
+.premium-admin,
+.premium-documents,
+.premium-report,
+.premium-dashboard,
+.premium-credits,
+.premium-map {
+	color: var(--pr-text);
+}
+
+.premium-admin .bg-white,
+.premium-documents .bg-white,
+.premium-report .bg-white,
+.premium-dashboard .bg-white,
+.premium-credits .bg-white,
+.premium-map .bg-white {
+	background-color: var(--pr-surface-2);
+	border-color: var(--pr-border);
+}
+
+.premium-admin .bg-slate-50,
+.premium-documents .bg-slate-50,
+.premium-report .bg-slate-50,
+.premium-dashboard .bg-slate-50,
+.premium-credits .bg-slate-50,
+.premium-map .bg-slate-50 {
+	background-color: var(--pr-surface-1);
+	border-color: var(--pr-border);
+}
+
+.premium-admin .text-slate-900,
+.premium-documents .text-slate-900,
+.premium-report .text-slate-900,
+.premium-dashboard .text-slate-900,
+.premium-credits .text-slate-900,
+.premium-map .text-slate-900 {
+	color: #ecf4ff;
+}
+
+.premium-admin .text-slate-800,
+.premium-documents .text-slate-800,
+.premium-report .text-slate-800,
+.premium-dashboard .text-slate-800,
+.premium-credits .text-slate-800,
+.premium-map .text-slate-800,
+.premium-admin .text-slate-700,
+.premium-documents .text-slate-700,
+.premium-report .text-slate-700,
+.premium-dashboard .text-slate-700,
+.premium-credits .text-slate-700,
+.premium-map .text-slate-700 {
+	color: #c9d8f2;
+}
+
+.premium-admin .text-slate-600,
+.premium-documents .text-slate-600,
+.premium-report .text-slate-600,
+.premium-dashboard .text-slate-600,
+.premium-credits .text-slate-600,
+.premium-map .text-slate-600,
+.premium-admin .text-slate-500,
+.premium-documents .text-slate-500,
+.premium-report .text-slate-500,
+.premium-dashboard .text-slate-500,
+.premium-credits .text-slate-500,
+.premium-map .text-slate-500 {
+	color: var(--pr-text-muted);
+}
+
+.premium-admin table,
+.premium-documents table,
+.premium-report table {
+	border-color: var(--pr-border);
+}
+
+.premium-admin table thead,
+.premium-documents table thead,
+.premium-report table thead {
+	background-color: #0f1829;
+}
+
+.premium-admin table tbody tr,
+.premium-documents table tbody tr,
+.premium-report table tbody tr {
+	border-color: #1a2740;
+}
+
+.premium-admin .border-slate-200,
+.premium-documents .border-slate-200,
+.premium-report .border-slate-200,
+.premium-dashboard .border-slate-200,
+.premium-credits .border-slate-200,
+.premium-map .border-slate-200,
+.premium-admin .border-slate-300,
+.premium-documents .border-slate-300,
+.premium-report .border-slate-300,
+.premium-dashboard .border-slate-300,
+.premium-credits .border-slate-300,
+.premium-map .border-slate-300 {
+	border-color: var(--pr-border);
+}
+
+@media (max-width: 768px) {
+	.premium-shell a {
+		padding: 0.3rem 0.55rem;
+	}
+}

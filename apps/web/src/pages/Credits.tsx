@@ -76,7 +76,7 @@ export default function Credits() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
+    <div className="premium-credits premium-surface max-w-md mx-auto mt-20 p-6 rounded shadow">
       <h2 className="text-xl font-bold mb-4">Kredi Yükle</h2>
       <p className="text-sm text-slate-700 mb-3">
         Credit-based access helps you run property pre-checks, organize evidence, and prepare report-ready case context.
@@ -88,14 +88,14 @@ export default function Credits() {
       {loadError ? <div className="text-red-600 text-sm mb-2">{loadError}</div> : null}
       <div className="space-x-2 mt-4">
         {[25, 50].map(amount => (
-          <button key={amount} className="bg-blue-600 text-white px-4 py-2 rounded" disabled={loading} onClick={() => handleCheckout(amount)}>{amount} Kredi</button>
+          <button key={amount} className="premium-action px-4 py-2 rounded" disabled={loading} onClick={() => handleCheckout(amount)}>{amount} Kredi</button>
         ))}
       </div>
       <div className="mt-4">
-        <button className="bg-gray-200 px-4 py-2 rounded" disabled={loading} onClick={handleDevAdd}>Dev Only: 10 Kredi Ekle</button>
+        <button className="premium-outline px-4 py-2 rounded" disabled={loading} onClick={handleDevAdd}>Dev Only: 10 Kredi Ekle</button>
       </div>
       <div className="mt-4">
-        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
+        <button className="premium-outline px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
       </div>
     </div>
   );

@@ -1417,7 +1417,7 @@ export default function PropertyResult() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded shadow print:shadow-none print:mt-0 print:p-4">
+    <div className="premium-report premium-surface max-w-5xl mx-auto mt-10 p-6 rounded shadow print:shadow-none print:mt-0 print:p-4">
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
       <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3 print:border-slate-300">
         <h3 className="text-sm font-semibold text-slate-900">Report Header</h3>

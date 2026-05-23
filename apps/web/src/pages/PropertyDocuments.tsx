@@ -574,7 +574,7 @@ export default function PropertyDocuments() {
   const hasPendingQueueItems = uploadQueue.some((item) => item.status === 'ready' || item.status === 'error');
 
   return (
-    <AdminPage>
+    <AdminPage className="premium-documents">
       <AdminSurface className="p-4 sm:p-5 space-y-5">
         <AdminHeader
           title="Belge Yönetimi"

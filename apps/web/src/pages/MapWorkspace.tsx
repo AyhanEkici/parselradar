@@ -306,13 +306,13 @@ export default function MapWorkspace({ mode }: { mode: Mode }) {
   const modeLabel = mode === 'portfolio' ? 'Geo Workspace Preview - Portfolio' : 'Geo Workspace Preview';
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4">
+    <div className="premium-map min-h-screen p-4">
       <div className="mx-auto max-w-[1500px] space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold text-slate-900">{modeLabel}</h1>
           <div className="flex gap-2 text-xs">
-            <button className="rounded border border-slate-300 bg-white px-3 py-1" onClick={() => navigate('/map')}>map</button>
-            <button className="rounded border border-slate-300 bg-white px-3 py-1" onClick={() => navigate('/map/portfolio')}>portfolio</button>
+            <button className="premium-outline rounded px-3 py-1" onClick={() => navigate('/map')}>map</button>
+            <button className="premium-outline rounded px-3 py-1" onClick={() => navigate('/map/portfolio')}>portfolio</button>
           </div>
         </div>
 
