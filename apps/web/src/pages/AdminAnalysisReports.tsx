@@ -356,7 +356,7 @@ export default function AdminAnalysisReports() {
                             to={`/properties/${row.propertyId}/result`}
                             className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
                           >
-                            Result/Readiness
+                            Open report-ready result
                           </Link>
                         </div>
                       </td>

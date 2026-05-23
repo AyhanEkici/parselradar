@@ -363,6 +363,12 @@ type PropertyReadinessData = {
   askingPriceTRY?: number;
   pricePerM2?: number;
   areaM2?: number;
+  nitelik?: string;
+  zoningStatus?: string;
+  updatedAt?: string;
+  createdAt?: string;
+  dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';
+  professionalContactAllowed?: boolean;
   il?: string;
   ilce?: string;
   mahalleOrKoy?: string;
@@ -478,6 +484,23 @@ function toFiniteNumber(input: unknown): number | null {
     return Number.isFinite(parsed) ? parsed : null;
   }
   return null;
+}
+
+function formatCurrencyTry(value?: number) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return '-';
+  return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
+}
+
+function formatArea(value?: number) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return '-';
+  return `${value.toLocaleString('tr-TR')} m2`;
+}
+
+function formatGeneratedAt(value?: string) {
+  if (!value) return 'Not available from current endpoint';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Not available from current endpoint';
+  return parsed.toLocaleString('tr-TR');
 }
 
 function isPlausibleLatitude(value: number) {
@@ -1318,6 +1341,58 @@ export default function PropertyResult() {
     };
   }, [csvCoordinatePreview.hasCoordinateMetadata, documents, propertyData]);
 
+  const reportHeaderSummary = useMemo(() => {
+    const location = [propertyData?.il, propertyData?.ilce, propertyData?.mahalleOrKoy || propertyData?.neighborhood]
+      .filter(Boolean)
+      .join(' / ');
+    const assetType = String(propertyData?.nitelik || propertyData?.zoningStatus || 'Not available from current endpoint');
+    return {
+      location: location || 'Not available from current endpoint',
+      assetType,
+      askingPrice: formatCurrencyTry(propertyData?.askingPriceTRY),
+      area: formatArea(propertyData?.areaM2),
+      generatedAt: formatGeneratedAt(propertyData?.updatedAt || propertyData?.createdAt),
+      informationalStatus: 'Informational pre-check only',
+    };
+  }, [propertyData]);
+
+  const criticalMissingEvidenceCount = useMemo(() => {
+    return reportReadiness.missingEvidenceActions.filter((item) => item.intent !== 'GENERAL_SUPPORTING_EVIDENCE').length;
+  }, [reportReadiness.missingEvidenceActions]);
+
+  const sourceGuidanceSummaryRows = useMemo(() => {
+    return reportReadiness.missingEvidenceActions.slice(0, 6).map((item) => {
+      const guidance = buildEvidenceGuidance(item.intent, propertyData, documents);
+      const sourceStatus = guidance.sourceUrl ? 'VERIFIED_OFFICIAL_SOURCE' : 'NOT_CONFIGURED';
+      return { item, guidance, sourceStatus };
+    });
+  }, [documents, propertyData, reportReadiness.missingEvidenceActions]);
+
+  const copyReportSummary = async () => {
+    const lines = [
+      `Property/location: ${reportHeaderSummary.location}`,
+      `Asset type: ${reportHeaderSummary.assetType}`,
+      `Asking price: ${reportHeaderSummary.askingPrice}`,
+      `Area: ${reportHeaderSummary.area}`,
+      `Overall readiness: ${reportStatusLabel(reportReadiness.overallStatus)}`,
+      `Critical missing evidence count: ${criticalMissingEvidenceCount}`,
+      `Supporting evidence present: ${readinessSummary.supportingEvidenceAvailable ? 'Yes' : 'No'}`,
+      `Manual/professional review required: ${readinessSummary.manualReviewRequired ? 'Yes' : 'No'}`,
+      'Boundary: Informational pre-check only; official verification remains external.',
+    ];
+    const summaryText = lines.join('\n');
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(summaryText);
+        toast.success('Report summary copied');
+        return;
+      }
+      toast.error('Clipboard not available');
+    } catch {
+      toast.error('Report summary could not be copied');
+    }
+  };
+
   const getActionButtonText = (action: AnalysisActionKey) => {
     if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
     const row = readinessByAction[action];
@@ -1342,8 +1417,40 @@ export default function PropertyResult() {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
+    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded shadow print:shadow-none print:mt-0 print:p-4">
       <h2 className="text-xl font-bold mb-4">Analiz Sonucu</h2>
+      <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3 print:border-slate-300">
+        <h3 className="text-sm font-semibold text-slate-900">Report Header</h3>
+        <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+          <div className="rounded border border-slate-200 bg-white p-2 text-xs text-slate-700">
+            <div><span className="font-medium">Property/location:</span> {reportHeaderSummary.location}</div>
+            <div><span className="font-medium">Asset type:</span> {reportHeaderSummary.assetType}</div>
+            <div><span className="font-medium">Asking price:</span> {reportHeaderSummary.askingPrice}</div>
+            <div><span className="font-medium">Area:</span> {reportHeaderSummary.area}</div>
+          </div>
+          <div className="rounded border border-slate-200 bg-white p-2 text-xs text-slate-700">
+            <div><span className="font-medium">Generated/updated:</span> {reportHeaderSummary.generatedAt}</div>
+            <div><span className="font-medium">Status:</span> {reportHeaderSummary.informationalStatus}</div>
+            <div><span className="font-medium">Boundary:</span> Not official verification</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Executive Readiness Summary</h3>
+        <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
+          <div className="rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+            <div><span className="font-medium">Overall readiness:</span> {reportStatusLabel(reportReadiness.overallStatus)}</div>
+            <div><span className="font-medium">Critical missing evidence count:</span> {criticalMissingEvidenceCount}</div>
+            <div><span className="font-medium">Supporting evidence present:</span> {readinessSummary.supportingEvidenceAvailable ? 'Yes' : 'No'}</div>
+            <div><span className="font-medium">Manual/professional review required:</span> {readinessSummary.manualReviewRequired ? 'Yes' : 'No'}</div>
+          </div>
+          <div className="rounded border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+            Not official verification. ParselRadar is an informational pre-check and evidence organization workspace only.
+          </div>
+        </div>
+      </div>
+
       <div className="mb-4 rounded border border-slate-200 bg-slate-50 p-3">
         <h3 className="text-sm font-semibold text-slate-900">Analysis readiness</h3>
         <div className="mt-2 space-y-2">
@@ -1439,16 +1546,19 @@ export default function PropertyResult() {
 
       {reportReadiness.missingEvidenceActions.length > 0 ? (
         <div className="mb-4 rounded border border-slate-200 bg-white p-3">
-          <h3 className="text-sm font-semibold text-slate-900">Source guidance recap</h3>
+          <h3 className="text-sm font-semibold text-slate-900">Source Guidance Summary</h3>
           <div className="mt-2 space-y-2">
-            {reportReadiness.missingEvidenceActions.slice(0, 4).map((item) => {
-              const guidance = buildEvidenceGuidance(item.intent, propertyData, documents);
+            {sourceGuidanceSummaryRows.map(({ item, guidance, sourceStatus }) => {
               return (
                 <div key={`recap-${item.key}`} className="rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
                   <div className="font-medium text-slate-900">{item.message}</div>
                   <div className="mt-1">Where to get it: {guidance.sourceLabel}</div>
+                  <div className="mt-1">Source URL status: {sourceStatus}</div>
                   <div className="mt-1">What to upload: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
                   {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
+                  {!guidance.sourceUrl ? (
+                    <div className="mt-1">Use the official website of the relevant municipality/district and search for e-Imar, e-Plan or Imar Durumu.</div>
+                  ) : null}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       className="rounded border border-slate-300 bg-white px-2 py-1 font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-60"
@@ -1780,6 +1890,26 @@ export default function PropertyResult() {
           );
         })}
       </div>
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Export Readiness</h3>
+        <div className="mt-2 text-xs text-slate-700">
+          {pdfId
+            ? 'Export/download PDF is available for the current report.'
+            : analysisRunId
+            ? 'PDF export exists behind current report purchase/download flow.'
+            : 'Export/download PDF: not active yet.'}
+        </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            className="rounded border border-slate-300 bg-white px-3 py-1 text-xs text-slate-700 hover:bg-slate-50"
+            type="button"
+            onClick={copyReportSummary}
+          >
+            Copy/share report summary
+          </button>
+        </div>
+      </div>
+
       <div className="mb-4 text-xs text-slate-600 flex flex-wrap gap-3">
         <span>Hızlı İlan Kontrolü: {getActionCaption('quickScore') || 'Hazır'}</span>
         <span>Parsel Insight: {getActionCaption('parselInsight') || 'Hazır'}</span>
