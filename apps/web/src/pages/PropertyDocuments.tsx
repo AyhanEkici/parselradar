@@ -278,6 +278,9 @@ function statusText(status?: string) {
   if (normalized === 'CONFIRMED_BY_ADMIN') return 'Confirmed by admin';
   if (normalized === 'MANUAL_REVIEW_REQUIRED') return 'Manual review required';
   if (normalized === 'REJECTED') return 'Rejected';
+  if (normalized === 'NOT_YET_REVIEWED') return 'Not yet reviewed';
+  if (normalized === 'REVIEWED_FOR_GUIDANCE') return 'Reviewed for guidance';
+  if (normalized === 'INSUFFICIENT_EVIDENCE') return 'Insufficient evidence';
   return 'Not yet reviewed';
 }
 
@@ -304,6 +307,14 @@ export default function PropertyDocuments() {
       reviewStatus?: string;
       metadataStatus?: string;
       supportingEvidenceOnly?: boolean;
+      evidenceMetadata?: {
+        sourceLabel?: string;
+        reviewStatus?: string;
+        manualActionRequired?: boolean;
+        manualActionHint?: string;
+        officialVerificationStatus?: string;
+        evidenceCompleteness?: string;
+      };
       csvDetectedFields?: string[];
       originalName: string;
       uploadedAt?: string;
@@ -628,16 +639,21 @@ export default function PropertyDocuments() {
                 <div className="mt-2 space-y-1 text-xs text-slate-600">
                   {doc.evidenceType ? <div>Evidence type: {doc.evidenceType}</div> : null}
                   {doc.sourceType ? <div>Source type: {doc.sourceType}</div> : null}
+                  {doc.evidenceMetadata?.sourceLabel ? <div>Source label: {doc.evidenceMetadata.sourceLabel}</div> : null}
                   <div className="flex flex-wrap gap-1">
                     <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.reviewStatus)}`}>
-                      Review status: {statusText(doc.reviewStatus)}
+                      Review status: {statusText(doc.evidenceMetadata?.reviewStatus || doc.reviewStatus)}
                     </span>
                     <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.metadataStatus)}`}>
                       Metadata status: {statusText(doc.metadataStatus)}
                     </span>
                   </div>
                   {doc.supportingEvidenceOnly ? <div>Supporting evidence only</div> : null}
-                  <div>Not yet reviewed. Manual evidence still needed before verified analysis use.</div>
+                  {doc.evidenceMetadata?.evidenceCompleteness ? <div>Evidence completeness: {doc.evidenceMetadata.evidenceCompleteness}</div> : null}
+                  {doc.evidenceMetadata?.officialVerificationStatus ? <div>Official verification status: {doc.evidenceMetadata.officialVerificationStatus}</div> : null}
+                  {doc.evidenceMetadata?.manualActionRequired ? (
+                    <div>{doc.evidenceMetadata.manualActionHint || 'Manual evidence still needed before verified analysis use.'}</div>
+                  ) : null}
                   <div className="text-slate-500">Guidance only - not official property verification.</div>
                   {Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0 ? (
                     <div>CSV fields: {doc.csvDetectedFields.join(', ')}</div>

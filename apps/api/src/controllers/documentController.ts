@@ -10,6 +10,7 @@ import { propertyOwnerScope } from '../utils/scopeFilters';
 import { uploadGovernanceEngine } from '../security/uploadGovernanceEngine';
 import { maliciousUploadDetector } from '../security/maliciousUploadDetector';
 import { downloadAccessAudit } from '../security/downloadAccessAudit';
+import { buildEvidenceMetadataContract } from '../utils/evidenceMetadata';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -246,6 +247,14 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
       fileUrl,
       downloadUrl,
       fileMissing: false,
+      evidenceMetadata: buildEvidenceMetadataContract({
+        sourceType: doc.sourceType,
+        reviewStatus: doc.reviewStatus,
+        metadataStatus: doc.metadataStatus,
+        evidenceType: doc.evidenceType,
+        supportingEvidenceOnly: doc.supportingEvidenceOnly,
+        uploadedAt: doc.uploadedAt,
+      }),
     };
     res.json(payload);
   } catch (err: any) {
@@ -265,12 +274,21 @@ export const getDocuments = async (req: AuthRequest, res: Response) => {
         ? toGridFsUrls(String(property._id), String(doc._id))
         : { fileUrl: null, downloadUrl: null };
       return {
-      ...doc.toObject(),
-      storedName: doc.storedName,
-      ...urls,
-      fileMissing: !hasGridFs,
-      createdAt: doc.uploadedAt,
-    }})
+        ...doc.toObject(),
+        storedName: doc.storedName,
+        ...urls,
+        fileMissing: !hasGridFs,
+        createdAt: doc.uploadedAt,
+        evidenceMetadata: buildEvidenceMetadataContract({
+          sourceType: doc.sourceType,
+          reviewStatus: doc.reviewStatus,
+          metadataStatus: doc.metadataStatus,
+          evidenceType: doc.evidenceType,
+          supportingEvidenceOnly: doc.supportingEvidenceOnly,
+          uploadedAt: doc.uploadedAt,
+        }),
+      };
+    })
   );
 };
 

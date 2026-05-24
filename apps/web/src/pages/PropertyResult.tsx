@@ -93,6 +93,9 @@ type EvidenceMatrixRow = {
   status: EvidenceMatrixStatus;
   sourceTypeLabel: string;
   reviewStatusLabel: string;
+  manualActionHint?: string;
+  officialVerificationStatus?: string;
+  evidenceCompleteness?: string;
   intentIfMissing?: EvidenceIntent;
 };
 
@@ -274,6 +277,19 @@ type DocumentMetadata = {
     reviewStatus?: string;
     metadataStatus?: string;
     supportingEvidenceOnly?: boolean;
+  };
+  evidenceMetadata?: {
+    sourceLabel?: string;
+    sourceType?: string;
+    sourceStatus?: string;
+    reviewStatus?: string;
+    confidenceLevel?: string;
+    manualActionRequired?: boolean;
+    manualActionHint?: string;
+    officialVerificationStatus?: string;
+    guidanceOnly?: boolean;
+    lastReviewedAt?: string | null;
+    evidenceCompleteness?: string;
   };
 };
 
@@ -495,6 +511,16 @@ const MAP_LAYER_DISCLAIMER =
   'Map, layer and parcel visuals are informational only. No official cadastral, tapu, zoning or municipal proof is confirmed unless explicitly reviewed from an official source.';
 const SOURCE_NOT_AVAILABLE_LABEL = 'Source not available yet';
 const NOT_YET_REVIEWED_LABEL = 'Not yet reviewed';
+
+function evidenceReviewLabel(value?: string) {
+  const normalized = String(value || '').trim().toUpperCase();
+  if (!normalized) return NOT_YET_REVIEWED_LABEL;
+  if (normalized === 'NOT_YET_REVIEWED') return 'Not yet reviewed';
+  if (normalized === 'MANUAL_REVIEW_REQUIRED') return 'Manual review required';
+  if (normalized === 'REVIEWED_FOR_GUIDANCE') return 'Reviewed for guidance';
+  if (normalized === 'INSUFFICIENT_EVIDENCE') return 'Insufficient evidence';
+  return toTitleCaseFromCode(normalized);
+}
 
 function toFiniteNumber(input: unknown): number | null {
   if (typeof input === 'number' && Number.isFinite(input)) return input;
@@ -999,7 +1025,7 @@ export default function PropertyResult() {
 
     const missingEvidence: string[] = [];
     if (isEvidenceCheckPending) {
-      missingEvidence.push('Kanıt belgeleri kontrol ediliyor...');
+      missingEvidence.push('Evidence metadata check is still in progress.');
     } else if (documentsFetchFailed) {
       missingEvidence.push('Belge durumu doğrulanamadı. Lütfen belgeler sayfasını kontrol edin.');
     } else if (!hasUploadedEvidence) {
@@ -1190,31 +1216,34 @@ export default function PropertyResult() {
       });
 
     const summarizeSources = (groupDocs: DocumentMetadata[]) => {
-      const values = Array.from(
-        new Set(
-          groupDocs
-            .map((doc) => String(doc.sourceType || '').trim())
-            .filter(Boolean)
-        )
-      );
+      const values = Array.from(new Set(groupDocs.map((doc) => String(doc.evidenceMetadata?.sourceLabel || doc.sourceType || '').trim()).filter(Boolean)));
       return values.length > 0 ? values.join(', ') : SOURCE_NOT_AVAILABLE_LABEL;
     };
 
     const summarizeReview = (groupDocs: DocumentMetadata[]) => {
-      const values = Array.from(
-        new Set(
-          groupDocs
-            .map((doc) => String(doc.reviewStatus || doc.metadataStatus || '').trim().toUpperCase())
-            .filter(Boolean)
-        )
-      );
-      return values.length > 0 ? values.map((value) => toTitleCaseFromCode(value)).join(', ') : NOT_YET_REVIEWED_LABEL;
+      const values = Array.from(new Set(groupDocs.map((doc) => String(doc.evidenceMetadata?.reviewStatus || doc.reviewStatus || doc.metadataStatus || '').trim()).filter(Boolean)));
+      return values.length > 0 ? values.map((value) => evidenceReviewLabel(value)).join(', ') : NOT_YET_REVIEWED_LABEL;
     };
 
     const resolveStatus = (groupDocs: DocumentMetadata[], fallbackPresent = false): EvidenceMatrixStatus => {
       if (groupDocs.length === 0 && !fallbackPresent) return 'MISSING';
       if (hasAnyReviewWarning(groupDocs)) return 'NEEDS_REVIEW';
       return 'PRESENT';
+    };
+
+    const summarizeManualActionHint = (groupDocs: DocumentMetadata[]) => {
+      const hint = groupDocs.map((doc) => String(doc.evidenceMetadata?.manualActionHint || '').trim()).find(Boolean);
+      return hint || undefined;
+    };
+
+    const summarizeOfficialVerificationStatus = (groupDocs: DocumentMetadata[]) => {
+      const status = groupDocs.map((doc) => String(doc.evidenceMetadata?.officialVerificationStatus || '').trim()).find(Boolean);
+      return status ? toTitleCaseFromCode(status) : undefined;
+    };
+
+    const summarizeEvidenceCompleteness = (groupDocs: DocumentMetadata[]) => {
+      const completeness = groupDocs.map((doc) => String(doc.evidenceMetadata?.evidenceCompleteness || '').trim()).find(Boolean);
+      return completeness ? toTitleCaseFromCode(completeness) : undefined;
     };
 
     const parcelIdentityDocs = docs.filter((doc) => {
@@ -1261,6 +1290,9 @@ export default function PropertyResult() {
         status: resolveStatus(parcelIdentityDocs, Boolean(propertyData?.ada || propertyData?.parsel)),
         sourceTypeLabel: summarizeSources(parcelIdentityDocs),
         reviewStatusLabel: summarizeReview(parcelIdentityDocs),
+        manualActionHint: summarizeManualActionHint(parcelIdentityDocs),
+        officialVerificationStatus: summarizeOfficialVerificationStatus(parcelIdentityDocs),
+        evidenceCompleteness: summarizeEvidenceCompleteness(parcelIdentityDocs),
         intentIfMissing: 'PARCEL_IDENTITY',
       },
       {
@@ -1269,6 +1301,9 @@ export default function PropertyResult() {
         status: resolveStatus(tkgmParcelDocs),
         sourceTypeLabel: summarizeSources(tkgmParcelDocs),
         reviewStatusLabel: summarizeReview(tkgmParcelDocs),
+        manualActionHint: summarizeManualActionHint(tkgmParcelDocs),
+        officialVerificationStatus: summarizeOfficialVerificationStatus(tkgmParcelDocs),
+        evidenceCompleteness: summarizeEvidenceCompleteness(tkgmParcelDocs),
         intentIfMissing: 'TKGM_PARCEL',
       },
       {
@@ -1277,6 +1312,9 @@ export default function PropertyResult() {
         status: resolveStatus(tkgmPriceDocs),
         sourceTypeLabel: summarizeSources(tkgmPriceDocs),
         reviewStatusLabel: summarizeReview(tkgmPriceDocs),
+        manualActionHint: summarizeManualActionHint(tkgmPriceDocs),
+        officialVerificationStatus: summarizeOfficialVerificationStatus(tkgmPriceDocs),
+        evidenceCompleteness: summarizeEvidenceCompleteness(tkgmPriceDocs),
         intentIfMissing: 'TKGM_PRICE_HISTORY',
       },
       {
@@ -1285,6 +1323,9 @@ export default function PropertyResult() {
         status: resolveStatus(municipalityDocs),
         sourceTypeLabel: summarizeSources(municipalityDocs),
         reviewStatusLabel: summarizeReview(municipalityDocs),
+        manualActionHint: summarizeManualActionHint(municipalityDocs),
+        officialVerificationStatus: summarizeOfficialVerificationStatus(municipalityDocs),
+        evidenceCompleteness: summarizeEvidenceCompleteness(municipalityDocs),
         intentIfMissing: 'MUNICIPAL_ZONING',
       },
       {
@@ -1293,6 +1334,9 @@ export default function PropertyResult() {
         status: resolveStatus(generalSupportingDocs),
         sourceTypeLabel: summarizeSources(generalSupportingDocs),
         reviewStatusLabel: summarizeReview(generalSupportingDocs),
+        manualActionHint: summarizeManualActionHint(generalSupportingDocs),
+        officialVerificationStatus: summarizeOfficialVerificationStatus(generalSupportingDocs),
+        evidenceCompleteness: summarizeEvidenceCompleteness(generalSupportingDocs),
         intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
       },
       {
@@ -1307,6 +1351,7 @@ export default function PropertyResult() {
         reviewStatusLabel: csvCoordinatePreview.hasCoordinateMetadata
           ? `${csvCoordinatePreview.metadataStatus} / ${csvCoordinatePreview.reviewStatus}`
           : NOT_YET_REVIEWED_LABEL,
+        evidenceCompleteness: csvCoordinatePreview.hasCoordinateMetadata ? 'Partial' : 'Missing',
         intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
       },
       {
@@ -1315,6 +1360,7 @@ export default function PropertyResult() {
         status: uploadCount > 0 ? 'PRESENT' : 'MISSING',
         sourceTypeLabel: uploadCount > 0 ? `${uploadCount} document(s)` : '0 document(s)',
         reviewStatusLabel: uploadCount > 0 ? 'Review status varies by document' : 'No uploaded documents',
+        evidenceCompleteness: uploadCount > 0 ? 'Partial' : 'Missing',
         intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
       },
     ];
@@ -1507,9 +1553,12 @@ export default function PropertyResult() {
               </div>
               <div className="mt-1 text-xs text-slate-600">Source details: {row.sourceTypeLabel}</div>
               <div className="text-xs text-slate-600">Review status: {row.reviewStatusLabel}</div>
+              {row.evidenceCompleteness ? <div className="text-xs text-slate-600">Evidence completeness: {row.evidenceCompleteness}</div> : null}
+              {row.officialVerificationStatus ? <div className="text-xs text-slate-600">Official verification status: {row.officialVerificationStatus}</div> : null}
               {(row.sourceTypeLabel === SOURCE_NOT_AVAILABLE_LABEL || row.reviewStatusLabel === NOT_YET_REVIEWED_LABEL) ? (
                 <div className="mt-1 text-xs text-amber-700">Manual evidence still needed. Upload supporting screenshot or document.</div>
               ) : null}
+              {row.manualActionHint ? <div className="mt-1 text-xs text-amber-700">{row.manualActionHint}</div> : null}
               {row.status === 'MISSING' && row.intentIfMissing ? (
                 <button
                   className="mt-2 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100"

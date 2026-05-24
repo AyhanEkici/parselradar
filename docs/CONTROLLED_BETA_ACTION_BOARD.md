@@ -28,13 +28,13 @@
 
 ## 3) PR-PROD-004 Backend/API Evidence Metadata Hardening
 ### Current State
-- Status: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
-- UI wording is improved and trust-safe.
-- Full source/review metadata completeness still depends on API hardening.
+- Status: PARTIAL_BACKEND_HARDENED_FOR_CONTROLLED_BETA
+- API responses now include `evidenceMetadata` contract fields for document-level source/review/manual-action clarity.
+- Result/documents surfaces consume contract fields and keep guidance-only trust boundaries explicit.
 
 ### Next Action
-- Prioritize API-level metadata completeness for evidence matrix rows.
-- Keep guidance wording conservative until completeness is improved.
+- Validate the same property flow on `/documents`, `/result`, and `/report` with real runtime data and confirm no over-claiming output.
+- Plan historical metadata backfill + wider API adoption before public launch.
 
 ## 4) PR-PROD-002 Mobile Admin Scanability
 ### Current State
@@ -82,7 +82,7 @@
 Status anchors kept unchanged:
 - GitHub Actions first success: FIRST_SUCCESS_NOT_FOUND
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
-- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_BACKEND_HARDENED_FOR_CONTROLLED_BETA
 
 ## 9) Postponed Non-Blocking Items
 ### GitHub Actions First Successful Run Verification
@@ -101,7 +101,7 @@ Anchors retained:
 - Public launch: NOT_READY
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
-- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_BACKEND_HARDENED_FOR_CONTROLLED_BETA
 
 ## 10) Viewer #2 Operational Status
 - Viewer #2 targeted script: READY
@@ -116,4 +116,4 @@ Anchors retained:
 - Public launch: NOT_READY
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
-- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_BACKEND_HARDENED_FOR_CONTROLLED_BETA

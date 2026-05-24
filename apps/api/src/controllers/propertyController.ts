@@ -11,6 +11,7 @@ import User from '../models/User';
 import { PropertySubmissionCreateInputSchema } from '../validation/propertySchemas';
 import { assertOwnerOrAdmin } from '../utils/ownership';
 import { propertyOwnerScope } from '../utils/scopeFilters';
+import { buildEvidenceMetadataContract } from '../utils/evidenceMetadata';
 
 const toGridFsUrls = (propertyId: string, documentId: string) => ({
   fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
@@ -140,7 +141,7 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     User.findById(property.userId).select('email name role').lean(),
     DocumentUpload.find({ propertySubmissionId: property._id })
       .sort({ uploadedAt: -1 })
-      .select('documentType originalName storedName storedPath gridFsFileId uploadedAt mimeType sizeBytes')
+      .select('documentType originalName storedName storedPath gridFsFileId uploadedAt mimeType sizeBytes evidenceType sourceType reviewStatus metadataStatus supportingEvidenceOnly')
       .lean(),
     AnalysisRun.find({ propertySubmissionId: property._id })
       .sort({ createdAt: -1 })
@@ -257,6 +258,14 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
     storedName: doc.storedName || null,
     ...(doc.gridFsFileId ? toGridFsUrls(String(property._id), String(doc._id)) : { fileUrl: null, downloadUrl: null }),
     fileMissing: !doc.gridFsFileId,
+    evidenceMetadata: buildEvidenceMetadataContract({
+      sourceType: doc.sourceType,
+      reviewStatus: doc.reviewStatus,
+      metadataStatus: doc.metadataStatus,
+      evidenceType: doc.evidenceType,
+      supportingEvidenceOnly: doc.supportingEvidenceOnly,
+      uploadedAt: doc.uploadedAt,
+    }),
   }));
   const titleFields = {
     ownerName: owner?.name || '-',
