@@ -73,12 +73,17 @@
 
 ## 5) Production SMTP/DNS/Secret Rotation
 ### Current State
-- Public launch blocker.
+- Status: EXECUTION_RUNBOOK_CREATED_PUBLIC_LAUNCH_BLOCKER
+- Controlled beta blocker: no
+- Public launch blocker: yes
+- Execution runbook: `docs/PRODUCTION_EMAIL_DNS_SECRET_ROTATION_EXECUTION_RUNBOOK.md`
+- Safe verification plan: `docs/PRODUCTION_EMAIL_SAFE_VERIFICATION_PLAN.md`
 
 ### Next Action
-- Complete production SMTP deliverability checks.
-- Complete DNS alignment checks.
-- Execute secret rotation and confirm operational continuity.
+- Choose provider owner and confirm production sending domain.
+- Configure production DNS (SPF/DKIM/DMARC and bounce domain if required) manually in provider/DNS dashboards.
+- Rotate production secrets manually in secret stores.
+- Run safe password-reset and transactional-email smoke with approved test recipients.
 
 ## 6) OCR Preview POC
 ### Current State
@@ -151,7 +156,7 @@ Anchors retained:
 - Public launch blocker: partial (depends on metadata quality threshold)
 
 ### Production SMTP/DNS/secret rotation
-- Status: READINESS_PLAN_CREATED_PUBLIC_LAUNCH_BLOCKER
+- Status: EXECUTION_RUNBOOK_CREATED_PUBLIC_LAUNCH_BLOCKER
 - Controlled beta blocker: no
 - Public launch blocker: yes
 
