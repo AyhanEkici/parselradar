@@ -69,3 +69,17 @@
 - No scraping.
 - No CAPTCHA/login/e-Devlet bypass.
 - No automation claims until permissioned integrations are formally approved.
+
+## 8) First External Viewer Operational Status
+- feedback pack: READY
+- demo script: READY
+- one-pager: READY
+- live dry run: COMPLETE
+- first external viewer session: PREPARED
+- real external feedback: PENDING_REAL_VIEWER
+- public launch: NOT_READY
+
+Status anchors kept unchanged:
+- GitHub Actions first success: FIRST_SUCCESS_NOT_FOUND
+- PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
