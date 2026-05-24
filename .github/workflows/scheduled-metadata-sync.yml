@@ -1,6 +1,6 @@
 name: Scheduled Metadata Sync
 
-on:
+"on":
   workflow_dispatch:
   schedule:
     - cron: "15 3 * * *"
@@ -29,7 +29,6 @@ jobs:
           fi
 
           response_file="$(mktemp)"
-          status_file="$(mktemp)"
 
           http_status="$(
             curl --silent --show-error --location \
@@ -41,52 +40,25 @@ jobs:
               --write-out "%{http_code}"
           )"
 
-          printf "%s" "${http_status}" > "${status_file}"
+          if [ "${http_status}" != "200" ]; then
+            echo "Unexpected HTTP status: ${http_status}"
+            exit 1
+          fi
 
-          node - "${response_file}" "${status_file}" <<'NODE'
-          const fs = require("fs");
+          compact_response="$(tr -d '\n\r\t ' < "${response_file}")"
+          lower_response="$(tr '[:upper:]' '[:lower:]' < "${response_file}")"
 
-          const responseFile = process.argv[2];
-          const statusFile = process.argv[3];
+          echo "${compact_response}" | grep -q '"noPropertyLevelVerification":true'
 
-          const httpStatus = Number(fs.readFileSync(statusFile, "utf8"));
-          const responseText = fs.readFileSync(responseFile, "utf8");
+          if echo "${lower_response}" | grep -Eiq 'official-proof|official proof|valuation|buy advice|buy/sell|secret|token'; then
+            echo "Forbidden response term detected"
+            exit 1
+          fi
 
-          if (httpStatus !== 200) {
-            throw new Error(`Unexpected HTTP status: ${httpStatus}`);
-          }
+          eligible="$(echo "${compact_response}" | sed -n 's/.*"eligible":\([0-9][0-9]*\).*/\1/p')"
+          skipped="$(echo "${compact_response}" | sed -n 's/.*"skipped":\([0-9][0-9]*\).*/\1/p')"
+          passed="$(echo "${compact_response}" | sed -n 's/.*"passed":\([0-9][0-9]*\).*/\1/p')"
+          failed="$(echo "${compact_response}" | sed -n 's/.*"failed":\([0-9][0-9]*\).*/\1/p')"
 
-          const response = JSON.parse(responseText);
+          echo "Scheduled metadata sync verified | eligible=${eligible:-unknown} | skipped=${skipped:-unknown} | passed=${passed:-unknown} | failed=${failed:-unknown} | noPropertyLevelVerification=true"
 
-          if (response.noPropertyLevelVerification !== true) {
-            throw new Error("noPropertyLevelVerification must be true");
-          }
-
-          const serialized = JSON.stringify(response).toLowerCase();
-          const forbiddenTerms = [
-            "official-proof",
-            "official proof",
-            "valuation",
-            "buy advice",
-            "buy/sell",
-            "secret",
-            "token"
-          ];
-
-          for (const term of forbiddenTerms) {
-            if (serialized.includes(term)) {
-              throw new Error(`Forbidden response term detected: ${term}`);
-            }
-          }
-
-          console.log(
-            [
-              "Scheduled metadata sync verified",
-              `eligible=${response.eligible}`,
-              `skipped=${response.skipped}`,
-              `passed=${response.passed}`,
-              `failed=${response.failed}`,
-              "noPropertyLevelVerification=true"
-            ].join(" | ")
-          );
-          NODE
