@@ -50,8 +50,22 @@
 - Status: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
 - Focused hardening pass applied on admin shell and mobile-dense admin pages (`analysis-reports`, `deal-flow`, `properties`, `connectors/center`).
 - Build PASS after changes.
-- Authenticated route checks remained usable with no horizontal overflow in the available integrated-browser viewport.
-- Exact target viewport capture (390x844 and 1366x900) was constrained by tool viewport limits in this run; status remains PARTIAL pending strict-size reconfirmation.
+- Authenticated strict verification rerun date: 2026-05-25.
+- Mobile requested viewport: 390x844; actual measured viewport in integrated browser: 490x562.
+- Desktop requested viewport: 1366x900; actual measured viewport in integrated browser: 490x562.
+- Mobile route outcomes at measured viewport:
+	- `/admin/analysis-reports`: PARTIAL (usable, no horizontal overflow, primary/secondary actions visible, status badges still dense)
+	- `/admin/deal-flow`: PARTIAL (usable, no horizontal overflow, filters/actions visible, status badges still dense)
+	- `/admin/properties`: PASS (usable scan, actions/filters readable, no material overflow)
+	- `/admin/connectors/center`: PARTIAL (usable, no horizontal overflow, scheduler wording remains honest, status chips dense)
+- Desktop route outcomes at measured viewport:
+	- `/admin/analysis-reports`: PASS
+	- `/admin/deal-flow`: PASS
+	- `/admin/properties`: PASS
+	- `/admin/connectors/center`: PASS
+- No fake official-proof claim observed.
+- No fake valuation/buy-advice claim observed.
+- Exact target viewport capture (390x844 and 1366x900) remains constrained by integrated-browser viewport limits in this run; strict-size completion criteria not met, so status remains PARTIAL.
 
 ### Next Action
 - Re-run strict 390x844 and 1366x900 checks in an unconstrained browser session and capture evidence per route.
