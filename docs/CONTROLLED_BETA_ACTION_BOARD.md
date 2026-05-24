@@ -126,3 +126,27 @@ Anchors retained:
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
 - PR-PROD-004: PARTIAL_BACKEND_HARDENED_FOR_CONTROLLED_BETA
+
+## 11) Postponed Governance Bundle Status
+### Historical evidence metadata backfill
+- Status: PLAN_CREATED_IMPLEMENTATION_DEFERRED
+- Controlled beta blocker: no
+- Public launch blocker: partial (depends on metadata quality threshold)
+
+### Production SMTP/DNS/secret rotation
+- Status: READINESS_PLAN_CREATED_PUBLIC_LAUNCH_BLOCKER
+- Controlled beta blocker: no
+- Public launch blocker: yes
+
+### Permissioned TKGM/UCBP strategy
+- Status: STRATEGY_CREATED_PERMISSIONED_ONLY
+- Controlled beta blocker: no
+- Public launch blocker: yes if official-data claims are desired
+
+Anchor checks retained:
+- Viewer #2: POSTPONED_PENDING_REAL_VIEWER
+- GitHub Actions first success: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
+- Public launch: NOT_READY
+- Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
+- PR-PROD-004 authenticated smoke: PASS
+- PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
