@@ -1,24 +1,24 @@
 # SECOND EXTERNAL VIEWER PRODUCT DECISION MATRIX
 
 ## Decision Status
-- PENDING_REAL_VIEWER_FEEDBACK
+- UPDATED_FROM_REAL_FEEDBACK_CAPTURE
 
 ## Current Decision Impact
-- No product decision change.
-- No new issues from Viewer #2 feedback.
-- No next sprint changes from Viewer #2 yet.
+- Product decision updated: continue controlled beta with conversational workflow hardening.
+- New issues added: PR-PROD-005, PR-PROD-006, PR-PROD-007.
+- Next sprint primary changed to guided conversational workflow.
 
 ## Continue / Improve / Pause
-- Pending real Viewer #2 feedback before applying continue/improve/pause decision from this phase.
+- CONTINUE with product-flow improvements.
 
 ## Top 5 Feedback-Backed Priorities
-- NOT_AVAILABLE_PENDING_REAL_VIEWER
+- See canonical matrix: `docs/REAL_VIEWER_PRODUCT_DECISION_MATRIX.md`
 
 ## What Should Be Fixed Before Viewer #3
-- NOT_AVAILABLE_PENDING_REAL_VIEWER
+- Conversation-first intake/report path clarity and tab-role explanation.
 
 ## What Can Wait
-- NOT_AVAILABLE_PENDING_REAL_VIEWER
+- OCR runtime implementation and backfill mutation.
 
 ## What Is Public-Launch Blocking
 - Remains unchanged from existing baseline and action board.
@@ -27,7 +27,7 @@
 - Remains unchanged from existing baseline and action board.
 
 ## Next Sprint Recommendation
-- No Viewer #2-derived sprint adjustment until real feedback is captured.
+- Prioritize conversational workflow spec and implementation slicing.
 
 ## Required Next Step
-- Run Viewer #2 real session and ingest concrete answers/signals.
+- Execute follow-up trust-question capture and validate improved flow with next viewer.

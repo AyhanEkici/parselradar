@@ -6,17 +6,17 @@
 - Project: ParselRadar
 
 ## 2) Feedback Status
-- Status: POSTPONED_PENDING_REAL_VIEWER
-- Classification: VIEWER_2_FEEDBACK_NOT_PROVIDED
+- Status: COMPLETED_REAL_FEEDBACK_CAPTURED
+- Classification: REAL_FEEDBACK_CAPTURED_HIGH_SIGNAL
 
 ## 3) Real Viewer #2 Feedback Present
-- no
+- yes
 
 ## 4) No Fake Feedback Invented
 - confirmed
 
 ## 5) Viewer #2 Session Still Required
-- Viewer #2 real session remains required before feedback-backed product decisions.
+- No. Real feedback has been captured and ingested.
 
 ## 6) Current Controlled-Beta State Remains Unchanged
 - Public launch: NOT_READY
@@ -24,9 +24,5 @@
 - GitHub Actions first success verification: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
 
 ## 7) Next Required Input
-- Real Viewer #2 answers to the five required questions:
-  1. What do you think ParselRadar does?
-  2. Where would you use this?
-  3. What is unclear or too limited?
-  4. Do you trust the report as controlled-beta guidance, not official verification?
-  5. Would you test this with a real parcel or pay for it later?
+- Follow-up only: trust-answer closure from viewer (current value: NOT_PROVIDED).
+- Canonical ingestion doc: `docs/REAL_VIEWER_FEEDBACK_INGESTION_HIGH_SIGNAL.md`

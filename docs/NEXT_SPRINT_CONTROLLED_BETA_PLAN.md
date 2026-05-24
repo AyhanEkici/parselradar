@@ -1,11 +1,12 @@
 # Next Sprint Controlled Beta Plan
 
 ## 1) Sprint Objective
-Create a real-feedback-driven iteration sprint that strengthens controlled-beta clarity and prioritization without speculative feature expansion.
+Create a real-feedback-driven sprint centered on a guided conversational analysis workflow, while preserving trust-safe controlled-beta boundaries.
 
 ## 2) Recommended Focus
-- Primary focus: run Viewer #2 targeted feedback session and capture actionable findings.
-- Secondary focus: prep provider-selection decision path only if public-launch preparation is actively scheduled.
+- Primary focus: design and sequence a guided conversational analysis workflow (chat-like intake to report path).
+- Secondary focus: improve tab/navigation clarity (especially `Yeni Mulk` behavior and whether tabs are required).
+- Tertiary focus: plan upload-to-output transparency path; keep OCR runtime deferred.
 
 ## 3) What NOT To Work On Yet
 - No OCR runtime implementation.
@@ -14,14 +15,14 @@ Create a real-feedback-driven iteration sprint that strengthens controlled-beta 
 - No unauthorized official-data automation claims.
 
 ## 4) Top 5 Next Actions
-1. Execute Viewer #2 session with targeted questions and structured capture.
-2. Convert Viewer #2 feedback into issue entries with severity and owner.
-3. Prioritize quick trust/clarity polish items that reduce confusion.
-4. Decide whether public-launch preparation is in scope this sprint.
-5. If yes, request founder provider choice and complete email/DNS/secret execution inputs.
+1. Finalize `docs/NEXT_SPRINT_CONVERSATIONAL_ANALYSIS_WORKFLOW_SPEC.md` as the primary execution blueprint.
+2. Convert real viewer feedback into prioritized issues and owners (PR-PROD-005/006/007).
+3. Define a minimal conversation-first UX slice that maps required inputs to report generation.
+4. Add explicit copy for tab purpose and `Yeni Mulk` auto-fill behavior.
+5. Keep OCR in planned/deferred mode and prepare only trust-safe upload path messaging.
 
 ## 5) External Input Needed
-- Real Viewer #2 responses (required)
+- Follow-up trust answer from real viewer (required data gap closure)
 - Founder decision on timing for public-launch preparation
 - Provider choice if SMTP/DNS/secret execution is to start
 
@@ -56,6 +57,6 @@ Create a real-feedback-driven iteration sprint that strengthens controlled-beta 
 - Keep commits small, auditable, and phase-specific.
 
 ## Recommended Sprint Decision
-- Primary: Run Viewer #2 with targeted questions.
-- Secondary: Choose production email provider only if moving toward public launch.
-- Avoid: more speculative feature building before feedback.
+- Primary: prioritize guided conversational analysis workflow planning/build sequencing.
+- Secondary: improve tab clarity and `Yeni Mulk` expectation handling.
+- Later: evaluate upload/OCR prototype only after trust-safe scope approval.

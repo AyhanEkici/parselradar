@@ -146,10 +146,10 @@ Anchors retained:
 ## 10) Viewer #2 Operational Status
 - Viewer #2 targeted script: READY
 - Viewer #2 capture form: READY
-- Viewer #2 real session: POSTPONED_PENDING_REAL_VIEWER
-- Viewer #2 feedback ingestion: PENDING_REAL_FEEDBACK
-- Real Viewer #2 feedback: NOT_PROVIDED
-- Next controlled-beta action: Run Viewer #2 with targeted questions
+- Viewer #2 real session: COMPLETED_REAL_FEEDBACK_CAPTURED
+- Viewer #2 feedback ingestion: REAL_FEEDBACK_CAPTURED_HIGH_SIGNAL
+- Real Viewer #2 feedback: PROVIDED
+- Next controlled-beta action: prioritize guided conversational workflow spec/build plan
 
 Anchors retained:
 - GitHub Actions first success verification: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
@@ -196,3 +196,12 @@ Anchor checks retained:
 - GitHub Actions first success: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
 - Historical backfill: READONLY_AUDIT_PLAN_CREATED_IMPLEMENTATION_DEFERRED
 - OCR preview: POC_PLAN_CREATED_IMPLEMENTATION_DEFERRED
+
+## 13) Real Viewer Feedback - Product Flow Signal
+- feedback classification: REAL_FEEDBACK_CAPTURED_HIGH_SIGNAL
+- value understood: yes
+- conversational expected: yes
+- nav clarity issue: yes
+- upload/OCR interest: yes
+- trust answer: NOT_PROVIDED
+- next action: planning/build guided conversational workflow before stronger demo
