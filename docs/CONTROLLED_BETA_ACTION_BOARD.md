@@ -160,9 +160,10 @@ Anchors retained:
 
 ## 11) Postponed Governance Bundle Status
 ### Historical evidence metadata backfill
-- Status: PLAN_CREATED_IMPLEMENTATION_DEFERRED
+- Status: READONLY_AUDIT_PLAN_CREATED_IMPLEMENTATION_DEFERRED
 - Controlled beta blocker: no
 - Public launch blocker: partial (depends on metadata quality threshold)
+- Next action: approve read-only DB audit or keep static audit only
 
 ### Production SMTP/DNS/secret rotation
 - Status: PROVIDER_SELECTION_REQUIRED_PUBLIC_LAUNCH_BLOCKER
