@@ -88,10 +88,18 @@
 
 ## 6) OCR Preview POC
 ### Current State
-- Later only.
+- Status: POC_PLAN_CREATED_IMPLEMENTATION_DEFERRED
+- Controlled beta blocker: no
+- Public launch blocker: no, unless OCR is marketed as active
+- Planning docs:
+	- `docs/OCR_PREVIEW_POC_PLAN.md`
+	- `docs/OCR_TRUST_AND_REVIEW_POLICY.md`
 
 ### Guardrail
 - Keep OCR framed as planned/non-active until explicitly implemented and validated.
+
+### Next Action
+- Approve tiny non-runtime prototype scope later (synthetic data only, manual review gated, no external paid OCR dependency).
 
 ## 7) Permissioned TKGM/UCBP Strategy
 ### Current State
