@@ -102,3 +102,18 @@ Anchors retained:
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
 - PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+
+## 10) Viewer #2 Operational Status
+- Viewer #2 targeted script: READY
+- Viewer #2 capture form: READY
+- Viewer #2 real session: POSTPONED_PENDING_REAL_VIEWER
+- Viewer #2 feedback ingestion: PENDING_REAL_FEEDBACK
+- Real Viewer #2 feedback: NOT_PROVIDED
+- Next controlled-beta action: Run Viewer #2 with targeted questions
+
+Anchors retained:
+- GitHub Actions first success verification: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
+- Public launch: NOT_READY
+- Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
+- PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
