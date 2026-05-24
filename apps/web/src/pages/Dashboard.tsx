@@ -3,6 +3,7 @@ import { logout } from '../lib/auth';
 import { apiFetch } from '../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import ConversationalAnalysisIntake, { type ConversationalAnalysisContract } from '../components/ConversationalAnalysisIntake';
 
 export default function Dashboard() {
   const [credits, setCredits] = useState<number>(0);
@@ -46,18 +47,44 @@ export default function Dashboard() {
     return null;
   }
 
+  const handleCreatePropertyDraft = (payload: ConversationalAnalysisContract) => {
+    const params = new URLSearchParams();
+    const safePrefill: Record<string, string> = {
+      il: payload.il,
+      ilce: payload.ilce,
+      mahalleOrKoy: payload.mahalle,
+      ada: payload.ada,
+      parsel: payload.parsel,
+      areaM2: payload.areaM2,
+      askingPriceTRY: payload.totalPrice,
+      ilanUrl: payload.listingUrl,
+    };
+
+    Object.entries(safePrefill).forEach(([key, value]) => {
+      if (value && value.trim()) {
+        params.set(key, value.trim());
+      }
+    });
+
+    navigate(`/properties/new?${params.toString()}`);
+  };
+
   return (
-    <div className="premium-dashboard premium-surface max-w-lg mx-auto mt-20 p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Hoşgeldiniz, {user?.name}</h2>
-      <div className="mb-2 text-sm text-slate-600">Showing only your own submitted properties and reports.</div>
-      <div className="mb-2">Kredi bakiyesi: <b>{loadingCredits ? '...' : credits}</b></div>
-      {creditsError ? <div className="text-red-600 text-sm mb-2">{creditsError}</div> : null}
-      <div className="space-x-2 mt-4">
-        <Link to="/properties/new" className="premium-action px-4 py-2 rounded">Yeni Mülk</Link>
-        <Link to="/reports" className="premium-outline px-4 py-2 rounded">Raporlarım</Link>
-        <Link to="/credits" className="premium-outline px-4 py-2 rounded">Kredi Yükle</Link>
+    <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-4 pb-8">
+      <div className="premium-dashboard premium-surface rounded shadow p-6">
+        <h2 className="text-xl font-bold mb-4">Hoşgeldiniz, {user?.name}</h2>
+        <div className="mb-2 text-sm text-slate-600">Start with guided intake, then create Yeni Mülk, add evidence, and review the guidance report.</div>
+        <div className="mb-2">Kredi bakiyesi: <b>{loadingCredits ? '...' : credits}</b></div>
+        {creditsError ? <div className="text-red-600 text-sm mb-2">{creditsError}</div> : null}
+        <div className="space-x-2 mt-4">
+          <Link to="/properties/new" className="premium-action px-4 py-2 rounded">Yeni Mülk</Link>
+          <Link to="/reports" className="premium-outline px-4 py-2 rounded">Raporlarım</Link>
+          <Link to="/credits" className="premium-outline px-4 py-2 rounded">Kredi Yükle</Link>
+        </div>
+        <button className="mt-8 text-red-600 underline" onClick={async () => { await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap</button>
       </div>
-      <button className="mt-8 text-red-600 underline" onClick={async () => { await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap</button>
+
+      <ConversationalAnalysisIntake onCreatePropertyDraft={handleCreatePropertyDraft} />
     </div>
   );
 }

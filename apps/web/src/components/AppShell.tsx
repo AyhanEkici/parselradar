@@ -137,6 +137,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </nav>
                 </div>
 
+                <div className="w-full text-xs text-slate-500">
+                  Main path: create property, add evidence/documents, then review guidance report. Tabs are support pages, not mandatory manual steps.
+                </div>
+
                 <div className="w-full sm:w-auto sm:ml-auto flex flex-wrap items-center gap-2 text-xs">
                   <span className="premium-muted truncate max-w-[180px]" title={user?.email || ''}>
                     {identityDisplay}

@@ -205,3 +205,19 @@ Anchor checks retained:
 - upload/OCR interest: yes
 - trust answer: NOT_PROVIDED
 - next action: planning/build guided conversational workflow before stronger demo
+
+## 14) Conversational Analysis Workflow MVP Shell
+- status: MVP_SHELL_IMPLEMENTED_PENDING_USER_TEST
+- scope: frontend guided intake shell only (no AI runtime, no OCR runtime, no backend/API mutation)
+- central composer: added on `/dashboard`
+- structured fields: il, ilce, belediye, mahalle, ada, parsel, m2, fiyat/m2, toplam fiyat, ilan URL
+- next-step clarity: Yeni Mulk -> documents/evidence -> guidance report flow copy added
+- trust boundary: guidance-only wording visible
+- upload/OCR framing: planned/non-active wording visible
+
+Anchor checks retained:
+- Public launch: NOT_READY
+- Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
+- PR-PROD-005: MVP_SHELL_IMPLEMENTED_PENDING_USER_TEST
+- PR-PROD-006: PARTIAL_HARDENED
+- PR-PROD-007: PLANNED_AFTER_SPEC

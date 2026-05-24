@@ -1114,6 +1114,9 @@ export default function PropertyDetail() {
                 Add to Shared Workspace Watchlist
               </button>
             </div>
+            <div className="mt-2 rounded border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+              Main path: create property, add documents/evidence, then review guidance report. Tabs are support pages and do not all require manual input.
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface PropertyForm {
   [key: string]: string | number | boolean | string[] | undefined;
@@ -70,6 +70,7 @@ export default function NewProperty() {
   const [allowDealFlowMatching, setAllowDealFlowMatching] = useState(false);
   const [allowProfessionalContact, setAllowProfessionalContact] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     try {
@@ -78,6 +79,24 @@ export default function NewProperty() {
       setHasDraft(false);
     }
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (!params.toString()) return;
+
+    const prefilled: PropertyForm = {};
+    const prefillKeys = ['il', 'ilce', 'mahalleOrKoy', 'ada', 'parsel', 'areaM2', 'askingPriceTRY', 'ilanUrl'];
+    prefillKeys.forEach((key) => {
+      const value = params.get(key);
+      if (value && value.trim()) {
+        prefilled[key] = value.trim();
+      }
+    });
+
+    if (Object.keys(prefilled).length > 0) {
+      setForm((prev) => ({ ...prefilled, ...prev }));
+    }
+  }, [location.search]);
 
   const persistDraft = (nextForm: PropertyForm) => {
     try {
@@ -166,6 +185,9 @@ export default function NewProperty() {
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4">Yeni Mülk</h2>
+      <div className="mb-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+        Start with Yeni Mülk. After the property is created, documents, evidence, source guidance and report pages help you review it step by step.
+      </div>
       <div className="mb-3 text-sm text-gray-600">Adım {step} / {TOTAL_STEPS}</div>
       {hasDraft ? (
         <div className="mb-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
