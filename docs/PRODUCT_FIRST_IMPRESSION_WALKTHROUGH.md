@@ -234,3 +234,4 @@ ParselRadar already feels like a serious controlled-beta evidence workspace with
 - Workflow YAML diagnostics for `.github/workflows/scheduled-metadata-sync.yml` were fixed in repository.
 - Public launch remains `NOT_READY`.
 - P2.PRODUCT-FIRST-IMPRESSION-3B continuation: additional mobile hierarchy/action-visibility polish applied to admin analysis-reports and deal-flow surfaces.
+- P2.PRODUCT-FIRST-IMPRESSION-3C final pass: PR-PROD-002 reclassified to `PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA` (mobile analysis-reports/deal-flow still PARTIAL under current runtime loading conditions).
