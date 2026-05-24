@@ -48,11 +48,14 @@
 ## 4) PR-PROD-002 Mobile Admin Scanability
 ### Current State
 - Status: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
-- Usable in controlled beta but dense on small screens.
+- Focused hardening pass applied on admin shell and mobile-dense admin pages (`analysis-reports`, `deal-flow`, `properties`, `connectors/center`).
+- Build PASS after changes.
+- Authenticated route checks remained usable with no horizontal overflow in the available integrated-browser viewport.
+- Exact target viewport capture (390x844 and 1366x900) was constrained by tool viewport limits in this run; status remains PARTIAL pending strict-size reconfirmation.
 
 ### Next Action
-- Continue mobile hierarchy and density polish on admin-heavy surfaces.
-- Keep current status unchanged until measured scanability improves.
+- Re-run strict 390x844 and 1366x900 checks in an unconstrained browser session and capture evidence per route.
+- Keep current status unchanged until strict viewport evidence confirms improved scanability.
 
 ## 5) Production SMTP/DNS/Secret Rotation
 ### Current State

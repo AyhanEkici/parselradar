@@ -145,7 +145,7 @@ export default function AdminConnectorCenter() {
                       </span>
                     </div>
 
-                    <div className="mt-2 grid grid-cols-1 gap-1 text-xs text-slate-700">
+                    <div className="mt-2 grid grid-cols-1 gap-1.5 text-xs text-slate-700">
                       <div><span className="font-medium">Provider:</span> {item.provider}</div>
                       <div><span className="font-medium">Location:</span> {item.province || 'N/A'} / {item.district || 'N/A'}</div>
                       <div><span className="font-medium">Legal mode:</span> {item.legalMode}</div>
@@ -155,13 +155,13 @@ export default function AdminConnectorCenter() {
                       <div className="text-[11px] text-slate-600">{guidanceMessage(item)}</div>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <a className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50" href={item.officialUrl} target="_blank" rel="noreferrer noopener">
+                    <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <a className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-700 hover:bg-slate-50" href={item.officialUrl} target="_blank" rel="noreferrer noopener">
                         Official URL
                       </a>
                       <button
                         type="button"
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                        className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
                         onClick={() => syncNow(item.connectorKey)}
                         disabled={syncingKey === item.connectorKey || !safeSyncEnabled(item)}
                       >

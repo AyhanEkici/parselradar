@@ -137,8 +137,8 @@ export default function AdminProperties() {
           }
         />
 
-        <AdminToolbar className="justify-between">
-          <div className="flex w-full flex-wrap items-center gap-2">
+        <AdminToolbar className="flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
             <AdminInput
               className="w-full sm:w-80"
               placeholder="Adres, şehir, ilçe, durum, kullanıcı ara"
@@ -146,7 +146,7 @@ export default function AdminProperties() {
               onChange={(e) => setQuery(e.target.value)}
             />
             <select
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 sm:w-auto"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -157,7 +157,7 @@ export default function AdminProperties() {
               <option value="REJECTED">REJECTED</option>
             </select>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center justify-between gap-2 md:w-auto md:justify-end">
             <span className="text-sm text-slate-600">{filtered.length} kayıt</span>
             <AdminButton onClick={() => { setQuery(''); setStatusFilter(''); }} disabled={!query && !statusFilter}>
               Temizle
@@ -227,22 +227,22 @@ export default function AdminProperties() {
                       </div>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <div className="mt-3 grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
                       <Link
                         to={`/admin/properties/${p._id}`}
-                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-center text-slate-700 hover:bg-slate-50"
                       >
                         Open
                       </Link>
                       <Link
                         to={`/admin/properties/${p._id}/documents`}
-                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-center text-slate-700 hover:bg-slate-50"
                       >
                         Evidence / Documents
                       </Link>
                       <Link
                         to={`/properties/${p._id}/result`}
-                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2.5 py-1.5 text-center text-slate-700 hover:bg-slate-50 sm:col-span-2"
                       >
                         Result / Analysis
                       </Link>

@@ -265,14 +265,14 @@ export default function AdminAnalysisReports() {
             title="Analysis Reports"
             subtitle="Central review of beta tester properties, evidence visibility and analysis/report surface state."
             actions={
-              <div className="flex flex-wrap gap-2 text-sm">
-                <Link to="/admin/cms" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+              <div className="grid w-full grid-cols-1 gap-2 text-sm sm:flex sm:w-auto sm:flex-wrap">
+                <Link to="/admin/cms" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 hover:bg-slate-50">
                   Back to CMS
                 </Link>
-                <Link to="/admin/deal-flow" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+                <Link to="/admin/deal-flow" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 hover:bg-slate-50">
                   Professional Deal-Flow
                 </Link>
-                <Link to="/admin/properties" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
+                <Link to="/admin/properties" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 hover:bg-slate-50">
                   Open Properties
                 </Link>
               </div>
@@ -307,7 +307,7 @@ export default function AdminAnalysisReports() {
                     <div className="mt-1 text-xs text-slate-600">{row.location}</div>
                     <div className="mt-1 text-[11px] font-mono text-slate-500">{row.propertyId}</div>
 
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-2 grid grid-cols-1 gap-2">
                       <AdminStatusPill tone={toneForStatus(row.propertyStatus)}>{row.propertyStatus}</AdminStatusPill>
                       <AdminStatusPill tone={row.evidenceCountText.includes('0 document') ? 'warning' : 'info'}>{row.evidenceCountText}</AdminStatusPill>
                     </div>

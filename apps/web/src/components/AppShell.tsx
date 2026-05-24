@@ -30,6 +30,39 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return active ? 'is-active-nav' : '';
   };
 
+  const primaryNavLinks = [
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/properties/new', label: 'Yeni Mülk' },
+    { to: '/credits', label: 'Kredi' },
+    { to: '/admin/properties', label: 'Properties', adminOnly: true },
+    { to: '/admin/analysis-reports', label: 'Reports', adminOnly: true },
+    { to: '/admin/deal-flow', label: 'Deal-Flow', adminOnly: true },
+    { to: '/admin/connectors/center', label: 'Connectors', adminOnly: true },
+    { to: '/map', label: 'Map' },
+  ];
+
+  const secondaryAdminLinks = [
+    { to: '/admin/audit-timeline', label: 'Audit' },
+    { to: '/admin/users', label: 'Users' },
+    { to: '/admin/analyses', label: 'Analyses' },
+    { to: '/admin/credit-ledger', label: 'Credit Ledger' },
+    { to: '/admin/stripe-sessions', label: 'Stripe Sessions' },
+    { to: '/admin/cms', label: 'CMS' },
+    { to: '/admin/analytics', label: 'Analytics' },
+    { to: '/admin/runtime', label: 'Runtime' },
+    { to: '/admin/runtime-health', label: 'Runtime Health' },
+    { to: '/admin/deployment', label: 'Deployment' },
+    { to: '/admin/observability', label: 'Observability' },
+    { to: '/admin/mail-diagnostics', label: 'Mail' },
+    { to: '/admin/stripe-diagnostics', label: 'Stripe' },
+    { to: '/admin/connectors', label: 'Connectors' },
+    { to: '/admin/connectors/tucbs', label: 'TUCBS' },
+    { to: '/admin/connectors/ogc', label: 'OGC' },
+    { to: '/admin/layers', label: 'Layers' },
+    { to: '/admin/layer-health', label: 'Layer Health' },
+    { to: '/admin/geo-diagnostics', label: 'Geo Diagnostics' },
+  ];
+
   return (
     <>
       {shellVisible ? (
@@ -37,11 +70,41 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div className="max-w-5xl mx-auto px-4 py-2 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
             {showAuthenticatedNav ? (
               <>
-                <div className="w-full overflow-x-auto">
+                <div className="w-full sm:hidden">
+                  <nav className="grid grid-cols-3 gap-2 text-xs">
+                    {primaryNavLinks
+                      .filter((link) => !link.adminOnly || isAdmin)
+                      .map((link) => (
+                        <Link
+                          key={`mobile-primary-${link.to}`}
+                          to={link.to}
+                          className={`rounded border px-2 py-1.5 text-center ${navLinkClass(link.to)}`}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                  </nav>
+                  {isAdmin ? (
+                    <details className="mt-2 rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-700">
+                      <summary className="cursor-pointer font-semibold">More admin links</summary>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        {secondaryAdminLinks.map((link) => (
+                          <Link key={`mobile-secondary-${link.to}`} to={link.to} className={navLinkClass(link.to)}>
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </details>
+                  ) : null}
+                </div>
+
+                <div className="hidden w-full overflow-x-auto sm:block">
                 <nav className="flex w-max gap-2 whitespace-nowrap text-xs pb-1">
                   <Link to="/dashboard" className={navLinkClass('/dashboard')}>Dashboard</Link>
                   <Link to="/properties/new" className={navLinkClass('/properties/new')}>Yeni Mülk</Link>
                   <Link to="/credits" className={navLinkClass('/credits')}>Kredi</Link>
+                  {isAdmin ? <Link to="/admin/analysis-reports" className={navLinkClass('/admin/analysis-reports')}>Reports</Link> : null}
+                  {isAdmin ? <Link to="/admin/deal-flow" className={navLinkClass('/admin/deal-flow')}>Deal-Flow</Link> : null}
                   {isAdmin ? <Link to="/admin/audit-timeline" className={navLinkClass('/admin/audit-timeline')}>Audit</Link> : null}
                   {isAdmin ? <Link to="/admin/users" className={navLinkClass('/admin/users')}>Users</Link> : null}
                   {isAdmin ? <Link to="/admin/analyses" className={navLinkClass('/admin/analyses')}>Analyses</Link> : null}
