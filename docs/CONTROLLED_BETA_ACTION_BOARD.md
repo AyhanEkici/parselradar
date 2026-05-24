@@ -36,6 +36,15 @@
 - Validate the same property flow on `/documents`, `/result`, and `/report` with real runtime data and confirm no over-claiming output.
 - Plan historical metadata backfill + wider API adoption before public launch.
 
+### Authenticated Runtime Smoke (PR-PROD-004B Retry)
+- Status: AUTHENTICATED_RUNTIME_SMOKE_PASS
+- Property tested: `6a09317e90f79b455480b80e`
+- `/documents`: PASS (authenticated page open, evidence metadata labels + manual action hints visible, guidance-only boundary visible)
+- `/result`: PASS (authenticated page open, evidence matrix/review labels understandable, manual action hints visible, no official-proof/valuation claims)
+- `/report` alias: PASS (authenticated alias route open with result surface semantics)
+- Public launch: NOT_READY
+- Historical metadata backfill: DEFERRED
+
 ## 4) PR-PROD-002 Mobile Admin Scanability
 ### Current State
 - Status: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
