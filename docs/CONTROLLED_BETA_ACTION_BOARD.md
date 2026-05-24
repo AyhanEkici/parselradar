@@ -207,17 +207,18 @@ Anchor checks retained:
 - next action: planning/build guided conversational workflow before stronger demo
 
 ## 14) Conversational Analysis Workflow MVP Shell
-- status: MVP_SHELL_IMPLEMENTED_PENDING_USER_TEST
+- status: AUTHENTICATED_USER_FLOW_TEST_PASS
 - scope: frontend guided intake shell only (no AI runtime, no OCR runtime, no backend/API mutation)
 - central composer: added on `/dashboard`
 - structured fields: il, ilce, belediye, mahalle, ada, parsel, m2, fiyat/m2, toplam fiyat, ilan URL
 - next-step clarity: Yeni Mulk -> documents/evidence -> guidance report flow copy added
 - trust boundary: guidance-only wording visible
 - upload/OCR framing: planned/non-active wording visible
+- authenticated flow verification: PASS (`/dashboard` -> intake -> safe prefill to `/properties/new` -> `/properties/:id` -> `/properties/:id/documents` -> `/properties/:id/report`)
 
 Anchor checks retained:
 - Public launch: NOT_READY
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
-- PR-PROD-005: MVP_SHELL_IMPLEMENTED_PENDING_USER_TEST
-- PR-PROD-006: PARTIAL_HARDENED
+- PR-PROD-005: USER_FLOW_TEST_PASS
+- PR-PROD-006: USER_FLOW_TEST_PASS
 - PR-PROD-007: PLANNED_AFTER_SPEC

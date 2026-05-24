@@ -56,12 +56,12 @@ const initialState: ConversationalAnalysisContract = {
 function toMissingLabels(contract: ConversationalAnalysisContract): string[] {
   const missing: string[] = [];
 
-  if (!contract.il.trim()) missing.push('Il');
-  if (!contract.ilce.trim()) missing.push('Ilce');
+  if (!contract.il.trim()) missing.push('İl');
+  if (!contract.ilce.trim()) missing.push('İlçe');
   if (!contract.mahalle.trim()) missing.push('Mahalle');
   if (!contract.ada.trim()) missing.push('Ada');
   if (!contract.parsel.trim()) missing.push('Parsel');
-  if (!contract.areaM2.trim()) missing.push('m2');
+  if (!contract.areaM2.trim()) missing.push('m²');
 
   return missing;
 }
@@ -146,16 +146,16 @@ export default function ConversationalAnalysisIntake({
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Il" value={contract.il} onChange={(event) => setField('il', event.target.value)} />
-        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Ilce" value={contract.ilce} onChange={(event) => setField('ilce', event.target.value)} />
+        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="İl" value={contract.il} onChange={(event) => setField('il', event.target.value)} />
+        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="İlçe" value={contract.ilce} onChange={(event) => setField('ilce', event.target.value)} />
         <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Belediye" value={contract.belediye} onChange={(event) => setField('belediye', event.target.value)} />
         <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Mahalle" value={contract.mahalle} onChange={(event) => setField('mahalle', event.target.value)} />
         <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Ada" value={contract.ada} onChange={(event) => setField('ada', event.target.value)} />
         <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Parsel" value={contract.parsel} onChange={(event) => setField('parsel', event.target.value)} />
-        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="m2" value={contract.areaM2} onChange={(event) => setField('areaM2', event.target.value)} />
-        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Fiyat/m2" value={contract.pricePerM2} onChange={(event) => setField('pricePerM2', event.target.value)} />
+        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="m²" value={contract.areaM2} onChange={(event) => setField('areaM2', event.target.value)} />
+        <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Fiyat/m²" value={contract.pricePerM2} onChange={(event) => setField('pricePerM2', event.target.value)} />
         <input className="rounded border border-slate-300 p-2 text-sm" placeholder="Toplam fiyat" value={contract.totalPrice} onChange={(event) => setField('totalPrice', event.target.value)} />
-        <input className="rounded border border-slate-300 p-2 text-sm sm:col-span-2" placeholder="Ilan URL" value={contract.listingUrl} onChange={(event) => setField('listingUrl', event.target.value)} />
+        <input className="rounded border border-slate-300 p-2 text-sm sm:col-span-2" placeholder="İlan URL" value={contract.listingUrl} onChange={(event) => setField('listingUrl', event.target.value)} />
       </div>
 
       <div className="mt-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
@@ -201,7 +201,7 @@ export default function ConversationalAnalysisIntake({
           onChange={(event) => setGuidanceOnlyAcknowledged(event.target.checked)}
           className="mt-1"
         />
-        <span>Guidance-only sinirlarini anladim.</span>
+        <span>Guidance-only sınırlarını anladım.</span>
       </label>
 
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
