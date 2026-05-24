@@ -182,3 +182,17 @@ Anchor checks retained:
 - Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
 - PR-PROD-004 authenticated smoke: PASS
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+
+## 12) Consolidated Snapshot Status
+- controlled beta snapshot: CREATED
+- next sprint plan: CREATED
+- recommended next action: Run Viewer #2 targeted feedback session
+- public launch: NOT_READY
+- controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
+
+Anchor checks retained:
+- Production SMTP/DNS/secret: PROVIDER_SELECTION_REQUIRED_PUBLIC_LAUNCH_BLOCKER
+- Viewer #2: POSTPONED_PENDING_REAL_VIEWER
+- GitHub Actions first success: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
+- Historical backfill: READONLY_AUDIT_PLAN_CREATED_IMPLEMENTATION_DEFERRED
+- OCR preview: POC_PLAN_CREATED_IMPLEMENTATION_DEFERRED
