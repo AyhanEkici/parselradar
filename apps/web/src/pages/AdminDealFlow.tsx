@@ -546,29 +546,31 @@ export default function AdminDealFlow() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {(
-              [
-                { key: 'ALL', label: 'All' },
-                { key: 'OPTED_IN', label: 'Opted in' },
-                { key: 'CONTACT_ALLOWED', label: 'Contact allowed' },
-                { key: 'NEEDS_EVIDENCE', label: 'Needs evidence' },
-                { key: 'READY_FOR_REVIEW', label: 'Ready for review' },
-              ] as Array<{ key: FilterKey; label: string }>
-            ).map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setFilter(tab.key)}
-                className={`rounded border px-3 py-1.5 text-sm ${
-                  filter === tab.key
-                    ? 'border-slate-800 bg-slate-800 text-white'
-                    : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="w-full overflow-x-auto">
+            <div className="flex w-max gap-2 pb-1">
+              {(
+                [
+                  { key: 'ALL', label: 'All' },
+                  { key: 'OPTED_IN', label: 'Opted in' },
+                  { key: 'CONTACT_ALLOWED', label: 'Contact allowed' },
+                  { key: 'NEEDS_EVIDENCE', label: 'Needs evidence' },
+                  { key: 'READY_FOR_REVIEW', label: 'Ready for review' },
+                ] as Array<{ key: FilterKey; label: string }>
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setFilter(tab.key)}
+                  className={`whitespace-nowrap rounded border px-3 py-1.5 text-sm ${
+                    filter === tab.key
+                      ? 'border-slate-800 bg-slate-800 text-white'
+                      : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
@@ -644,35 +646,42 @@ export default function AdminDealFlow() {
                     <div className="mt-1 text-xs text-slate-600">{row.location}</div>
                     <div className="mt-1 text-[11px] font-mono text-slate-500">{row.propertyId}</div>
 
-                    <div className="mt-2 grid grid-cols-1 gap-1 text-xs text-slate-700">
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <AdminStatusPill tone={leadQualityTone(row.leadQuality)}>{row.leadQualityText}</AdminStatusPill>
+                      <AdminStatusPill tone={toneForReadiness(row.evidenceSignalText)}>{row.evidenceSignalText}</AdminStatusPill>
+                      <AdminStatusPill tone={toneForReadiness(row.readinessSignalText)}>{row.readinessSignalText}</AdminStatusPill>
+                      <AdminStatusPill tone={marketSignalTone(row.marketSignal)}>{row.marketSignalText}</AdminStatusPill>
+                    </div>
+
+                    <div className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Summary</div>
+                    <div className="mt-1 grid grid-cols-1 gap-1 text-xs text-slate-700">
                       <div><span className="font-medium">User:</span> {row.userDisplay}</div>
                       <div><span className="font-medium">Asset:</span> {row.assetTypeText} | {row.askingPriceText} | {row.areaText}</div>
-                      <div><span className="font-medium">Consent:</span> {row.consentStatusText}</div>
-                      <div><span className="font-medium">Contact:</span> {row.contactPermissionText}</div>
-                      <div><span className="font-medium">Evidence:</span> {row.evidenceSignalText}</div>
-                      <div><span className="font-medium">Readiness:</span> {row.readinessSignalText}</div>
-                      <div><span className="font-medium">Market:</span> {row.marketSignalText}</div>
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                        <div><span className="font-medium">Consent:</span> {row.consentStatusText}</div>
+                        <div><span className="font-medium">Contact:</span> {row.contactPermissionText}</div>
+                      </div>
                       <div><span className="font-medium">Next action:</span> {row.nextActionText}</div>
                       <div><span className="font-medium">Updated:</span> {row.updatedText}</div>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <AdminStatusPill tone={leadQualityTone(row.leadQuality)}>{row.leadQualityText}</AdminStatusPill>
+                    <div className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Actions</div>
+                    <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
                       <Link
                         to={`/admin/properties/${row.propertyId}`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-800 bg-slate-800 px-2 py-1.5 text-center text-xs text-white hover:bg-slate-700"
                       >
                         Open Property
                       </Link>
                       <Link
                         to={`/admin/properties/${row.propertyId}/documents`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-700 hover:bg-slate-50"
                       >
                         Documents
                       </Link>
                       <Link
                         to={`/properties/${row.propertyId}/result`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-700 hover:bg-slate-50 sm:col-span-2"
                       >
                         Result/Report
                       </Link>

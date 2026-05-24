@@ -307,33 +307,40 @@ export default function AdminAnalysisReports() {
                     <div className="mt-1 text-xs text-slate-600">{row.location}</div>
                     <div className="mt-1 text-[11px] font-mono text-slate-500">{row.propertyId}</div>
 
-                    <div className="mt-2 grid grid-cols-1 gap-1 text-xs text-slate-700">
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <AdminStatusPill tone={toneForStatus(row.propertyStatus)}>{row.propertyStatus}</AdminStatusPill>
+                      <AdminStatusPill tone={row.evidenceCountText.includes('0 document') ? 'warning' : 'info'}>{row.evidenceCountText}</AdminStatusPill>
+                    </div>
+
+                    <div className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Summary</div>
+                    <div className="mt-1 grid grid-cols-1 gap-1 text-xs text-slate-700">
                       <div><span className="font-medium">User:</span> {row.userDisplay}</div>
-                      <div><span className="font-medium">Evidence:</span> {row.evidenceCountText}</div>
                       <div><span className="font-medium">Analysis:</span> {row.analysisRunStatusText}</div>
                       <div><span className="font-medium">Readiness:</span> {row.reportReadinessText}</div>
-                      <div><span className="font-medium">Consent:</span> {row.dealFlowConsentText}</div>
-                      <div><span className="font-medium">Contact:</span> {row.professionalContactText}</div>
+                      <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                        <div><span className="font-medium">Consent:</span> {row.dealFlowConsentText}</div>
+                        <div><span className="font-medium">Contact:</span> {row.professionalContactText}</div>
+                      </div>
                       <div><span className="font-medium">Updated:</span> {row.lastUpdatedText}</div>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <AdminStatusPill tone={toneForStatus(row.propertyStatus)}>{row.propertyStatus}</AdminStatusPill>
+                    <div className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Actions</div>
+                    <div className="mt-1 grid grid-cols-1 gap-2 sm:grid-cols-2">
                       <Link
                         to={`/admin/properties/${row.propertyId}`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-800 bg-slate-800 px-2 py-1.5 text-center text-xs text-white hover:bg-slate-700"
                       >
                         Open Property
                       </Link>
                       <Link
                         to={`/admin/properties/${row.propertyId}/documents`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-700 hover:bg-slate-50"
                       >
                         Evidence/Documents
                       </Link>
                       <Link
                         to={`/properties/${row.propertyId}/result`}
-                        className="rounded border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                        className="rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-700 hover:bg-slate-50 sm:col-span-2"
                       >
                         Open report-ready result
                       </Link>

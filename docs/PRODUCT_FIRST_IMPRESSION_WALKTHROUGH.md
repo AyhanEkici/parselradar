@@ -233,3 +233,4 @@ ParselRadar already feels like a serious controlled-beta evidence workspace with
 - Manual/blocked sources are skipped.
 - Workflow YAML diagnostics for `.github/workflows/scheduled-metadata-sync.yml` were fixed in repository.
 - Public launch remains `NOT_READY`.
+- P2.PRODUCT-FIRST-IMPRESSION-3B continuation: additional mobile hierarchy/action-visibility polish applied to admin analysis-reports and deal-flow surfaces.
