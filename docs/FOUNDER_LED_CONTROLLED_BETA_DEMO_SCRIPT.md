@@ -137,7 +137,7 @@
 
 ## 12) Known Limitations To Explain
 - Some metadata completeness is still being hardened before public launch.
-- Mobile admin scanability is partially improved and still being refined.
+- Mobile admin is acceptable for controlled beta but not final.
 - Connector scheduler first successful GitHub Actions run has not yet been verified.
 - Some provider integrations are intentionally manual/blocked by policy.
 

@@ -25,15 +25,17 @@ ParselRadar is a controlled-beta intelligence workflow that structures parcel ev
 - Mobile admin scanability is partial on dense surfaces.
 
 ## Live Demo Route Order
-1. /dashboard
-2. /properties/new
-3. /properties/6a09317e90f79b455480b80e
-4. /properties/6a09317e90f79b455480b80e/documents
-5. /properties/6a09317e90f79b455480b80e/result
-6. /properties/6a09317e90f79b455480b80e/report
-7. /admin/connectors/center
-8. /credits
-9. /map
+1. /
+2. /login
+3. /dashboard
+4. /properties/new
+5. /properties/6a09317e90f79b455480b80e
+6. /properties/6a09317e90f79b455480b80e/documents
+7. /properties/6a09317e90f79b455480b80e/result
+8. /properties/6a09317e90f79b455480b80e/report
+9. /admin/connectors/center
+10. /credits
+11. /map
 
 ## Viewer Feedback Questions
 - Which step made the workflow feel most useful?
