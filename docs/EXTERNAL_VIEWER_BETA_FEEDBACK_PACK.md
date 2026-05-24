@@ -81,3 +81,14 @@ Use this wording during and after the session:
 - Overclaim concern seen (if any):
 - Top 3 requested improvements:
 - Would participate in next controlled-beta round (yes/no):
+
+## 7) Viewer #2 Structured Feedback Mode
+- Do not accept only "everything is good" as sufficient feedback.
+- Ask these five required questions in every Viewer #2 session:
+	- What do you think ParselRadar does?
+	- Where would you use this?
+	- What is unclear or too limited?
+	- Do you trust the report as controlled-beta guidance, not official verification?
+	- Would you test this with a real parcel or pay for it later?
+- Record concrete confusion, value, and trust signals.
+- Keep public launch status as NOT_READY during all messaging.

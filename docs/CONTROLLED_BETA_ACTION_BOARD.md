@@ -83,3 +83,22 @@ Status anchors kept unchanged:
 - GitHub Actions first success: FIRST_SUCCESS_NOT_FOUND
 - PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
 - PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+
+## 9) Postponed Non-Blocking Items
+### GitHub Actions First Successful Run Verification
+- Status: POSTPONED_NON_BLOCKING_FOR_CONTROLLED_BETA
+- Current evidence:
+	- workflow YAML sanity previously PASS
+	- build PASS
+	- endpoint security PASS
+	- first success not found
+	- GH CLI missing
+- Revisit:
+	- before public launch
+	- or when GitHub UI/gh auth is available
+
+Anchors retained:
+- Public launch: NOT_READY
+- Controlled beta: READY_FOR_CONTROLLED_BETA_CONTINUATION
+- PR-PROD-002: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
+- PR-PROD-004: PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA
