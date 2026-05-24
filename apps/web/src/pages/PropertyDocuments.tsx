@@ -278,7 +278,7 @@ function statusText(status?: string) {
   if (normalized === 'CONFIRMED_BY_ADMIN') return 'Confirmed by admin';
   if (normalized === 'MANUAL_REVIEW_REQUIRED') return 'Manual review required';
   if (normalized === 'REJECTED') return 'Rejected';
-  return 'Unknown';
+  return 'Not yet reviewed';
 }
 
 function statusClass(status?: string) {
@@ -630,15 +630,15 @@ export default function PropertyDocuments() {
                   {doc.sourceType ? <div>Source type: {doc.sourceType}</div> : null}
                   <div className="flex flex-wrap gap-1">
                     <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.reviewStatus)}`}>
-                      Review: {statusText(doc.reviewStatus)}
+                      Review status: {statusText(doc.reviewStatus)}
                     </span>
                     <span className={`inline-flex rounded border px-2 py-0.5 ${statusClass(doc.metadataStatus)}`}>
-                      Metadata: {statusText(doc.metadataStatus)}
+                      Metadata status: {statusText(doc.metadataStatus)}
                     </span>
                   </div>
                   {doc.supportingEvidenceOnly ? <div>Supporting evidence only</div> : null}
-                  <div>Needs review before verified analysis use.</div>
-                  <div className="text-slate-500">Status update endpoint not wired yet.</div>
+                  <div>Not yet reviewed. Manual evidence still needed before verified analysis use.</div>
+                  <div className="text-slate-500">Guidance only - not official property verification.</div>
                   {Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0 ? (
                     <div>CSV fields: {doc.csvDetectedFields.join(', ')}</div>
                   ) : null}
@@ -714,9 +714,9 @@ export default function PropertyDocuments() {
               <div className="font-semibold text-blue-900">Municipality source guidance</div>
               <div className="mt-1">{municipalityGuidancePreset.sourceLabel}</div>
               <div className="mt-1">Public source status: {municipalityGuidancePreset.registryStatus || 'NOT_CONFIGURED'}</div>
-              <div className="mt-1">Official public source to check manually</div>
-              <div className="mt-1">This is guidance only, not automated zoning verification</div>
-              <div className="mt-1">Upload a screenshot/document as supporting evidence after checking the source</div>
+              <div className="mt-1">Official source must be checked manually.</div>
+              <div className="mt-1">No automated zoning result is available.</div>
+              <div className="mt-1">Upload supporting screenshot or document after checking the official source.</div>
               {municipalityGuidancePreset.blockedRegistryStatus ? (
                 <div className="mt-1">Blocked source status: {municipalityGuidancePreset.blockedRegistryStatus}</div>
               ) : null}
@@ -763,7 +763,8 @@ export default function PropertyDocuments() {
               {intentPreset.placeholder ? <div className="mt-1">{intentPreset.placeholder}</div> : null}
               <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
               <div>Suggested source type: {intentPreset.sourceType}</div>
-              <div className="mt-1">Upload a screenshot/document as supporting evidence after checking the source.</div>
+              <div className="mt-1">Upload supporting screenshot or document after checking the official source.</div>
+              <div className="mt-1">Guidance only - not official property verification.</div>
               {intentPreset.sourceUrl ? (
                 <a
                   className="mt-2 inline-flex rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100"
@@ -849,7 +850,7 @@ export default function PropertyDocuments() {
             <div className="text-xs text-slate-600">
               OCR-assisted classification is planned but not active in this phase.
             </div>
-            {uploadQueue.length === 0 ? <div className="text-xs text-slate-500">No files queued.</div> : null}
+            {uploadQueue.length === 0 ? <div className="text-xs text-slate-500">No files queued. Upload supporting screenshot or document.</div> : null}
             <div className="space-y-2">
               {uploadQueue.map((item) => {
                 const isCsv = getFileExtension(item.file.name) === 'csv' || String(item.file.type || '').toLowerCase().includes('csv');

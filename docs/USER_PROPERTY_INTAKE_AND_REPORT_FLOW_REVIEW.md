@@ -147,3 +147,21 @@ Checks passed in this review:
 - No backend/auth/payment/cron changes were made in this phase.
 - Report alias route remains operational in live pass.
 - One new actionable product finding was added to ledger for evidence metadata completeness in report flow.
+
+## 19) Closeout Note (P2.PRODUCT-FIRST-IMPRESSION-5)
+- Root-cause classification for PR-PROD-004: MIXED
+  - TECHNICAL_STATUS_EXPOSED
+  - MISSING_METADATA_LABEL_UNCLEAR
+  - DOCUMENT_NEXT_ACTION_WEAK
+  - REPORT_EVIDENCE_ROW_UNCLEAR
+  - INTAKE_LABEL_LANGUAGE_MIXED
+- Low-risk frontend polish applied only (no backend/API behavior changes):
+  - Replaced technical status leakage with user-safe wording such as `Not yet reviewed` and `Source not available yet`.
+  - Clarified document/report next actions with explicit `Manual evidence still needed` and `Upload supporting screenshot or document` guidance.
+  - Strengthened boundaries with `Guidance only - not official property verification`, `Official source must be checked manually`, and `No automated zoning result is available` wording.
+  - Reduced intake language/transliteration mix for option labels and CTA texts.
+- Deferred:
+  - Full source/review metadata completeness still requires later API-level improvements.
+- Status:
+  - Public launch remains `NOT_READY`.
+  - Controlled beta remains `READY_FOR_CONTROLLED_BETA_CONTINUATION`.

@@ -11,51 +11,51 @@ type Option = { value: string; label: string };
 const assetTypeOptions: Option[] = [
   { value: 'ARSA', label: 'Arsa' },
   { value: 'TARLA', label: 'Tarla' },
-  { value: 'BAHCE', label: 'Bahce' },
+  { value: 'BAHCE', label: 'Bahçe' },
   { value: 'KONUT', label: 'Konut' },
   { value: 'TICARI', label: 'Ticari' },
   { value: 'PROJE', label: 'Proje' },
-  { value: 'DIGER', label: 'Diger' },
+  { value: 'DIGER', label: 'Diğer' },
 ];
 
 const inputMethodOptions: Option[] = [
-  { value: 'ILAN_URL', label: 'Ilan URL' },
-  { value: 'SCREENSHOT_UPLOAD', label: 'Screenshot upload' },
+  { value: 'ILAN_URL', label: 'İlan URL' },
+  { value: 'SCREENSHOT_UPLOAD', label: 'Ekran görüntüsü yükleme' },
   { value: 'ADA_PARSEL', label: 'Ada/Parsel' },
-  { value: 'MANUAL_ENTRY', label: 'Manual entry' },
+  { value: 'MANUAL_ENTRY', label: 'Manuel giriş' },
 ];
 
 const tapuTypeOptions: Option[] = [
-  { value: 'MUSTAKIL', label: 'Mustakil' },
+  { value: 'MUSTAKIL', label: 'Müstakil' },
   { value: 'HISSELI', label: 'Hisseli' },
-  { value: 'KAT_IRTIFAKI', label: 'Kat irtifaki' },
-  { value: 'KAT_MULKIYETI', label: 'Kat mulkiyeti' },
-  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+  { value: 'KAT_IRTIFAKI', label: 'Kat irtifakı' },
+  { value: 'KAT_MULKIYETI', label: 'Kat mülkiyeti' },
+  { value: 'UNKNOWN', label: 'Emin değilim' },
 ];
 
 const zoningStatusOptions: Option[] = [
-  { value: 'IMARLI', label: 'Imarli' },
-  { value: 'IMARSIZ', label: 'Imarsiz' },
-  { value: 'KOY_YERLESIK_ALANI', label: 'Koy yerlesik alani' },
-  { value: 'TARIMSAL', label: 'Tarimsal' },
-  { value: 'BAG_BAHCE', label: 'Bag/Bahce' },
+  { value: 'IMARLI', label: 'İmarlı' },
+  { value: 'IMARSIZ', label: 'İmarsız' },
+  { value: 'KOY_YERLESIK_ALANI', label: 'Köy yerleşik alanı' },
+  { value: 'TARIMSAL', label: 'Tarımsal' },
+  { value: 'BAG_BAHCE', label: 'Bağ/Bahçe' },
   { value: 'TICARI', label: 'Ticari' },
   { value: 'KONUT', label: 'Konut' },
-  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+  { value: 'UNKNOWN', label: 'Emin değilim' },
 ];
 
 const roadAccessOptions: Option[] = [
   { value: 'KADASTRO_YOLU', label: 'Kadastro yolu' },
   { value: 'FIILI_YOL', label: 'Fiili yol' },
   { value: 'YOL_YOK', label: 'Yol yok' },
-  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+  { value: 'UNKNOWN', label: 'Emin değilim' },
 ];
 
 const utilityStatusOptions: Option[] = [
   { value: 'VAR', label: 'Var' },
-  { value: 'YAKIN', label: 'Yakin' },
+  { value: 'YAKIN', label: 'Yakın' },
   { value: 'YOK', label: 'Yok' },
-  { value: 'UNKNOWN', label: 'Unknown / Not sure' },
+  { value: 'UNKNOWN', label: 'Emin değilim' },
 ];
 
 export default function NewProperty() {
@@ -83,7 +83,7 @@ export default function NewProperty() {
     try {
       window.localStorage.setItem(DRAFT_KEY, JSON.stringify(nextForm));
       setHasDraft(true);
-      setDraftMessage('Draft saved');
+      setDraftMessage('Taslak kaydedildi');
       setTimeout(() => setDraftMessage(''), 2000);
     } catch {
       setDraftMessage('Draft kaydedilemedi');
@@ -96,7 +96,7 @@ export default function NewProperty() {
       if (!raw) return;
       const parsed = JSON.parse(raw) as PropertyForm;
       setForm(parsed || {});
-      setDraftMessage('Draft loaded');
+      setDraftMessage('Taslak yüklendi');
       setTimeout(() => setDraftMessage(''), 2000);
     } catch {
       setDraftMessage('Draft okunamadı');
@@ -107,7 +107,7 @@ export default function NewProperty() {
     try {
       window.localStorage.removeItem(DRAFT_KEY);
       setHasDraft(false);
-      setDraftMessage('Draft cleared');
+      setDraftMessage('Taslak temizlendi');
       setTimeout(() => setDraftMessage(''), 2000);
     } catch {
       setDraftMessage('Draft temizlenemedi');
@@ -169,10 +169,10 @@ export default function NewProperty() {
       <div className="mb-3 text-sm text-gray-600">Adım {step} / {TOTAL_STEPS}</div>
       {hasDraft ? (
         <div className="mb-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-          <div className="font-medium mb-2">Continue draft?</div>
+          <div className="font-medium mb-2">Kayıtlı taslağa devam etmek ister misiniz?</div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" className="bg-amber-600 text-white px-3 py-1 rounded" onClick={continueDraft}>Continue draft</button>
-            <button type="button" className="bg-white border border-amber-300 px-3 py-1 rounded" onClick={clearDraft}>Clear draft</button>
+            <button type="button" className="bg-amber-600 text-white px-3 py-1 rounded" onClick={continueDraft}>Taslağa devam et</button>
+            <button type="button" className="bg-white border border-amber-300 px-3 py-1 rounded" onClick={clearDraft}>Taslağı temizle</button>
           </div>
         </div>
       ) : null}
@@ -182,7 +182,7 @@ export default function NewProperty() {
           <>
             <label className="block text-sm font-medium">Varlık Türü *</label>
             <select className={inputClass('assetType')} name="assetType" required value={String(form.assetType || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {assetTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -191,7 +191,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">Giriş Yöntemi *</label>
             <select className={inputClass('inputMethod')} name="inputMethod" required value={String(form.inputMethod || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {inputMethodOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -233,7 +233,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">Tapu Türü *</label>
             <select className={inputClass('tapuType')} name="tapuType" required value={String(form.tapuType || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {tapuTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -242,7 +242,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">İmar Durumu *</label>
             <select className={inputClass('zoningStatus')} name="zoningStatus" required value={String(form.zoningStatus || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {zoningStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -264,7 +264,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">Yol Durumu *</label>
             <select className={inputClass('roadAccess')} name="roadAccess" required value={String(form.roadAccess || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {roadAccessOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -273,7 +273,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">Elektrik *</label>
             <select className={inputClass('electricity')} name="electricity" required value={String(form.electricity || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {utilityStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -282,7 +282,7 @@ export default function NewProperty() {
 
             <label className="block text-sm font-medium">Su *</label>
             <select className={inputClass('water')} name="water" required value={String(form.water || '')} onChange={handleChange}>
-              <option value="">Select...</option>
+              <option value="">Seçiniz...</option>
               {utilityStatusOptions.map((option) => (
                 <option key={option.value} value={option.value}>{option.label}</option>
               ))}
@@ -294,7 +294,7 @@ export default function NewProperty() {
             <div className="mt-4 rounded border border-sky-200 bg-sky-50 p-3">
               <h3 className="text-sm font-semibold text-sky-900">Optional professional matching</h3>
               <p className="mt-1 text-xs text-sky-800 leading-relaxed">
-                You can allow ParselRadar to use this property case for future professional review or matching with relevant real-estate professionals. This is optional. Your data will not be shared as a hidden backdoor.
+                Bu mülk kaydını gelecekte profesyonel eşleştirme için kullanmamıza izin verebilirsiniz. Bu adım isteğe bağlıdır ve varsayılan olarak kayıt gizli kalır.
               </p>
               <label className="mt-3 flex items-start gap-2 text-sm text-slate-800">
                 <input
@@ -307,7 +307,7 @@ export default function NewProperty() {
                   }}
                   className="mt-1"
                 />
-                <span>I allow ParselRadar to use this property case for future opt-in professional matching.</span>
+                <span>Bu mülk kaydının gelecekte isteğe bağlı profesyonel eşleştirme için kullanılmasına izin veriyorum.</span>
               </label>
               <label className="mt-2 flex items-start gap-2 text-sm text-slate-800">
                 <input
@@ -317,10 +317,10 @@ export default function NewProperty() {
                   disabled={!allowDealFlowMatching}
                   className="mt-1"
                 />
-                <span>I allow a professional to contact me about this property case.</span>
+                <span>Bu mülk kaydı hakkında bir uzmanın benimle iletişime geçmesine izin veriyorum.</span>
               </label>
               <p className="mt-2 text-xs text-slate-600">
-                Default is private. You can create this property without opting in.
+                Varsayılan durum gizlidir. Bu onayı vermeden mülk kaydı oluşturabilirsiniz.
               </p>
             </div>
           </>
@@ -329,12 +329,12 @@ export default function NewProperty() {
         {error && <div className="text-red-600">{error}</div>}
 
         <div className="flex flex-wrap gap-2 pt-2">
-          <button type="button" className="bg-gray-200 px-3 py-2 rounded" onClick={() => navigate('/dashboard')}>Back to dashboard</button>
-          <button type="button" className="bg-gray-200 px-3 py-2 rounded" onClick={() => navigate('/dashboard')}>Cancel</button>
-          <button type="button" className="bg-amber-600 text-white px-3 py-2 rounded" onClick={() => persistDraft(form)}>Save Draft</button>
-          <button type="button" className="bg-gray-300 px-3 py-2 rounded" disabled={step === 1} onClick={prevStep}>Back</button>
+          <button type="button" className="bg-gray-200 px-3 py-2 rounded" onClick={() => navigate('/dashboard')}>Panele dön</button>
+          <button type="button" className="bg-gray-200 px-3 py-2 rounded" onClick={() => navigate('/dashboard')}>İptal</button>
+          <button type="button" className="bg-amber-600 text-white px-3 py-2 rounded" onClick={() => persistDraft(form)}>Taslağı kaydet</button>
+          <button type="button" className="bg-gray-300 px-3 py-2 rounded" disabled={step === 1} onClick={prevStep}>Geri</button>
           {step < TOTAL_STEPS ? (
-            <button type="button" className="bg-blue-600 text-white px-3 py-2 rounded" onClick={nextStep}>Next</button>
+            <button type="button" className="bg-blue-600 text-white px-3 py-2 rounded" onClick={nextStep}>İleri</button>
           ) : (
             <button className="bg-blue-600 text-white px-3 py-2 rounded" type="submit">Kaydet ve Belgeler</button>
           )}

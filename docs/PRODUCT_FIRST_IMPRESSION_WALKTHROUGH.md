@@ -235,3 +235,13 @@ ParselRadar already feels like a serious controlled-beta evidence workspace with
 - Public launch remains `NOT_READY`.
 - P2.PRODUCT-FIRST-IMPRESSION-3B continuation: additional mobile hierarchy/action-visibility polish applied to admin analysis-reports and deal-flow surfaces.
 - P2.PRODUCT-FIRST-IMPRESSION-3C final pass: PR-PROD-002 reclassified to `PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA` (mobile analysis-reports/deal-flow still PARTIAL under current runtime loading conditions).
+
+## 19) Closeout Note (P2.PRODUCT-FIRST-IMPRESSION-5)
+- PR-PROD-004 addressed with low-risk frontend copy/UI polish only.
+- Intake form labels and CTA wording were normalized to reduce language/transliteration confusion.
+- Documents/report surfaces now use user-safe metadata wording (for example: `Not yet reviewed`, `Source not available yet`, `Manual evidence still needed`).
+- User-facing technical leakage text was removed and replaced with guidance-first wording.
+- Boundaries were reinforced: guidance only, no automated zoning result, and official source must be checked manually.
+- PR-PROD-004 is now `PARTIAL_ACCEPTED_FOR_CONTROLLED_BETA` because full metadata completeness still depends on future API improvements.
+- Public launch remains `NOT_READY`.
+- Controlled beta remains `READY_FOR_CONTROLLED_BETA_CONTINUATION`.

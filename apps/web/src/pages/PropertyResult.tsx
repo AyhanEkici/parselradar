@@ -493,6 +493,8 @@ function toTitleCaseFromCode(value: string) {
 const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 const MAP_LAYER_DISCLAIMER =
   'Map, layer and parcel visuals are informational only. No official cadastral, tapu, zoning or municipal proof is confirmed unless explicitly reviewed from an official source.';
+const SOURCE_NOT_AVAILABLE_LABEL = 'Source not available yet';
+const NOT_YET_REVIEWED_LABEL = 'Not yet reviewed';
 
 function toFiniteNumber(input: unknown): number | null {
   if (typeof input === 'number' && Number.isFinite(input)) return input;
@@ -514,9 +516,9 @@ function formatArea(value?: number) {
 }
 
 function formatGeneratedAt(value?: string) {
-  if (!value) return 'Not available from current endpoint';
+  if (!value) return SOURCE_NOT_AVAILABLE_LABEL;
   const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return 'Not available from current endpoint';
+  if (Number.isNaN(parsed.getTime())) return SOURCE_NOT_AVAILABLE_LABEL;
   return parsed.toLocaleString('tr-TR');
 }
 
@@ -530,7 +532,7 @@ function isPlausibleLongitude(value: number) {
 
 function normalizeStatusValue(status?: string) {
   const normalized = String(status || '').trim();
-  return normalized || 'Not available from current endpoint';
+  return normalized || NOT_YET_REVIEWED_LABEL;
 }
 
 function normalizeCoordinatePreview(docs: DocumentMetadata[]) {
@@ -594,9 +596,9 @@ function normalizeCoordinatePreview(docs: DocumentMetadata[]) {
     hasValidCoordinates: Boolean(firstValid),
     latitude: firstValid?.latitude ?? null,
     longitude: firstValid?.longitude ?? null,
-    sourceDocumentName: firstValid?.sourceDocumentName ?? 'Not available from current endpoint',
-    metadataStatus: firstValid?.metadataStatus ?? 'Not available from current endpoint',
-    reviewStatus: firstValid?.reviewStatus ?? 'Not available from current endpoint',
+    sourceDocumentName: firstValid?.sourceDocumentName ?? SOURCE_NOT_AVAILABLE_LABEL,
+    metadataStatus: firstValid?.metadataStatus ?? NOT_YET_REVIEWED_LABEL,
+    reviewStatus: firstValid?.reviewStatus ?? NOT_YET_REVIEWED_LABEL,
     supportingEvidenceOnly: firstValid?.supportingEvidenceOnly ?? true,
     validCount,
   };
@@ -1140,7 +1142,7 @@ export default function PropertyResult() {
       : evidenceCount > 0
       ? 'Available from uploaded evidence metadata'
       : documentsFetchFailed
-      ? 'Not available from current endpoint'
+      ? SOURCE_NOT_AVAILABLE_LABEL
       : 'Missing';
 
     const distinctEvidenceTypes = Array.from(
@@ -1195,7 +1197,7 @@ export default function PropertyResult() {
             .filter(Boolean)
         )
       );
-      return values.length > 0 ? values.join(', ') : 'Not available from current endpoint';
+      return values.length > 0 ? values.join(', ') : SOURCE_NOT_AVAILABLE_LABEL;
     };
 
     const summarizeReview = (groupDocs: DocumentMetadata[]) => {
@@ -1206,7 +1208,7 @@ export default function PropertyResult() {
             .filter(Boolean)
         )
       );
-      return values.length > 0 ? values.map((value) => toTitleCaseFromCode(value)).join(', ') : 'Not available from current endpoint';
+      return values.length > 0 ? values.map((value) => toTitleCaseFromCode(value)).join(', ') : NOT_YET_REVIEWED_LABEL;
     };
 
     const resolveStatus = (groupDocs: DocumentMetadata[], fallbackPresent = false): EvidenceMatrixStatus => {
@@ -1301,10 +1303,10 @@ export default function PropertyResult() {
             ? 'PRESENT'
             : 'NEEDS_REVIEW'
           : 'MISSING',
-        sourceTypeLabel: csvCoordinatePreview.hasCoordinateMetadata ? 'CSV preview metadata' : 'Not available from current endpoint',
+        sourceTypeLabel: csvCoordinatePreview.hasCoordinateMetadata ? 'CSV preview metadata' : SOURCE_NOT_AVAILABLE_LABEL,
         reviewStatusLabel: csvCoordinatePreview.hasCoordinateMetadata
           ? `${csvCoordinatePreview.metadataStatus} / ${csvCoordinatePreview.reviewStatus}`
-          : 'Not available from current endpoint',
+          : NOT_YET_REVIEWED_LABEL,
         intentIfMissing: 'GENERAL_SUPPORTING_EVIDENCE',
       },
       {
@@ -1362,9 +1364,9 @@ export default function PropertyResult() {
     const location = [propertyData?.il, propertyData?.ilce, propertyData?.mahalleOrKoy || propertyData?.neighborhood]
       .filter(Boolean)
       .join(' / ');
-    const assetType = String(propertyData?.nitelik || propertyData?.zoningStatus || 'Not available from current endpoint');
+    const assetType = String(propertyData?.nitelik || propertyData?.zoningStatus || SOURCE_NOT_AVAILABLE_LABEL);
     return {
-      location: location || 'Not available from current endpoint',
+      location: location || SOURCE_NOT_AVAILABLE_LABEL,
       assetType,
       askingPrice: formatCurrencyTry(propertyData?.askingPriceTRY),
       area: formatArea(propertyData?.areaM2),
@@ -1503,8 +1505,11 @@ export default function PropertyResult() {
                   {evidenceMatrixStatusLabel(row.status)}
                 </span>
               </div>
-              <div className="mt-1 text-xs text-slate-600">Source type: {row.sourceTypeLabel}</div>
+              <div className="mt-1 text-xs text-slate-600">Source details: {row.sourceTypeLabel}</div>
               <div className="text-xs text-slate-600">Review status: {row.reviewStatusLabel}</div>
+              {(row.sourceTypeLabel === SOURCE_NOT_AVAILABLE_LABEL || row.reviewStatusLabel === NOT_YET_REVIEWED_LABEL) ? (
+                <div className="mt-1 text-xs text-amber-700">Manual evidence still needed. Upload supporting screenshot or document.</div>
+              ) : null}
               {row.status === 'MISSING' && row.intentIfMissing ? (
                 <button
                   className="mt-2 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100"
@@ -1573,10 +1578,12 @@ export default function PropertyResult() {
                   <div className="mt-1">Public source status: {sourceStatus}</div>
                   {guidance.blockedSourceStatus ? <div className="mt-1">Blocked source status: {guidance.blockedSourceStatus}</div> : null}
                   <div className="mt-1">What to upload: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
+                  <div className="mt-1">Official source must be checked manually.</div>
+                  <div className="mt-1">Guidance only - not official property verification.</div>
                   {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
                   {guidance.blockedSourceNote ? <div className="mt-1">{guidance.blockedSourceNote}</div> : null}
                   {!guidance.sourceUrl ? (
-                    <div className="mt-1">Use the official website of the relevant municipality/district and search for e-Imar, e-Plan or Imar Durumu.</div>
+                    <div className="mt-1">No automated zoning result is available. Use the official municipality source manually.</div>
                   ) : null}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
@@ -1638,6 +1645,8 @@ export default function PropertyResult() {
                             ))}
                           </ul>
                           <div className="mt-1">Upload back to ParselRadar as supporting evidence only.</div>
+                          <div className="mt-1">Official source must be checked manually.</div>
+                          <div className="mt-1">Guidance only - not official property verification.</div>
                           <div className="mt-1">Expected upload mapping: evidenceType={guidance.expectedEvidenceType}, sourceType={guidance.expectedSourceType}</div>
                           {guidance.warning ? <div className="mt-1">{guidance.warning}</div> : null}
                           {guidance.sourceUnavailableNote ? <div className="mt-1">{guidance.sourceUnavailableNote}</div> : null}
@@ -1760,10 +1769,10 @@ export default function PropertyResult() {
             <div className="mt-1 text-xs text-slate-600">Count: {mapLayerReadiness.evidenceCount}</div>
             <div className="text-xs text-slate-600">Status: {mapLayerReadiness.evidenceStatus}</div>
             <div className="mt-1 text-xs text-slate-600">
-              Evidence types: {mapLayerReadiness.distinctEvidenceTypes.length > 0 ? mapLayerReadiness.distinctEvidenceTypes.join(', ') : 'Not available from current endpoint'}
+              Evidence types: {mapLayerReadiness.distinctEvidenceTypes.length > 0 ? mapLayerReadiness.distinctEvidenceTypes.join(', ') : SOURCE_NOT_AVAILABLE_LABEL}
             </div>
             <div className="text-xs text-slate-600">
-              Source types: {mapLayerReadiness.distinctSourceTypes.length > 0 ? mapLayerReadiness.distinctSourceTypes.join(', ') : 'Not available from current endpoint'}
+              Source types: {mapLayerReadiness.distinctSourceTypes.length > 0 ? mapLayerReadiness.distinctSourceTypes.join(', ') : SOURCE_NOT_AVAILABLE_LABEL}
             </div>
           </div>
         </div>
