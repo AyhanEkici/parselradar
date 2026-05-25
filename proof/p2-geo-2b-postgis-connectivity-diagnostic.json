@@ -1,0 +1,54 @@
+{
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "status": "READY",
+  "generalInternetAvailable": true,
+  "secretSafety": {
+    "geodataDatabaseUrlPresent": true,
+    "geodataDatabaseUrlValue": "HIDDEN",
+    "envIgnored": true,
+    "envStaged": false,
+    "secretPrinted": false,
+    "secretCommitted": false,
+    "rotationRecommended": true
+  },
+  "safeUrlParse": {
+    "completed": true,
+    "protocol": "postgresql:",
+    "hostType": "pooler",
+    "port": "6543",
+    "hasSslMode": false,
+    "dbPresent": true,
+    "sslmode": "none",
+    "hasUser": true,
+    "hasPassword": true
+  },
+  "networkTest": {
+    "tool": "Test-NetConnection",
+    "configuredPort": 6543,
+    "tcpTestSucceededConfiguredPort": true,
+    "tcpTestSucceeded5432": true,
+    "tcpTestSucceeded6543": true,
+    "pingSucceededConfiguredPort": true,
+    "remoteAddressObserved": true,
+    "dnsResolved": true
+  },
+  "psqlTest": {
+    "available": false,
+    "connected": false,
+    "result": "PSQL_NOT_INSTALLED"
+  },
+  "nodePgTest": {
+    "connected": true,
+    "code": null,
+    "name": null,
+    "message": null,
+    "result": "PASS"
+  },
+  "blockerClassification": "CONNECTIVITY_OK_READY_FOR_SCHEMA",
+  "providerInference": "Supabase",
+  "recommendedExternalFix": [
+    "No external connectivity fix required for this phase."
+  ],
+  "schemaSeedTestRerun": "EXECUTED",
+  "generatedAt": "2026-05-25T20:40:30.000Z"
+}

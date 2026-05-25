@@ -1,0 +1,89 @@
+{
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "status": "PASS",
+  "connectivityDiagnostic": {
+    "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+    "blockerClassification": "CONNECTIVITY_OK_READY_FOR_SCHEMA",
+    "proof": "proof/p2-geo-2b-postgis-connectivity-diagnostic.json",
+    "schemaSeedTestRerun": "EXECUTED"
+  },
+  "secretSafety": {
+    "geodataDatabaseUrlPresent": true,
+    "geodataDatabaseUrlValue": "HIDDEN",
+    "envIgnored": true,
+    "envStaged": false,
+    "secretPrintedInProof": false,
+    "secretCommitted": false,
+    "rotationRecommended": true
+  },
+  "rootCause": {
+    "failureReason": "Previous node pg SSL error was resolved after removing sslmode query param from pooler URL.",
+    "errorClass": "NONE",
+    "nodePgErrorCode": null,
+    "hasSslMode": false,
+    "sslHelperAdded": false,
+    "sslmodeOverrideHandled": true,
+    "caCertificateUsed": false,
+    "localNoVerifyUsed": true,
+    "productionSslWeakened": false,
+    "exactFileFixed": "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+    "placeholderParameterMismatchResolved": true,
+    "previousEnvConfigIssueFixed": true
+  },
+  "livePostgis": {
+    "schemaApplied": true,
+    "seedCompleted": true,
+    "geo:p2-geo-2:test": "PASS"
+  },
+  "signalStatus": {
+    "returnedSignalCount": 8,
+    "returnedSignalNames": [
+      "NEAREST_DISTRICT_CENTER",
+      "NEAREST_MAIN_ROAD",
+      "NEAREST_SETTLEMENT",
+      "INDUSTRIAL_OR_OSB_PROXIMITY",
+      "WATER_OR_COAST_PROXIMITY",
+      "TOURISM_PROXIMITY",
+      "TERRAIN_ELEVATION",
+      "HAZARD_CONTEXT_PLACEHOLDER"
+    ],
+    "sourceLabels": [
+      "PUBLIC_SOURCE_SIGNAL",
+      "TERRAIN_SIGNAL",
+      "NEEDS_OFFICIAL_CONFIRMATION"
+    ],
+    "disclaimers": [
+      "Public-source approximate signal for POC. Not official tapu/imar verification. Official confirmation is required."
+    ],
+    "nearestDistrictCenterReturned": true,
+    "nearestMainRoadReturned": true,
+    "nearestSettlementReturned": true,
+    "industrialOrOsbCandidateReturned": true,
+    "waterFeatureReturned": true,
+    "labelsAndDisclaimersReturned": true,
+    "officialVerificationFalse": true
+  },
+  "noDrift": {
+    "dockerAdded": false,
+    "envChangedOrStaged": false,
+    "secretCommitted": false,
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "turkeyFullImportAdded": false,
+    "schedulerAdded": false,
+    "authRuntimeRefactor": false,
+    "officialVerificationClaimAdded": false
+  },
+  "commandResults": {
+    "nodePgTest": "PASS",
+    "geo:p2-geo-2:schema": "PASS",
+    "geo:p2-geo-2:seed": "PASS",
+    "geo:p2-geo-2:test": "PASS",
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "generatedAt": "2026-05-25T20:42:00.000Z"
+}

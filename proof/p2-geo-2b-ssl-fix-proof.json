@@ -1,0 +1,55 @@
+{
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "status": "PASS",
+  "secretSafety": {
+    "geodataDatabaseUrlPresent": true,
+    "geodataDatabaseUrlValue": "HIDDEN",
+    "envIgnored": true,
+    "envStaged": false,
+    "secretPrinted": false,
+    "secretCommitted": false,
+    "rotationRecommended": true
+  },
+  "sslStatus": {
+    "previousNodePgSslError": "SELF_SIGNED_CERT_IN_CHAIN",
+    "sslmodeRemovedFromUrl": true,
+    "hasSslMode": false,
+    "sslHelperAdded": false,
+    "sslmodeOverrideHandled": true,
+    "caCertificateUsed": false,
+    "localNoVerifyUsed": true,
+    "productionSslWeakened": false,
+    "sslHandlingApproach": "Pooler URL without sslmode query param + explicit pg ssl object in connectivity test"
+  },
+  "connectivity": {
+    "hostType": "pooler",
+    "port": 6543,
+    "tcpConfiguredPort": true,
+    "nodePgConnected": true
+  },
+  "livePostgis": {
+    "schemaApplied": true,
+    "seedCompleted": true,
+    "testStatus": "PASS"
+  },
+  "signals": {
+    "signalCount": 8,
+    "nearestDistrictCenterReturned": true,
+    "nearestMainRoadReturned": true,
+    "nearestSettlementReturned": true,
+    "industrialOrOsbCandidateReturned": true,
+    "waterFeatureReturned": true,
+    "labelsDisclaimersReturned": true,
+    "officialVerificationFalse": true
+  },
+  "noDrift": {
+    "dockerAdded": false,
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "turkeyFullImportAdded": false,
+    "schedulerAdded": false,
+    "authRuntimeRefactor": false,
+    "officialVerificationClaimAdded": false
+  },
+  "generatedAt": "2026-05-25T20:43:00.000Z"
+}

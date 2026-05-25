@@ -1,20 +1,54 @@
 {
-  "phase": "P2.GEO-2B",
-  "step": "geo:p2-geo-2:test",
-  "status": "CONFIG_REQUIRED",
-  "geodataDatabaseUrlPresent": false,
-  "liveQueryExecuted": false,
-  "signals": [],
-  "contractChecks": {
-    "nearestDistrictCenterReturned": false,
-    "nearestMainRoadReturned": false,
-    "nearestSettlementReturned": false,
-    "industrialOrOsbCandidateReturned": false,
-    "waterFeatureReturned": false,
-    "labelsAndDisclaimersReturned": false,
-    "officialVerificationFalse": false
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "status": "PASS",
+  "rootCause": "Original SQL binding mismatch remained fixed; removing sslmode from pooler URL allowed successful node pg connection and live run.",
+  "geodataDatabaseUrlPresent": true,
+  "geodataDatabaseUrlValue": "HIDDEN",
+  "hostType": "pooler",
+  "configuredPort": 6543,
+  "tcpConfiguredPort": true,
+  "hasSslMode": false,
+  "nodePgConnected": true,
+  "nodePgErrorCode": null,
+  "rotationRecommended": true,
+  "commands": {
+    "geo:p2-geo-2:schema": "PASS",
+    "geo:p2-geo-2:seed": "PASS",
+    "geo:p2-geo-2:test": "PASS"
   },
-  "message": "GEODATA_DATABASE_URL is missing. Live signal query is blocked with CONFIG_REQUIRED.",
-  "recommendedAction": "Configure GEODATA_DATABASE_URL in local session and rerun P2.GEO-2B.",
-  "generatedAt": "2026-05-25T00:00:00.000Z"
+  "errorClassification": {
+    "previousNodePg": "SELF_SIGNED_CERT_IN_CHAIN",
+    "current": "NONE"
+  },
+  "signalContract": {
+    "signalCount": 8,
+    "signalNames": [
+      "NEAREST_DISTRICT_CENTER",
+      "NEAREST_MAIN_ROAD",
+      "NEAREST_SETTLEMENT",
+      "INDUSTRIAL_OR_OSB_PROXIMITY",
+      "WATER_OR_COAST_PROXIMITY",
+      "TOURISM_PROXIMITY",
+      "TERRAIN_ELEVATION",
+      "HAZARD_CONTEXT_PLACEHOLDER"
+    ],
+    "sourceLabels": [
+      "PUBLIC_SOURCE_SIGNAL",
+      "TERRAIN_SIGNAL",
+      "NEEDS_OFFICIAL_CONFIRMATION"
+    ],
+    "disclaimers": [
+      "Public-source approximate signal for POC. Not official tapu/imar verification. Official confirmation is required."
+    ],
+    "nearestDistrictCenterReturned": true,
+    "nearestMainRoadReturned": true,
+    "nearestSettlementReturned": true,
+    "industrialOrOsbCandidateReturned": true,
+    "waterFeatureReturned": true,
+    "labelsAndDisclaimersReturned": true,
+    "officialVerificationFalse": true
+  },
+  "bindingMismatchResolved": true,
+  "fixedFile": "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+  "generatedAt": "2026-05-25T20:41:00.000Z"
 }

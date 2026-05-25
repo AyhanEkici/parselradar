@@ -126,101 +126,124 @@ async function main() {
       process.exit(1);
     }
 
-    const pointExpr = 'ST_SetSRID(ST_MakePoint($1, $2), 4326)';
-
     const nearestAdmin = await client.query(
       `
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      )
       SELECT a.name, a.centerType, a.confidence,
-             ST_Distance(a.geom::geography, ${pointExpr}::geography) AS distance_m,
+             ST_Distance(a.geom::geography, ip.geog) AS distance_m,
              s.sourceName, s.versionHash
       FROM geo_admin_centers a
       JOIN geo_source_versions s ON s.id = a.sourceVersionId
-      ORDER BY a.geom::geography <-> ${pointExpr}::geography
+      CROSS JOIN input_point ip
+      ORDER BY ST_Distance(a.geom::geography, ip.geog)
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const nearestRoad = await client.query(
       `
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      )
       SELECT r.name, r.highwayType, r.confidence,
-             ST_Distance(r.geom::geography, ${pointExpr}::geography) AS distance_m,
+             ST_Distance(r.geom::geography, ip.geog) AS distance_m,
              s.sourceName, s.versionHash
       FROM geo_roads_major r
       JOIN geo_source_versions s ON s.id = r.sourceVersionId
-      ORDER BY r.geom::geography <-> ${pointExpr}::geography
+      CROSS JOIN input_point ip
+      ORDER BY ST_Distance(r.geom::geography, ip.geog)
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const nearestSettlement = await client.query(
       `
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      )
       SELECT p.name, p.placeType, p.confidence,
-             ST_Distance(p.geom::geography, ${pointExpr}::geography) AS distance_m,
+             ST_Distance(p.geom::geography, ip.geog) AS distance_m,
              s.sourceName, s.versionHash
       FROM geo_places p
       JOIN geo_source_versions s ON s.id = p.sourceVersionId
-      ORDER BY p.geom::geography <-> ${pointExpr}::geography
+      CROSS JOIN input_point ip
+      ORDER BY ST_Distance(p.geom::geography, ip.geog)
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const nearestIndustrial = await client.query(
       `
-      WITH industrial_candidates AS (
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      ),
+      industrial_candidates AS (
         SELECT i.name AS name,
                i.confidence AS confidence,
                'geo_industrial_areas'::text AS source_table,
-               ST_Distance(i.geom::geography, ${pointExpr}::geography) AS distance_m,
+               ST_Distance(i.geom::geography, ip.geog) AS distance_m,
                s.sourceName AS source_name,
                s.versionHash AS version_hash
         FROM geo_industrial_areas i
         JOIN geo_source_versions s ON s.id = i.sourceVersionId
+        CROSS JOIN input_point ip
 
         UNION ALL
 
         SELECT o.name AS name,
                o.confidence AS confidence,
                'geo_osb_curated'::text AS source_table,
-               ST_Distance(o.geom::geography, ${pointExpr}::geography) AS distance_m,
+               ST_Distance(o.geom::geography, ip.geog) AS distance_m,
                o.source AS source_name,
                'p2-geo-2-osb-curated'::text AS version_hash
         FROM geo_osb_curated o
+        CROSS JOIN input_point ip
       )
       SELECT *
       FROM industrial_candidates
       ORDER BY distance_m ASC
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const nearestWater = await client.query(
       `
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      )
       SELECT w.name, w.waterType, w.confidence,
-             ST_Distance(w.geom::geography, ${pointExpr}::geography) AS distance_m,
+             ST_Distance(w.geom::geography, ip.geog) AS distance_m,
              s.sourceName, s.versionHash
       FROM geo_water_features w
       JOIN geo_source_versions s ON s.id = w.sourceVersionId
-      ORDER BY w.geom::geography <-> ${pointExpr}::geography
+      CROSS JOIN input_point ip
+      ORDER BY ST_Distance(w.geom::geography, ip.geog)
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const nearestTourism = await client.query(
       `
+      WITH input_point AS (
+        SELECT ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography AS geog
+      )
       SELECT t.name, t.tourismType, t.confidence,
-             ST_Distance(t.geom::geography, ${pointExpr}::geography) AS distance_m,
+             ST_Distance(t.geom::geography, ip.geog) AS distance_m,
              s.sourceName, s.versionHash
       FROM geo_tourism_features t
       JOIN geo_source_versions s ON s.id = t.sourceVersionId
-      ORDER BY t.geom::geography <-> ${pointExpr}::geography
+      CROSS JOIN input_point ip
+      ORDER BY ST_Distance(t.geom::geography, ip.geog)
       LIMIT 1;
       `,
-      [TEST_COORDINATE.lon, TEST_COORDINATE.lat, TEST_COORDINATE.lon, TEST_COORDINATE.lat]
+      [TEST_COORDINATE.lon, TEST_COORDINATE.lat]
     );
 
     const terrainRow = await client.query(

@@ -1,0 +1,28 @@
+{
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "connectivityDiagnostic": {
+    "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+    "blockerClassification": "CONNECTIVITY_OK_READY_FOR_SCHEMA",
+    "schemaSeedTestRerun": "EXECUTED",
+    "proof": "proof/p2-geo-2b-postgis-connectivity-diagnostic.json"
+  },
+  "results": {
+    "geo:p2-geo-2:schema": "PASS",
+    "geo:p2-geo-2:seed": "PASS",
+    "geo:p2-geo-2:test": "PASS",
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "errorClassification": {
+    "previousNodePg": "SELF_SIGNED_CERT_IN_CHAIN",
+    "current": "NONE"
+  },
+  "policy": {
+    "canCommitLiveVerification": true,
+    "reason": "All live geodata and safety gates passed in this session."
+  },
+  "generatedAt": "2026-05-25T20:41:30.000Z"
+}

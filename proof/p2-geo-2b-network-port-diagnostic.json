@@ -1,0 +1,42 @@
+{
+  "phase": "P2.GEO-2B-SSL-FIX-RETRY",
+  "generalInternetAvailable": true,
+  "secretSafety": {
+    "geodataDatabaseUrlPresent": true,
+    "geodataDatabaseUrlValue": "HIDDEN",
+    "envIgnored": true,
+    "envStaged": false,
+    "secretPrinted": false,
+    "secretCommitted": false,
+    "rotationRecommended": true
+  },
+  "safeUrlClassification": {
+    "hostType": "pooler",
+    "configuredPort": 6543,
+    "hasSslMode": false,
+    "sslmode": "none",
+    "dbPresent": true,
+    "hasUser": true,
+    "hasPassword": true
+  },
+  "tcpChecks": {
+    "configuredPort": {
+      "port": 6543,
+      "tcpTestSucceeded": true
+    },
+    "port5432": {
+      "tcpTestSucceeded": true
+    },
+    "port6543": {
+      "tcpTestSucceeded": true
+    }
+  },
+  "dnsResolved": true,
+  "nodePgConnected": true,
+  "nodePgErrorCode": null,
+  "nodePgErrorName": null,
+  "nodePgErrorMessage": null,
+  "blockerClassification": "CONNECTIVITY_OK_READY_FOR_SCHEMA",
+  "recommendedExternalFix": "No external connectivity fix required for this phase.",
+  "generatedAt": "2026-05-25T20:40:00.000Z"
+}
