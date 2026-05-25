@@ -10,7 +10,7 @@
   "checksum": "6e5be940ba435ac1b387eccd3fbec98e58c8b6c782af63c7a9b4b4bb15a5f748",
   "checksumVisible": true,
   "scope": "SMALL_REGION_ONLY",
-  "mode": "VALIDATE_ONLY",
+  "mode": "DRY_RUN",
   "scopeAllowed": true,
   "modeAllowed": true,
   "supportedDryRun": true,
@@ -22,5 +22,5 @@
   "connectorActivated": false,
   "scrapingAdded": false,
   "officialVerification": false,
-  "generatedAt": "2026-05-25T23:49:14.323Z"
+  "generatedAt": "2026-05-25T23:51:08.457Z"
 }

@@ -6,7 +6,7 @@
 - Size bytes: 465798
 - Checksum visible: true
 - Scope: SMALL_REGION_ONLY
-- Mode: VALIDATE_ONLY
+- Mode: DRY_RUN
 - Supported dry-run: true
 - Future tooling required: false
 - Blocker: none

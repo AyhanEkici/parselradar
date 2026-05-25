@@ -1,56 +1,110 @@
 import fs from "node:fs";
 import path from "node:path";
-import {
-  readOsmImportConfig,
-  safeConfigForProof,
-  sha256File,
-  writeProofPair,
-} from "./p2Geo3AOsmImportConfig";
+import { createHash } from "node:crypto";
 
-const supportedDryRunExtensions = new Set([".geojson", ".json"]);
-const futureToolingExtensions = new Set([".osm.pbf", ".pbf", ".osm"]);
+type ValidationStatus =
+  | "CONFIG_REQUIRED"
+  | "SOURCE_MISSING"
+  | "SOURCE_VALIDATED"
+  | "FUTURE_TOOLING_REQUIRED"
+  | "SCOPE_BLOCKED"
+  | "MODE_BLOCKED"
+  | "UNSUPPORTED_EXTENSION"
+  | "FAIL";
 
-function getExtension(filePath: string | null): string | null {
-  if (!filePath) return null;
+function ensureProofDir(): void {
+  fs.mkdirSync(path.resolve("proof"), { recursive: true });
+}
+
+function writeProofPair(basePathWithoutExtension: string, payload: unknown, markdown: string): void {
+  ensureProofDir();
+  fs.writeFileSync(`${basePathWithoutExtension}.json`, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  fs.writeFileSync(`${basePathWithoutExtension}.md`, markdown, "utf8");
+}
+
+function sha256File(filePath: string): string {
+  const hash = createHash("sha256");
+  hash.update(fs.readFileSync(filePath));
+  return hash.digest("hex");
+}
+
+function getExtension(filePath: string): string {
   const lower = filePath.toLowerCase();
   if (lower.endsWith(".osm.pbf")) return ".osm.pbf";
   return path.extname(lower);
 }
 
 async function main(): Promise<void> {
-  const config = readOsmImportConfig();
-  const ext = getExtension(config.sourcePath);
-  const sizeBytes = config.sourceExists && config.sourcePath ? fs.statSync(config.sourcePath).size : null;
-  const checksum = config.sourceExists && config.sourcePath ? sha256File(config.sourcePath) : null;
+  const sourcePathRaw = process.env.GEODATA_OSM_SOURCE_PATH?.trim() || "";
+  const scope = process.env.GEODATA_OSM_SCOPE?.trim() || "SMALL_REGION_ONLY";
+  const mode = process.env.GEODATA_OSM_IMPORT_MODE?.trim() || "DRY_RUN";
 
-  let status = config.status;
-  let blocker = config.blocker;
-  let dryRunSupported = false;
+  const allowedScopes = new Set(["KAYSERI_SAMPLE_ONLY", "SMALL_REGION_ONLY"]);
+  const blockedScopes = new Set(["TURKEY_FULL", "WORLD_FULL", "PRODUCTION_FULL"]);
 
-  if (config.status === "SOURCE_VALIDATED") {
-    if (ext && supportedDryRunExtensions.has(ext)) {
-      status = "SOURCE_VALIDATED";
-      dryRunSupported = true;
-    } else if (ext && futureToolingExtensions.has(ext)) {
-      status = "FUTURE_TOOLING_REQUIRED";
-      blocker = `${ext} source recognized but P2.GEO-3A does not parse it yet. Use later osmium/osm2pgsql pipeline phase.`;
-    } else {
-      status = "FAIL";
-      blocker = `Unsupported source extension: ${ext ?? "none"}`;
-    }
+  const allowedModes = new Set(["VALIDATE_ONLY", "DRY_RUN"]);
+  const blockedModes = new Set(["IMPORT_PRODUCTION", "SWAP_PRODUCTION", "SCHEDULED_IMPORT"]);
+
+  let status: ValidationStatus = "SOURCE_VALIDATED";
+  let blocker: string | null = null;
+
+  if (!sourcePathRaw) {
+    status = "CONFIG_REQUIRED";
+    blocker = "GEODATA_OSM_SOURCE_PATH is missing.";
+  }
+
+  const sourcePath = sourcePathRaw ? path.resolve(sourcePathRaw) : null;
+  const sourceExists = sourcePath ? fs.existsSync(sourcePath) : false;
+
+  if (status === "SOURCE_VALIDATED" && !sourceExists) {
+    status = "SOURCE_MISSING";
+    blocker = "Configured GEODATA_OSM_SOURCE_PATH does not exist.";
+  }
+
+  if (status === "SOURCE_VALIDATED" && (blockedScopes.has(scope) || !allowedScopes.has(scope))) {
+    status = "SCOPE_BLOCKED";
+    blocker = `GEODATA_OSM_SCOPE is not allowed in P2.GEO-3A: ${scope}`;
+  }
+
+  if (status === "SOURCE_VALIDATED" && (blockedModes.has(mode) || !allowedModes.has(mode))) {
+    status = "MODE_BLOCKED";
+    blocker = `GEODATA_OSM_IMPORT_MODE is not allowed in P2.GEO-3A: ${mode}`;
+  }
+
+  const extension = sourcePath ? getExtension(sourcePath) : null;
+  const supportedDryRun = extension ? [".geojson", ".json"].includes(extension) : false;
+  const futureToolingRequired = extension ? [".osm.pbf", ".pbf", ".osm"].includes(extension) : false;
+  const sizeBytes = sourceExists && sourcePath ? fs.statSync(sourcePath).size : null;
+  const checksum = sourceExists && sourcePath ? sha256File(sourcePath) : null;
+
+  if (status === "SOURCE_VALIDATED" && !supportedDryRun && futureToolingRequired) {
+    status = "FUTURE_TOOLING_REQUIRED";
+    blocker = `${extension} source recognized but P2.GEO-3A does not parse it yet. Use later osmium/osm2pgsql pipeline phase.`;
+  }
+
+  if (status === "SOURCE_VALIDATED" && !supportedDryRun && !futureToolingRequired) {
+    status = "UNSUPPORTED_EXTENSION";
+    blocker = `Unsupported source extension: ${extension ?? "none"}`;
   }
 
   const payload = {
     phase: "P2.GEO-3A",
     step: "validate-osm-source",
-    generatedAt: new Date().toISOString(),
-    ...safeConfigForProof(config),
     status,
-    fileExtension: ext,
+    sourcePathConfigured: Boolean(sourcePathRaw),
+    sourceExists,
+    scope,
+    mode,
+    scopeAllowed: allowedScopes.has(scope),
+    scopeBlocked: blockedScopes.has(scope) || !allowedScopes.has(scope),
+    modeAllowed: allowedModes.has(mode),
+    modeBlocked: blockedModes.has(mode) || !allowedModes.has(mode),
+    fileExtension: extension,
     sizeBytes,
     checksumVisible: Boolean(checksum),
     checksum,
-    dryRunSupported,
+    dryRunSupported: supportedDryRun,
+    futureToolingRequired,
     fullTurkeyImportAllowed: false,
     productionSwapAllowed: false,
     schedulerAdded: false,
@@ -58,6 +112,7 @@ async function main(): Promise<void> {
     scrapingAdded: false,
     officialVerification: false,
     blocker,
+    generatedAt: new Date().toISOString(),
   };
 
   writeProofPair(
@@ -67,12 +122,13 @@ async function main(): Promise<void> {
       "# P2.GEO-3A OSM Source Validation",
       "",
       `- Status: ${status}`,
-      `- Source configured: ${config.sourcePathConfigured}`,
-      `- Source exists: ${config.sourceExists}`,
-      `- Extension: ${ext ?? "n/a"}`,
+      `- Source configured: ${Boolean(sourcePathRaw)}`,
+      `- Source exists: ${sourceExists}`,
+      `- Extension: ${extension ?? "n/a"}`,
       `- Size bytes: ${sizeBytes ?? "n/a"}`,
       `- Checksum visible: ${Boolean(checksum)}`,
-      `- Dry-run supported: ${dryRunSupported}`,
+      `- Dry-run supported: ${supportedDryRun}`,
+      `- Future tooling required: ${futureToolingRequired}`,
       `- Blocker: ${blocker ?? "none"}`,
       "- Full Turkey import allowed: false",
       "- Production swap allowed: false",
@@ -82,21 +138,32 @@ async function main(): Promise<void> {
   );
 
   console.log(JSON.stringify({ status, proof: "proof/p2-geo-3a-osm-source-validation.json" }, null, 2));
+
+  if (status !== "SOURCE_VALIDATED") {
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error) => {
   const detail = error instanceof Error ? error.message : String(error);
+
   const payload = {
     phase: "P2.GEO-3A",
     step: "validate-osm-source",
     status: "FAIL",
     detail,
-    generatedAt: new Date().toISOString(),
+    fullTurkeyImportAllowed: false,
     productionSwapAllowed: false,
     officialVerification: false,
+    generatedAt: new Date().toISOString(),
   };
 
-  writeProofPair("proof/p2-geo-3a-osm-source-validation", payload, `# P2.GEO-3A OSM Source Validation\n\n- Status: FAIL\n- Detail: ${detail}\n`);
+  writeProofPair(
+    "proof/p2-geo-3a-osm-source-validation",
+    payload,
+    `# P2.GEO-3A OSM Source Validation\n\n- Status: FAIL\n- Detail: ${detail}\n`,
+  );
+
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3a-osm-source-validation.json" }, null, 2));
   process.exitCode = 1;
 });
