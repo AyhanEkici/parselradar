@@ -1,0 +1,103 @@
+{
+    "phase":  "P2.GEO-SYNC-VERIFY",
+    "status":  "PASS",
+    "generatedAt":  "2026-05-25T23:33:48.2414846Z",
+    "branch":  "main",
+    "head":  "6eaf7c3c",
+    "originMain":  "6eaf7c3cfee65067ff9c231064f7d914c9b5de2f",
+    "remoteUrl":  "https://github.com/AyhanEkici/parselradar.git",
+    "fetchOk":  true,
+    "remoteSynced":  true,
+    "aheadBehind":  "0\t0",
+    "workingTreeCleanAtStart":  true,
+    "scripts":  [
+                    {
+                        "script":  "geo:p2-geo-3a:validate-osm-source",
+                        "exists":  true
+                    },
+                    {
+                        "script":  "geo:p2-geo-3a:dry-run-small-region",
+                        "exists":  true
+                    },
+                    {
+                        "script":  "geo:p2-geo-8:query-staged-signals",
+                        "exists":  true
+                    },
+                    {
+                        "script":  "geo:p2-geo-9:verify-endpoint",
+                        "exists":  true
+                    },
+                    {
+                        "script":  "geo:p2-geo-10:verify-admin-diagnostic",
+                        "exists":  true
+                    },
+                    {
+                        "script":  "geo:p2-geo-11:audit-lifecycle",
+                        "exists":  true
+                    }
+                ],
+    "allScriptsPresent":  true,
+    "files":  [
+                  {
+                      "file":  "apps/api/src/geodata/stagedSignalAdapter.ts",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "apps/api/src/routes/stagedGeoSignalsRoutes.ts",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "apps/api/src/index.ts",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "apps/web/src/App.tsx",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "docs/PARSELRADAR_REMAINING_TODOS.md",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "docs/P2_GEO_3A_CONTROLLED_OSM_IMPORT_PIPELINE.md",
+                      "exists":  true
+                  },
+                  {
+                      "file":  "docs/P2_GEO_11_STAGED_SIGNAL_LIFECYCLE_AUDIT.md",
+                      "exists":  true
+                  }
+              ],
+    "allFilesPresent":  true,
+    "routeChecks":  {
+                        "apiDevRouteMounted":  true,
+                        "webAdminDevRouteMounted":  true,
+                        "adminPageFetchesGuardedApi":  true,
+                        "adminPageHasNoOfficialClaim":  true,
+                        "adminPageProductionSwapBlocked":  true
+                    },
+    "allRoutesWired":  true,
+    "proofChecks":  [
+                        {
+                            "file":  null,
+                            "exists":  true,
+                            "status":  null
+                        }
+                    ],
+    "proofsPresent":  true,
+    "secretScanRun":  true,
+    "highConfidencePatternHitCount":  14,
+    "realSecretFound":  false,
+    "noEnvMutation":  true,
+    "noConnectorActivation":  true,
+    "noScraping":  true,
+    "noProductionSwap":  true,
+    "buildApi":  "PASS",
+    "buildWeb":  "PASS",
+    "connectorDiagnosticsContract":  "PASS",
+    "connectorDiagnostics":  "PASS",
+    "platformIntegrity":  "PASS"
+}
