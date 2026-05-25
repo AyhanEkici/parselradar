@@ -26,6 +26,35 @@ export type RiskSignalKey =
   | 'PUBLIC_REGISTRY_EVIDENCE_MISSING'
   | 'SELLER_QUESTIONS_REQUIRED';
 
+export type GeodataContextStatus =
+  | 'BLOCKED_LOW_LOCATION_CONFIDENCE'
+  | 'SIGNALS_AVAILABLE'
+  | 'GEODATA_NOT_CONFIGURED'
+  | 'GEODATA_ERROR';
+
+export type GeodataContextSignalType =
+  | 'NEAREST_DISTRICT_CENTER'
+  | 'NEAREST_MAIN_ROAD'
+  | 'NEAREST_SETTLEMENT'
+  | 'INDUSTRIAL_OSB_CONTEXT'
+  | 'WATER_CONTEXT';
+
+export interface GeodataContextSignal {
+  type: GeodataContextSignalType;
+  label: 'PUBLIC_SOURCE_SIGNAL';
+  distanceKm: number;
+  name: string;
+  confidence: BasicRiskLevel;
+  officialVerification: false;
+  disclaimer: string;
+}
+
+export interface GeodataContextResult {
+  status: GeodataContextStatus;
+  signals: GeodataContextSignal[];
+  message: string;
+}
+
 export interface ListingIntakeFields {
   listingUrl: string;
   sourceDomain: string;
@@ -80,6 +109,7 @@ export interface BasicRiskScanResult {
   sellerQuestions: string[];
   nextBestAction: string;
   decisionSnapshot: DecisionSnapshot;
+  geodataContext: GeodataContextResult;
   labels: ListingSourceLabel[];
   disclaimer: string;
 }
@@ -106,6 +136,9 @@ const REQUIRED_FIELD_KEYS: Array<keyof ListingIntakeFields | 'sourceOrEvidence'>
 const DISCLAIMER =
   'ParselRadar uses user-provided listing data and evidence for preliminary risk signals. This is not official TKGM, tapu, imar, municipality, legal or investment verification.';
 
+const GEODATA_CONTEXT_DISCLAIMER =
+  'Public context signal only. Official verification required.';
+
 const CLAIM_KEYWORDS = [
   'imar',
   'imarli',
@@ -126,6 +159,49 @@ const CITY_DISTRICT_HINTS: Array<{ il: string; ilce: string }> = [
   { il: 'Kayseri', ilce: 'Talas' },
   { il: 'Kayseri', ilce: 'Incesu' },
   { il: 'Kayseri', ilce: 'Hacilar' },
+];
+
+const KAYSERI_POC_CONTEXT_SIGNALS: Array<Omit<GeodataContextSignal, 'confidence'>> = [
+  {
+    type: 'NEAREST_DISTRICT_CENTER',
+    label: 'PUBLIC_SOURCE_SIGNAL',
+    distanceKm: 1.763,
+    name: 'Kayseri Merkez (POC)',
+    officialVerification: false,
+    disclaimer: GEODATA_CONTEXT_DISCLAIMER,
+  },
+  {
+    type: 'NEAREST_MAIN_ROAD',
+    label: 'PUBLIC_SOURCE_SIGNAL',
+    distanceKm: 0.285,
+    name: 'D300 POC Segment (trunk)',
+    officialVerification: false,
+    disclaimer: GEODATA_CONTEXT_DISCLAIMER,
+  },
+  {
+    type: 'NEAREST_SETTLEMENT',
+    label: 'PUBLIC_SOURCE_SIGNAL',
+    distanceKm: 1.879,
+    name: 'Kayseri Merkez Yerlesim (POC)',
+    officialVerification: false,
+    disclaimer: GEODATA_CONTEXT_DISCLAIMER,
+  },
+  {
+    type: 'INDUSTRIAL_OSB_CONTEXT',
+    label: 'PUBLIC_SOURCE_SIGNAL',
+    distanceKm: 14.091,
+    name: 'Kayseri OSB Candidate Polygon (POC)',
+    officialVerification: false,
+    disclaimer: GEODATA_CONTEXT_DISCLAIMER,
+  },
+  {
+    type: 'WATER_CONTEXT',
+    label: 'PUBLIC_SOURCE_SIGNAL',
+    distanceKm: 18.872,
+    name: 'Yamula Baraji Candidate (POC)',
+    officialVerification: false,
+    disclaimer: GEODATA_CONTEXT_DISCLAIMER,
+  },
 ];
 
 export function emptyListingIntakeFields(): ListingIntakeFields {
@@ -325,6 +401,48 @@ function firstTriggered(signals: RiskSignal[]) {
   return signals.find((signal) => signal.triggered);
 }
 
+function hasLocationAnchor(fields: ListingIntakeFields) {
+  return Boolean(String(fields.mahalle || '').trim() || String(fields.ada || '').trim() || String(fields.parsel || '').trim());
+}
+
+function buildGeodataContextResult(fields: ListingIntakeFields): GeodataContextResult {
+  const confidence = fields.locationConfidence;
+  if (!confidence || confidence === 'LOW') {
+    return {
+      status: 'BLOCKED_LOW_LOCATION_CONFIDENCE',
+      signals: [],
+      message: 'Add pin/coordinates/ada-parsel to unlock location context signals.',
+    };
+  }
+
+  if (!hasLocationAnchor(fields)) {
+    return {
+      status: 'GEODATA_ERROR',
+      signals: [],
+      message: 'Location context signals require mahalle/pin/ada-parsel anchor.',
+    };
+  }
+
+  if (normalize(fields.il) !== normalize('Kayseri')) {
+    return {
+      status: 'GEODATA_NOT_CONFIGURED',
+      signals: [],
+      message: 'Geodata context POC is currently configured for Kayseri-only context signals.',
+    };
+  }
+
+  const signalConfidence: BasicRiskLevel = confidence === 'HIGH' ? 'HIGH' : 'MEDIUM';
+  return {
+    status: 'SIGNALS_AVAILABLE',
+    signals: KAYSERI_POC_CONTEXT_SIGNALS.map((signal) => ({
+      ...signal,
+      confidence: signalConfidence,
+    })),
+    message:
+      'These are public geodata context signals, not official road, imar, tapu, zoning or investment verification.',
+  };
+}
+
 export function runBasicRiskScan(input: BasicRiskScanInput): BasicRiskScanResult {
   const fields = input.fields;
   const missingRequiredFields = getMissingRequiredFields(fields, input.hasScreenshotOrDocument);
@@ -459,6 +577,8 @@ export function runBasicRiskScan(input: BasicRiskScanInput): BasicRiskScanResult
     officialVerificationNeeded: 'yes',
   };
 
+  const geodataContext = buildGeodataContextResult(fields);
+
   return {
     pricePerM2,
     missingRequiredFields,
@@ -468,6 +588,7 @@ export function runBasicRiskScan(input: BasicRiskScanInput): BasicRiskScanResult
     sellerQuestions,
     nextBestAction,
     decisionSnapshot,
+    geodataContext,
     labels: [
       'USER_PROVIDED_LISTING_DATA',
       input.hasScreenshotOrDocument ? 'USER_PROVIDED_SCREENSHOT' : 'MISSING_REQUIRED_FIELD',

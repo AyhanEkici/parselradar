@@ -1297,6 +1297,34 @@ export default function PropertyDocuments() {
               </div>
 
               <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Location Context Signals</div>
+                <div className="mt-1">status: {basicRiskScanResult.geodataContext.status}</div>
+
+                {basicRiskScanResult.geodataContext.status === 'SIGNALS_AVAILABLE' ? (
+                  <>
+                    <ul className="mt-1 list-disc pl-4">
+                      {basicRiskScanResult.geodataContext.signals.map((signal) => (
+                        <li key={signal.type}>
+                          {signal.type}: {signal.name} | distanceKm={signal.distanceKm} | label={signal.label} | officialVerification={String(signal.officialVerification)}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2 text-amber-800">
+                      {basicRiskScanResult.geodataContext.message}
+                    </div>
+                    <ul className="mt-2 list-disc pl-4">
+                      <li>Road proximity may reduce uncertainty, but does not prove cadastral road access.</li>
+                      <li>Settlement proximity provides context, but does not prove official koy ici status.</li>
+                      <li>Industrial/OSB proximity is market context, not investment guarantee.</li>
+                      <li>Water proximity is context, not view/buildability proof.</li>
+                    </ul>
+                  </>
+                ) : (
+                  <div className="mt-1">{basicRiskScanResult.geodataContext.message}</div>
+                )}
+              </div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
                 <div className="font-medium text-slate-900">Source labels</div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {basicRiskScanResult.labels.map((label) => (

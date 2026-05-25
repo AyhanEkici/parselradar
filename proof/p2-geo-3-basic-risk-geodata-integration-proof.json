@@ -1,0 +1,60 @@
+{
+  "phase": "P2.GEO-3",
+  "status": "PASS",
+  "integration": {
+    "basicRiskScanEnriched": true,
+    "enrichmentSurface": "apps/web/src/pages/PropertyDocuments.tsx",
+    "adapter": "Kayseri POC static context adapter in listingIntakeBasicRisk",
+    "newSection": "Location Context Signals",
+    "runtimeBlockingBehavior": "Geodata context is optional and non-blocking for Basic Risk Scan"
+  },
+  "geodataContract": {
+    "statuses": [
+      "BLOCKED_LOW_LOCATION_CONFIDENCE",
+      "SIGNALS_AVAILABLE",
+      "GEODATA_NOT_CONFIGURED",
+      "GEODATA_ERROR"
+    ],
+    "signalTypes": [
+      "NEAREST_DISTRICT_CENTER",
+      "NEAREST_MAIN_ROAD",
+      "NEAREST_SETTLEMENT",
+      "INDUSTRIAL_OSB_CONTEXT",
+      "WATER_CONTEXT"
+    ],
+    "label": "PUBLIC_SOURCE_SIGNAL",
+    "officialVerification": false,
+    "disclaimer": "Public context signal only. Official verification required."
+  },
+  "behaviorChecks": {
+    "lowLocationConfidenceBlocksGeodata": true,
+    "mediumHighCanShowSignals": true,
+    "noCoordinatesOrPinBlocksGeodata": true,
+    "basicRiskScanWorksWithoutGeodata": true,
+    "officialVerificationRemainsFalse": true,
+    "disclaimersExist": true
+  },
+  "commandResults": {
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "geo:p2-geo-2:test": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "noDrift": {
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "fullTurkeyImportAdded": false,
+    "schedulerAdded": false,
+    "dockerAdded": false,
+    "officialVerificationClaimAdded": false,
+    "envStaged": false,
+    "secretPrinted": false
+  },
+  "filesChanged": [
+    "apps/web/src/lib/listingIntakeBasicRisk.ts",
+    "apps/web/src/pages/PropertyDocuments.tsx"
+  ],
+  "generatedAt": "2026-05-25T20:53:00.000Z"
+}
