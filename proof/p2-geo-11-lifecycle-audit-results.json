@@ -1,0 +1,68 @@
+{
+  "phase": "P2.GEO-11",
+  "status": "PASS",
+  "lifecycleState": "STAGED_SIGNAL_READY",
+  "latestRunFound": true,
+  "latestRun": {
+    "id": "1",
+    "phase": "P2.GEO-7",
+    "sourceName": "P2_GEO_7_LOCAL_SAMPLE",
+    "sourceChecksum": "1a48bb641cfec27e68a30479b2d29dd331c8942f964aa40c396b6b9fbd237c5c",
+    "importScope": "KAYSERI_POC_ONLY",
+    "importMode": "STAGED_ONLY",
+    "status": "STAGED_IMPORT_PASS",
+    "startedAt": "2026-05-25T22:55:29.193Z",
+    "completedAt": "2026-05-25T22:55:29.193Z",
+    "ageMinutes": 19.7,
+    "notes": "POC-only local sample import"
+  },
+  "sourceChecksumVisible": true,
+  "featureAudit": {
+    "featureCount": 5,
+    "nonNullGeometryCount": 5,
+    "srid4326Count": 5,
+    "validGeometryCount": 5,
+    "officialFalseCount": 5,
+    "publicSourceCount": 5,
+    "officialVerificationAllFalse": true,
+    "publicSourceSignalAll": true,
+    "featureTypes": [
+      "ADMIN_CENTER",
+      "INDUSTRIAL_OSB_CANDIDATE",
+      "MAIN_ROAD",
+      "SETTLEMENT",
+      "WATER_FEATURE"
+    ],
+    "missingFeatureTypes": []
+  },
+  "requiredFeatureTypeCoverage": true,
+  "proofStatuses": {
+    "p2Geo7Verification": {
+      "exists": true,
+      "status": "PASS",
+      "rawStatus": "PASS"
+    },
+    "p2Geo8SignalQuery": {
+      "exists": true,
+      "status": "PASS",
+      "rawStatus": "PASS"
+    },
+    "p2Geo9ApiResults": {
+      "exists": true,
+      "status": "PASS",
+      "rawStatus": "PASS"
+    },
+    "p2Geo10DiagnosticSurface": {
+      "exists": true,
+      "status": "PASS",
+      "rawStatus": "PASS"
+    }
+  },
+  "signalProofReadiness": true,
+  "productionSwapUsed": false,
+  "productionTablesQueried": false,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "officialVerificationClaimAdded": false,
+  "generatedAt": "2026-05-25T23:15:10.742Z"
+}

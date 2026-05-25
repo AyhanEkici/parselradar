@@ -1,0 +1,92 @@
+{
+    "phase":  "P2.GEO-11",
+    "capturedAt":  "2026-05-25T23:15:02.4347065Z",
+    "head":  "a3bbd08a",
+    "workingTreeCleanAtStart":  true,
+    "untrackedFilesAtStart":  false,
+    "statusLineCount":  0,
+    "untrackedLineCount":  0,
+    "recentCommits":  [
+                          "a3bbd08a feat: add guarded staged geodata diagnostics UI",
+                          "ce568d2c fix: verify guarded staged geodata signal API",
+                          "668dd35d feat: add guarded staged geodata signal API",
+                          "0ba887bc feat: add staged geodata signal query adapter",
+                          "a7b9ab81 fix: verify small staged geodata sample import"
+                      ],
+    "secretScanRun":  true,
+    "highConfidencePatternHitCount":  14,
+    "highConfidencePatternHits":  [
+                                      {
+                                          "path":  "apps/api/dist/config/env.js",
+                                          "pattern":  "STRIPE_SECRET_KEY\\s*=\\s*.+",
+                                          "matchCount":  2
+                                      },
+                                      {
+                                          "path":  "apps/api/dist/config/env.js",
+                                          "pattern":  "JWT_SECRET\\s*=\\s*.+",
+                                          "matchCount":  2
+                                      },
+                                      {
+                                          "path":  "apps/api/dist/testing/verifyAuth.js",
+                                          "pattern":  "JWT_SECRET\\s*=\\s*.+",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "apps/api/src/testing/verifyAuth.ts",
+                                          "pattern":  "JWT_SECRET\\s*=\\s*.+",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "docs/MONGODB_ATLAS_SETUP.md",
+                                          "pattern":  "mongodb(\\+srv)?://[^\\s]+:[^\\s]+@",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md",
+                                          "pattern":  "postgres(ql)?://[^\\s]+:[^\\s]+@",
+                                          "matchCount":  2
+                                      },
+                                      {
+                                          "path":  "docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md",
+                                          "pattern":  "GEODATA_DATABASE_URL\\s*=\\s*.+@",
+                                          "matchCount":  2
+                                      },
+                                      {
+                                          "path":  "docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md",
+                                          "pattern":  "DATABASE_URL\\s*=\\s*.+@",
+                                          "matchCount":  2
+                                      },
+                                      {
+                                          "path":  "proof/p2-geo-2b-postgis-connection-check.json",
+                                          "pattern":  "postgres(ql)?://[^\\s]+:[^\\s]+@",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "proof/p2-geo-2b-postgis-connection-check.md",
+                                          "pattern":  "postgres(ql)?://[^\\s]+:[^\\s]+@",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "proof/p2-geo-2b-postgis-connection-check.md",
+                                          "pattern":  "GEODATA_DATABASE_URL\\s*=\\s*.+@",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "proof/p2-geo-2b-postgis-connection-check.md",
+                                          "pattern":  "DATABASE_URL\\s*=\\s*.+@",
+                                          "matchCount":  1
+                                      },
+                                      {
+                                          "path":  "proof/platform-proof-bundle.json",
+                                          "pattern":  "JWT_SECRET\\s*=\\s*.+",
+                                          "matchCount":  4
+                                      },
+                                      {
+                                          "path":  "proof/platform-proof-bundle.md",
+                                          "pattern":  "JWT_SECRET\\s*=\\s*.+",
+                                          "matchCount":  2
+                                      }
+                                  ],
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}

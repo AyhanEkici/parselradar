@@ -1,0 +1,24 @@
+# P2.GEO-11 Staged Signal Lifecycle Audit
+
+- Status: PASS
+- Lifecycle state: STAGED_SIGNAL_READY
+- Latest run found: true
+- Latest run id: 1
+- Latest run status: STAGED_IMPORT_PASS
+- Source name: P2_GEO_7_LOCAL_SAMPLE
+- Source checksum visible: true
+- Import scope: KAYSERI_POC_ONLY
+- Import mode: STAGED_ONLY
+- Import age minutes: 19.7
+- Feature count: 5
+- Valid geometry count: 5
+- SRID 4326 count: 5
+- officialVerification all false: true
+- publicSourceSignal all: true
+- Required feature type coverage: true
+- Signal proof readiness: true
+- Production swap used: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Official verification claim added: false

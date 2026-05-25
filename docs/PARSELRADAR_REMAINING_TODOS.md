@@ -11,26 +11,28 @@
 - ✅ P2.GEO-7 Small local sample GeoJSON staged import
 - ✅ P2.GEO-8 Staged-to-signal-query adapter POC
 - ✅ P2.GEO-9 Guarded staged signal API endpoint
-- ➡️ P2.GEO-10 Guarded admin/dev diagnostic surface
+- ✅ P2.GEO-10 Guarded admin/dev diagnostics UI
+- ➡️ P2.GEO-11 Staged signal lifecycle audit hardening
 
 ## Remaining recommended sequence
-
-### P2.GEO-10 — Guarded admin/dev diagnostic surface
-
-Goal:
-Expose staged geodata signal diagnostics in a controlled dev/admin-only surface.
-
-Boundaries:
-- no public product claim
-- no production swap
-- no connector activation
-- no scraping
-- no official verification claim
 
 ### P2.GEO-11 — staged signal lifecycle audit hardening
 
 Goal:
-Add audit metadata, run history, proof visibility, and failure explanations around staged geodata signals.
+Add lifecycle readiness proof before scaling to real OSM data.
+
+Checks:
+- import run history
+- latest run status
+- source checksum visibility
+- source name visibility
+- freshness metadata
+- row counts
+- geometry validity
+- required feature type coverage
+- signal proof readiness
+- no production swap
+- no public claim
 
 ### P2.GEO-3 — Turkey OSM import pipeline
 
@@ -39,7 +41,7 @@ Move from tiny sample to controlled OSM extraction/import pipeline.
 
 Must remain staged first:
 - source download documented
-- license labels
+- OSM license labels
 - checksum
 - small region first
 - no full Turkey import without explicit phase approval
@@ -63,12 +65,14 @@ Audit all routes/pages/APIs for placeholders, missing backend, broken actions, m
 ## Strategic rule
 
 ParselRadar must stay positioned as:
+
 - evidence organization
 - pre-due-diligence intelligence
 - public-source signal analysis
 - consent-based deal intelligence
 
 ParselRadar must not claim:
+
 - official tapu verification
 - official imar/zoning verification
 - legal certainty
