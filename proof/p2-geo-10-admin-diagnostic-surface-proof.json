@@ -1,0 +1,22 @@
+{
+    "phase":  "P2.GEO-10",
+    "generatedAt":  "2026-05-25T23:11:25.8898805Z",
+    "cleanStartCaptured":  true,
+    "todoLedgerUpdated":  true,
+    "adminDiagnosticPageExists":  true,
+    "routeMounted":  true,
+    "routePath":  "/admin/dev/staged-geo-signals",
+    "apiEndpointUsed":  "/api/dev/staged-geo-signals",
+    "fetchesGuardedEndpoint":  true,
+    "disclaimerPresent":  true,
+    "boundaryClaimsPresent":  true,
+    "productionSwapUsed":  false,
+    "productionTablesQueriedByUi":  false,
+    "schedulerAdded":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "platformChecksPass":  true
+}

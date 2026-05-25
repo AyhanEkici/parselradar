@@ -64,6 +64,7 @@ import AppShell from './components/AppShell';
 import RequireAuth from './components/RequireAuth';
 import { useAuth } from './hooks/useAuth';
 import ErrorBoundary from './components/ErrorBoundary';
+import AdminStagedGeoSignalsDiagnostics from "./pages/admin/AdminStagedGeoSignalsDiagnostics";
 
 function RootRedirect() {
   const { user, authStatus, hasPersistentSession } = useAuth();
@@ -149,6 +150,7 @@ function AppRoutes() {
       <Route path="/notifications" element={<RequireAuth><NotificationInbox /></RequireAuth>} />
       <Route path="/notifications/preferences" element={<RequireAuth><NotificationPreferences /></RequireAuth>} />
       <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
+      <Route path="/admin/dev/staged-geo-signals" element={<AdminStagedGeoSignalsDiagnostics />} />
     </Routes>
   );
 }

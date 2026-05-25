@@ -1,0 +1,19 @@
+{
+  "phase": "P2.GEO-10",
+  "status": "PASS",
+  "pageExists": true,
+  "appExists": true,
+  "routeMounted": true,
+  "routePath": "/admin/dev/staged-geo-signals",
+  "apiEndpointUsed": "/api/dev/staged-geo-signals",
+  "fetchesGuardedEndpoint": true,
+  "disclaimerPresent": true,
+  "boundaryClaimsPresent": true,
+  "todoLedgerUpdated": true,
+  "productionSwapUsed": false,
+  "productionTablesQueriedByUi": false,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "officialVerificationClaimAdded": false,
+  "generatedAt": "2026-05-25T23:11:03.433Z"
+}

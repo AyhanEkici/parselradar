@@ -1,0 +1,34 @@
+{
+    "phase":  "P2.GEO-10",
+    "generatedAt":  "2026-05-25T23:11:25.6523241Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-10:verify-admin-diagnostic",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "productionSwapUsed":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "officialVerificationClaimAdded":  false
+}

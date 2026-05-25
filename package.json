@@ -114,7 +114,8 @@
                     "geo:p2-geo-7:import-sample":  "ts-node apps/api/scripts/geodata/p2Geo7ImportSampleGeoJson.ts",
                     "geo:p2-geo-7:verify-staged":  "ts-node apps/api/scripts/geodata/p2Geo7VerifyStagedImport.ts",
                     "geo:p2-geo-8:query-staged-signals":  "ts-node apps/api/scripts/geodata/p2Geo8QueryStagedSignals.ts",
-                    "geo:p2-geo-9:verify-endpoint":  "ts-node apps/api/scripts/geodata/p2Geo9VerifyStagedSignalEndpoint.ts"
+                    "geo:p2-geo-9:verify-endpoint":  "ts-node apps/api/scripts/geodata/p2Geo9VerifyStagedSignalEndpoint.ts",
+                    "geo:p2-geo-10:verify-admin-diagnostic":  "ts-node apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",
