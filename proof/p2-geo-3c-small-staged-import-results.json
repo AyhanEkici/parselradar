@@ -2,8 +2,11 @@
   "phase": "P2.GEO-3C",
   "status": "FAIL",
   "detail": "The 'coordinates' in GeoJSON are not sufficiently nested",
-  "importRunId": "2",
+  "importRunId": "3",
+  "logicalScope": "SMALL_REGION_ONLY",
+  "dbScope": "KAYSERI_POC_ONLY",
+  "dbImportMode": "DRY_RUN",
   "productionSwapAllowed": false,
   "officialVerification": false,
-  "generatedAt": "2026-05-25T23:55:00.777Z"
+  "generatedAt": "2026-05-25T23:58:55.986Z"
 }
