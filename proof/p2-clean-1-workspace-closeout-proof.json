@@ -1,0 +1,70 @@
+{
+  "phase": "P2.CLEAN-1",
+  "step": "workspace-closeout-proof",
+  "generatedAt": "2026-05-25T20:20:30.000Z",
+  "actions": {
+    "restoredFiles": [
+      ".gitignore",
+      "package.json",
+      "package-lock.json",
+      "proof/ogc-diagnostics-ui-contract.json",
+      "proof/connector-diagnostics-audit.json",
+      "proof/connector-diagnostics-contract.json",
+      "proof/p2-geo-2-kayseri-signal-results.json",
+      "proof/p2-geo-2-kayseri-signal-results.md",
+      "proof/p2-geo-5-turkey-osm-dry-run-results.json",
+      "proof/p2-geo-5-turkey-osm-import-plan.json",
+      "proof/p2-geo-5-validate-osm-source-results.json",
+      "proof/platform-integrity-audit.json",
+      "apps/api/dist/*",
+      "apps/api/src/generated/buildInfo.ts"
+    ],
+    "removedUntrackedGeneratedFiles": [
+      "proof/.p2_geo_2b_git_diff_name_status.txt",
+      "proof/.p2_geo_2b_git_diff_stat.txt",
+      "proof/.p2_geo_2b_git_log_oneline_10.txt",
+      "proof/.p2_geo_2b_git_status_short.txt"
+    ],
+    "leftUntouched": [
+      "scripts/local/run-p2-geo-2b-live.local.ps1",
+      "supabase/Supabase.txt"
+    ],
+    "stagedFiles": [
+      "proof/p2-clean-1-dirty-tree-inventory.json",
+      "proof/p2-clean-1-dirty-tree-inventory.md",
+      "proof/p2-clean-1-workspace-closeout-proof.json",
+      "proof/p2-clean-1-workspace-closeout-proof.md"
+    ]
+  },
+  "validations": {
+    "geo:p2-geo-5:validate-source": "PASS",
+    "geo:p2-geo-5:build-plan": "PASS",
+    "geo:p2-geo-5:dry-run": "PASS",
+    "geo:p2-geo-2:test": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS",
+    "build:api": "PASS",
+    "build:web": "PASS"
+  },
+  "secretSafety": {
+    "envStaged": false,
+    "secretScanRun": true,
+    "secretFound": false,
+    "secretCommitted": false,
+    "rotationRecommended": false
+  },
+  "finalWorkingTree": {
+    "clean": false,
+    "remainingUntracked": [
+      "scripts/local/run-p2-geo-2b-live.local.ps1",
+      "supabase/Supabase.txt"
+    ],
+    "remainingModified": []
+  },
+  "notes": [
+    "No feature work implemented.",
+    "No connector activation, scraping, scheduler, Docker, or .env mutation performed.",
+    "GEO-5 scripts remain functional after cleanup operations."
+  ]
+}

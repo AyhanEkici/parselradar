@@ -1,0 +1,99 @@
+{
+  "phase": "P2.CLEAN-1",
+  "step": "dirty-tree-inventory",
+  "generatedAt": "2026-05-25T20:20:00.000Z",
+  "initialGitStatusShort": [
+    "M .gitignore",
+    "M package-lock.json",
+    "M package.json",
+    "M proof/ogc-diagnostics-ui-contract.json",
+    "?? proof/.p2_geo_2b_git_diff_name_status.txt",
+    "?? proof/.p2_geo_2b_git_diff_stat.txt",
+    "?? proof/.p2_geo_2b_git_log_oneline_10.txt",
+    "?? proof/.p2_geo_2b_git_status_short.txt",
+    "?? supabase/"
+  ],
+  "classification": [
+    {
+      "path": ".gitignore",
+      "classification": "GITIGNORE_DRIFT",
+      "actionTaken": "RESTORED"
+    },
+    {
+      "path": "package.json",
+      "classification": "PACKAGE_LOCK_DRIFT",
+      "actionTaken": "RESTORED"
+    },
+    {
+      "path": "package-lock.json",
+      "classification": "PACKAGE_LOCK_DRIFT",
+      "actionTaken": "RESTORED"
+    },
+    {
+      "path": "proof/ogc-diagnostics-ui-contract.json",
+      "classification": "PRIOR_PROOF_ARTIFACT",
+      "actionTaken": "RESTORED"
+    },
+    {
+      "path": "proof/.p2_geo_2b_git_diff_name_status.txt",
+      "classification": "PRIOR_PROOF_ARTIFACT",
+      "actionTaken": "REMOVED"
+    },
+    {
+      "path": "proof/.p2_geo_2b_git_diff_stat.txt",
+      "classification": "PRIOR_PROOF_ARTIFACT",
+      "actionTaken": "REMOVED"
+    },
+    {
+      "path": "proof/.p2_geo_2b_git_log_oneline_10.txt",
+      "classification": "PRIOR_PROOF_ARTIFACT",
+      "actionTaken": "REMOVED"
+    },
+    {
+      "path": "proof/.p2_geo_2b_git_status_short.txt",
+      "classification": "PRIOR_PROOF_ARTIFACT",
+      "actionTaken": "REMOVED"
+    },
+    {
+      "path": "supabase/Supabase.txt",
+      "classification": "SUPABASE_LOCAL_ARTIFACT",
+      "actionTaken": "LEFT_UNTOUCHED"
+    },
+    {
+      "path": "scripts/local/run-p2-geo-2b-live.local.ps1",
+      "classification": "UNRELATED_DIRTY_FILE",
+      "actionTaken": "LEFT_UNTOUCHED"
+    }
+  ],
+  "inspections": {
+    "packageJsonDiff": "Added pg and @types/pg dependency entries only.",
+    "packageLockDiff": "Lockfile entries corresponding to pg dependency additions.",
+    "gitignoreDiff": "Added ignore rule for scripts/local/*.local.ps1.",
+    "ogcProofDiff": "generatedAt timestamp only."
+  },
+  "untrackedFromGitLsFiles": [
+    "proof/.p2_geo_2b_git_diff_name_status.txt",
+    "proof/.p2_geo_2b_git_diff_stat.txt",
+    "proof/.p2_geo_2b_git_log_oneline_10.txt",
+    "proof/.p2_geo_2b_git_status_short.txt",
+    "supabase/Supabase.txt"
+  ],
+  "secretScan": {
+    "run": true,
+    "candidatePaths": [
+      "package.json",
+      "package-lock.json",
+      ".gitignore",
+      "proof/ogc-diagnostics-ui-contract.json",
+      "proof/.p2_geo_2b_git_diff_name_status.txt",
+      "proof/.p2_geo_2b_git_diff_stat.txt",
+      "proof/.p2_geo_2b_git_log_oneline_10.txt",
+      "proof/.p2_geo_2b_git_status_short.txt",
+      "supabase/Supabase.txt"
+    ],
+    "result": "NO_SECRET_FOUND",
+    "notes": [
+      "Pattern matches were false positives for keyword-only occurrences (e.g., script names containing 'password', filename containing 'Secrets')."
+    ]
+  }
+}
