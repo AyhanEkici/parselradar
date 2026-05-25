@@ -1,0 +1,26 @@
+{
+  "phase": "P2.GEO-5",
+  "step": "validate-osm-source",
+  "sourceName": "Geofabrik Turkey OSM Extract",
+  "sourceUrl": "https://download.geofabrik.de/europe/turkey.html",
+  "allowedUrl": "https://download.geofabrik.de/europe/turkey.html",
+  "sourceUrlMatchesAllowed": true,
+  "expectedFormats": [
+    ".osm.pbf (future implementation)",
+    "HTML source reference"
+  ],
+  "licenseNote": "OpenStreetMap ODbL attribution/compliance required before broad release.",
+  "attribution": "Map and geodata signals derived from OpenStreetMap contributors. Used as public context signals only.",
+  "metadataCheck": {
+    "attempted": true,
+    "method": "HEAD",
+    "statusCode": 200,
+    "reachable": true,
+    "contentType": "text/html",
+    "contentLength": "23470"
+  },
+  "sourceValidated": true,
+  "officialVerification": false,
+  "label": "PUBLIC_SOURCE_SIGNAL",
+  "generatedAt": "2026-05-25T20:02:10.602Z"
+}

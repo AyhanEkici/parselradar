@@ -1,0 +1,34 @@
+{
+  "phase": "P2.GEO-5",
+  "step": "workspace-state",
+  "generatedAt": "2026-05-25T20:03:00.000Z",
+  "workspacePath": "c:/parselradar",
+  "scope": "Turkey OSM import dry-run implementation only",
+  "preExistingDirtyWorkspace": true,
+  "newOrUpdatedPhaseFiles": [
+    "apps/api/scripts/geodata/p2Geo5ValidateOsmSource.ts",
+    "apps/api/scripts/geodata/p2Geo5BuildImportPlan.ts",
+    "apps/api/scripts/geodata/p2Geo5TurkeyOsmDryRun.ts",
+    "apps/api/scripts/geodata/sql/p2_geo_5_turkey_import_staging_schema.sql",
+    "apps/api/scripts/geodata/sql/p2_geo_5_layer_extraction_templates.sql",
+    "package.json",
+    "proof/p2-geo-5-validate-osm-source-results.json",
+    "proof/p2-geo-5-turkey-osm-import-plan.json",
+    "proof/p2-geo-5-turkey-osm-dry-run-results.json",
+    "proof/p2-geo-5-turkey-osm-dry-run-results.md",
+    "proof/p2-geo-5-workspace-state.json",
+    "proof/p2-geo-5-workspace-state.md",
+    "proof/p2-geo-5-turkey-osm-import-dry-run-proof.json",
+    "proof/p2-geo-5-turkey-osm-import-dry-run-proof.md"
+  ],
+  "nonGoalsEnforced": {
+    "fullTurkeyImportExecuted": false,
+    "fullExtractDownloaded": false,
+    "schedulerAdded": false,
+    "dockerAdded": false,
+    "connectorActivation": false,
+    "scraping": false,
+    "envMutation": false,
+    "secretExposure": false
+  }
+}

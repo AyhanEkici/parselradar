@@ -1,0 +1,73 @@
+{
+  "phase": "P2.GEO-5",
+  "step": "build-import-plan",
+  "planMode": "DRY_RUN_ONLY",
+  "fullTurkeyImportExecuted": false,
+  "fullExtractDownloaded": false,
+  "schedulerAdded": false,
+  "dockerAdded": false,
+  "activeSourceVersionChanged": false,
+  "productionGeodataSwapped": false,
+  "source": {
+    "sourceName": "Geofabrik Turkey OSM Extract",
+    "sourceUrl": "https://download.geofabrik.de/europe/turkey.html",
+    "sourceLicense": "OSM_ODbL_REQUIRED",
+    "attribution": "Map and geodata signals derived from OpenStreetMap contributors. Used as public context signals only."
+  },
+  "layers": [
+    "places",
+    "admin centers",
+    "major roads",
+    "settlements",
+    "industrial/OSB candidates",
+    "water features",
+    "tourism features"
+  ],
+  "targetTables": [
+    "geo_places",
+    "geo_admin_centers",
+    "geo_roads_major",
+    "geo_industrial_areas",
+    "geo_water_features",
+    "geo_tourism_features",
+    "geo_source_versions"
+  ],
+  "filters": {
+    "roads": [
+      "motorway",
+      "trunk",
+      "primary",
+      "secondary",
+      "tertiary"
+    ],
+    "places": [
+      "city",
+      "town",
+      "village",
+      "hamlet",
+      "neighbourhood"
+    ],
+    "industrial": [
+      "landuse=industrial",
+      "industrial=*",
+      "name contains OSB/Sanayi"
+    ],
+    "water": [
+      "natural=water",
+      "water=lake",
+      "water=reservoir",
+      "coastline",
+      "river"
+    ],
+    "tourism": [
+      "tourism=*",
+      "leisure=*"
+    ]
+  },
+  "labels": [
+    "PUBLIC_SOURCE_SIGNAL",
+    "NEEDS_OFFICIAL_CONFIRMATION"
+  ],
+  "officialVerification": false,
+  "generatedAt": "2026-05-25T20:02:10.604Z"
+}

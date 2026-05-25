@@ -1,0 +1,36 @@
+{
+  "phase": "P2.GEO-5",
+  "step": "turkey-osm-import-dry-run-proof",
+  "generatedAt": "2026-05-25T20:03:00.000Z",
+  "commands": {
+    "geo:p2-geo-5:validate-source": "PASS",
+    "geo:p2-geo-5:build-plan": "PASS",
+    "geo:p2-geo-5:dry-run": "PASS",
+    "geo:p2-geo-2:test": "PASS",
+    "build:api": "PASS",
+    "build:web": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "dryRunOutcomes": {
+    "sourceUrlValidated": true,
+    "importPlanBuilt": true,
+    "targetTablesListed": true,
+    "layerFiltersListed": true,
+    "attributionOdbLNotePresent": true,
+    "officialVerification": false,
+    "activeSourceVersionChanged": false,
+    "productionGeodataSwapped": false
+  },
+  "artifacts": [
+    "proof/p2-geo-5-validate-osm-source-results.json",
+    "proof/p2-geo-5-turkey-osm-import-plan.json",
+    "proof/p2-geo-5-turkey-osm-dry-run-results.json",
+    "proof/p2-geo-5-turkey-osm-dry-run-results.md",
+    "proof/p2-geo-5-workspace-state.json",
+    "proof/p2-geo-5-workspace-state.md",
+    "proof/p2-geo-5-turkey-osm-import-dry-run-proof.json",
+    "proof/p2-geo-5-turkey-osm-import-dry-run-proof.md"
+  ]
+}

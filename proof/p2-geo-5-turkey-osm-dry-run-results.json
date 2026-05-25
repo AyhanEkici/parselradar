@@ -1,0 +1,27 @@
+{
+  "phase": "P2.GEO-5",
+  "step": "turkey-osm-dry-run",
+  "status": "PASS",
+  "fullTurkeyImportExecuted": false,
+  "fullExtractDownloaded": false,
+  "schedulerAdded": false,
+  "dockerAdded": false,
+  "sourceUrlValidated": true,
+  "importPlanBuilt": true,
+  "targetTablesListed": true,
+  "layerFiltersListed": true,
+  "attributionOdbLNotePresent": true,
+  "officialVerification": false,
+  "activeSourceVersionChanged": false,
+  "productionGeodataSwapped": false,
+  "sqlTemplatesPresent": {
+    "stagingSchemaSql": true,
+    "extractionTemplateSql": true
+  },
+  "notes": [
+    "Dry-run validates metadata/plan only; no import execution is performed.",
+    "No scheduler, Docker, connector activation, scraping, or production source swap in this phase.",
+    "Source metadata HEAD check completed or skipped safely."
+  ],
+  "generatedAt": "2026-05-25T20:02:10.606Z"
+}
