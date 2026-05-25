@@ -1,0 +1,10 @@
+{
+  "phase": "P2.GEO-6",
+  "step": "apply-staging-schema",
+  "status": "STAGING_READY",
+  "detail": "P2.GEO-6 staging schema applied successfully.",
+  "sqlFile": "C:\\parselradar\\apps\\api\\scripts\\geodata\\sql\\p2_geo_6_staging_tables.sql",
+  "productionSwapAllowed": false,
+  "officialVerification": false,
+  "generatedAt": "2026-05-25T22:55:16.839Z"
+}

@@ -6,14 +6,15 @@
 - Import script exists: True
 - Verification script exists: True
 - Package scripts added: true
-- Staging schema status: 
+- Staging schema status: PASS
 - Source validation status: PASS
-- Dry-run status: 
-- Sample staged import status: 
-- Staged verification status: 
-- Imported feature count: 
-- Valid geometry count: 
-- officialVerification all false: False
+- Dry-run status: PASS
+- Sample staged import status: STAGED_IMPORT_PASS
+- Staged verification status: PASS
+- Imported feature count: 5
+- Valid geometry count: 5
+- officialVerification all false: True
+- Public source signal all: True
 - Production swap blocked: true
 - Scheduler added: false
 - Connector activated: false

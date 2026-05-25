@@ -1,4 +1,4 @@
-﻿import crypto from "node:crypto";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -74,7 +74,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const raw = fs.readFileSync(sourcePath, "utf8");
+  const raw = fs.readFileSync(sourcePath, "utf8").replace(/^\uFEFF/, "");
   const parsed = JSON.parse(raw);
   const features: GeoJsonFeature[] = Array.isArray(parsed.features) ? parsed.features : [];
   const checksum = sha256File(sourcePath);

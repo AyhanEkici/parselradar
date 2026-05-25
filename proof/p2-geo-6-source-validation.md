@@ -4,7 +4,7 @@
 - Source path configured: true
 - Source exists: true
 - Extension: .geojson
-- Size bytes: 3716
+- Size bytes: 3713
 - Checksum calculated: true
 - Import allowed: true
 - Blocker: none

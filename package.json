@@ -1,4 +1,4 @@
-﻿{
+{
     "name":  "parselradar-monorepo",
     "private":  true,
     "scripts":  {
@@ -110,7 +110,9 @@
                     "start":  "npm start --prefix apps/api",
                     "geo:p2-geo-6:validate-source":  "ts-node apps/api/scripts/geodata/p2Geo6ValidateImportSource.ts",
                     "geo:p2-geo-6:apply-staging-schema":  "ts-node apps/api/scripts/geodata/p2Geo6ApplyStagingSchema.ts",
-                    "geo:p2-geo-6:dry-run":  "ts-node apps/api/scripts/geodata/p2Geo6DryRunStagedImport.ts"
+                    "geo:p2-geo-6:dry-run":  "ts-node apps/api/scripts/geodata/p2Geo6DryRunStagedImport.ts",
+                    "geo:p2-geo-7:import-sample":  "ts-node apps/api/scripts/geodata/p2Geo7ImportSampleGeoJson.ts",
+                    "geo:p2-geo-7:verify-staged":  "ts-node apps/api/scripts/geodata/p2Geo7VerifyStagedImport.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",

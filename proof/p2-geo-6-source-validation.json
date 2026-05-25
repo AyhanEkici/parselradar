@@ -1,7 +1,7 @@
 {
   "phase": "P2.GEO-6",
   "step": "validate-source",
-  "generatedAt": "2026-05-25T22:42:07.813Z",
+  "generatedAt": "2026-05-25T22:55:19.564Z",
   "geodataDatabaseUrlPresent": true,
   "sourcePathConfigured": true,
   "sourcePathExists": true,
@@ -13,8 +13,8 @@
   "blocker": null,
   "sourceExists": true,
   "fileExtension": ".geojson",
-  "sizeBytes": 3716,
-  "checksum": "689ba480f8cd529aa2d6fa8e30b01d131cbdc274e00e1fefcd9bc351c475459c",
+  "sizeBytes": 3713,
+  "checksum": "1a48bb641cfec27e68a30479b2d29dd331c8942f964aa40c396b6b9fbd237c5c",
   "importAllowed": true,
   "productionSwapAllowed": false,
   "officialVerification": false

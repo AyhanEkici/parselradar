@@ -1,0 +1,13 @@
+{
+  "phase": "P2.GEO-7",
+  "step": "sample-staged-import",
+  "status": "STAGED_IMPORT_PASS",
+  "importRunId": "1",
+  "sourceName": "P2_GEO_7_LOCAL_SAMPLE",
+  "sourceChecksum": "1a48bb641cfec27e68a30479b2d29dd331c8942f964aa40c396b6b9fbd237c5c",
+  "importedFeatureCount": 5,
+  "productionSwapAllowed": false,
+  "officialVerificationAllFalse": true,
+  "officialVerification": false,
+  "generatedAt": "2026-05-25T22:55:29.723Z"
+}
