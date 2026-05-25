@@ -14,11 +14,11 @@
 Do not mutate .env in this phase.
 Set GEODATA_DATABASE_URL in your shell/session when running POC commands:
 
-GEODATA_DATABASE_URL=postgresql://user:password@host:5432/parselradar_geodata
+GEODATA_DATABASE_URL=postgresql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>
 
 PowerShell session example (local only, do not commit secrets):
 
-$env:GEODATA_DATABASE_URL = "postgresql://user:password@host:5432/parselradar_geodata"
+$env:GEODATA_DATABASE_URL = "postgresql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>"
 
 Remove from current session when finished:
 

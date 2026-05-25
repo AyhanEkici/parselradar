@@ -13,7 +13,7 @@
   "safeReason": "GEODATA_DATABASE_URL is missing in current terminal session.",
   "safeSetupInstructions": [
     "Set GEODATA_DATABASE_URL in current PowerShell session only.",
-    "Use placeholder format: postgresql://user:password@host:5432/parselradar_geodata.",
+    "Use placeholder format: postgresql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DB>.",
     "Do not commit .env or secrets.",
     "After setup, rerun P2.GEO-2B to execute live connection/schema/seed/test steps."
   ],

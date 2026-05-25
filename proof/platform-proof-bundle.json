@@ -273,7 +273,7 @@
           "name": "JWT_SECRET readiness",
           "status": "PASS",
           "message": "JWT secret is present with acceptable length.",
-          "detail": "JWT_SECRET=PRESENT, length=96"
+          "detail": "JWT_SECRET=[REDACTED], length=96"
         },
         {
           "category": "Auth",
@@ -2761,7 +2761,7 @@
           "name": "Core runtime env readiness",
           "status": "PASS",
           "message": "Core runtime env keys are present.",
-          "detail": "MONGODB_URI=PRESENT, JWT_SECRET=PRESENT, CLIENT_URL=PRESENT"
+          "detail": "MONGODB_URI=PRESENT, JWT_SECRET=[REDACTED], CLIENT_URL=PRESENT"
         },
         {
           "category": "Runtime",
@@ -3322,7 +3322,7 @@
       "name": "JWT_SECRET readiness",
       "status": "PASS",
       "message": "JWT secret is present with acceptable length.",
-      "detail": "JWT_SECRET=PRESENT, length=96"
+      "detail": "JWT_SECRET=[REDACTED], length=96"
     },
     {
       "category": "Auth",
@@ -5025,7 +5025,7 @@
       "name": "Core runtime env readiness",
       "status": "PASS",
       "message": "Core runtime env keys are present.",
-      "detail": "MONGODB_URI=PRESENT, JWT_SECRET=PRESENT, CLIENT_URL=PRESENT"
+      "detail": "MONGODB_URI=PRESENT, JWT_SECRET=[REDACTED], CLIENT_URL=PRESENT"
     },
     {
       "category": "Runtime",
