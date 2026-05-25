@@ -1,0 +1,23 @@
+﻿# P2.GEO-7 Small Sample Staged Import Proof
+
+- Clean start captured: True
+- Sample GeoJSON exists: True
+- Sample feature count: 5
+- Import script exists: True
+- Verification script exists: True
+- Package scripts added: true
+- Staging schema status: 
+- Source validation status: PASS
+- Dry-run status: 
+- Sample staged import status: 
+- Staged verification status: 
+- Imported feature count: 
+- Valid geometry count: 
+- officialVerification all false: False
+- Production swap blocked: true
+- Scheduler added: false
+- Connector activated: false
+- Scraping added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false

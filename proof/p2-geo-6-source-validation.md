@@ -1,12 +1,12 @@
 # P2.GEO-6 Source Validation
 
-- Status: CONFIG_REQUIRED
-- Source path configured: false
-- Source exists: false
-- Extension: n/a
-- Size bytes: n/a
-- Checksum calculated: false
-- Import allowed: false
-- Blocker: GEODATA_IMPORT_SOURCE_PATH is missing.
+- Status: SOURCE_VALIDATED
+- Source path configured: true
+- Source exists: true
+- Extension: .geojson
+- Size bytes: 3716
+- Checksum calculated: true
+- Import allowed: true
+- Blocker: none
 - Production swap allowed: false
 - Official verification: false
