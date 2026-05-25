@@ -1,0 +1,80 @@
+{
+  "phase": "P2.GEO-2-KAYSERI-POSTGIS-POC",
+  "capturedAt": "2026-05-25T17:46:34.3789149Z",
+  "workspaceSnapshot": {
+    "gitStatusShort": "captured",
+    "gitLogOneline10": "captured",
+    "gitDiffNameStatus": "captured",
+    "gitDiffStat": "captured"
+  },
+  "recentCommits": [
+    "41a43697 docs: define geodata signal layer blueprint",
+    "0fcc4425 feat: add listing intake and basic risk scan",
+    "a71ff0cb feat: add assisted public registry evidence checks",
+    "4091ba99 fix: polish guided conversational analysis flow",
+    "c44c249f feat: add guided conversational analysis intake shell",
+    "25c647e9 docs: ingest viewer feedback and plan conversational workflow",
+    "2ffe6166 docs: add controlled beta status snapshot",
+    "8dcc9055 docs: add historical evidence metadata read-only audit",
+    "fde153db docs: add OCR preview POC plan",
+    "cbd2fc4f docs: add production email provider decision template"
+  ],
+  "dirtyClassification": {
+    "dirtyFileCount": 373,
+    "categoryCounts": {
+      "REQUIRED_P2_GEO_2": 0,
+      "PREVIOUS_SESSION_PROOF_OUTPUT": 4,
+      "GENERATED_BUILD_OUTPUT": 369,
+      "ACCIDENTAL_NOISE": 0,
+      "UNKNOWN_REQUIRES_REVIEW": 0
+    },
+    "categorySamples": {
+      "REQUIRED_P2_GEO_2": [],
+      "PREVIOUS_SESSION_PROOF_OUTPUT": [
+        "proof/connector-diagnostics-audit.json",
+        "proof/connector-diagnostics-contract.json",
+        "proof/ogc-diagnostics-ui-contract.json",
+        "proof/platform-integrity-audit.json"
+      ],
+      "GENERATED_BUILD_OUTPUT": [
+        "apps/api/dist/analytics/buildIngestionAnalytics.js",
+        "apps/api/dist/analytics/buildInvestorAnalytics.js",
+        "apps/api/dist/analytics/buildProductAnalytics.js",
+        "apps/api/dist/analytics/buildRuntimeAnalytics.js",
+        "apps/api/dist/analytics/buildWorkspaceAnalytics.js",
+        "apps/api/dist/config/analysis/districtMultipliers.js",
+        "apps/api/dist/config/analysis/infrastructureWeights.js",
+        "apps/api/dist/config/analysis/liquidityWeights.js",
+        "apps/api/dist/config/analysis/valuationMatrix.js",
+        "apps/api/dist/config/analysis/zoningWeights.js",
+        "apps/api/dist/config/connectors/alertPolicies.js",
+        "apps/api/dist/config/connectors/connectorActivationPolicies.js"
+      ],
+      "ACCIDENTAL_NOISE": [],
+      "UNKNOWN_REQUIRES_REVIEW": []
+    }
+  },
+  "diffSummary": {
+    "diffNameStatusLineCount": 15,
+    "diffStatLineCount": 16,
+    "diffNameStatusHead": [
+      "M\tapps/api/dist/config/env.js",
+      "M\tapps/api/dist/controllers/connectorActivationController.js",
+      "M\tapps/api/dist/controllers/documentController.js",
+      "M\tapps/api/dist/controllers/propertyController.js",
+      "M\tapps/api/dist/controllers/reportController.js",
+      "M\tapps/api/dist/generated/buildInfo.js",
+      "M\tapps/api/dist/models/DocumentUpload.js",
+      "M\tapps/api/dist/models/PropertySubmission.js",
+      "M\tapps/api/dist/routes/connectorActivationRoutes.js",
+      "M\tapps/api/dist/validation/propertySchemas.js",
+      "M\tapps/api/src/generated/buildInfo.ts",
+      "M\tproof/connector-diagnostics-audit.json"
+    ]
+  },
+  "stagingPolicy": {
+    "doNotStageUnknownRequiresReview": true,
+    "doNotCommitUnrelatedOldProofArtifacts": true,
+    "doNotStageGeneratedBuildOutput": true
+  }
+}

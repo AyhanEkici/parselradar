@@ -1,0 +1,61 @@
+{
+  "phase": "P2.GEO-2-KAYSERI-POSTGIS-POC",
+  "scope": {
+    "dockerAdded": false,
+    "fullTurkeyImport": false,
+    "dailySchedulerAdded": false,
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "envMutated": false,
+    "authRuntimeNavigationRefactor": false,
+    "officialVerificationClaimAdded": false
+  },
+  "artifacts": {
+    "schemaSqlExists": true,
+    "setupRunbookExists": true,
+    "seedScriptExists": true,
+    "testScriptExists": true,
+    "workspaceStateProofExists": true,
+    "signalResultsProofExists": true
+  },
+  "packageScripts": {
+    "geo:p2-geo-2:schema": true,
+    "geo:p2-geo-2:seed": true,
+    "geo:p2-geo-2:test": true
+  },
+  "contracts": {
+    "geodataDatabaseUrlMissingHandledAsConfigRequired": true,
+    "normalApiWebBuildNotBroken": true,
+    "mongodbRemainsProductDb": true,
+    "postgisOptionalPocGeodataDb": true,
+    "signalOutputIncludesLabelsAndDisclaimers": true,
+    "officialVerificationAlwaysFalseForPocSignals": true
+  },
+  "commandResults": {
+    "build:api": "PASS",
+    "build:web": "PASS",
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS",
+    "geo:p2-geo-2:test": "CONFIG_REQUIRED"
+  },
+  "geodataConfig": {
+    "geodataDatabaseUrlConfiguredInCurrentSession": false,
+    "reason": "GEODATA_DATABASE_URL missing in current shell; script produced controlled CONFIG_REQUIRED output."
+  },
+  "filesChangedForPhase": [
+    "apps/api/scripts/geodata/sql/p2_geo_2_kayseri_schema.sql",
+    "apps/api/scripts/geodata/p2Geo2ApplySchema.ts",
+    "apps/api/scripts/geodata/p2Geo2KayseriSeed.ts",
+    "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+    "docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md",
+    "proof/p2-geo-2-workspace-state.json",
+    "proof/p2-geo-2-workspace-state.md",
+    "proof/p2-geo-2-kayseri-signal-results.json",
+    "proof/p2-geo-2-kayseri-signal-results.md",
+    "proof/p2-geo-2-kayseri-postgis-poc-proof.json",
+    "proof/p2-geo-2-kayseri-postgis-poc-proof.md",
+    "package.json"
+  ],
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

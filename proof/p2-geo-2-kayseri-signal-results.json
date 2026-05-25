@@ -1,0 +1,13 @@
+{
+  "phase": "P2.GEO-2",
+  "status": "CONFIG_REQUIRED",
+  "message": "GEODATA_DATABASE_URL is missing. Configure local/managed PostGIS for POC.",
+  "testCoordinate": {
+    "lat": 38.71,
+    "lon": 35.5,
+    "location": "Kayseri POC test coordinate"
+  },
+  "recommendedAction": "Set GEODATA_DATABASE_URL and run schema + seed + geo:p2-geo-2:test again.",
+  "nonFatal": true,
+  "generatedAt": "2026-05-25T17:50:46.180Z"
+}
