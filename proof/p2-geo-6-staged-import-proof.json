@@ -1,0 +1,111 @@
+﻿{
+    "phase":  "P2.GEO-6",
+    "generatedAt":  "2026-05-25T22:34:26.1063562Z",
+    "cleanStartCaptured":  true,
+    "geo5InventoryCaptured":  true,
+    "stagedImportContractDocExists":  true,
+    "configContractExists":  true,
+    "sourceValidationScriptExists":  true,
+    "stagingSqlExists":  true,
+    "applyStagingSchemaScriptExists":  true,
+    "dryRunScriptExists":  true,
+    "packageScriptsAdded":  true,
+    "productionSwapAdded":  false,
+    "schedulerAdded":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-6:validate-source",
+                               "command":  "npm run geo:p2-geo-6:validate-source",
+                               "exitCode":  0,
+                               "status":  "CONFIG_REQUIRED",
+                               "outputTail":  [
+                                                  "",
+                                                  "\u003e geo:p2-geo-6:validate-source",
+                                                  "\u003e ts-node apps/api/scripts/geodata/p2Geo6ValidateImportSource.ts",
+                                                  "",
+                                                  "{",
+                                                  "  \"status\": \"CONFIG_REQUIRED\",",
+                                                  "  \"proof\": \"proof/p2-geo-6-source-validation.json\"",
+                                                  "}",
+                                                  ""
+                                              ]
+                           },
+                           {
+                               "name":  "build api",
+                               "command":  "npm run build --prefix apps/api",
+                               "exitCode":  0,
+                               "status":  "PASS",
+                               "outputTail":  [
+                                                  "",
+                                                  "\u003e @parselradar/api@1.0.0 prebuild",
+                                                  "\u003e node scripts/generateBuildInfo.cjs",
+                                                  "",
+                                                  "generated apps\\api\\src\\generated\\buildInfo.ts (gitSha=8c5f9a76da2b01a18c490fb6d0887a374d196695)",
+                                                  "",
+                                                  "\u003e @parselradar/api@1.0.0 build",
+                                                  "\u003e tsc --build --force",
+                                                  "",
+                                                  ""
+                                              ]
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "command":  "npm run verify:connector-diagnostics-contract",
+                               "exitCode":  0,
+                               "status":  "PASS",
+                               "outputTail":  [
+                                                  "",
+                                                  "\u003e verify:connector-diagnostics-contract",
+                                                  "\u003e ts-node apps/api/scripts/verifyConnectorDiagnosticsContract.ts",
+                                                  "",
+                                                  "{",
+                                                  "  \"overallStatus\": \"PASS\",",
+                                                  "  \"step\": \"verify:connector-diagnostics-contract\",",
+                                                  "  \"proof\": \"proof/connector-diagnostics-contract.json\"",
+                                                  "}",
+                                                  ""
+                                              ]
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "command":  "npm run verify:connector-diagnostics",
+                               "exitCode":  0,
+                               "status":  "PASS",
+                               "outputTail":  [
+                                                  "",
+                                                  "\u003e verify:connector-diagnostics",
+                                                  "\u003e ts-node apps/api/scripts/verifyConnectorDiagnostics.ts",
+                                                  "",
+                                                  "{",
+                                                  "  \"overallStatus\": \"PASS\",",
+                                                  "  \"step\": \"verify:connector-diagnostics\",",
+                                                  "  \"proof\": \"proof/connector-diagnostics-audit.json\"",
+                                                  "}",
+                                                  ""
+                                              ]
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "command":  "npm run verify:platform-integrity",
+                               "exitCode":  0,
+                               "status":  "PASS",
+                               "outputTail":  [
+                                                  "",
+                                                  "\u003e verify:platform-integrity",
+                                                  "\u003e ts-node apps/api/scripts/verifyPlatformIntegrity.ts",
+                                                  "",
+                                                  "{",
+                                                  "  \"overallStatus\": \"PASS\",",
+                                                  "  \"step\": \"verify:platform-integrity\",",
+                                                  "  \"proof\": \"proof/platform-integrity-audit.json\"",
+                                                  "}",
+                                                  ""
+                                              ]
+                           }
+                       ]
+}
