@@ -1,0 +1,9 @@
+{
+  "phase": "P2.GEO-3C",
+  "status": "FAIL",
+  "detail": "The 'coordinates' in GeoJSON are not sufficiently nested",
+  "importRunId": "2",
+  "productionSwapAllowed": false,
+  "officialVerification": false,
+  "generatedAt": "2026-05-25T23:55:00.777Z"
+}

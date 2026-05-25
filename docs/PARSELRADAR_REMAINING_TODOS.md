@@ -14,19 +14,20 @@
 - ✅ P2.GEO-10 Guarded admin/dev diagnostics UI
 - ✅ P2.GEO-11 Staged signal lifecycle audit hardening
 - ✅ P2.GEO-3A Controlled OSM import pipeline scaffold
-- ➡️ P2.GEO-3B Small real source configuration
+- ✅ P2.GEO-3B Small real source configuration
+- ➡️ P2.GEO-3C Small staged OSM-derived import
 
 ## Remaining recommended sequence
-
-### P2.GEO-3B — small real source configuration
-
-Goal:
-Configure a real local small-region source file and validate checksum/size/scope without import.
 
 ### P2.GEO-3C — small staged OSM-derived import
 
 Goal:
-Import only a small verified source into staging tables after scope approval.
+Import only the validated small Kayseri OSM-derived source into staging tables.
+
+### P2.GEO-3D — staged OSM signal adapter alignment
+
+Goal:
+Update staged signal adapter to prefer latest P2.GEO-3C run and handle OSM-derived feature coverage safely.
 
 ### MVP-4D — Evidence OCR implementation
 
@@ -37,9 +38,3 @@ OCR-assisted upload classification for listings, screenshots, registry/e-imar/TK
 
 Goal:
 Audit all routes/pages/APIs for placeholders, missing backend, broken actions, mock data, role mismatches, and production blockers.
-
-## Strategic rule
-
-ParselRadar must stay positioned as evidence organization, pre-due-diligence intelligence, public-source signal analysis, and consent-based deal intelligence.
-
-ParselRadar must not claim official tapu verification, official imar/zoning verification, legal certainty, investment advice, or construction permission certainty.

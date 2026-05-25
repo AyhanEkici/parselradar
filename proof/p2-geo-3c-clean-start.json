@@ -1,0 +1,19 @@
+{
+    "phase":  "P2.GEO-3C",
+    "capturedAt":  "2026-05-25T23:53:47.3547714Z",
+    "head":  "bc3f6c03",
+    "workingTreeCleanAtStart":  true,
+    "untrackedFilesAtStart":  false,
+    "recentCommits":  [
+                          "bc3f6c03 fix: verify small geodata source validation",
+                          "4b326fa5 feat: configure small real geodata source",
+                          "859cfe17 feat: configure small real geodata source",
+                          "e22e6238 chore: verify geodata repo wiring and sync",
+                          "6eaf7c3c feat: add controlled OSM import pipeline scaffold"
+                      ],
+    "sourceFileExists":  true,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}

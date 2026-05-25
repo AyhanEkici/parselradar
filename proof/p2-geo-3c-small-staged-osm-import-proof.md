@@ -1,0 +1,29 @@
+# P2.GEO-3C Small Staged OSM Import Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Import script exists: True
+- Verify script exists: True
+- Package scripts exist: true
+- TODO ledger updated: True
+- Import status: FAIL
+- Verify status: STAGED_IMPORT_REQUIRED
+- Import run id: 
+- Feature count: 
+- Valid geometry count: 
+- SRID 4326 count: 
+- officialVerification all false: 
+- Public source signal all: 
+- Source file committed: false
+- Raw source path committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false
+- Production tables written: false
+- Staging tables written: true
+- Scheduler added: false
+- Connector activated: false
+- Scraping added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

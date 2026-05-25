@@ -119,7 +119,9 @@
                     "geo:p2-geo-11:audit-lifecycle":  "ts-node apps/api/scripts/geodata/p2Geo11AuditStagedSignalLifecycle.ts",
                     "geo:p2-geo-3a:validate-osm-source":  "ts-node apps/api/scripts/geodata/p2Geo3AValidateOsmSource.ts",
                     "geo:p2-geo-3a:dry-run-small-region":  "ts-node apps/api/scripts/geodata/p2Geo3ASmallRegionDryRun.ts",
-                    "geo:p2-geo-3b:configure-small-source":  "ts-node apps/api/scripts/geodata/p2Geo3BConfigureSmallSource.ts"
+                    "geo:p2-geo-3b:configure-small-source":  "ts-node apps/api/scripts/geodata/p2Geo3BConfigureSmallSource.ts",
+                    "geo:p2-geo-3c:import-small-osm":  "ts-node apps/api/scripts/geodata/p2Geo3CImportSmallOsmSource.ts",
+                    "geo:p2-geo-3c:verify-small-osm":  "ts-node apps/api/scripts/geodata/p2Geo3CVerifySmallOsmImport.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",
