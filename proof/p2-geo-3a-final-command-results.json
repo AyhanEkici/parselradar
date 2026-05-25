@@ -1,0 +1,40 @@
+{
+    "phase":  "P2.GEO-3A",
+    "generatedAt":  "2026-05-25T23:27:46.9650818Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-3a:validate-osm-source",
+                               "status":  "CONFIG_REQUIRED"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3a:dry-run-small-region",
+                               "status":  "CONFIG_REQUIRED"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "officialVerificationClaimAdded":  false
+}

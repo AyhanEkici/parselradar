@@ -12,39 +12,32 @@
 - ✅ P2.GEO-8 Staged-to-signal-query adapter POC
 - ✅ P2.GEO-9 Guarded staged signal API endpoint
 - ✅ P2.GEO-10 Guarded admin/dev diagnostics UI
-- ➡️ P2.GEO-11 Staged signal lifecycle audit hardening
+- ✅ P2.GEO-11 Staged signal lifecycle audit hardening
+- ➡️ P2.GEO-3A Controlled OSM import pipeline scaffold
 
 ## Remaining recommended sequence
 
-### P2.GEO-11 — staged signal lifecycle audit hardening
+### P2.GEO-3A — controlled OSM import pipeline scaffold
 
 Goal:
-Add lifecycle readiness proof before scaling to real OSM data.
+Create the import pipeline contract and safe validation/dry-run mechanics.
 
-Checks:
-- import run history
-- latest run status
-- source checksum visibility
-- source name visibility
-- freshness metadata
-- row counts
-- geometry validity
-- required feature type coverage
-- signal proof readiness
+Status target:
+- no full Turkey import
 - no production swap
-- no public claim
+- no scheduler
+- no connector activation
+- no scraping
 
-### P2.GEO-3 — Turkey OSM import pipeline
+### P2.GEO-3B — small real source configuration
 
 Goal:
-Move from tiny sample to controlled OSM extraction/import pipeline.
+Configure a real local small-region source path and validate checksum/size/scope.
 
-Must remain staged first:
-- source download documented
-- OSM license labels
-- checksum
-- small region first
-- no full Turkey import without explicit phase approval
+### P2.GEO-3C — small staged OSM-derived import
+
+Goal:
+Import only a small verified source into staging tables after scope approval.
 
 ### MVP-4D — Evidence OCR implementation
 

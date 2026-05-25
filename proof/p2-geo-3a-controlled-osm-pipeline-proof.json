@@ -1,0 +1,22 @@
+{
+    "phase":  "P2.GEO-3A",
+    "generatedAt":  "2026-05-25T23:27:47.1155960Z",
+    "cleanStartCaptured":  true,
+    "pipelineDocExists":  true,
+    "configScriptExists":  true,
+    "validationScriptExists":  true,
+    "dryRunScriptExists":  true,
+    "validationProofExists":  true,
+    "todoLedgerUpdated":  true,
+    "sourceValidationStatus":  "CONFIG_REQUIRED",
+    "dryRunStatus":  "CONFIG_REQUIRED",
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "schedulerAdded":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "platformChecksPass":  true
+}

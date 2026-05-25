@@ -1,0 +1,22 @@
+{
+  "phase": "P2.GEO-3A",
+  "step": "small-region-dry-run",
+  "generatedAt": "2026-05-25T23:18:53.781Z",
+  "sourcePathConfigured": false,
+  "sourceExists": false,
+  "scope": "SMALL_REGION_ONLY",
+  "mode": "DRY_RUN",
+  "scopeAllowed": true,
+  "scopeBlocked": false,
+  "modeAllowed": true,
+  "modeBlocked": false,
+  "status": "CONFIG_REQUIRED",
+  "blocker": "GEODATA_OSM_SOURCE_PATH is missing.",
+  "dryRunPass": false,
+  "fullTurkeyImportAllowed": false,
+  "productionSwapAllowed": false,
+  "schedulerAdded": false,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "officialVerification": false
+}
