@@ -1,20 +1,20 @@
-# P2.GEO-9 Staged Signal API Proof
+﻿# P2.GEO-9 Staged Signal API Proof
 
 - Clean start captured: True
 - Adapter service exists: True
 - Endpoint route exists: True
-- Endpoint mounted: False
-- Endpoint guard: 
+- Endpoint mounted: True
+- Endpoint guard: DEV_ONLY
 - Package script exists: true
-- Signal query status: 
-- Signal count: 
-- Nearest staged admin/center: 
-- Nearest staged settlement: 
-- Nearest staged main road: 
-- Nearest staged industrial/OSB candidate: 
-- Nearest staged water feature: 
-- All officialVerification false: 
-- Labels/disclaimers present: 
+- Signal query status: PASS
+- Signal count: 5
+- Nearest staged admin/center: True
+- Nearest staged settlement: True
+- Nearest staged main road: True
+- Nearest staged industrial/OSB candidate: True
+- Nearest staged water feature: True
+- All officialVerification false: True
+- Labels/disclaimers present: True
 - Only staging tables queried: true
 - Production tables queried: false
 - Production swap used: false
