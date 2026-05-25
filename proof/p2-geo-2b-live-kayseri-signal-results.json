@@ -1,0 +1,20 @@
+{
+  "phase": "P2.GEO-2B",
+  "step": "geo:p2-geo-2:test",
+  "status": "CONFIG_REQUIRED",
+  "geodataDatabaseUrlPresent": false,
+  "liveQueryExecuted": false,
+  "signals": [],
+  "contractChecks": {
+    "nearestDistrictCenterReturned": false,
+    "nearestMainRoadReturned": false,
+    "nearestSettlementReturned": false,
+    "industrialOrOsbCandidateReturned": false,
+    "waterFeatureReturned": false,
+    "labelsAndDisclaimersReturned": false,
+    "officialVerificationFalse": false
+  },
+  "message": "GEODATA_DATABASE_URL is missing. Live signal query is blocked with CONFIG_REQUIRED.",
+  "recommendedAction": "Configure GEODATA_DATABASE_URL in local session and rerun P2.GEO-2B.",
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

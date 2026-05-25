@@ -1,0 +1,25 @@
+{
+  "phase": "P2.GEO-2B",
+  "results": {
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "verifyConnectorDiagnosticsContract": "PASS",
+    "verifyConnectorDiagnostics": "PASS",
+    "verifyPlatformIntegrity": "PASS",
+    "geoP2Geo2Schema": "CONFIG_REQUIRED",
+    "geoP2Geo2Seed": "CONFIG_REQUIRED",
+    "geoP2Geo2Test": "CONFIG_REQUIRED"
+  },
+  "policyEvaluation": {
+    "livePocSuccess": false,
+    "reason": "GEODATA_DATABASE_URL missing from start; CONFIG_REQUIRED branch is expected and non-fatal for baseline.",
+    "commitBlockedByBuildOrVerifyFail": false
+  },
+  "gitSummary": {
+    "statusShortCaptured": true,
+    "diffNameStatusCaptured": true,
+    "diffStatCaptured": true,
+    "dirtyFileCountAtSnapshot": 377
+  },
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

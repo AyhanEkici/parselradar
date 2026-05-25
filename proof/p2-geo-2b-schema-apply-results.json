@@ -1,0 +1,10 @@
+{
+  "phase": "P2.GEO-2B",
+  "step": "geo:p2-geo-2:schema",
+  "status": "CONFIG_REQUIRED",
+  "schemaApplied": false,
+  "message": "GEODATA_DATABASE_URL is missing. Schema was not applied.",
+  "mongoDbAffected": false,
+  "normalAppBootAffected": false,
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

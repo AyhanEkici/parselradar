@@ -1,0 +1,21 @@
+{
+  "phase": "P2.GEO-2B",
+  "step": "postgis-connection-check",
+  "status": "CONFIG_REQUIRED",
+  "geodataDatabaseUrlPresent": false,
+  "connectionCheck": {
+    "attempted": false,
+    "result": "CONFIG_REQUIRED"
+  },
+  "postgresVersion": null,
+  "databaseName": null,
+  "postgisExtensionAvailable": "unknown",
+  "safeReason": "GEODATA_DATABASE_URL is missing in current terminal session.",
+  "safeSetupInstructions": [
+    "Set GEODATA_DATABASE_URL in current PowerShell session only.",
+    "Use placeholder format: postgresql://user:password@host:5432/parselradar_geodata.",
+    "Do not commit .env or secrets.",
+    "After setup, rerun P2.GEO-2B to execute live connection/schema/seed/test steps."
+  ],
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

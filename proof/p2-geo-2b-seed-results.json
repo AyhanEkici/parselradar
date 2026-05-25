@@ -1,0 +1,14 @@
+{
+  "phase": "P2.GEO-2B",
+  "step": "geo:p2-geo-2:seed",
+  "status": "CONFIG_REQUIRED",
+  "seedCompleted": false,
+  "message": "GEODATA_DATABASE_URL is missing. Seed was skipped.",
+  "requiredLabels": {
+    "sourceName": "P2_GEO_2_MANUAL_POC",
+    "sourceLicense": "POC_ONLY_NOT_PRODUCTION",
+    "officialVerification": false,
+    "label": "PUBLIC_SOURCE_SIGNAL"
+  },
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

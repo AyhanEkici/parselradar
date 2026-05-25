@@ -1,0 +1,70 @@
+{
+  "phase": "P2.GEO-2B-LIVE-KAYSERI-POSTGIS-POC",
+  "capturedAt": "2026-05-25T17:58:31.1873002Z",
+  "preflight": {
+    "geodataDatabaseUrl": "GEODATA_DATABASE_URL_MISSING",
+    "branch": "main"
+  },
+  "workspaceSnapshot": {
+    "gitStatusShort": "captured",
+    "gitLogOneline10": "captured",
+    "gitDiffNameStatus": "captured",
+    "gitDiffStat": "captured"
+  },
+  "recentCommits": [
+    "3e0553ff feat: add Kayseri PostGIS geodata POC",
+    "41a43697 docs: define geodata signal layer blueprint",
+    "0fcc4425 feat: add listing intake and basic risk scan",
+    "a71ff0cb feat: add assisted public registry evidence checks",
+    "4091ba99 fix: polish guided conversational analysis flow",
+    "c44c249f feat: add guided conversational analysis intake shell",
+    "25c647e9 docs: ingest viewer feedback and plan conversational workflow",
+    "2ffe6166 docs: add controlled beta status snapshot",
+    "8dcc9055 docs: add historical evidence metadata read-only audit",
+    "fde153db docs: add OCR preview POC plan"
+  ],
+  "dirtyClassification": {
+    "dirtyFileCount": 377,
+    "categoryCounts": {
+      "REQUIRED_P2_GEO_2B": 0,
+      "PREVIOUS_SESSION_PROOF_OUTPUT": 8,
+      "GENERATED_BUILD_OUTPUT": 369,
+      "ACCIDENTAL_NOISE": 0,
+      "UNKNOWN_REQUIRES_REVIEW": 0
+    },
+    "categorySamples": {
+      "REQUIRED_P2_GEO_2B": [],
+      "PREVIOUS_SESSION_PROOF_OUTPUT": [
+        "proof/connector-diagnostics-audit.json",
+        "proof/connector-diagnostics-contract.json",
+        "proof/ogc-diagnostics-ui-contract.json",
+        "proof/platform-integrity-audit.json",
+        "proof/.p2_geo_2b_git_diff_name_status.txt",
+        "proof/.p2_geo_2b_git_diff_stat.txt",
+        "proof/.p2_geo_2b_git_log_oneline_10.txt",
+        "proof/.p2_geo_2b_git_status_short.txt"
+      ],
+      "GENERATED_BUILD_OUTPUT": [
+        "apps/api/dist/analytics/buildIngestionAnalytics.js",
+        "apps/api/dist/analytics/buildInvestorAnalytics.js",
+        "apps/api/dist/analytics/buildProductAnalytics.js",
+        "apps/api/dist/analytics/buildRuntimeAnalytics.js",
+        "apps/api/dist/analytics/buildWorkspaceAnalytics.js",
+        "apps/api/dist/config/analysis/districtMultipliers.js",
+        "apps/api/dist/config/analysis/infrastructureWeights.js",
+        "apps/api/dist/config/analysis/liquidityWeights.js",
+        "apps/api/dist/config/analysis/valuationMatrix.js",
+        "apps/api/dist/config/analysis/zoningWeights.js",
+        "apps/api/dist/config/connectors/alertPolicies.js",
+        "apps/api/dist/config/connectors/connectorActivationPolicies.js"
+      ],
+      "ACCIDENTAL_NOISE": [],
+      "UNKNOWN_REQUIRES_REVIEW": []
+    }
+  },
+  "stagingPolicy": {
+    "doNotStageUnknownRequiresReview": true,
+    "doNotCommitGeneratedBuildOutput": true,
+    "doNotCommitUnrelatedPreviousProofArtifacts": true
+  }
+}

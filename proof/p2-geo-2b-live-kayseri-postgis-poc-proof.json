@@ -1,0 +1,47 @@
+{
+  "phase": "P2.GEO-2B-LIVE-KAYSERI-POSTGIS-POC",
+  "status": "CONFIG_REQUIRED",
+  "preflight": {
+    "geodataDatabaseUrlPresent": false,
+    "preflightResult": "GEODATA_DATABASE_URL_MISSING"
+  },
+  "execution": {
+    "connectionCheck": "CONFIG_REQUIRED",
+    "schemaApplied": false,
+    "seedCompleted": false,
+    "liveSignalQueryStatus": "CONFIG_REQUIRED"
+  },
+  "signalContract": {
+    "signalsReturned": false,
+    "fieldsPresent": false,
+    "labelsAndDisclaimersPresent": false,
+    "officialVerificationFalse": false
+  },
+  "safety": {
+    "dockerAdded": false,
+    "envChanged": false,
+    "secretCommitted": false,
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "turkeyFullImportAdded": false,
+    "schedulerAdded": false,
+    "authRuntimeRefactor": false,
+    "officialVerificationClaimAdded": false
+  },
+  "baselineCommands": {
+    "buildApi": "PASS",
+    "buildWeb": "PASS",
+    "verifyConnectorDiagnosticsContract": "PASS",
+    "verifyConnectorDiagnostics": "PASS",
+    "verifyPlatformIntegrity": "PASS"
+  },
+  "geodataCommands": {
+    "geoP2Geo2Schema": "CONFIG_REQUIRED",
+    "geoP2Geo2Seed": "CONFIG_REQUIRED",
+    "geoP2Geo2Test": "CONFIG_REQUIRED"
+  },
+  "mongodbRemainsProductDb": true,
+  "postgisIsOptionalPocDb": true,
+  "nextAction": "Configure GEODATA_DATABASE_URL in local session and rerun P2.GEO-2B for PASS live signals.",
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}
