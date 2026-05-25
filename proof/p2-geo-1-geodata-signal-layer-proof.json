@@ -1,0 +1,64 @@
+{
+  "phase": "P2.GEO-1-GEODATA-SIGNAL-LAYER-TECHNICAL-BLUEPRINT",
+  "scope": {
+    "documentationOnly": true,
+    "runtimeImplementation": false,
+    "dependencyInstallation": false,
+    "postgisSetup": false,
+    "osmImport": false,
+    "dockerAdded": false,
+    "envMutation": false,
+    "connectorActivation": false,
+    "scraping": false,
+    "officialVerificationClaim": false
+  },
+  "documentsCreated": [
+    "docs/GEODATA_SIGNAL_LAYER_TECHNICAL_BLUEPRINT.md",
+    "docs/GEODATA_POSTGIS_SCHEMA_BLUEPRINT.md",
+    "docs/GEODATA_SOURCE_AND_LICENSE_MATRIX.md",
+    "docs/GEODATA_SIGNAL_QUERY_CONTRACTS.md",
+    "docs/GEODATA_IMPORT_AND_UPDATE_PIPELINE.md",
+    "docs/GEODATA_RISK_SIGNAL_OUTPUT_MODEL.md"
+  ],
+  "proofChecks": {
+    "allSixDocsExist": true,
+    "mongoRemainsProductDb": true,
+    "postgisRoleGeodataOnly": true,
+    "sourceMatrixIncludesRequiredSources": true,
+    "updatePipelineDefined": true,
+    "queryContractsDefined": true,
+    "lowConfidenceBlocksPreciseSignals": true,
+    "mediumHighAllowsPublicContextSignals": true,
+    "runtimeCodeChanged": false,
+    "envChanged": false,
+    "connectorActivated": false,
+    "scrapingAdded": false,
+    "officialVerificationClaimAdded": false
+  },
+  "architectureDecisionSummary": {
+    "mongoRole": "Product database for users/properties/evidence/listing-intake/basic-risk-scan/reports/analysis snapshots.",
+    "postgisRole": "Future public geodata signal query database only.",
+    "osmStrategy": "Geofabrik Turkey extract baseline with ODbL attribution and versioned snapshots.",
+    "demStrategy": "NASA SRTM primary candidate, Copernicus DEM as alternative after license review.",
+    "afadDaskStrategy": "Context-only hazard/legal signal layer, not parcel-level official engineering verification.",
+    "streetLevelStrategy": "Mapillary/KartaView/Google Street View options under API terms and attribution."
+  },
+  "signalModelSummary": {
+    "lowBehavior": "BLOCKED_LOW_LOCATION_CONFIDENCE and request pin/mahalle/ada-parsel/coordinate.",
+    "mediumHighBehavior": "Return public context signals with sourceVersion and disclaimers.",
+    "requiredLabels": [
+      "PUBLIC_SOURCE_SIGNAL",
+      "TERRAIN_SIGNAL",
+      "HAZARD_CONTEXT_SIGNAL",
+      "NEEDS_OFFICIAL_CONFIRMATION",
+      "NOT_OFFICIAL_FOR_LEGAL_ACTIONS"
+    ],
+    "officialBoundary": "No signal may be labeled as official tapu/imar verification."
+  },
+  "validationCommands": {
+    "verify:connector-diagnostics-contract": "PASS",
+    "verify:connector-diagnostics": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}
