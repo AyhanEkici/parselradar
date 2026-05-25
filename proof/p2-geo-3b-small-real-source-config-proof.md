@@ -5,14 +5,16 @@
 - Configure script exists: True
 - Package script exists: true
 - TODO ledger updated: True
-- Source configuration status: 
-- Source basename: 
-- Source extension: 
-- Size bytes: 
-- Checksum visible: 
-- Supported dry-run: 
-- Future tooling required: 
-- Source path hash present: False
+- Source configuration status: SOURCE_CONFIGURED
+- Source basename: kayseri-osm-small.geojson
+- Source extension: .geojson
+- Size bytes: 465798
+- Checksum visible: True
+- Supported dry-run: True
+- Future tooling required: False
+- Source path hash present: True
+- 3A validation status: CONFIG_REQUIRED
+- 3A dry-run status: DRY_RUN_PASS
 - Raw source path committed: false
 - Source file committed: false
 - Full Turkey import allowed: false

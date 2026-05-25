@@ -1,10 +1,10 @@
 {
     "phase":  "P2.GEO-3B",
-    "generatedAt":  "2026-05-25T23:48:37.8155917Z",
+    "generatedAt":  "2026-05-25T23:49:41.4934322Z",
     "commandResults":  [
                            {
                                "name":  "geo:p2-geo-3b:configure-small-source",
-                               "status":  null
+                               "status":  "SOURCE_CONFIGURED"
                            },
                            {
                                "name":  "geo:p2-geo-3a:validate-osm-source",
@@ -12,7 +12,7 @@
                            },
                            {
                                "name":  "geo:p2-geo-3a:dry-run-small-region",
-                               "status":  "CONFIG_REQUIRED"
+                               "status":  "DRY_RUN_PASS"
                            },
                            {
                                "name":  "build api",
@@ -35,12 +35,12 @@
                                "status":  "PASS"
                            }
                        ],
-    "sourceBasename":  null,
-    "sourceExtension":  null,
-    "sizeBytes":  null,
-    "checksumVisible":  null,
-    "supportedDryRun":  null,
-    "futureToolingRequired":  null,
+    "sourceBasename":  "kayseri-osm-small.geojson",
+    "sourceExtension":  ".geojson",
+    "sizeBytes":  465798,
+    "checksumVisible":  true,
+    "supportedDryRun":  true,
+    "futureToolingRequired":  false,
     "fullTurkeyImportAllowed":  false,
     "productionSwapAllowed":  false,
     "connectorActivated":  false,
