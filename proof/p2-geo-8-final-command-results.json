@@ -1,0 +1,33 @@
+{
+    "phase":  "P2.GEO-8",
+    "generatedAt":  "2026-05-25T23:01:27.5194885Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-8:query-staged-signals",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "productionSwapUsed":  false,
+    "productionTablesQueried":  false,
+    "officialVerification":  false
+}

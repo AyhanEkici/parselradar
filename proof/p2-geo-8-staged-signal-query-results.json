@@ -1,0 +1,90 @@
+{
+  "phase": "P2.GEO-8",
+  "status": "PASS",
+  "testCoordinate": {
+    "lat": 38.71,
+    "lon": 35.5,
+    "label": "Kayseri POC staged signal test coordinate"
+  },
+  "importRunId": "1",
+  "stagedImportFound": true,
+  "signals": [
+    {
+      "type": "NEAREST_STAGED_ADMIN_CENTER",
+      "featureType": "ADMIN_CENTER",
+      "name": "Kayseri City Center POC",
+      "distanceKm": 2.189,
+      "source": "P2_GEO_7_LOCAL_SAMPLE",
+      "sourceLayer": "p2_geo_7_sample",
+      "sourceId": "kayseri-city-center-poc",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "POC_ONLY",
+      "officialVerification": false,
+      "disclaimer": "POC-only public-source staged sample. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "NEAREST_STAGED_SETTLEMENT",
+      "featureType": "SETTLEMENT",
+      "name": "Talas Settlement POC",
+      "distanceKm": 5.614,
+      "source": "P2_GEO_7_LOCAL_SAMPLE",
+      "sourceLayer": "p2_geo_7_sample",
+      "sourceId": "talas-settlement-poc",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "POC_ONLY",
+      "officialVerification": false,
+      "disclaimer": "POC-only public-source staged sample. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "NEAREST_STAGED_MAIN_ROAD",
+      "featureType": "MAIN_ROAD",
+      "name": "Kayseri Main Road POC",
+      "distanceKm": 1.071,
+      "source": "P2_GEO_7_LOCAL_SAMPLE",
+      "sourceLayer": "p2_geo_7_sample",
+      "sourceId": "main-road-linestring-poc",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "POC_ONLY",
+      "officialVerification": false,
+      "disclaimer": "POC-only public-source staged sample. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "NEAREST_STAGED_INDUSTRIAL_OSB_CANDIDATE",
+      "featureType": "INDUSTRIAL_OSB_CANDIDATE",
+      "name": "Industrial OSB Candidate POC",
+      "distanceKm": 11.301,
+      "source": "P2_GEO_7_LOCAL_SAMPLE",
+      "sourceLayer": "p2_geo_7_sample",
+      "sourceId": "industrial-osb-candidate-poc",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "POC_ONLY",
+      "officialVerification": false,
+      "disclaimer": "POC-only public-source staged sample. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "NEAREST_STAGED_WATER_FEATURE",
+      "featureType": "WATER_FEATURE",
+      "name": "Water Feature POC",
+      "distanceKm": 15.242,
+      "source": "P2_GEO_7_LOCAL_SAMPLE",
+      "sourceLayer": "p2_geo_7_sample",
+      "sourceId": "water-feature-poc",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "POC_ONLY",
+      "officialVerification": false,
+      "disclaimer": "POC-only public-source staged sample. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    }
+  ],
+  "signalCount": 5,
+  "nearestStagedAdminCenter": true,
+  "nearestStagedSettlement": true,
+  "nearestStagedMainRoad": true,
+  "nearestStagedIndustrialOsbCandidate": true,
+  "nearestStagedWaterFeature": true,
+  "allOfficialVerificationFalse": true,
+  "labelsDisclaimersPresent": true,
+  "productionSwapUsed": false,
+  "productionTablesQueried": false,
+  "officialVerification": false,
+  "generatedAt": "2026-05-25T23:01:05.018Z"
+}

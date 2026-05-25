@@ -1,0 +1,25 @@
+# P2.GEO-8 Staged-to-Signal Adapter Proof
+
+- Clean start captured: True
+- Adapter script exists: True
+- Package script exists: true
+- Latest P2.GEO-7 import run queried: True
+- Signal query status: PASS
+- Signal count: 5
+- Nearest staged admin/center: True
+- Nearest staged settlement: True
+- Nearest staged main road: True
+- Nearest staged industrial/OSB candidate: True
+- Nearest staged water feature: True
+- All officialVerification false: True
+- Labels/disclaimers present: True
+- Only staging tables queried: true
+- Production tables queried: false
+- Production swap used: false
+- Scheduler added: false
+- Connector activated: false
+- Scraping added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true
