@@ -1,0 +1,70 @@
+{
+  "phase": "MVP-4B-LISTING-INTAKE-REQUIRED-FIELD-SYNC-BASIC-RISK-SCAN",
+  "scope": {
+    "connectorAutomation": false,
+    "manualFirstGuidance": true,
+    "userUploadedEvidenceOnly": true,
+    "officialVerificationClaimed": false,
+    "scrapingPerformed": false
+  },
+  "filesChanged": [
+    "apps/web/src/lib/listingIntakeBasicRisk.ts",
+    "apps/web/src/pages/PropertyDocuments.tsx",
+    "proof/mvp4b-listing-intake-basic-risk-scan-proof.json",
+    "proof/mvp4b-listing-intake-basic-risk-scan-proof.md"
+  ],
+  "implementedCapabilities": [
+    "URL / pasted text listing intake",
+    "Screenshot/document intake linkage to existing upload flow",
+    "Required field sync with explicit missing field gate",
+    "Basic Risk Scan execution with manual-first signals",
+    "Seller question generation",
+    "Decision snapshot output",
+    "Source labels and confidence display",
+    "Not-official disclaimer enforcement"
+  ],
+  "requiredLabels": [
+    "USER_PROVIDED_LISTING_DATA",
+    "USER_PROVIDED_SCREENSHOT",
+    "USER_PASTED_LISTING_TEXT",
+    "OCR_EXTRACTED_FROM_USER_UPLOAD",
+    "MANUALLY_CONFIRMED_BY_USER",
+    "MISSING_REQUIRED_FIELD",
+    "BASIC_RISK_SIGNAL",
+    "NEEDS_OFFICIAL_CONFIRMATION",
+    "NOT_OFFICIAL_FOR_LEGAL_ACTIONS"
+  ],
+  "securityAndComplianceChecks": {
+    "scraperAdded": false,
+    "connectorActivated": false,
+    "officialSystemAutomationAdded": false,
+    "edevletAutomationAdded": false,
+    "credentialOrSessionCaptureAdded": false,
+    "captchaBypassAdded": false,
+    "officialVerificationWordingDrift": false,
+    "backendAuthFlowChanged": false,
+    "envMutationAdded": false
+  },
+  "validationCommands": {
+    "npm run build --prefix apps/api": "PASS",
+    "npm run build --prefix apps/web": "PASS",
+    "npm run verify:connector-diagnostics-contract": "PASS",
+    "npm run verify:connector-diagnostics": "PASS",
+    "npm run verify:platform-integrity": "PASS"
+  },
+  "gitEvidence": {
+    "statusShort": [
+      "M apps/web/src/pages/PropertyDocuments.tsx",
+      "?? apps/web/src/lib/listingIntakeBasicRisk.ts",
+      "?? proof/mvp4b-listing-intake-basic-risk-scan-proof.json",
+      "?? proof/mvp4b-listing-intake-basic-risk-scan-proof.md"
+    ],
+    "diffNameStatus": [
+      "M apps/web/src/pages/PropertyDocuments.tsx",
+      "A apps/web/src/lib/listingIntakeBasicRisk.ts",
+      "A proof/mvp4b-listing-intake-basic-risk-scan-proof.json",
+      "A proof/mvp4b-listing-intake-basic-risk-scan-proof.md"
+    ]
+  },
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}

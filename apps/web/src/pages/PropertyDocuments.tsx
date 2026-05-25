@@ -25,6 +25,17 @@ import {
   getAssistedExtractionStorageKey,
   getAssistedManualCheckStorageKey,
 } from '../lib/assistedPublicRegistry';
+import {
+  BasicRiskScanResult,
+  ListingIntakeExtraction,
+  ListingIntakeFields,
+  buildListingIntakeExtraction,
+  emptyListingIntakeFields,
+  getMissingRequiredFields,
+  parseListingUrl,
+  parsePastedListingText,
+  runBasicRiskScan,
+} from '../lib/listingIntakeBasicRisk';
 
 type ReviewStatusValue =
   | 'PREVIEW_ONLY'
@@ -382,6 +393,10 @@ export default function PropertyDocuments() {
     checkedManually: false,
     updatedAt: new Date().toISOString(),
   });
+  const [listingIntakeFields, setListingIntakeFields] = useState<ListingIntakeFields>(emptyListingIntakeFields());
+  const [listingExtraction, setListingExtraction] = useState<ListingIntakeExtraction | null>(null);
+  const [ownershipType, setOwnershipType] = useState('');
+  const [basicRiskScanResult, setBasicRiskScanResult] = useState<BasicRiskScanResult | null>(null);
   const navigate = useNavigate();
   const toast = useToast();
   const intentPreset = useMemo(
@@ -396,6 +411,151 @@ export default function PropertyDocuments() {
 
   const storageKey = id ? getAssistedExtractionStorageKey(id) : '';
   const manualCheckStorageKey = id ? getAssistedManualCheckStorageKey(id) : '';
+  const listingIntakeStorageKey = id ? `parselradar:mvp4b-listing-intake:${id}` : '';
+  const listingRiskScanStorageKey = id ? `parselradar:mvp4b-risk-scan:${id}` : '';
+
+  const hasScreenshotOrDocument = documents.length > 0;
+  const missingRequiredFields = useMemo(
+    () => getMissingRequiredFields(listingIntakeFields, hasScreenshotOrDocument),
+    [listingIntakeFields, hasScreenshotOrDocument]
+  );
+  const readyForBasicRiskScan = missingRequiredFields.length === 0;
+
+  const hasImarEvidence = useMemo(
+    () =>
+      documents.some((doc) =>
+        ['MUNICIPALITY_IMAR_DOCUMENT', 'E_PLAN_DOCUMENT'].includes(String(doc.evidenceType || '').trim()) ||
+        ['MUNICIPALITY_IMAR_EVIDENCE', 'E_PLAN_EVIDENCE'].includes(String(doc.sourceType || '').trim())
+      ),
+    [documents]
+  );
+
+  const hasPublicRegistryEvidence = useMemo(
+    () =>
+      documents.some((doc) => {
+        const sourceType = String(doc.sourceType || '').trim();
+        const evidenceType = String(doc.evidenceType || '').trim();
+        return (
+          sourceType.startsWith('TKGM_') ||
+          sourceType.includes('MUNICIPALITY') ||
+          sourceType.includes('E_PLAN') ||
+          evidenceType.startsWith('TKGM_') ||
+          evidenceType === 'MUNICIPALITY_IMAR_DOCUMENT' ||
+          evidenceType === 'E_PLAN_DOCUMENT'
+        );
+      }),
+    [documents]
+  );
+
+  const hasRoadEvidence = useMemo(
+    () =>
+      documents.some((doc) => {
+        const name = String(doc.originalName || '').toLocaleLowerCase('tr-TR');
+        return name.includes('yol') || name.includes('cephe') || name.includes('ulasim') || name.includes('ulaşım');
+      }),
+    [documents]
+  );
+
+  useEffect(() => {
+    if (!listingIntakeStorageKey || !listingRiskScanStorageKey) return;
+
+    try {
+      const rawFields = window.localStorage.getItem(listingIntakeStorageKey);
+      if (rawFields) {
+        const parsed = JSON.parse(rawFields) as ListingIntakeFields;
+        if (parsed && typeof parsed === 'object') {
+          setListingIntakeFields((prev) => ({ ...prev, ...parsed }));
+        }
+      }
+    } catch {
+      // Ignore malformed local storage.
+    }
+
+    try {
+      const rawScan = window.localStorage.getItem(listingRiskScanStorageKey);
+      if (rawScan) {
+        const parsed = JSON.parse(rawScan) as BasicRiskScanResult;
+        if (parsed && typeof parsed === 'object') {
+          setBasicRiskScanResult(parsed);
+        }
+      }
+    } catch {
+      // Ignore malformed local storage.
+    }
+  }, [listingIntakeStorageKey, listingRiskScanStorageKey]);
+
+  useEffect(() => {
+    setListingIntakeFields((prev) => {
+      if (prev.il && prev.ilce) return prev;
+      return {
+        ...prev,
+        il: prev.il || propertyLocation.province || '',
+        ilce: prev.ilce || propertyLocation.district || '',
+      };
+    });
+  }, [propertyLocation]);
+
+  const persistListingIntake = (next: ListingIntakeFields) => {
+    setListingIntakeFields(next);
+    if (!listingIntakeStorageKey) return;
+    try {
+      window.localStorage.setItem(listingIntakeStorageKey, JSON.stringify(next));
+    } catch {
+      toast.error('Listing intake fields could not be saved');
+    }
+  };
+
+  const updateListingField = <K extends keyof ListingIntakeFields>(field: K, value: ListingIntakeFields[K]) => {
+    const next = { ...listingIntakeFields, [field]: value };
+    persistListingIntake(next);
+  };
+
+  const applyExtractionFromInputs = () => {
+    const parsedUrl = parseListingUrl(listingIntakeFields.listingUrl);
+    const parsedText = parsePastedListingText(listingIntakeFields.pastedText);
+    const nextFields: ListingIntakeFields = {
+      ...listingIntakeFields,
+      ...parsedText,
+      listingUrl: parsedUrl.listingUrl || listingIntakeFields.listingUrl,
+      sourceDomain: parsedUrl.sourceDomain || listingIntakeFields.sourceDomain,
+      claims: parsedText.claims || listingIntakeFields.claims,
+      locationConfidence:
+        listingIntakeFields.locationConfidence ||
+        (parsedText.mahalle || parsedText.ada || parsedText.parsel ? 'MEDIUM' : listingIntakeFields.locationConfidence),
+    };
+
+    persistListingIntake(nextFields);
+
+    const extraction = buildListingIntakeExtraction(
+      nextFields,
+      nextFields.listingUrl ? 'URL' : nextFields.pastedText ? 'PASTED_TEXT' : 'SCREENSHOT',
+      nextFields.pastedText ? 'PASTED_TEXT_PARSE' : 'MANUAL_ENTRY',
+      hasScreenshotOrDocument
+    );
+    setListingExtraction(extraction);
+  };
+
+  const runBasicRiskScanHandler = () => {
+    if (!readyForBasicRiskScan) return;
+
+    const result = runBasicRiskScan({
+      fields: listingIntakeFields,
+      hasScreenshotOrDocument,
+      hasImarEvidence,
+      hasRoadEvidence,
+      hasPublicRegistryEvidence,
+      ownershipType,
+    });
+    setBasicRiskScanResult(result);
+
+    if (listingRiskScanStorageKey) {
+      try {
+        window.localStorage.setItem(listingRiskScanStorageKey, JSON.stringify(result));
+      } catch {
+        toast.error('Basic risk scan result could not be saved');
+      }
+    }
+  };
 
   const publicRegistryCards = useMemo<PublicRegistrySourceCard[]>(() => {
     const kayseri = getMunicipalitySource('KAYSERI', 'KAYSERI');
@@ -882,6 +1042,277 @@ export default function PropertyDocuments() {
         </section>
 
         <section className="rounded-xl border border-slate-200 p-4 bg-slate-50/40">
+          <AdminToolbar className="justify-between mb-3">
+            <h3 className="text-sm font-semibold text-slate-800">Listing Intake + Basic Risk Scan</h3>
+          </AdminToolbar>
+
+          <div className="mb-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">Intake sources</div>
+            <div className="mt-1">Paste listing URL and/or listing text, and use screenshot/document upload if available.</div>
+            <div className="mt-1">Screenshot/document path: {hasScreenshotOrDocument ? 'available from uploaded evidence' : 'not uploaded yet'}</div>
+            <button
+              type="button"
+              className="mt-2 rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+              onClick={() => {
+                const uploadAnchor = document.getElementById('upload');
+                uploadAnchor?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              Upload screenshot/document
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+            <label className="text-xs text-slate-700">
+              Listing URL <span className="text-rose-600">*</span>
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.listingUrl}
+                onChange={(e) => updateListingField('listingUrl', e.target.value)}
+                placeholder="https://..."
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Source domain
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.sourceDomain}
+                onChange={(e) => updateListingField('sourceDomain', e.target.value)}
+                placeholder="domain"
+              />
+            </label>
+            <label className="text-xs text-slate-700 md:col-span-2">
+              Pasted listing text <span className="text-rose-600">*</span>
+              <textarea
+                className="mt-1 block min-h-24 w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.pastedText}
+                onChange={(e) => updateListingField('pastedText', e.target.value)}
+                placeholder="Paste listing text here"
+              />
+            </label>
+          </div>
+
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+              onClick={applyExtractionFromInputs}
+            >
+              Parse and pre-fill
+            </button>
+          </div>
+
+          <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
+            <label className="text-xs text-slate-700">
+              Title
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.title}
+                onChange={(e) => updateListingField('title', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Price <span className="text-rose-600">*</span>
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.price ?? ''}
+                onChange={(e) => updateListingField('price', Number(String(e.target.value).replace(',', '.')) || null)}
+                type="number"
+                min="0"
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              m² <span className="text-rose-600">*</span>
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.areaM2 ?? ''}
+                onChange={(e) => updateListingField('areaM2', Number(String(e.target.value).replace(',', '.')) || null)}
+                type="number"
+                min="0"
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              İl <span className="text-rose-600">*</span>
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.il}
+                onChange={(e) => updateListingField('il', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              İlçe <span className="text-rose-600">*</span>
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.ilce}
+                onChange={(e) => updateListingField('ilce', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Mahalle/Köy
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.mahalle}
+                onChange={(e) => updateListingField('mahalle', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Category <span className="text-rose-600">*</span>
+              <select
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.category}
+                onChange={(e) => updateListingField('category', e.target.value)}
+              >
+                <option value="">Select</option>
+                <option value="arsa">arsa</option>
+                <option value="tarla">tarla</option>
+                <option value="bahçe">bahçe</option>
+                <option value="daire">daire</option>
+                <option value="other">other</option>
+              </select>
+            </label>
+            <label className="text-xs text-slate-700">
+              Ada
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.ada}
+                onChange={(e) => updateListingField('ada', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Parsel
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.parsel}
+                onChange={(e) => updateListingField('parsel', e.target.value)}
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Location confidence <span className="text-rose-600">*</span>
+              <select
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.locationConfidence}
+                onChange={(e) => updateListingField('locationConfidence', e.target.value as ListingIntakeFields['locationConfidence'])}
+              >
+                <option value="">Select</option>
+                <option value="LOW">LOW</option>
+                <option value="MEDIUM">MEDIUM</option>
+                <option value="HIGH">HIGH</option>
+              </select>
+            </label>
+            <label className="text-xs text-slate-700 md:col-span-2">
+              Claims (comma-separated)
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={listingIntakeFields.claims.join(', ')}
+                onChange={(e) =>
+                  updateListingField(
+                    'claims',
+                    e.target.value
+                      .split(',')
+                      .map((entry) => entry.trim())
+                      .filter(Boolean)
+                  )
+                }
+              />
+            </label>
+            <label className="text-xs text-slate-700">
+              Ownership type
+              <input
+                className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                value={ownershipType}
+                onChange={(e) => setOwnershipType(e.target.value)}
+                placeholder="hisseli / müstakil"
+              />
+            </label>
+          </div>
+
+          {listingExtraction ? (
+            <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+              <div className="font-semibold text-slate-900">Extraction readiness</div>
+              <div className="mt-1">Input type: {listingExtraction.inputType}</div>
+              <div>Extraction mode: {listingExtraction.extractionMode}</div>
+              <div>Ready for basic risk scan: {listingExtraction.readyForBasicRiskScan ? 'yes' : 'no'}</div>
+            </div>
+          ) : null}
+
+          {!readyForBasicRiskScan ? (
+            <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800">
+              <div className="font-semibold text-rose-900">Vul ontbrekende data</div>
+              <div className="mt-1">Basic Risk Scan is disabled until minimum required fields are complete.</div>
+              <div className="mt-1">Missing required fields: {missingRequiredFields.join(', ')}</div>
+            </div>
+          ) : null}
+
+          <div className="mt-3">
+            <button
+              type="button"
+              className="rounded border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={runBasicRiskScanHandler}
+              disabled={!readyForBasicRiskScan}
+            >
+              Run Basic Risk Scan
+            </button>
+          </div>
+
+          {basicRiskScanResult ? (
+            <div className="mt-3 space-y-2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+              <div className="font-semibold text-slate-900">Basic Risk Scan Result</div>
+              <div>price/m²: {typeof basicRiskScanResult.pricePerM2 === 'number' ? basicRiskScanResult.pricePerM2.toLocaleString('tr-TR') : '-'}</div>
+              <div>location confidence: {basicRiskScanResult.locationConfidence || '-'}</div>
+              <div>next best action: {basicRiskScanResult.nextBestAction}</div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Risk signals</div>
+                <ul className="mt-1 list-disc pl-4">
+                  {basicRiskScanResult.missingEvidenceSignals.map((signal) => (
+                    <li key={signal.key}>
+                      {signal.key}: {signal.triggered ? 'triggered' : 'not triggered'} ({signal.level}) - confidence {signal.confidence || 'UNKNOWN'}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Risk keyword signals</div>
+                <div className="mt-1">{basicRiskScanResult.riskKeywordSignals.length > 0 ? basicRiskScanResult.riskKeywordSignals.join(', ') : '-'}</div>
+              </div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Seller questions</div>
+                <ul className="mt-1 list-disc pl-4">
+                  {basicRiskScanResult.sellerQuestions.map((question) => (
+                    <li key={question}>{question}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Decision snapshot</div>
+                <div>overallReadiness: {basicRiskScanResult.decisionSnapshot.overallReadiness}</div>
+                <div>mainOpportunity: {basicRiskScanResult.decisionSnapshot.mainOpportunity}</div>
+                <div>mainRisk: {basicRiskScanResult.decisionSnapshot.mainRisk}</div>
+                <div>nextBestAction: {basicRiskScanResult.decisionSnapshot.nextBestAction}</div>
+                <div>confidenceLevel: {basicRiskScanResult.decisionSnapshot.confidenceLevel}</div>
+                <div>officialVerificationNeeded: {basicRiskScanResult.decisionSnapshot.officialVerificationNeeded}</div>
+              </div>
+
+              <div className="rounded border border-slate-200 bg-slate-50 p-2">
+                <div className="font-medium text-slate-900">Source labels</div>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {basicRiskScanResult.labels.map((label) => (
+                    <span key={label} className="inline-flex rounded border border-slate-200 bg-white px-2 py-0.5 text-[11px]">
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded border border-amber-200 bg-amber-50 p-2 text-amber-800">
+                {basicRiskScanResult.disclaimer}
+              </div>
+            </div>
+          ) : null}
+
           <AdminToolbar className="justify-between mb-3">
             <h3 className="text-sm font-semibold text-slate-800">Public Registry Checks</h3>
           </AdminToolbar>
