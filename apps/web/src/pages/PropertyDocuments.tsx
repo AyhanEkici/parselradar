@@ -18,6 +18,13 @@ import {
   getMunicipalitySource,
   MunicipalityPublicSourceStatus,
 } from '../lib/municipalitySourceRegistry';
+import {
+  AssistedRegistryExtractionRecord,
+  AssistedRegistrySourceType,
+  REQUIRED_ASSISTED_DATA_LABELS,
+  getAssistedExtractionStorageKey,
+  getAssistedManualCheckStorageKey,
+} from '../lib/assistedPublicRegistry';
 
 type ReviewStatusValue =
   | 'PREVIEW_ONLY'
@@ -61,6 +68,31 @@ type UploadIntentPreset = {
   registryStatus?: MunicipalityPublicSourceStatus;
   blockedRegistryStatus?: MunicipalityPublicSourceStatus;
   blockedSourceNote?: string;
+};
+
+type PublicRegistrySourceCard = {
+  key: AssistedRegistrySourceType;
+  title: string;
+  description: string;
+  sourceUrl?: string;
+  publicStatus: MunicipalityPublicSourceStatus | 'VERIFIED_PUBLIC_REFERENCE';
+  blockedStatus?: MunicipalityPublicSourceStatus;
+  blockedNote?: string;
+  uploadIntent: UploadIntent;
+};
+
+const EMPTY_EXTRACTION_FIELDS: AssistedRegistryExtractionRecord['fields'] = {
+  il: '',
+  ilce: '',
+  mahalle: '',
+  ada: '',
+  parsel: '',
+  yuzolcumu: '',
+  nitelik: '',
+  imarDurumu: '',
+  taks: '',
+  kaks: '',
+  katAdedi: '',
 };
 
 const evidenceTypeOptions = [
@@ -334,6 +366,22 @@ export default function PropertyDocuments() {
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>({});
   const [showReturnToResult, setShowReturnToResult] = useState(false);
   const [propertyLocation, setPropertyLocation] = useState<{ province?: string; district?: string }>({});
+  const [manualChecks, setManualChecks] = useState<Record<AssistedRegistrySourceType, boolean>>({
+    TKGM: false,
+    KAYSERI_EIMAR: false,
+    KOCASINAN_EIMAR: false,
+    MELIKGAZI_EIMAR: false,
+  });
+  const [extractions, setExtractions] = useState<AssistedRegistryExtractionRecord[]>([]);
+  const [extractionDraft, setExtractionDraft] = useState<AssistedRegistryExtractionRecord>({
+    sourceType: 'TKGM',
+    extractionMode: 'MANUAL_ENTRY',
+    fields: { ...EMPTY_EXTRACTION_FIELDS },
+    confidence: 'LOW',
+    officialVerification: false,
+    checkedManually: false,
+    updatedAt: new Date().toISOString(),
+  });
   const navigate = useNavigate();
   const toast = useToast();
   const intentPreset = useMemo(
@@ -345,6 +393,119 @@ export default function PropertyDocuments() {
     [propertyLocation]
   );
   const returnToResult = String(searchParams.get('returnTo') || '').toLowerCase() === 'result';
+
+  const storageKey = id ? getAssistedExtractionStorageKey(id) : '';
+  const manualCheckStorageKey = id ? getAssistedManualCheckStorageKey(id) : '';
+
+  const publicRegistryCards = useMemo<PublicRegistrySourceCard[]>(() => {
+    const kayseri = getMunicipalitySource('KAYSERI', 'KAYSERI');
+    const kocasinan = getMunicipalitySource('KAYSERI', 'KOCASINAN');
+    const melikgazi = getMunicipalitySource('KAYSERI', 'MELIKGAZI');
+    const melikgaziBlocked = getMunicipalityBlockedSource('KAYSERI', 'MELIKGAZI');
+
+    return [
+      {
+        key: 'TKGM',
+        title: 'TKGM Parsel Sorgu',
+        description: 'Manual source guidance only. Open publicly available reference and upload user-provided evidence.',
+        sourceUrl: 'https://parselsorgu.tkgm.gov.tr/',
+        publicStatus: 'VERIFIED_PUBLIC_REFERENCE',
+        uploadIntent: 'TKGM_PARCEL',
+      },
+      {
+        key: 'KAYSERI_EIMAR',
+        title: 'Kayseri CBS / e-imar reference',
+        description: 'Informational municipality reference. No automated fetch, no official verification claim.',
+        sourceUrl: kayseri.source?.url,
+        publicStatus: getMunicipalityPublicSourceStatus(kayseri.source),
+        uploadIntent: 'MUNICIPAL_ZONING',
+      },
+      {
+        key: 'KOCASINAN_EIMAR',
+        title: 'Kocasinan e-imar reference',
+        description: 'Use manually checked municipality source and upload screenshot/document as user-provided evidence.',
+        sourceUrl: kocasinan.source?.url,
+        publicStatus: getMunicipalityPublicSourceStatus(kocasinan.source),
+        uploadIntent: 'MUNICIPAL_ZONING',
+      },
+      {
+        key: 'MELIKGAZI_EIMAR',
+        title: 'Melikgazi e-imar reference',
+        description: 'Guidance-only reference. If login/CAPTCHA required, keep manual process and do not automate.',
+        sourceUrl: melikgazi.source?.url,
+        publicStatus: getMunicipalityPublicSourceStatus(melikgazi.source),
+        blockedStatus: melikgaziBlocked?.status,
+        blockedNote: melikgaziBlocked?.reason,
+        uploadIntent: 'MUNICIPAL_ZONING',
+      },
+    ];
+  }, []);
+
+  useEffect(() => {
+    if (!storageKey || !manualCheckStorageKey) return;
+
+    try {
+      const rawChecks = window.localStorage.getItem(manualCheckStorageKey);
+      if (rawChecks) {
+        const parsed = JSON.parse(rawChecks) as Record<AssistedRegistrySourceType, boolean>;
+        setManualChecks((prev) => ({ ...prev, ...parsed }));
+      }
+    } catch {
+      // Ignore malformed local storage.
+    }
+
+    try {
+      const rawExtractions = window.localStorage.getItem(storageKey);
+      if (rawExtractions) {
+        const parsed = JSON.parse(rawExtractions) as AssistedRegistryExtractionRecord[];
+        if (Array.isArray(parsed)) {
+          setExtractions(parsed);
+        }
+      }
+    } catch {
+      // Ignore malformed local storage.
+    }
+  }, [storageKey, manualCheckStorageKey]);
+
+  const persistManualChecks = (nextChecks: Record<AssistedRegistrySourceType, boolean>) => {
+    setManualChecks(nextChecks);
+    if (!manualCheckStorageKey) return;
+    try {
+      window.localStorage.setItem(manualCheckStorageKey, JSON.stringify(nextChecks));
+    } catch {
+      toast.error('Manual check status could not be saved');
+    }
+  };
+
+  const saveExtractionDraft = () => {
+    if (!storageKey) return;
+
+    const nextRecord: AssistedRegistryExtractionRecord = {
+      ...extractionDraft,
+      checkedManually: manualChecks[extractionDraft.sourceType] || false,
+      updatedAt: new Date().toISOString(),
+      officialVerification: false,
+    };
+
+    const next = [
+      nextRecord,
+      ...extractions.filter((item) => item.sourceType !== nextRecord.sourceType),
+    ];
+    setExtractions(next);
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(next));
+      toast.success('Extraction schema saved as user-provided evidence metadata');
+    } catch {
+      toast.error('Extraction schema could not be saved');
+    }
+  };
+
+  const jumpToUploadWithIntent = (intent: UploadIntent) => {
+    if (!id) return;
+    const params = new URLSearchParams(searchParams);
+    params.set('intent', intent);
+    navigate(`/properties/${id}/documents?${params.toString()}#upload`);
+  };
 
   function absoluteFileUrl(fileUrl?: string) {
     if (!fileUrl) return '';
@@ -721,6 +882,166 @@ export default function PropertyDocuments() {
         </section>
 
         <section className="rounded-xl border border-slate-200 p-4 bg-slate-50/40">
+          <AdminToolbar className="justify-between mb-3">
+            <h3 className="text-sm font-semibold text-slate-800">Public Registry Checks</h3>
+          </AdminToolbar>
+
+          <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+            Use this source as informational reference only. ParselRadar does not automatically verify TKGM/e-imar and does not replace official legal, tapu, imar or municipality verification.
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {publicRegistryCards.map((card) => (
+              <div key={card.key} className="rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+                <div className="font-semibold text-slate-900">{card.title}</div>
+                <div className="mt-1">{card.description}</div>
+                <div className="mt-1">Public source status: {card.publicStatus}</div>
+                {card.blockedStatus ? <div className="mt-1">Blocked source status: {card.blockedStatus}</div> : null}
+                {card.blockedNote ? <div className="mt-1">Blocked source note: {card.blockedNote}</div> : null}
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {card.sourceUrl ? (
+                    <a
+                      className="inline-flex rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                      href={card.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open source
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      className="inline-flex rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-400"
+                      disabled
+                    >
+                      Open source
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="inline-flex rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                    onClick={() => jumpToUploadWithIntent(card.uploadIntent)}
+                  >
+                    Upload screenshot/document
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                    onClick={() =>
+                      persistManualChecks({
+                        ...manualChecks,
+                        [card.key]: !manualChecks[card.key],
+                      })
+                    }
+                  >
+                    {manualChecks[card.key] ? 'Unmark checked manually' : 'Mark as checked manually'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">OCR / Manual Extraction Schema (user-provided evidence)</div>
+            <div className="mt-1">Extraction mode is schema-ready. OCR runtime is not activated in this phase.</div>
+            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+              <label>
+                Source type
+                <select
+                  className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                  value={extractionDraft.sourceType}
+                  onChange={(e) =>
+                    setExtractionDraft((prev) => ({
+                      ...prev,
+                      sourceType: e.target.value as AssistedRegistrySourceType,
+                    }))
+                  }
+                >
+                  <option value="TKGM">TKGM</option>
+                  <option value="KAYSERI_EIMAR">KAYSERI_EIMAR</option>
+                  <option value="KOCASINAN_EIMAR">KOCASINAN_EIMAR</option>
+                  <option value="MELIKGAZI_EIMAR">MELIKGAZI_EIMAR</option>
+                </select>
+              </label>
+              <label>
+                Extraction mode
+                <select
+                  className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                  value={extractionDraft.extractionMode}
+                  onChange={(e) =>
+                    setExtractionDraft((prev) => ({
+                      ...prev,
+                      extractionMode: e.target.value as AssistedRegistryExtractionRecord['extractionMode'],
+                    }))
+                  }
+                >
+                  <option value="USER_UPLOAD_OCR">USER_UPLOAD_OCR</option>
+                  <option value="MANUAL_ENTRY">MANUAL_ENTRY</option>
+                </select>
+              </label>
+              <label>
+                Confidence
+                <select
+                  className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                  value={extractionDraft.confidence}
+                  onChange={(e) =>
+                    setExtractionDraft((prev) => ({
+                      ...prev,
+                      confidence: e.target.value as AssistedRegistryExtractionRecord['confidence'],
+                    }))
+                  }
+                >
+                  <option value="LOW">LOW</option>
+                  <option value="MEDIUM">MEDIUM</option>
+                  <option value="HIGH">HIGH</option>
+                </select>
+              </label>
+            </div>
+            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-3">
+              {Object.entries(extractionDraft.fields).map(([field, value]) => (
+                <label key={field}>
+                  {field}
+                  <input
+                    className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
+                    value={value}
+                    onChange={(e) =>
+                      setExtractionDraft((prev) => ({
+                        ...prev,
+                        fields: {
+                          ...prev.fields,
+                          [field]: e.target.value,
+                        },
+                      }))
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50"
+                onClick={saveExtractionDraft}
+              >
+                Save extraction schema
+              </button>
+            </div>
+            <div className="mt-2 text-xs text-slate-600">Saved extraction records: {extractions.length}</div>
+          </div>
+
+          <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
+            <div className="font-semibold text-slate-900">Required data labels</div>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {REQUIRED_ASSISTED_DATA_LABELS.map((label) => (
+                <span key={label} className="inline-flex rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px]">
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div id="upload" className="h-px" />
+
           <AdminToolbar className="justify-between mb-3">
             <h3 className="text-sm font-semibold text-slate-800">Upload New Documents</h3>
           </AdminToolbar>

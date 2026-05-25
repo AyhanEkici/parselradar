@@ -48,6 +48,11 @@ import {
   getMunicipalitySource,
   MunicipalityPublicSourceStatus,
 } from '../lib/municipalitySourceRegistry';
+import {
+  AssistedRegistryExtractionRecord,
+  buildAssistedComparisonSummary,
+  getAssistedExtractionStorageKey,
+} from '../lib/assistedPublicRegistry';
 
 type ReadinessStatus =
   | 'READY'
@@ -709,6 +714,7 @@ export default function PropertyResult() {
   const [documentsLoading, setDocumentsLoading] = useState(true);
   const [documentsLoaded, setDocumentsLoaded] = useState(false);
   const [documentsFetchFailed, setDocumentsFetchFailed] = useState(false);
+  const [assistedExtractions, setAssistedExtractions] = useState<AssistedRegistryExtractionRecord[]>([]);
   const toast = useToast();
 
   const getDocumentsIntentUrl = (intent: EvidenceIntent) => {
@@ -775,6 +781,21 @@ export default function PropertyResult() {
     return () => {
       cancelled = true;
     };
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    try {
+      const raw = window.localStorage.getItem(getAssistedExtractionStorageKey(id));
+      if (!raw) {
+        setAssistedExtractions([]);
+        return;
+      }
+      const parsed = JSON.parse(raw) as AssistedRegistryExtractionRecord[];
+      setAssistedExtractions(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      setAssistedExtractions([]);
+    }
   }, [id]);
 
   const readinessRows = useMemo<ReadinessRow[]>(() => {
@@ -1406,6 +1427,23 @@ export default function PropertyResult() {
     };
   }, [csvCoordinatePreview.hasCoordinateMetadata, documents, propertyData]);
 
+  const assistedRegistrySummary = useMemo(() => {
+    const latestExtraction = assistedExtractions.length > 0 ? assistedExtractions[0] : null;
+    return buildAssistedComparisonSummary(
+      {
+        il: propertyData?.il,
+        ilce: propertyData?.ilce,
+        mahalle: propertyData?.mahalleOrKoy || propertyData?.neighborhood,
+        ada: propertyData?.ada,
+        parsel: propertyData?.parsel,
+        areaM2: propertyData?.areaM2,
+        zoningStatus: propertyData?.zoningStatus,
+        nitelik: propertyData?.nitelik,
+      },
+      latestExtraction
+    );
+  }, [assistedExtractions, propertyData]);
+
   const reportHeaderSummary = useMemo(() => {
     const location = [propertyData?.il, propertyData?.ilce, propertyData?.mahalleOrKoy || propertyData?.neighborhood]
       .filter(Boolean)
@@ -1570,6 +1608,50 @@ export default function PropertyResult() {
               ) : null}
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="mb-4 rounded border border-slate-200 bg-white p-3">
+        <h3 className="text-sm font-semibold text-slate-900">Public Registry Assisted Comparison</h3>
+        <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+          Public registry checks are source guidance and user-provided evidence only. Needs official confirmation for legal/tapu/imar actions.
+        </div>
+        <div className="mt-2 text-xs text-slate-700">
+          Latest extraction: {assistedExtractions[0]?.sourceType || 'Not provided'} / {assistedExtractions[0]?.extractionMode || 'Not provided'}
+        </div>
+        {assistedRegistrySummary.fieldComparisons.length > 0 ? (
+          <div className="mt-2 space-y-2">
+            {assistedRegistrySummary.fieldComparisons.map((item) => (
+              <div key={`${item.field}-${item.label}`} className="rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+                <div className="font-medium text-slate-900">{item.label}</div>
+                <div>Listing: {item.listingValue || '-'}</div>
+                <div>Evidence: {item.evidenceValue || '-'}</div>
+                <div>Status: {item.status}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+            No extraction provided yet. Upload user-provided public registry evidence and capture OCR/manual extraction schema.
+          </div>
+        )}
+        <div className="mt-2 rounded border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">
+          <div className="font-medium">Risk signals</div>
+          <ul className="mt-1 list-disc pl-4">
+            {assistedRegistrySummary.riskSignals.map((signal) => (
+              <li key={signal}>{signal}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="mt-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
+          <div className="font-medium text-slate-900">Data labels</div>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {assistedRegistrySummary.dataLabels.map((label) => (
+              <span key={label} className="inline-flex rounded border border-slate-200 bg-white px-2 py-0.5 text-[11px]">
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,59 @@
+{
+  "phase": "MVP-4C-ASSISTED-PUBLIC-REGISTRY-CHECKS-OCR-EVIDENCE-EXTRACTION",
+  "scope": {
+    "connectorAutomation": false,
+    "manualFirstGuidance": true,
+    "userUploadedEvidenceOnly": true,
+    "officialVerificationClaimed": false
+  },
+  "filesChanged": [
+    "apps/web/src/lib/assistedPublicRegistry.ts",
+    "apps/web/src/pages/PropertyDocuments.tsx",
+    "apps/web/src/pages/PropertyResult.tsx",
+    "proof/assisted-public-registry-check-proof.json",
+    "proof/assisted-public-registry-check-proof.md"
+  ],
+  "requiredLabels": [
+    "SOURCE_GUIDANCE_ONLY",
+    "PUBLIC_REGISTRY_INFORMATIONAL_REFERENCE",
+    "USER_PROVIDED_PUBLIC_REGISTRY_EVIDENCE",
+    "OCR_EXTRACTED_FROM_USER_UPLOAD",
+    "FIELD_MATCH",
+    "FIELD_MISMATCH",
+    "MISSING_PUBLIC_REGISTRY_EVIDENCE",
+    "NEEDS_OFFICIAL_CONFIRMATION",
+    "NOT_OFFICIAL_FOR_LEGAL_ACTIONS"
+  ],
+  "securityAndComplianceChecks": {
+    "scraperAdded": false,
+    "connectorActivated": false,
+    "officialSystemAutomationAdded": false,
+    "edevletAutomationAdded": false,
+    "credentialOrSessionCaptureAdded": false,
+    "captchaBypassAdded": false,
+    "officialVerificationWordingDrift": false,
+    "backendAuthFlowChanged": false
+  },
+  "validationCommands": {
+    "npm run build --prefix apps/api": "PASS",
+    "npm run build --prefix apps/web": "PASS",
+    "npm run verify:connector-diagnostics-contract": "PASS",
+    "npm run verify:connector-diagnostics": "PASS",
+    "npm run verify:platform-integrity": "PASS"
+  },
+  "gitEvidence": {
+    "statusShort": [
+      "M apps/web/src/pages/PropertyDocuments.tsx",
+      "M apps/web/src/pages/PropertyResult.tsx",
+      "?? apps/web/src/lib/assistedPublicRegistry.ts",
+      "?? proof/assisted-public-registry-check-proof.json",
+      "?? proof/assisted-public-registry-check-proof.md"
+    ],
+    "diffNameStatus": [
+      "M apps/web/src/pages/PropertyDocuments.tsx",
+      "M apps/web/src/pages/PropertyResult.tsx",
+      "A apps/web/src/lib/assistedPublicRegistry.ts"
+    ]
+  },
+  "generatedAt": "2026-05-25T00:00:00.000Z"
+}
