@@ -24,3 +24,7 @@ coverage/
 
 # Generated build metadata (created by apps/api prebuild)
 apps/api/src/generated/buildInfo.ts
+
+# ParselRadar local geodata sources
+data/geodata/sources/*
+!data/geodata/sources/.gitkeep

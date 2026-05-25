@@ -1,0 +1,26 @@
+# P2.GEO-3B Small Real Source Config Proof
+
+- Clean start captured: True
+- Source config doc exists: True
+- Configure script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Source configuration status: 
+- Source basename: 
+- Source extension: 
+- Size bytes: 
+- Checksum visible: 
+- Supported dry-run: 
+- Future tooling required: 
+- Source path hash present: False
+- Raw source path committed: false
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false
+- Scheduler added: false
+- Connector activated: false
+- Scraping added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

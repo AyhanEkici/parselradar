@@ -1,0 +1,18 @@
+{
+    "phase":  "P2.GEO-3B",
+    "capturedAt":  "2026-05-25T23:48:13.5485160Z",
+    "head":  "e22e6238",
+    "workingTreeCleanAtStart":  true,
+    "untrackedFilesAtStart":  false,
+    "recentCommits":  [
+                          "e22e6238 chore: verify geodata repo wiring and sync",
+                          "6eaf7c3c feat: add controlled OSM import pipeline scaffold",
+                          "222a7956 feat: add staged geodata lifecycle audit",
+                          "a3bbd08a feat: add guarded staged geodata diagnostics UI",
+                          "ce568d2c fix: verify guarded staged geodata signal API"
+                      ],
+    "secretScanRun":  true,
+    "highConfidencePatternHitCount":  2,
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}
