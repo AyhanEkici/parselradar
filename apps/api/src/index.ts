@@ -49,6 +49,7 @@ import {
   getRuntimeDiagnostics,
 } from './runtime/degradedRuntime';
 import { validateRuntimeEnv } from './config/envValidator';
+import stagedGeoSignalsRoutes from "./routes/stagedGeoSignalsRoutes";
 
 
 
@@ -250,6 +251,7 @@ app.use((req, res) => {
 });
 
 app.use(errorHandler);
+app.use("/api/dev/staged-geo-signals", stagedGeoSignalsRoutes);
 
 const server = app.listen(Number(ENV.PORT), () => {
   recordStartupPhase('server_listening', `API listening on port ${ENV.PORT}.`);
