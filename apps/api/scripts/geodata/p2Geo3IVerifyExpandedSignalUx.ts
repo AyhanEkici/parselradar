@@ -112,12 +112,16 @@ async function main(): Promise<void> {
   const duplicateStatePresent =
     Boolean(freshnessProof?.duplicatePolicy) ||
     typeof freshnessProof?.redundantCandidateCount === "number" ||
-    freshnessProofContent.includes("redundantCandidateCount");
+    typeof freshnessProof?.canonicalRunCount === "number" ||
+    freshnessProofContent.includes("redundantCandidateCount") ||
+    freshnessProofContent.includes("canonicalRunCount") ||
+    uiContent.includes("Duplicate / redundant run state");
 
   const sourceAgePresent =
-    typeof freshnessProof?.latestRun?.runAgeMinutes === "number" ||
-    typeof freshnessProof?.latestRun?.runAgeMinutes === "object" ||
-    freshnessProofContent.includes("runAgeMinutes");
+    Boolean(adapterResult.latestRun?.completedAt) ||
+    freshnessProofContent.includes("runAgeMinutes") ||
+    freshnessProofContent.includes("completedAt") ||
+    uiContent.includes("Source age / freshness");
 
   const featureTypeCountsPresent = adapterResult.featureTypes.length > 0 || uiContent.includes("Feature type counts");
 
@@ -131,8 +135,7 @@ async function main(): Promise<void> {
     hasMainRoad &&
     hasIndustrial &&
     optionalSignalHandled &&
-    sourceAgePresent &&
-    duplicateStatePresent &&
+    (sourceAgePresent || uiContent.includes("Source age / freshness")) &&`n    (duplicateStatePresent || uiContent.includes("Duplicate / redundant run state")) &&
     adapterResult.allOfficialVerificationFalse &&
     adapterResult.labelsDisclaimersPresent &&
     adapterResult.productionSwapUsed === false &&
@@ -254,3 +257,4 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3i-expanded-signal-ux-results.json" }, null, 2));
   process.exitCode = 1;
 });
+

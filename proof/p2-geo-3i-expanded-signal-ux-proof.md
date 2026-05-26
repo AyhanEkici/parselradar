@@ -1,10 +1,5 @@
 # P2.GEO-3I Expanded Staged Signal UX Proof
 
-- Clean start captured: True
-- Doc exists: True
-- Verify script exists: True
-- Package script exists: true
-- TODO ledger updated: True
 - Status: FAIL
 - UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
 - Latest phase: P2.GEO-3H

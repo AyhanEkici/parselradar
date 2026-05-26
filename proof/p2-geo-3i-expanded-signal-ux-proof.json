@@ -1,11 +1,6 @@
 {
     "phase":  "P2.GEO-3I",
-    "generatedAt":  "2026-05-26T01:15:39.1590435Z",
-    "cleanStartCaptured":  true,
-    "docExists":  true,
-    "verifyScriptExists":  true,
-    "packageScriptExists":  true,
-    "todoLedgerUpdated":  true,
+    "generatedAt":  "2026-05-26T01:18:50.3615319Z",
     "status":  "FAIL",
     "uiPath":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
     "latestPhase":  "P2.GEO-3H",

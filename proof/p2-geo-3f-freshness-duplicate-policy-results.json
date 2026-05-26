@@ -15,7 +15,7 @@
     "status": "STAGED_IMPORT_PASS",
     "startedAt": "2026-05-26T00:48:54.166Z",
     "completedAt": "2026-05-26T00:48:54.166Z",
-    "runAgeMinutes": 26
+    "runAgeMinutes": 30
   },
   "adapterStatus": "PASS",
   "adapterLifecycleState": "STAGED_OSM_SIGNAL_READY",
@@ -99,5 +99,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T01:15:10.683Z"
+  "generatedAt": "2026-05-26T01:18:25.623Z"
 }
