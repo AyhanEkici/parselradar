@@ -17,7 +17,7 @@ export default function Organizations() {
       const data = await apiFetch('organizations');
       setPayload(data);
     } catch (err: any) {
-      setError(err?.error || 'Organizations yÃ¼klenemedi');
+      setError(err?.error || 'Organizations yüklenemedi');
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ export default function Organizations() {
       setName('');
       await load();
     } catch (err: any) {
-      setError(err?.error || err?.message || 'Organization oluÅŸturulamadÄ±');
+      setError(err?.error || err?.message || 'Organization oluşturulamadı');
     } finally {
       setCreating(false);
     }
@@ -75,7 +75,7 @@ export default function Organizations() {
         </div>
 
         {error ? <div className="text-sm text-red-600">{error}</div> : null}
-        {loading ? <div className="text-sm text-slate-600">Organizations yÃ¼kleniyor...</div> : null}
+        {loading ? <div className="text-sm text-slate-600">Organizations yükleniyor...</div> : null}
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {!loading && organizations.length === 0 ? (

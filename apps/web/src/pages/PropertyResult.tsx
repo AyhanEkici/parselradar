@@ -129,7 +129,7 @@ function intentActionLabel(intent: EvidenceIntent) {
 
 function classifyMissingEvidenceIntent(message: string): EvidenceIntent {
   const normalized = String(message || '').toLowerCase();
-  if (normalized.includes('ada/parsel') || normalized.includes('parsel kimliÄŸi')) {
+  if (normalized.includes('ada/parsel') || normalized.includes('parsel kimliği')) {
     return 'PARCEL_IDENTITY';
   }
   if (normalized.includes('koordinat') || normalized.includes('tkgm evidence')) {
@@ -451,11 +451,11 @@ function statusClasses(status: ReadinessStatus) {
 }
 
 function readinessStatusLabel(status: ReadinessStatus) {
-  if (status === 'READY') return 'HazÄ±r';
+  if (status === 'READY') return 'Hazır';
   if (status === 'NEEDS_MORE_DATA') return 'Eksik veri';
-  if (status === 'NEEDS_PARCEL_IDENTITY') return 'Parsel kimliÄŸi gerekli';
-  if (status === 'NEEDS_TKGM_CHECK') return 'TKGM kontrolÃ¼ gerekli';
-  if (status === 'NEEDS_MUNICIPALITY_CHECK') return 'Belediye/imar kanÄ±tÄ± gerekli';
+  if (status === 'NEEDS_PARCEL_IDENTITY') return 'Parsel kimliği gerekli';
+  if (status === 'NEEDS_TKGM_CHECK') return 'TKGM kontrolü gerekli';
+  if (status === 'NEEDS_MUNICIPALITY_CHECK') return 'Belediye/imar kanıtı gerekli';
   return 'Bilinmiyor';
 }
 
@@ -511,7 +511,7 @@ function toTitleCaseFromCode(value: string) {
     .map((part) => (part ? `${part[0].toUpperCase()}${part.slice(1)}` : part))
     .join(' ');
 }
-const DISCLAIMER = `Bu rapor; kullanÄ±cÄ± beyanÄ±, aÃ§Ä±k kaynak, ilan bilgileri ve yÃ¼klenen belgeler Ã¼zerinden oluÅŸturulan bilgilendirme amaÃ§lÄ± bir Ã¶n analizdir. Hukuki gÃ¶rÃ¼ÅŸ, lisanslÄ± deÄŸerleme raporu, yatÄ±rÄ±m tavsiyesi, tapu inceleme raporu veya emlak aracÄ±lÄ±k hizmeti deÄŸildir. Nihai karar Ã¶ncesinde tapu, belediye, imar, takyidat, hissedarlÄ±k, ÅŸufa/Ã¶nalÄ±m, yol ve teknik kontroller yetkili kurumlar ve uzmanlar Ã¼zerinden ayrÄ±ca teyit edilmelidir.`;
+const DISCLAIMER = `Bu rapor; kullanıcı beyanı, açık kaynak, ilan bilgileri ve yüklenen belgeler üzerinden oluşturulan bilgilendirme amaçlı bir ön analizdir. Hukuki görüş, lisanslı değerleme raporu, yatırım tavsiyesi, tapu inceleme raporu veya emlak aracılık hizmeti değildir. Nihai karar öncesinde tapu, belediye, imar, takyidat, hissedarlık, şufa/önalım, yol ve teknik kontroller yetkili kurumlar ve uzmanlar üzerinden ayrıca teyit edilmelidir.`;
 const MAP_LAYER_DISCLAIMER =
   'Map, layer and parcel visuals are informational only. No official cadastral, tapu, zoning or municipal proof is confirmed unless explicitly reviewed from an official source.';
 const SOURCE_NOT_AVAILABLE_LABEL = 'Source not available yet';
@@ -812,12 +812,12 @@ export default function PropertyResult() {
 
     const getStatusEvidenceNote = () => {
       if (hasConfirmedByAdmin) {
-        return 'Admin tarafÄ±ndan metadata onayÄ± var; yine de resmi hukuki kanÄ±t deÄŸildir.';
+        return 'Admin tarafından metadata onayı var; yine de resmi hukuki kanıt değildir.';
       }
       if (hasPreviewOnly) {
-        return 'Metadata preview only seviyesinde, doÄŸrulanmÄ±ÅŸ analiz girdisi deÄŸildir.';
+        return 'Metadata preview only seviyesinde, doğrulanmış analiz girdisi değildir.';
       }
-      return 'Supporting evidence only, doÄŸrulanmadan analiz girdisi olarak kabul edilmez.';
+      return 'Supporting evidence only, doğrulanmadan analiz girdisi olarak kabul edilmez.';
     };
 
     const hasListingUrl = Boolean(String(propertyData?.listingUrl || '').trim());
@@ -836,11 +836,11 @@ export default function PropertyResult() {
     if (hasSupportingOnly) quickSources.push('supporting evidence only');
     const quickReady = hasListingUrl || (hasPriceContext && hasLocationContext) || hasListingEvidence;
     rows.push({
-      label: 'HÄ±zlÄ± Ä°lan KontrolÃ¼',
+      label: 'Hızlı İlan Kontrolü',
       status: quickReady ? 'READY' : 'NEEDS_MORE_DATA',
       message: quickReady
-        ? `Ä°lan baÄŸlamÄ± veya destekleyici ilan kaynaÄŸÄ± mevcut. ${getStatusEvidenceNote()}`
-        : `Ä°lan URL, fiyat/mÂ²/lokasyon veya listing source metadata eksik. ${getStatusEvidenceNote()}`,
+        ? `İlan bağlamı veya destekleyici ilan kaynağı mevcut. ${getStatusEvidenceNote()}`
+        : `İlan URL, fiyat/m²/lokasyon veya listing source metadata eksik. ${getStatusEvidenceNote()}`,
       sources: quickSources.length > 0 ? quickSources : ['user-entered data'],
     });
 
@@ -873,14 +873,14 @@ export default function PropertyResult() {
     if (hasSupportingOnly) parcelSources.push('supporting evidence only');
 
     let parcelStatus: ReadinessStatus = 'READY';
-    let parcelMessage = 'Parsel kimliÄŸi, koordinat baÄŸlamÄ± veya TKGM manual evidence mevcut.';
+    let parcelMessage = 'Parsel kimliği, koordinat bağlamı veya TKGM manual evidence mevcut.';
     if (!(hasParcelIdentity || hasCoordinateContext || hasTkgmManualEvidence)) {
       if (String(propertyData?.il || '').trim() && String(propertyData?.ilce || '').trim()) {
         parcelStatus = 'NEEDS_PARCEL_IDENTITY';
-        parcelMessage = 'Ä°l/ilÃ§e mevcut ama mahalle ve ada/parsel kimliÄŸi eksik.';
+        parcelMessage = 'İl/ilçe mevcut ama mahalle ve ada/parsel kimliği eksik.';
       } else {
         parcelStatus = 'NEEDS_TKGM_CHECK';
-        parcelMessage = 'Parsel kimliÄŸi veya TKGM manual evidence metadata gerekli.';
+        parcelMessage = 'Parsel kimliği veya TKGM manual evidence metadata gerekli.';
       }
     }
     rows.push({
@@ -913,7 +913,7 @@ export default function PropertyResult() {
       label: 'Developer Fit',
       status: developerReady ? 'READY' : 'NEEDS_MUNICIPALITY_CHECK',
       message: developerReady
-        ? `Ä°mar/e-plan veya plan iliÅŸkili belge metadata mevcut. ${getStatusEvidenceNote()}`
+        ? `İmar/e-plan veya plan ilişkili belge metadata mevcut. ${getStatusEvidenceNote()}`
         : `Belediye imar veya e-plan metadata gerekli. ${getStatusEvidenceNote()}`,
       sources: developerSources.length > 0 ? developerSources : ['uploaded evidence metadata'],
     });
@@ -942,21 +942,21 @@ export default function PropertyResult() {
     setResult(null);
     setPdfId(null);
     setActionState(action, 'loading');
-    const loadingToastId = toast.loading('Analiz Ã§alÄ±ÅŸtÄ±rÄ±lÄ±yor...');
+    const loadingToastId = toast.loading('Analiz çalıştırılıyor...');
     try {
       const res = await apiFetch(endpoint, { method: 'POST' });
       setResult(res);
       setAnalysisRunId(res.id);
       setActionState(action, 'success');
       toast.dismiss(loadingToastId);
-      toast.success('Analiz tamamlandÄ±');
+      toast.success('Analiz tamamlandı');
     } catch (err) {
       const apiError = err as { status?: number; error?: string; message?: string };
       const errorText = String(apiError.error || apiError.message || '').toLowerCase();
       toast.dismiss(loadingToastId);
       if (apiError.status === 429) {
         setActionState(action, 'rate_limited');
-        toast.error('Ã‡ok fazla deneme yapÄ±ldÄ±. LÃ¼tfen biraz bekleyip tekrar deneyin.');
+        toast.error('Çok fazla deneme yapıldı. Lütfen biraz bekleyip tekrar deneyin.');
         return;
       }
       if (
@@ -965,22 +965,22 @@ export default function PropertyResult() {
         errorText.includes('missing') ||
         errorText.includes('invalid') ||
         errorText.includes('eksik') ||
-        errorText.includes('geÃ§ersiz') ||
+        errorText.includes('geçersiz') ||
         errorText.includes('gecersiz')
       ) {
         setActionState(action, 'needs_more_data');
-        toast.error('Eksik veya geÃ§ersiz veri nedeniyle analiz tamamlanamadÄ±.');
+        toast.error('Eksik veya geçersiz veri nedeniyle analiz tamamlanamadı.');
         return;
       }
       setActionState(action, 'error');
-      toast.error(apiError.error || 'Analiz baÅŸarÄ±sÄ±z');
+      toast.error(apiError.error || 'Analiz başarısız');
     }
   };
 
   const getActionCaption = (action: AnalysisActionKey) => {
     const status = analysisActionStates[action];
-    if (status === 'loading') return 'Ã‡alÄ±ÅŸÄ±yor...';
-    if (status === 'success') return 'TamamlandÄ±';
+    if (status === 'loading') return 'Çalışıyor...';
+    if (status === 'success') return 'Tamamlandı';
     if (status === 'rate_limited') return 'Bekleme gerekli';
     if (status === 'needs_more_data') return 'Eksik veri';
     if (status === 'error') return 'Hata';
@@ -990,7 +990,7 @@ export default function PropertyResult() {
   const readinessByAction = useMemo(() => {
     const byLabel = new Map(readinessRows.map((row) => [row.label, row]));
     return {
-      quickScore: byLabel.get('HÄ±zlÄ± Ä°lan KontrolÃ¼') || null,
+      quickScore: byLabel.get('Hızlı İlan Kontrolü') || null,
       parselInsight: byLabel.get('Parsel Insight') || null,
       developerFit: byLabel.get('Developer Fit') || null,
     } as Record<AnalysisActionKey, ReadinessRow | null>;
@@ -1048,24 +1048,24 @@ export default function PropertyResult() {
     if (isEvidenceCheckPending) {
       missingEvidence.push('Evidence metadata check is still in progress.');
     } else if (documentsFetchFailed) {
-      missingEvidence.push('Belge durumu doÄŸrulanamadÄ±. LÃ¼tfen belgeler sayfasÄ±nÄ± kontrol edin.');
+      missingEvidence.push('Belge durumu doğrulanamadı. Lütfen belgeler sayfasını kontrol edin.');
     } else if (!hasUploadedEvidence) {
-      missingEvidence.push('En az bir belge/evidence yÃ¼klenmeli.');
+      missingEvidence.push('En az bir belge/evidence yüklenmeli.');
     }
     if (quickStatus !== 'READY_FOR_QUICK_CHECK') {
-      missingEvidence.push('Quick check iÃ§in ilan URL veya temel listing/property baÄŸlamÄ± gerekli.');
+      missingEvidence.push('Quick check için ilan URL veya temel listing/property bağlamı gerekli.');
     }
     if (parcelStatus === 'NEEDS_PARCEL_IDENTITY') {
-      missingEvidence.push('Parsel insight iÃ§in ada/parsel kimliÄŸi eksik.');
+      missingEvidence.push('Parsel insight için ada/parsel kimliği eksik.');
     }
     if (parcelStatus === 'NEEDS_TKGM_EVIDENCE') {
-      missingEvidence.push('Parsel insight iÃ§in koordinat veya TKGM evidence gerekli.');
+      missingEvidence.push('Parsel insight için koordinat veya TKGM evidence gerekli.');
     }
     if (developerStatus !== 'READY_FOR_DEVELOPER_FIT') {
-      missingEvidence.push('Developer fit iÃ§in belediye imar/e-plan evidence gerekli.');
+      missingEvidence.push('Developer fit için belediye imar/e-plan evidence gerekli.');
     }
     if (!hasTkgmPriceHistoryEvidence) {
-      missingEvidence.push('TKGM market signal iÃ§in price-history screenshot Ã¶nerilir.');
+      missingEvidence.push('TKGM market signal için price-history screenshot önerilir.');
     }
 
     const missingEvidenceActions: EvidenceActionItem[] = missingEvidence.map((message, index) => {
@@ -1084,19 +1084,19 @@ export default function PropertyResult() {
       reviewWarnings.push('Document readiness unavailable. Upload/review evidence recommended.');
     }
     if (hasUploadedEvidence && (allPreviewOnlyEvidence || hasManualReviewRequired || hasSupportingOnly)) {
-      reviewWarnings.push('Belge yÃ¼klendi, ancak analizde doÄŸrulanmÄ±ÅŸ kanÄ±t olarak kullanÄ±lmadan Ã¶nce inceleme gerekebilir.');
+      reviewWarnings.push('Belge yüklendi, ancak analizde doğrulanmış kanıt olarak kullanılmadan önce inceleme gerekebilir.');
     }
     if (allPreviewOnlyEvidence) {
-      reviewWarnings.push('Evidence metadata PREVIEW_ONLY seviyesinde. Rapor Ã¶ncesi review gerekli.');
+      reviewWarnings.push('Evidence metadata PREVIEW_ONLY seviyesinde. Rapor öncesi review gerekli.');
     }
     if (hasSupportingOnly) {
-      reviewWarnings.push('Supporting evidence only iÅŸaretli belgeler tek baÅŸÄ±na resmi doÄŸrulama deÄŸildir.');
+      reviewWarnings.push('Supporting evidence only işaretli belgeler tek başına resmi doğrulama değildir.');
     }
     if (hasManualReviewRequired) {
-      reviewWarnings.push('Manual review required statÃ¼sÃ¼nde belge var.');
+      reviewWarnings.push('Manual review required statüsünde belge var.');
     }
     if (hasRejected) {
-      reviewWarnings.push('Rejected statÃ¼sÃ¼nde belge var, rapor kapsamÄ± etkilenebilir.');
+      reviewWarnings.push('Rejected statüsünde belge var, rapor kapsamı etkilenebilir.');
     }
 
     const reviewWarningActions: EvidenceActionItem[] = reviewWarnings.map((message, index) => {
@@ -1497,25 +1497,25 @@ export default function PropertyResult() {
   };
 
   const getActionButtonText = (action: AnalysisActionKey) => {
-    if (analysisActionStates[action] === 'loading') return 'Ã‡alÄ±ÅŸÄ±yor...';
+    if (analysisActionStates[action] === 'loading') return 'Çalışıyor...';
     const row = readinessByAction[action];
-    if (row && isNotReadyStatus(row.status)) return 'Yine de Ã§alÄ±ÅŸtÄ±r';
-    if (action === 'quickScore') return 'HÄ±zlÄ± Ä°lan KontrolÃ¼';
+    if (row && isNotReadyStatus(row.status)) return 'Yine de çalıştır';
+    if (action === 'quickScore') return 'Hızlı İlan Kontrolü';
     if (action === 'parselInsight') return 'Parsel Insight';
     return 'Developer Fit';
   };
 
   const purchasePDF = async () => {
     if (!analysisRunId) return;
-    const loadingToastId = toast.loading('PDF satÄ±n alma iÅŸlemi baÅŸlatÄ±lÄ±yor...');
+    const loadingToastId = toast.loading('PDF satın alma işlemi başlatılıyor...');
     try {
       const res = await apiFetch(`reports/${analysisRunId}/purchase-pdf`, { method: 'POST' });
       setPdfId(res.id);
       toast.dismiss(loadingToastId);
-      toast.success('PDF satÄ±n alma baÅŸarÄ±lÄ±');
+      toast.success('PDF satın alma başarılı');
     } catch (err) {
       toast.dismiss(loadingToastId);
-      toast.error((err as { error?: string }).error || 'PDF alÄ±namadÄ±');
+      toast.error((err as { error?: string }).error || 'PDF alınamadı');
     }
   };
 
@@ -1830,7 +1830,7 @@ export default function PropertyResult() {
         ) : null}
         {reportReadiness.hasSupportingOnly ? (
           <div className="mt-2 text-xs text-amber-700">
-            Supporting evidence warning: Supporting-only belgeler tek baÅŸÄ±na nihai rapor doÄŸrulamasÄ± iÃ§in yeterli deÄŸildir.
+            Supporting evidence warning: Supporting-only belgeler tek başına nihai rapor doğrulaması için yeterli değildir.
           </div>
         ) : null}
         <div className="mt-3 flex flex-wrap gap-2">
@@ -1983,7 +1983,7 @@ export default function PropertyResult() {
       </div>
       <div className="mb-4 space-y-2">
         {([
-          { key: 'quickScore', label: 'HÄ±zlÄ± Ä°lan KontrolÃ¼', endpoint: `analysis/${id}/quick-score` },
+          { key: 'quickScore', label: 'Hızlı İlan Kontrolü', endpoint: `analysis/${id}/quick-score` },
           { key: 'parselInsight', label: 'Parsel Insight', endpoint: `analysis/${id}/parsel-insight` },
           { key: 'developerFit', label: 'Developer Fit', endpoint: `analysis/${id}/developer-fit` },
         ] as Array<{ key: AnalysisActionKey; label: string; endpoint: string }>).map((action) => {
@@ -2070,9 +2070,9 @@ export default function PropertyResult() {
       </div>
 
       <div className="mb-4 text-xs text-slate-600 flex flex-wrap gap-3">
-        <span>HÄ±zlÄ± Ä°lan KontrolÃ¼: {getActionCaption('quickScore') || 'HazÄ±r'}</span>
-        <span>Parsel Insight: {getActionCaption('parselInsight') || 'HazÄ±r'}</span>
-        <span>Developer Fit: {getActionCaption('developerFit') || 'HazÄ±r'}</span>
+        <span>Hızlı İlan Kontrolü: {getActionCaption('quickScore') || 'Hazır'}</span>
+        <span>Parsel Insight: {getActionCaption('parselInsight') || 'Hazır'}</span>
+        <span>Developer Fit: {getActionCaption('developerFit') || 'Hazır'}</span>
       </div>
       {result && (
         <div className="border p-4 rounded mb-4">
@@ -2080,12 +2080,12 @@ export default function PropertyResult() {
             <GovernanceBadge classification={result.governanceClassification} />
           </div>
           <div><b>Signal:</b> {result.signal}</div>
-          <div><b>Skor:</b> {typeof result?.score === 'number' ? result.score : 'Skor mevcut deÄŸil'}</div>
-          <div><b>TL/mÂ²:</b> {result.pricePerM2 || '-'}</div>
-          <div><b>En bÃ¼yÃ¼k 3 risk:</b> {(result.topRisks || []).join(', ')}</div>
+          <div><b>Skor:</b> {typeof result?.score === 'number' ? result.score : 'Skor mevcut değil'}</div>
+          <div><b>TL/m²:</b> {result.pricePerM2 || '-'}</div>
+          <div><b>En büyük 3 risk:</b> {(result.topRisks || []).join(', ')}</div>
           <div><b>Eksik belgeler:</b> {(result.missingDocs || []).join(', ')}</div>
-          <div><b>Ã–nerilen sonraki adÄ±m:</b> {result.recommendedAction || '-'}</div>
-          <div className="mt-2 text-yellow-700">PDF raporun tamamÄ± iÃ§in satÄ±n alma gereklidir.</div>
+          <div><b>Önerilen sonraki adım:</b> {result.recommendedAction || '-'}</div>
+          <div className="mt-2 text-yellow-700">PDF raporun tamamı için satın alma gereklidir.</div>
           <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
             <ConfidenceMeter
               score={result.reportConfidenceSummary?.score}
@@ -2164,7 +2164,7 @@ export default function PropertyResult() {
       )}
       {analysisRunId && !pdfId && (
         <div className="mb-2">
-          <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={purchasePDF}>PDF Rapor SatÄ±n Al</button>
+          <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={purchasePDF}>PDF Rapor Satın Al</button>
           {reportReadiness.showIncompleteReportWarning ? (
             <div className="mt-2 text-xs text-amber-700">
               This report may be incomplete because required evidence is missing or not reviewed.
@@ -2173,11 +2173,11 @@ export default function PropertyResult() {
         </div>
       )}
       {pdfId && (
-        <a className="bg-blue-600 text-white px-4 py-2 rounded" href={`/reports/${pdfId}/download`}>PDF Raporu Ä°ndir</a>
+        <a className="bg-blue-600 text-white px-4 py-2 rounded" href={`/reports/${pdfId}/download`}>PDF Raporu İndir</a>
       )}
       <div className="mt-3 flex flex-wrap gap-2">
-        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate(`/properties/${id}`)}>MÃ¼lk DetayÄ±na DÃ¶n</button>
-        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a DÃ¶n</button>
+        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate(`/properties/${id}`)}>Mülk Detayına Dön</button>
+        <button className="bg-gray-200 px-4 py-2 rounded" type="button" onClick={() => navigate('/dashboard')}>Dashboard'a Dön</button>
       </div>
       <div className="mt-4 rounded border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
         ParselRadar provides informational evidence organization and pre-check readiness. It does not replace official TKGM, municipality, tapu, zoning, legal, valuation or professional verification.

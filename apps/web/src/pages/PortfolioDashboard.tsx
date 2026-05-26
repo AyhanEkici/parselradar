@@ -37,7 +37,7 @@ export default function PortfolioDashboard() {
       const staleCount = validDetails.reduce((sum, detail) => sum + Number(detail?.opportunity?.staleIntelligenceCount || 0), 0);
       setSummary({ totalValue, averageOpportunity, staleCount });
     } catch (err: any) {
-      setError(err?.error || err?.message || 'Portfolio verileri yÃ¼klenemedi');
+      setError(err?.error || err?.message || 'Portfolio verileri yüklenemedi');
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export default function PortfolioDashboard() {
       });
       await load();
     } catch (err: any) {
-      setError(err?.error || err?.message || 'Portfolio oluÅŸturulamadÄ±');
+      setError(err?.error || err?.message || 'Portfolio oluşturulamadı');
     } finally {
       setCreating(false);
     }
@@ -70,8 +70,8 @@ export default function PortfolioDashboard() {
         <Link to="/map/portfolio" className="inline-flex rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Open Portfolio Map</Link>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Toplam DeÄŸer: {new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(summary.totalValue)}</div>
-          <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Ortalama FÄ±rsat Skoru: {summary.averageOpportunity}</div>
+          <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Toplam Değer: {new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(summary.totalValue)}</div>
+          <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Ortalama Fırsat Skoru: {summary.averageOpportunity}</div>
           <div className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700">Stale Intelligence: {summary.staleCount}</div>
         </div>
 
@@ -95,7 +95,7 @@ export default function PortfolioDashboard() {
         </div>
 
         {error ? <div className="text-sm text-red-600">{error}</div> : null}
-        {loading ? <div className="text-sm text-slate-600">Portfolio verileri yÃ¼kleniyor...</div> : null}
+        {loading ? <div className="text-sm text-slate-600">Portfolio verileri yükleniyor...</div> : null}
 
         <div className="grid gap-3">
           {!loading && portfolios.length === 0 ? (

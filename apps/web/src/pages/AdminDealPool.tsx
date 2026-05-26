@@ -16,9 +16,9 @@ export default function AdminDealPool() {
     setStatus('');
     try {
       await apiFetch(`/admin/deal-pool/${propertyId.trim()}/accept`, { method: 'POST' });
-      setStatus('Deal pool accept baÅŸarÄ±lÄ±.');
+      setStatus('Deal pool accept başarılı.');
     } catch (err) {
-      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool accept baÅŸarÄ±sÄ±z.');
+      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool accept başarısız.');
     } finally {
       setLoading(false);
     }
@@ -38,9 +38,9 @@ export default function AdminDealPool() {
           sharedFields: ['addressText', 'il', 'ilce', 'status'],
         }),
       });
-      setStatus('Deal pool share baÅŸarÄ±lÄ±.');
+      setStatus('Deal pool share başarılı.');
     } catch (err) {
-      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool share baÅŸarÄ±sÄ±z.');
+      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool share başarısız.');
     } finally {
       setLoading(false);
     }

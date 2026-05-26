@@ -181,3 +181,81 @@ body {
 		padding: 0.3rem 0.55rem;
 	}
 }
+
+
+/* P2.2E-1 intake readability hardening */
+form input,
+form textarea,
+form select {
+  color: #0f172a;
+  background-color: #ffffff;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+form label,
+form legend {
+  color: #0f172a;
+  font-weight: 650;
+}
+
+form input::placeholder,
+form textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+form .text-slate-400,
+form .text-slate-500 {
+  color: #334155;
+}
+
+form .text-red-500,
+form .text-orange-500 {
+  color: #b45309;
+}
+
+
+/* P2.2E-1 hard intake readability */
+body {
+  text-rendering: optimizeLegibility;
+}
+
+form,
+form * {
+  font-size: 16px;
+}
+
+form input,
+form textarea,
+form select {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  line-height: 1.55 !important;
+}
+
+form label,
+form legend,
+form p,
+form span,
+form div {
+  color: #0f172a;
+}
+
+form input::placeholder,
+form textarea::placeholder {
+  color: #475569 !important;
+  opacity: 1;
+}
+
+form .text-slate-400,
+form .text-slate-500,
+form .text-slate-600 {
+  color: #334155 !important;
+}
+
+form .text-orange-500,
+form .text-red-500,
+form .text-amber-600 {
+  color: #92400e !important;
+}

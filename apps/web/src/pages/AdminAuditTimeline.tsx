@@ -101,7 +101,7 @@ export default function AdminAuditTimeline() {
       setError(
         (e as { error?: string; message?: string }).error ||
           (e as Error).message ||
-          'Audit verileri alÄ±namadÄ±',
+          'Audit verileri alınamadı',
       );
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ export default function AdminAuditTimeline() {
       <AdminPage>
         <AdminSurface>
           <AdminEmptyState>
-            YÃ¶netici yetkisi gerekli
+            Yönetici yetkisi gerekli
           </AdminEmptyState>
         </AdminSurface>
       </AdminPage>
@@ -132,7 +132,7 @@ export default function AdminAuditTimeline() {
         <AdminSurface className="space-y-4 p-4 sm:p-5">
         <AdminHeader
           title="Audit Timeline"
-          subtitle="Sistem ve yÃ¶netici iÅŸlemlerinin olay akÄ±ÅŸÄ±"
+          subtitle="Sistem ve yönetici işlemlerinin olay akışı"
         />
 
         <AdminToolbar>
@@ -205,7 +205,7 @@ export default function AdminAuditTimeline() {
                 <tr>
                   <td colSpan={7} className="px-3 py-6">
                     <AdminEmptyState>
-                      Audit kaydÄ± bulunamadÄ±
+                      Audit kaydı bulunamadı
                     </AdminEmptyState>
                   </td>
                 </tr>

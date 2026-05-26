@@ -22,7 +22,7 @@ export default function Login() {
   if (isAuthenticated || authStatus === 'booting' || authStatus === 'checking' || (hasPersistentSession && !user)) {
     return (
       <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
-        Oturum doÄŸrulanÄ±yor...
+        Oturum doğrulanıyor...
       </div>
     );
   }
@@ -30,20 +30,20 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const loadingToastId = toast.loading('GiriÅŸ yapÄ±lÄ±yor...');
+    const loadingToastId = toast.loading('Giriş yapılıyor...');
 
     try {
       const res = await login(email.trim(), password);
 
       if ('error' in res) {
         toast.dismiss(loadingToastId);
-        toast.error(res.error || 'GiriÅŸ baÅŸarÄ±sÄ±z');
+        toast.error(res.error || 'Giriş başarısız');
         return;
       }
 
       if (!res.token || !res.user?.id) {
         toast.dismiss(loadingToastId);
-        toast.error('GiriÅŸ baÅŸarÄ±sÄ±z');
+        toast.error('Giriş başarısız');
         return;
       }
 
@@ -56,11 +56,11 @@ export default function Login() {
       }
 
       toast.dismiss(loadingToastId);
-      toast.success('GiriÅŸ baÅŸarÄ±lÄ±');
+      toast.success('Giriş başarılı');
       navigate('/dashboard', { replace: true });
     } catch (err) {
       toast.dismiss(loadingToastId);
-      toast.error((err as { error?: string; message?: string }).error || 'GiriÅŸ baÅŸarÄ±sÄ±z');
+      toast.error((err as { error?: string; message?: string }).error || 'Giriş başarısız');
     } finally {
       setIsSubmitting(false);
     }
@@ -68,7 +68,7 @@ export default function Login() {
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">GiriÅŸ Yap</h2>
+      <h2 className="text-xl font-bold mb-4">Giriş Yap</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -82,7 +82,7 @@ export default function Login() {
         <input
           className="w-full border p-2"
           type="password"
-          P2_1B_TRIAGED_BACKLOG="Åžifre"
+          P2_1B_TRIAGED_BACKLOG="Şifre"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
@@ -93,7 +93,7 @@ export default function Login() {
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'GiriÅŸ yapÄ±lÄ±yor...' : 'GiriÅŸ Yap'}
+          {isSubmitting ? 'Giriş yapılıyor...' : 'Giriş Yap'}
         </button>
       </form>
 
@@ -106,7 +106,7 @@ export default function Login() {
           </div>
           <div>
             <Link to="/register" className="text-blue-600">
-              KayÄ±t Ol
+              Kayıt Ol
             </Link>
           </div>
         </div>

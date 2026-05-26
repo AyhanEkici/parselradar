@@ -21,7 +21,6 @@ import {
 } from '../components/market';
 import {
   InfrastructureCard,
-  RegionalDemandCard,
   GrowthPotentialCard,
   StrategicLocationCard,
   GeoIntelligenceGrid,
@@ -1842,7 +1841,3 @@ export default function PropertyDetail() {
     </div>
   );
 }
-
-
-
-

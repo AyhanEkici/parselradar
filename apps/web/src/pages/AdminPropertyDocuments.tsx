@@ -373,7 +373,7 @@ export default function AdminPropertyDocuments() {
     setPropertyLocation({ province: data.property?.il, district: data.property?.ilce });
     setTitle(
       data.property
-        ? `${data.property.addressText || 'Adres girilmemiÅŸ'} - ${data.property.il || '-'} / ${data.property.ilce || '-'}`
+        ? `${data.property.addressText || 'Adres girilmemiş'} - ${data.property.il || '-'} / ${data.property.ilce || '-'}`
         : ''
     );
     setLoading(false);
@@ -381,7 +381,7 @@ export default function AdminPropertyDocuments() {
 
   useEffect(() => {
     fetchDocuments().catch((e) => {
-      toast.error((e as { error?: string; message?: string }).error || (e as Error).message || 'Belge listesi alÄ±namadÄ±');
+      toast.error((e as { error?: string; message?: string }).error || (e as Error).message || 'Belge listesi alınamadı');
       setLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -406,7 +406,7 @@ export default function AdminPropertyDocuments() {
     }
 
     setUploading(true);
-    const loadingToastId = toast.loading('Belge yÃ¼kleniyor...');
+    const loadingToastId = toast.loading('Belge yükleniyor...');
     const authHeader = getAuthHeader();
     let uploadedCount = 0;
     let failedCount = 0;
@@ -448,14 +448,14 @@ export default function AdminPropertyDocuments() {
           const data = text ? JSON.parse(text) : null;
           if (!response.ok) {
             const reqId = data?.requestId ? ` (requestId: ${data.requestId})` : '';
-            throw new Error((data?.error || 'YÃ¼kleme baÅŸarÄ±sÄ±z') + reqId);
+            throw new Error((data?.error || 'Yükleme başarısız') + reqId);
           }
 
           uploadedCount += 1;
           updateQueueItem(item.id, { status: 'uploaded', error: undefined });
         } catch (err: any) {
           failedCount += 1;
-          updateQueueItem(item.id, { status: 'error', error: err?.message || 'YÃ¼kleme baÅŸarÄ±sÄ±z' });
+          updateQueueItem(item.id, { status: 'error', error: err?.message || 'Yükleme başarısız' });
         }
       }
 
@@ -474,7 +474,7 @@ export default function AdminPropertyDocuments() {
     } catch (err) {
       const e = err as { message?: string };
       toast.dismiss(loadingToastId);
-      toast.error(e.message || 'YÃ¼kleme baÅŸarÄ±sÄ±z');
+      toast.error(e.message || 'Yükleme başarısız');
     } finally {
       setUploading(false);
     }
@@ -492,7 +492,7 @@ export default function AdminPropertyDocuments() {
     } catch (err) {
       const e = err as { error?: string; message?: string };
       toast.dismiss(loadingToastId);
-      toast.error(e.error || e.message || 'Silme baÅŸarÄ±sÄ±z');
+      toast.error(e.error || e.message || 'Silme başarısız');
     } finally {
       setDeletingId('');
     }
@@ -560,7 +560,7 @@ export default function AdminPropertyDocuments() {
   }, [cards]);
 
   if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') {
-    return <div className="text-center mt-20">YÃ¶netici yetkisi gerekli</div>;
+    return <div className="text-center mt-20">Yönetici yetkisi gerekli</div>;
   }
 
   const handleFileChange = (fileList: FileList | null) => {
@@ -603,7 +603,7 @@ export default function AdminPropertyDocuments() {
         <AdminSurface className="p-4 sm:p-5 space-y-5">
         <AdminHeader
           title="Property Documents"
-          subtitle={title || 'Belge yÃ¶netimi'}
+          subtitle={title || 'Belge yönetimi'}
           actions={
             <Link to={`/admin/properties/${propertyId}`} className="text-sm text-blue-600 hover:underline">
               Back to Property Detail
@@ -667,7 +667,7 @@ export default function AdminPropertyDocuments() {
                   ) : (
                     <div className="w-full h-40 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
                       {!doc.hasFile
-                        ? 'Legacy file missing â€” re-upload required'
+                        ? 'Legacy file missing — re-upload required'
                         : doc.isImage
                         ? previewErrors[doc._id] || 'Loading preview...'
                         : doc.isPdf
@@ -867,7 +867,7 @@ export default function AdminPropertyDocuments() {
                 <div key={item.id} className="rounded border border-slate-200 p-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="text-sm font-medium text-slate-900 break-all">{item.file.name}</div>
-                    <div className="text-xs text-slate-500">{formatBytes(item.file.size)} â€¢ {item.file.type || 'unknown'}</div>
+                    <div className="text-xs text-slate-500">{formatBytes(item.file.size)} —¢ {item.file.type || 'unknown'}</div>
                   </div>
                   <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
                     <label className="text-xs text-slate-600">
