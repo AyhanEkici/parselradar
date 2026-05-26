@@ -116,7 +116,7 @@ function toSignal(row: any): StagedSignal {
   };
 }
 
-export async function queryStagedSignalsFromPostgis(): Promise<QueryResult> {
+export async function queryStagedSignalsFromPostgis(_options: { lat?: number; lon?: number; label?: string } = {}): Promise<QueryResult> {
   if (!process.env.GEODATA_DATABASE_URL) {
     return emptyResult("CONFIG_REQUIRED", "GEODATA_DATABASE_URL is missing.");
   }
@@ -263,3 +263,4 @@ export async function queryStagedSignalsFromPostgis(): Promise<QueryResult> {
     await client.end().catch(() => undefined);
   }
 }
+
