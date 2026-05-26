@@ -1,0 +1,1521 @@
+{
+  "status": "DIAGNOSTIC_ONLY",
+  "proof": "proof/p2-2e-2-property-validation-diagnostic.json",
+  "importantFiles": [
+    "apps/api/src/routes/propertyRoutes.ts",
+    "apps/api/src/controllers/propertyController.ts",
+    "apps/api/src/validation/propertySchemas.ts",
+    "apps/api/src/models/PropertySubmission.ts",
+    "apps/web/src/pages/NewProperty.tsx",
+    "apps/web/src/components/ConversationalAnalysisIntake.tsx"
+  ],
+  "hitCount": 565
+}
+ges/NewProperty.tsx",
+    "apps/web/src/components/ConversationalAnalysisIntake.tsx"
+  ],
+  "hitCount": 565,
+  "hits": [
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 43,
+      "line": "import PropertyConsent from './pages/PropertyConsent';"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 105,
+      "line": "<Route path=\"/properties\" element={<RequireAuth><Navigate to=\"/properties/new\" replace /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 106,
+      "line": "<Route path=\"/admin/properties\" element={<RequireAuth><AdminOnly>{withBoundary('/admin/properties', <AdminProperties />)}</AdminOnly></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 107,
+      "line": "<Route path=\"/admin/properties/:propertyId\" element={<RequireAuth><AdminOnly><PropertyDetail /></AdminOnly></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 108,
+      "line": "<Route path=\"/admin/properties/:propertyId/documents\" element={<RequireAuth><AdminOnly><AdminPropertyDocuments /></AdminOnly></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 136,
+      "line": "<Route path=\"/properties/new\" element={<RequireAuth><NewProperty /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 137,
+      "line": "<Route path=\"/properties/:id\" element={<RequireAuth><PropertyDetail /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 138,
+      "line": "<Route path=\"/properties/:id/documents\" element={<RequireAuth><PropertyDocuments /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 139,
+      "line": "<Route path=\"/properties/:id/consent\" element={<RequireAuth><PropertyConsent /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 140,
+      "line": "<Route path=\"/properties/:id/result\" element={<RequireAuth><PropertyResult /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/App.tsx",
+      "lineNumber": 141,
+      "line": "<Route path=\"/properties/:id/report\" element={<RequireAuth><PropertyResult /></RequireAuth>} />"
+    },
+    {
+      "file": "apps/web/src/components/admin/AdminLayout.tsx",
+      "lineNumber": 22,
+      "line": "{ label: 'Properties', to: '/admin/properties', matchPrefixes: ['/admin/properties'] },"
+    },
+    {
+      "file": "apps/web/src/components/analysis/AnalysisFactorsGrid.tsx",
+      "lineNumber": 27,
+      "line": "{ label: 'Utilities', value: `E: ${property.electricity || '-'} / W: ${property.water || '-'}` },"
+    },
+    {
+      "file": "apps/web/src/components/analysis/types.ts",
+      "lineNumber": 29,
+      "line": "electricity?: string;"
+    },
+    {
+      "file": "apps/web/src/components/analysis/types.ts",
+      "lineNumber": 30,
+      "line": "water?: string;"
+    },
+    {
+      "file": "apps/web/src/components/AppShell.tsx",
+      "lineNumber": 35,
+      "line": "{ to: '/properties/new', label: 'Yeni Mülk' },"
+    },
+    {
+      "file": "apps/web/src/components/AppShell.tsx",
+      "lineNumber": 37,
+      "line": "{ to: '/admin/properties', label: 'Properties', adminOnly: true },"
+    },
+    {
+      "file": "apps/web/src/components/AppShell.tsx",
+      "lineNumber": 104,
+      "line": "<Link to=\"/properties/new\" className={navLinkClass('/properties/new')}>Yeni Mülk</Link>"
+    },
+    {
+      "file": "apps/web/src/components/AppShell.tsx",
+      "lineNumber": 113,
+      "line": "{isAdmin ? <Link to=\"/admin/properties\" className={navLinkClass('/admin/properties')}>Properties</Link> : null}"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 8,
+      "line": "| 'READY_TO_CREATE_PROPERTY_DRAFT'"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 31,
+      "line": "nextSuggestedAction: 'Yeni Mülk olarak kaydet' | 'Kanıt/screenshot yükleme adımına geç' | 'Guidance report—™u görüntüle';"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 32,
+      "line": "canCreatePropertyDraft: boolean;"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 37,
+      "line": "onCreatePropertyDraft?: (payload: ConversationalAnalysisContract) => void;"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 95,
+      "line": "readinessLevel = 'READY_TO_CREATE_PROPERTY_DRAFT';"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 98,
+      "line": "const canCreatePropertyDraft = hasLocation && hasParcel && Boolean(contract.areaM2.trim()) && guidanceOnlyAcknowledged;"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 100,
+      "line": "let nextSuggestedAction: ConversationalDerivedState['nextSuggestedAction'] = 'Yeni Mülk olarak kaydet';"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 111,
+      "line": "canCreatePropertyDraft,"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 117,
+      "line": "onCreatePropertyDraft,"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 135,
+      "line": "Start with one central question, then complete key parcel fields to create a property draft."
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 204,
+      "line": "disabled={!derived.canCreatePropertyDraft}"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 205,
+      "line": "onClick={() => onCreatePropertyDraft?.(contract)}"
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "lineNumber": 207,
+      "line": "Yeni Mülk olarak kaydet"
+    },
+    {
+      "file": "apps/web/src/components/geo/GeoIntelligenceGrid.tsx",
+      "lineNumber": 7,
+      "line": "electricityScore: number;"
+    },
+    {
+      "file": "apps/web/src/components/geo/GeoIntelligenceGrid.tsx",
+      "lineNumber": 8,
+      "line": "waterScore: number;"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 7,
+      "line": "electricityScore: number;"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 8,
+      "line": "waterScore: number;"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 69,
+      "line": "<div className=\"text-xs text-gray-600\">Electricity</div>"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 70,
+      "line": "<div className=\"text-sm font-semibold text-gray-900\">{utilityCoverage.electricityScore}</div>"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 73,
+      "line": "<div className=\"text-xs text-gray-600\">Water</div>"
+    },
+    {
+      "file": "apps/web/src/components/geo/InfrastructureCard.tsx",
+      "lineNumber": 74,
+      "line": "<div className=\"text-sm font-semibold text-gray-900\">{utilityCoverage.waterScore}</div>"
+    },
+    {
+      "file": "apps/web/src/components/investor/WatchlistItemCard.tsx",
+      "lineNumber": 9,
+      "line": "const property = item.propertySubmissionId || {};"
+    },
+    {
+      "file": "apps/web/src/components/map/LayerGroupPanel.tsx",
+      "lineNumber": 12,
+      "line": "if (/utility|water|electric|grid|infra|pipeline|power/.test(text)) return 'infrastructure';"
+    },
+    {
+      "file": "apps/web/src/components/ui/RouteStateBoundary.tsx",
+      "lineNumber": 71,
+      "line": "secondaryHref=\"/properties\""
+    },
+    {
+      "file": "apps/web/src/components/workspace/SharedAnalysisCard.tsx",
+      "lineNumber": 6,
+      "line": "const property = row.propertySubmissionId || {};"
+    },
+    {
+      "file": "apps/web/src/components/workspace/SharedPortfolioCard.tsx",
+      "lineNumber": 6,
+      "line": "const property = row.propertySubmissionId || {};"
+    },
+    {
+      "file": "apps/web/src/components/workspace/SharedWatchlistCard.tsx",
+      "lineNumber": 6,
+      "line": "const property = row.propertySubmissionId || {};"
+    },
+    {
+      "file": "apps/web/src/lib/listingIntakeBasicRisk.ts",
+      "lineNumber": 40,
+      "line": "| 'WATER_CONTEXT';"
+    },
+    {
+      "file": "apps/web/src/lib/listingIntakeBasicRisk.ts",
+      "lineNumber": 198,
+      "line": "type: 'WATER_CONTEXT',"
+    },
+    {
+      "file": "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+      "lineNumber": 17,
+      "line": "optionalSignals: \"Optional water, rail or admin-center signals if present\","
+    },
+    {
+      "file": "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+      "lineNumber": 263,
+      "line": "// P2.GEO-3I required UX token: nearestStagedWaterFeature"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 30,
+      "line": "propertySubmissionId:"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 249,
+      "line": "{typeof a.propertySubmissionId === 'object' ? ("
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 252,
+      "line": "to={`/admin/properties/${a.propertySubmissionId._id}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 254,
+      "line": "{a.propertySubmissionId.addressText || 'Adres girilmemiş'}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 255,
+      "line": "{a.propertySubmissionId.il || a.propertySubmissionId.ilce"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 256,
+      "line": "? ` (${a.propertySubmissionId.il || '-'} / ${a.propertySubmissionId.ilce || '-'})`"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "lineNumber": 260,
+      "line": "<span title={a.propertySubmissionId}>{shortenId(a.propertySubmissionId)}</span>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 27,
+      "line": "dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 28,
+      "line": "professionalContactAllowed?: boolean;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 53,
+      "line": "propertySubmissionId?: {"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 70,
+      "line": "dealFlowConsentText: string;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 71,
+      "line": "professionalContactText: string;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 76,
+      "line": "function consentStatusLabel(status?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN') {"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 99,
+      "line": "if (normalized === 'PENDING' || normalized === 'DRAFT') return 'warning';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 145,
+      "line": "apiFetch('/admin/properties'),"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 163,
+      "line": "const propertyId = String(run.propertySubmissionId?._id || '');"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 173,
+      "line": "const detail = (await apiFetch(`/admin/properties/${property._id}`)) as PropertyDetailEnvelope;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 228,
+      "line": "dealFlowConsentText: consentStatusLabel(property.dealFlowConsentStatus),"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 229,
+      "line": "professionalContactText: property.professionalContactAllowed ? 'Allowed' : 'Not allowed',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 273,
+      "line": "Professional Deal-Flow"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 275,
+      "line": "<Link to=\"/admin/properties\" className=\"rounded border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 hover:bg-slate-50\">"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 321,
+      "line": "<div><span className=\"font-medium\">Consent:</span> {row.dealFlowConsentText}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 322,
+      "line": "<div><span className=\"font-medium\">Contact:</span> {row.professionalContactText}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 330,
+      "line": "to={`/admin/properties/${row.propertyId}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 336,
+      "line": "to={`/admin/properties/${row.propertyId}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 342,
+      "line": "to={`/properties/${row.propertyId}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 362,
+      "line": "<th className=\"px-3 py-2\">Deal-flow Consent</th>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 363,
+      "line": "<th className=\"px-3 py-2\">Professional Contact</th>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 387,
+      "line": "<td className=\"px-3 py-2 align-top text-slate-700\">{row.dealFlowConsentText}</td>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 388,
+      "line": "<td className=\"px-3 py-2 align-top text-slate-700\">{row.professionalContactText}</td>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 394,
+      "line": "to={`/admin/properties/${row.propertyId}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 400,
+      "line": "to={`/admin/properties/${row.propertyId}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "lineNumber": 406,
+      "line": "to={`/properties/${row.propertyId}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 33,
+      "line": "href: '/admin/properties',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 40,
+      "line": "href: '/admin/properties',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 47,
+      "line": "href: '/admin/properties',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 57,
+      "line": "area: 'Professional Deal-Flow',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 178,
+      "line": "const propertiesResponse = await apiFetch('/admin/properties');"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 248,
+      "line": "route: '/admin/properties',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 260,
+      "line": "route: '/admin/properties',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 276,
+      "line": "title: 'Professional Deal-Flow',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 279,
+      "line": "detail: 'Internal preview with consent/contact filters and lead-quality triage for future professional intake readiness',"
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "lineNumber": 334,
+      "line": "<Link to=\"/admin/properties\" className=\"rounded border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50\">"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 31,
+      "line": "dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 32,
+      "line": "dealFlowConsentAt?: string;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 33,
+      "line": "dealFlowConsentScope?: string[];"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 34,
+      "line": "professionalContactAllowed?: boolean;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 42,
+      "line": "propertySubmissionId?: { _id?: string } | null;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 66,
+      "line": "| 'NOT_ELIGIBLE_WITHOUT_CONSENT';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 81,
+      "line": "consentStatusText: string;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 82,
+      "line": "consentAtText: string;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 123,
+      "line": "function consentStatusLabel(status?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN') {"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 234,
+      "line": "if (value === 'NOT_ELIGIBLE_WITHOUT_CONSENT') return 'Not eligible for deal-flow without consent';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 291,
+      "line": "apiFetch('/admin/properties'),"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 309,
+      "line": "const propertyId = String(run.propertySubmissionId?._id || '');"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 317,
+      "line": "const detail = (await apiFetch(`/admin/properties/${property._id}`)) as PropertyDetailEnvelope;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 335,
+      "line": "const isOptedIn = property.dealFlowConsentStatus === 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 336,
+      "line": "const contactAllowed = Boolean(property.professionalContactAllowed);"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 385,
+      "line": "? 'NOT_ELIGIBLE_WITHOUT_CONSENT'"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 407,
+      "line": "consentStatusText: consentStatusLabel(property.dealFlowConsentStatus),"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 408,
+      "line": "consentAtText: formatDate(property.dealFlowConsentAt),"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 440,
+      "line": "setError(e.error || e.message || 'Professional deal-flow dashboard could not be loaded');"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 506,
+      "line": "<AdminLayout title=\"Professional Deal-Flow\">"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 510,
+      "line": "title=\"Professional Deal-Flow\""
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 511,
+      "line": "subtitle=\"Internal intake shell for future professional matching pipeline readiness.\""
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 529,
+      "line": "This dashboard prepares future professional matching. It does not send leads, share user data, or create a marketplace yet."
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 550,
+      "line": "<div className=\"text-xs text-slate-500\">Missing consent / not eligible</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 628,
+      "line": "<div>NOT_ELIGIBLE = no opt-in consent.</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 638,
+      "line": "{loading ? <div className=\"text-sm text-slate-500\">Loading professional deal-flow dashboard...</div> : null}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 642,
+      "line": "Known beta data may not contain opt-in professional matching cases yet. New property submissions with consent will appear here."
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 669,
+      "line": "<div><span className=\"font-medium\">Consent:</span> {row.consentStatusText}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 680,
+      "line": "to={`/admin/properties/${row.propertyId}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 686,
+      "line": "to={`/admin/properties/${row.propertyId}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 692,
+      "line": "to={`/properties/${row.propertyId}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 710,
+      "line": "<th className=\"px-3 py-2\">Consent</th>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 739,
+      "line": "<div>{row.consentStatusText}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 740,
+      "line": "<div className=\"text-xs text-slate-500\">At: {row.consentAtText}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 766,
+      "line": "to={`/admin/properties/${row.propertyId}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 772,
+      "line": "to={`/admin/properties/${row.propertyId}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 778,
+      "line": "to={`/properties/${row.propertyId}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 804,
+      "line": "<div>No hidden data use. This view only reflects admin-accessible consented property metadata.</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "lineNumber": 806,
+      "line": "<div>No professional account marketplace or automated lead distribution is active in this phase.</div>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 29,
+      "line": "dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 30,
+      "line": "professionalContactAllowed?: boolean;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 48,
+      "line": "if (normalized === 'PENDING' || normalized === 'DRAFT') return 'warning';"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 70,
+      "line": "function consentStatusLabel(status?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN') {"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 87,
+      "line": "const data = await apiFetch('/admin/properties');"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 154,
+      "line": "<option value=\"DRAFT\">DRAFT</option>"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 223,
+      "line": "<span className=\"text-slate-500\">Deal-flow consent:</span> {consentStatusLabel(p.dealFlowConsentStatus)}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 226,
+      "line": "<span className=\"text-slate-500\">Professional contact:</span> {p.professionalContactAllowed ? 'Allowed' : 'Not allowed'}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 232,
+      "line": "to={`/admin/properties/${p._id}`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 238,
+      "line": "to={`/admin/properties/${p._id}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "lineNumber": 244,
+      "line": "to={`/properties/${p._id}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "lineNumber": 371,
+      "line": "const data = (await apiFetch(`admin/properties/${propertyId}`)) as DetailResponse;"
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "lineNumber": 439,
+      "line": "const response = await fetch(`${getApiBaseUrl()}/properties/${propertyId}/documents`, {"
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "lineNumber": 608,
+      "line": "<Link to={`/admin/properties/${propertyId}`} className=\"text-sm text-blue-600 hover:underline\">"
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "lineNumber": 834,
+      "line": "onClick={() => navigate(`/properties/${propertyId}/result`)}"
+    },
+    {
+      "file": "apps/web/src/pages/Credits.tsx",
+      "lineNumber": 85,
+      "line": "Credits do not guarantee official legal/tapu/imar proof. Official verification remains external and professional."
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "lineNumber": 50,
+      "line": "const handleCreatePropertyDraft = (payload: ConversationalAnalysisContract) => {"
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "lineNumber": 69,
+      "line": "navigate(`/properties/new?${params.toString()}`);"
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "lineNumber": 76,
+      "line": "<div className=\"mb-2 text-sm text-slate-600\">Start with guided intake, then create Yeni Mülk, add evidence, and review the guidance report.</div>"
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "lineNumber": 80,
+      "line": "<Link to=\"/properties/new\" className=\"premium-action px-4 py-2 rounded\">Yeni Mülk</Link>"
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "lineNumber": 87,
+      "line": "<ConversationalAnalysisIntake onCreatePropertyDraft={handleCreatePropertyDraft} />"
+    },
+    {
+      "file": "apps/web/src/pages/MapWorkspace.tsx",
+      "lineNumber": 96,
+      "line": "apiFetch('/properties'),"
+    },
+    {
+      "file": "apps/web/src/pages/MapWorkspace.tsx",
+      "lineNumber": 129,
+      "line": "if (report?.propertySubmissionId) {"
+    },
+    {
+      "file": "apps/web/src/pages/MapWorkspace.tsx",
+      "lineNumber": 130,
+      "line": "reportByProperty.set(String(report.propertySubmissionId), report);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 62,
+      "line": "const DRAFT_KEY = 'parselradar:new-property:draft';"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 68,
+      "line": "const [draftMessage, setDraftMessage] = useState('');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 69,
+      "line": "const [hasDraft, setHasDraft] = useState(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 70,
+      "line": "const [allowDealFlowMatching, setAllowDealFlowMatching] = useState(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 71,
+      "line": "const [allowProfessionalContact, setAllowProfessionalContact] = useState(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 77,
+      "line": "setHasDraft(Boolean(window.localStorage.getItem(DRAFT_KEY)));"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 79,
+      "line": "setHasDraft(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 101,
+      "line": "const persistDraft = (nextForm: PropertyForm) => {"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 103,
+      "line": "window.localStorage.setItem(DRAFT_KEY, JSON.stringify(nextForm));"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 104,
+      "line": "setHasDraft(true);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 105,
+      "line": "setDraftMessage('Taslak kaydedildi');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 106,
+      "line": "setTimeout(() => setDraftMessage(''), 2000);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 108,
+      "line": "setDraftMessage('Draft kaydedilemedi');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 112,
+      "line": "const continueDraft = () => {"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 114,
+      "line": "const raw = window.localStorage.getItem(DRAFT_KEY);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 118,
+      "line": "setDraftMessage('Taslak yüklendi');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 119,
+      "line": "setTimeout(() => setDraftMessage(''), 2000);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 121,
+      "line": "setDraftMessage('Draft okunamadı');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 125,
+      "line": "const clearDraft = () => {"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 127,
+      "line": "window.localStorage.removeItem(DRAFT_KEY);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 128,
+      "line": "setHasDraft(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 129,
+      "line": "setDraftMessage('Taslak temizlendi');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 130,
+      "line": "setTimeout(() => setDraftMessage(''), 2000);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 132,
+      "line": "setDraftMessage('Draft temizlenemedi');"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 158,
+      "line": "{ key: 'electricity', label: 'Elektrik', message: 'Elektrik durumu gereklidir.' },"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 159,
+      "line": "{ key: 'water', label: 'Su', message: 'Su durumu gereklidir.' },"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 205,
+      "line": "// Consent fields"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 206,
+      "line": "const dealFlowConsentScope = allowDealFlowMatching"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 207,
+      "line": "? ['PROFESSIONAL_MATCHING', ...(allowProfessionalContact ? ['PROFESSIONAL_CONTACT'] : [])]"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 209,
+      "line": "clientFields.dealFlowConsentStatus = allowDealFlowMatching ? 'OPTED_IN' : 'NOT_ASKED';"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 210,
+      "line": "clientFields.dealFlowConsentAt = allowDealFlowMatching ? new Date().toISOString() : undefined;"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 211,
+      "line": "clientFields.dealFlowConsentScope = dealFlowConsentScope;"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 212,
+      "line": "clientFields.professionalContactAllowed = allowDealFlowMatching ? allowProfessionalContact : false;"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 222,
+      "line": "window.localStorage.removeItem(DRAFT_KEY);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 223,
+      "line": "setHasDraft(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 224,
+      "line": "navigate(`/properties/${property._id}/documents`);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 247,
+      "line": "<h2 className=\"text-xl font-bold mb-4\">Yeni Mülk</h2>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 249,
+      "line": "Start with Yeni Mülk. After the property is created, documents, evidence, source guidance and report pages help you review it step by step."
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 252,
+      "line": "{hasDraft ? ("
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 256,
+      "line": "<button type=\"button\" className=\"bg-amber-600 text-white px-3 py-1 rounded\" onClick={continueDraft}>Taslağa devam et</button>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 257,
+      "line": "<button type=\"button\" className=\"bg-white border border-amber-300 px-3 py-1 rounded\" onClick={clearDraft}>Taslağı temizle</button>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 261,
+      "line": "{draftMessage ? <div className=\"mb-3 text-sm text-green-700\">{draftMessage}</div> : null}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 357,
+      "line": "<select className={inputClass('electricity')} name=\"electricity\" required value={String(form.electricity || '')} onChange={handleChange}>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 363,
+      "line": "{fieldErrors.electricity && <div className=\"text-sm text-red-600\">{fieldErrors.electricity}</div>}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 366,
+      "line": "<select className={inputClass('water')} name=\"water\" required value={String(form.water || '')} onChange={handleChange}>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 372,
+      "line": "{fieldErrors.water && <div className=\"text-sm text-red-600\">{fieldErrors.water}</div>}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 377,
+      "line": "<h3 className=\"text-sm font-semibold text-sky-900\">Optional professional matching</h3>"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 384,
+      "line": "checked={allowDealFlowMatching}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 387,
+      "line": "setAllowDealFlowMatching(checked);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 388,
+      "line": "if (!checked) setAllowProfessionalContact(false);"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 397,
+      "line": "checked={allowProfessionalContact}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 398,
+      "line": "onChange={(e) => setAllowProfessionalContact(e.target.checked)}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 399,
+      "line": "disabled={!allowDealFlowMatching}"
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "lineNumber": 416,
+      "line": "<button type=\"button\" className=\"bg-amber-600 text-white px-3 py-2 rounded\" onClick={() => persistDraft(form)}>Taslağı kaydet</button>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyConsent.tsx",
+      "lineNumber": 5,
+      "line": "export default function PropertyConsent() {"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyConsent.tsx",
+      "lineNumber": 23,
+      "line": "await apiFetch(`properties/${id}/consent`, { method: 'POST', body: JSON.stringify(form) });"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyConsent.tsx",
+      "lineNumber": 24,
+      "line": "navigate(`/properties/${id}/result`);"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyConsent.tsx",
+      "lineNumber": 38,
+      "line": "<label className=\"block\"><input type=\"checkbox\" name=\"allowContactForMatching\" onChange={handleChange} /> Eşleşme için iletişime izin ver</label>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 273,
+      "line": "electricity?: string;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 274,
+      "line": "water?: string;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 279,
+      "line": "dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 280,
+      "line": "dealFlowConsentAt?: string;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 281,
+      "line": "dealFlowConsentScope?: string[];"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 282,
+      "line": "professionalContactAllowed?: boolean;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 393,
+      "line": "electricityScore: number;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 394,
+      "line": "waterScore: number;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 692,
+      "line": "const endpoint = isAdminPath ? `admin/properties/${resolvedId}` : `properties/${resolvedId}`;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 728,
+      "line": "await apiFetch(`admin/properties/${resolvedId}/status`, {"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 933,
+      "line": "const consentStatusLabel ="
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 934,
+      "line": "property.dealFlowConsentStatus === 'OPTED_IN'"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 936,
+      "line": ": property.dealFlowConsentStatus === 'DECLINED'"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 939,
+      "line": "const contactStatusLabel = property.professionalContactAllowed ? 'Allowed' : 'Not allowed';"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1055,
+      "line": "to={`/properties/${resolvedId}/documents`}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1061,
+      "line": "to={`/properties/${resolvedId}/result`}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1129,
+      "line": "<div className=\"text-slate-500\">Deal-flow consent</div>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1130,
+      "line": "<div className=\"font-semibold text-slate-900\">{consentStatusLabel}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1133,
+      "line": "<div className=\"text-slate-500\">Professional contact</div>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1287,
+      "line": "electricity: property.electricity,"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1288,
+      "line": "water: property.water,"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1707,
+      "line": "? `/admin/properties/${resolvedId}/documents`"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1708,
+      "line": ": `/properties/${resolvedId}/documents`"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "lineNumber": 1828,
+      "line": "E: {property.electricity || '-'} / W: {property.water || '-'}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 387,
+      "line": "const [extractionDraft, setExtractionDraft] = useState<AssistedRegistryExtractionRecord>({"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 640,
+      "line": "const saveExtractionDraft = () => {"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 644,
+      "line": "...extractionDraft,"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 645,
+      "line": "checkedManually: manualChecks[extractionDraft.sourceType] || false,"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 667,
+      "line": "navigate(`/properties/${id}/documents?${params.toString()}#upload`);"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 830,
+      "line": "const response = await fetch(`${getApiBaseUrl()}/properties/${id}/documents`, {"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1319,
+      "line": "<li>Water proximity is context, not view/buildability proof.</li>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1411,
+      "line": "value={extractionDraft.sourceType}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1413,
+      "line": "setExtractionDraft((prev) => ({"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1429,
+      "line": "value={extractionDraft.extractionMode}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1431,
+      "line": "setExtractionDraft((prev) => ({"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1445,
+      "line": "value={extractionDraft.confidence}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1447,
+      "line": "setExtractionDraft((prev) => ({"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1460,
+      "line": "{Object.entries(extractionDraft.fields).map(([field, value]) => ("
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1467,
+      "line": "setExtractionDraft((prev) => ({"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1483,
+      "line": "onClick={saveExtractionDraft}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1619,
+      "line": "onClick={() => navigate(`/properties/${id}/result`)}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1750,
+      "line": "<AdminButton variant=\"secondary\" onClick={() => navigate(`/properties/${id}`)}>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1756,
+      "line": "<AdminButton variant=\"secondary\" onClick={() => navigate(`/properties/${id}/consent`)}>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "lineNumber": 1759,
+      "line": "<AdminButton variant=\"secondary\" onClick={() => navigate(`/properties/${id}/result`)}>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 408,
+      "line": "dealFlowConsentStatus?: 'NOT_ASKED' | 'DECLINED' | 'OPTED_IN';"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 409,
+      "line": "professionalContactAllowed?: boolean;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 722,
+      "line": "return `/properties/${id}/documents?intent=${encodedIntent}&returnTo=result`;"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 1483,
+      "line": "`Manual/professional review required: ${readinessSummary.manualReviewRequired ? 'Yes' : 'No'}`,"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 1549,
+      "line": "<div><span className=\"font-medium\">Manual/professional review required:</span> {readinessSummary.manualReviewRequired ? 'Yes' : 'No'}</div>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 1862,
+      "line": "onClick={() => navigate(`/properties/${id}`)}"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 2179,
+      "line": "<button className=\"bg-gray-200 px-4 py-2 rounded\" type=\"button\" onClick={() => navigate(`/properties/${id}`)}>Mülk Detayına Dön</button>"
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "lineNumber": 2183,
+      "line": "ParselRadar provides informational evidence organization and pre-check readiness. It does not replace official TKGM, municipality, tapu, zoning, legal, valuation or professional verification."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 20,
+      "line": "const professionals = ["
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 34,
+      "line": "title: 'Due-diligence professionals',"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 66,
+      "line": "href=\"#for-professionals\""
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 69,
+      "line": "For Real Estate Professionals"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 79,
+      "line": "ParselRadar provides informational pre-checks and evidence organization. It does not replace official TKGM, municipality, tapu, zoning, legal or professional verification."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 110,
+      "line": "ParselRadar helps private buyers and investors reduce pre-purchase uncertainty by turning scattered listing details and screenshots into a structured evidence trail. You can identify missing documents, organize evidence, understand readiness, and prepare better questions for municipality, TKGM, and professional review."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 123,
+      "line": "<section id=\"for-professionals\" className=\"mt-8 rounded-3xl border border-slate-800 bg-slate-900/70 p-6 sm:p-8\">"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 124,
+      "line": "<h2 className=\"text-2xl font-semibold text-white\">For professionals</h2>"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 126,
+      "line": "Prepare client evidence packages, review incoming opportunities, and move toward cleaner intake workflows. Future deal-flow and professional dashboards remain opt-in and consent-based."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 129,
+      "line": "{professionals.map((item) => ("
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 138,
+      "line": "href=\"#for-professionals\""
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 141,
+      "line": "For Real Estate Professionals"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 143,
+      "line": "<span className=\"text-sm text-slate-300\">No hidden data use. Consent is required before any deal data sharing.</span>"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 150,
+      "line": "Use credits to start property checks, organize evidence and review readiness. Credits help you prepare smarter next steps before paying professionals or making decisions. Full official/legal/tapu/imar verification remains external and professional."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 181,
+      "line": "<h3 className=\"text-lg font-semibold text-white\">Professional Review Ready</h3>"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 183,
+      "line": "For preparing a cleaner case for real estate agents, architects, developers, or legal/due-diligence professionals."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 186,
+      "line": "href=\"#for-professionals\""
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 189,
+      "line": "For Professionals"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 202,
+      "line": "ParselRadar does not issue fake official proof, does not impersonate institutions, and does not replace formal tapu, zoning, legal, or professional verification workflows. It does not provide official valuation proof and does not claim live TKGM/TUCBS/CSB official-layer automation."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 205,
+      "line": "Data use is bounded by user trust principles. No hidden data use is permitted for backdoor lead routing or undisclosed sharing. Official and professional verification remains external."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 211,
+      "line": "<h2 className=\"text-2xl font-semibold text-white\">Consent/deal-flow preview</h2>"
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 213,
+      "line": "A future professional matching model can be enabled only through explicit user permission. Any deal-flow participation is opt-in, transparent, and revocable. No hidden backdoor data use is allowed."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 220,
+      "line": "Controlled beta continues while public launch gates remain in progress. You can start evidence organization today and continue official verification through authorized institutions and professionals."
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 236,
+      "line": "href=\"#for-professionals\""
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "lineNumber": 239,
+      "line": "Learn for Professionals"
+    },
+    {
+      "file": "apps/api/src/analytics/buildIngestionAnalytics.ts",
+      "lineNumber": 1,
+      "line": "import PropertySubmission from '../models/PropertySubmission';"
+    },
+    {
+      "file": "apps/api/src/analytics/buildIngestionAnalytics.ts",
+      "lineNumber": 6,
+      "line": "PropertySubmission.countDocuments({}),"
+    },
+    {
+      "file": "apps/api/src/analytics/buildIngestionAnalytics.ts",
+      "lineNumber": 7,
+      "line": "PropertySubmission.countDocuments({ ingestionState: 'stale' }),"
+    },
+    {
+      "file": "apps/api/src/analytics/buildProductAnalytics.ts",
+      "lineNumber": 1,
+      "line": "import PropertySubmission from '../models/PropertySubmission';"
+    },
+    {
+      "file": "apps/api/src/analytics/buildProductAnalytics.ts",
+      "lineNumber": 7,
+      "line": "PropertySubmission.countDocuments({}),"
+    },
+    {
+      "file": "apps/api/src/config/analysis/infrastructureWeights.ts",
+      "lineNumber": 3,
+      "line": "electricity: 0.3,"
+    },
+    {
+      "file": "apps/api/src/config/analysis/infrastructureWeights.ts",
+      "lineNumber": 4,
+      "line": "water: 0.28,"
+    },
+    {
+      "file": "apps/api/src/config/analysis/infrastructureWeights.ts",
+      "lineNumber": 10,
+      "line": "electricityPositive: 20,"
+    },
+    {
+      "file": "apps/api/src/config/analysis/infrastructureWeights.ts",
+      "lineNumber": 11,
+      "line": "waterPositive: 20,"
+    }
+  ],
+  "generatedAt": "2026-05-26T18:15:12.623Z"
+}

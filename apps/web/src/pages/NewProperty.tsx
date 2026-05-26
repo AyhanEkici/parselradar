@@ -142,29 +142,89 @@ export default function NewProperty() {
     e.preventDefault();
     setError('');
     setFieldErrors({});
+
+    // Required fields for validation
+    const requiredFields = [
+      { key: 'assetType', label: 'Varlık Türü', message: 'Varlık türü gereklidir.' },
+      { key: 'inputMethod', label: 'Giriş Yöntemi', message: 'Giriş yöntemi gereklidir.' },
+      { key: 'il', label: 'İl', message: 'İl gereklidir.' },
+      { key: 'ilce', label: 'İlçe', message: 'İlçe gereklidir.' },
+      { key: 'mahalleOrKoy', label: 'Mahalle/Köy', message: 'Mahalle veya köy gereklidir.' },
+      { key: 'askingPriceTRY', label: 'Fiyat (TL)', message: 'Fiyat gereklidir.' },
+      { key: 'areaM2', label: 'Alan (m²)', message: 'Alan gereklidir.' },
+      { key: 'tapuType', label: 'Tapu Türü', message: 'Tapu türü gereklidir.' },
+      { key: 'zoningStatus', label: 'İmar Durumu', message: 'İmar durumu gereklidir.' },
+      { key: 'roadAccess', label: 'Yol Durumu', message: 'Yol durumu gereklidir.' },
+      { key: 'electricity', label: 'Elektrik', message: 'Elektrik durumu gereklidir.' },
+      { key: 'water', label: 'Su', message: 'Su durumu gereklidir.' },
+    ];
+
+    const nextFieldErrors: Record<string, string> = {};
+    for (const field of requiredFields) {
+      if (!form[field.key] || String(form[field.key]).trim() === '') {
+        nextFieldErrors[field.key] = field.message;
+      }
+    }
+
+    // Numeric validation for price and area
+    if (form.askingPriceTRY && Number(form.askingPriceTRY) <= 0) {
+      nextFieldErrors.askingPriceTRY = 'Fiyat 0 TL’den büyük olmalıdır.';
+    }
+    if (form.areaM2 && Number(form.areaM2) <= 0) {
+      nextFieldErrors.areaM2 = 'Alan 0 m²’den büyük olmalıdır.';
+    }
+
+    // ADA_PARSEL input: parse ilanUrl into ada/parsel, never send ilanUrl
+    let clientFields = { ...form };
+    if (form.inputMethod === 'ADA_PARSEL') {
+      // If ilanUrl is present and matches "ada/parsel" pattern, parse it
+      if (form.ilanUrl && typeof form.ilanUrl === 'string' && /^(\d+)[\/\\](\d+)$/.test(form.ilanUrl.trim())) {
+        const match = form.ilanUrl.trim().match(/^(\d+)[\/\\](\d+)$/);
+        if (match) {
+          clientFields.ada = match[1];
+          clientFields.parsel = match[2];
+        }
+      }
+      // Remove ilanUrl for ADA_PARSEL
+      delete clientFields.ilanUrl;
+      // Require ada and parsel for ADA_PARSEL
+      if (!clientFields.ada || String(clientFields.ada).trim() === '') {
+        nextFieldErrors.ada = 'Ada gereklidir.';
+      }
+      if (!clientFields.parsel || String(clientFields.parsel).trim() === '') {
+        nextFieldErrors.parsel = 'Parsel gereklidir.';
+      }
+    }
+
+    // Remove forbidden fields if present
+    delete clientFields.userId;
+    delete clientFields.createdAt;
+    delete clientFields.updatedAt;
+    delete clientFields.pricePerM2;
+
+    // Consent fields
+    const dealFlowConsentScope = allowDealFlowMatching
+      ? ['PROFESSIONAL_MATCHING', ...(allowProfessionalContact ? ['PROFESSIONAL_CONTACT'] : [])]
+      : [];
+    clientFields.dealFlowConsentStatus = allowDealFlowMatching ? 'OPTED_IN' : 'NOT_ASKED';
+    clientFields.dealFlowConsentAt = allowDealFlowMatching ? new Date().toISOString() : undefined;
+    clientFields.dealFlowConsentScope = dealFlowConsentScope;
+    clientFields.professionalContactAllowed = allowDealFlowMatching ? allowProfessionalContact : false;
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setFieldErrors(nextFieldErrors);
+      setError('Lütfen gerekli alanları doldurun.');
+      return;
+    }
+
     try {
-      // Remove forbidden fields if present
-      const clientFields = { ...form };
-      delete clientFields.userId;
-      delete clientFields.createdAt;
-      delete clientFields.updatedAt;
-      delete clientFields.pricePerM2;
-      const dealFlowConsentScope = allowDealFlowMatching
-        ? ['PROFESSIONAL_MATCHING', ...(allowProfessionalContact ? ['PROFESSIONAL_CONTACT'] : [])]
-        : [];
-
-      clientFields.dealFlowConsentStatus = allowDealFlowMatching ? 'OPTED_IN' : 'NOT_ASKED';
-      clientFields.dealFlowConsentAt = allowDealFlowMatching ? new Date().toISOString() : undefined;
-      clientFields.dealFlowConsentScope = dealFlowConsentScope;
-      clientFields.professionalContactAllowed = allowDealFlowMatching ? allowProfessionalContact : false;
-
       const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(clientFields) });
       window.localStorage.removeItem(DRAFT_KEY);
       setHasDraft(false);
       navigate(`/properties/${property._id}/documents`);
     } catch (err) {
       const apiError = err as { error?: string; fields?: Record<string, string> };
-      setError(apiError.error || 'Validation failed');
+      setError(apiError.error || 'Doğrulama hatası oluştu.');
       setFieldErrors(apiError.fields || {});
     }
   };
