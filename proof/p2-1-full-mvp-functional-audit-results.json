@@ -1,0 +1,857 @@
+{
+  "phase": "P2.1",
+  "status": "WARN",
+  "generatedAt": "2026-05-26T01:47:48.453Z",
+  "inventory": {
+    "totalFiles": 1759,
+    "trackedFiles": 1757,
+    "tsFiles": 1092,
+    "apiFiles": 651,
+    "webFiles": 309,
+    "pageFiles": 60,
+    "componentFiles": 236,
+    "routeFiles": 23,
+    "controllerFiles": 21,
+    "modelFiles": 33
+  },
+  "routeInventory": [
+    {
+      "file": "apps/api/src/routes/adminRoutes.ts",
+      "get": 14,
+      "post": 3,
+      "put": 0,
+      "patch": 3,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/analysisRoutes.ts",
+      "get": 0,
+      "post": 3,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/auditRoutes.ts",
+      "get": 1,
+      "post": 0,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/authRoutes.ts",
+      "get": 2,
+      "post": 3,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/connectorActivationRoutes.ts",
+      "get": 15,
+      "post": 7,
+      "put": 0,
+      "patch": 2,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/consentRoutes.ts",
+      "get": 0,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/creditRoutes.ts",
+      "get": 1,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/documentRoutes.ts",
+      "get": 3,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 1
+    },
+    {
+      "file": "apps/api/src/routes/exportRoutes.ts",
+      "get": 0,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/investorRoutes.ts",
+      "get": 3,
+      "post": 2,
+      "put": 0,
+      "patch": 0,
+      "delete": 2
+    },
+    {
+      "file": "apps/api/src/routes/notificationRoutes.ts",
+      "get": 3,
+      "post": 3,
+      "put": 0,
+      "patch": 1,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/observabilityRoutes.ts",
+      "get": 3,
+      "post": 0,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/organizationRoutes.ts",
+      "get": 2,
+      "post": 2,
+      "put": 0,
+      "patch": 1,
+      "delete": 1
+    },
+    {
+      "file": "apps/api/src/routes/passwordResetRoutes.ts",
+      "get": 0,
+      "post": 2,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/portfolioAnalyticsRoutes.ts",
+      "get": 5,
+      "post": 0,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/portfolioRoutes.ts",
+      "get": 2,
+      "post": 2,
+      "put": 0,
+      "patch": 0,
+      "delete": 1
+    },
+    {
+      "file": "apps/api/src/routes/propertyRoutes.ts",
+      "get": 2,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/reportRoutes.ts",
+      "get": 2,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/sharedAnalysisRoutes.ts",
+      "get": 1,
+      "post": 1,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/stagedGeoSignalsRoutes.ts",
+      "get": 1,
+      "post": 0,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/stripeRoutes.ts",
+      "get": 0,
+      "post": 2,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/routes/workspaceRoutes.ts",
+      "get": 4,
+      "post": 2,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    },
+    {
+      "file": "apps/api/src/testing/verifyRoutes.ts",
+      "get": 1,
+      "post": 0,
+      "put": 0,
+      "patch": 0,
+      "delete": 0
+    }
+  ],
+  "pageInventory": [
+    {
+      "file": "apps/web/src/pages/AccessDenied.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalysisReports.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminAnalytics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminAuditTimeline.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminCms.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminConnectorCenter.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminConnectorDetail.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminConnectors.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminCreditLedger.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminDealPool.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminDeploymentOverview.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminGeoDiagnostics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminLayerHealth.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminLayers.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminMailDiagnostics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminObservability.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminOgcConnectors.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "apiCalls": [
+        "${getApiBaseUrl()}/properties/${propertyId}/documents"
+      ],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminRuntimeHealth.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminStripeDiagnostics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminStripeSessions.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/AdminSystemRuntime.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminTucbsConnector.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/AdminUsers.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/Credits.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Dashboard.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/ForgotPassword.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/InvestorDashboard.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Login.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/MapAnalysisRoute.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/MapPortfolioRoute.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/MapRoute.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/MapWorkspace.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/NotFound.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/NotificationInbox.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/NotificationPreferences.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/OrganizationDetail.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Organizations.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PortfolioAnalytics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PortfolioDashboard.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PortfolioDetail.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PropertyConsent.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDetail.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "apiCalls": [
+        "${getApiBaseUrl()}/properties/${id}/documents"
+      ],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": true
+    },
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/PublicHomepage.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": false,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Register.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Reports.tsx",
+      "apiCalls": [
+        "${getApiBaseUrl()}/reports/${report._id}/download"
+      ],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/ResetPassword.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/SavedAnalyses.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/Watchlist.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/WorkspaceActivity.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/WorkspaceDashboard.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/WorkspacePortfolio.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/WorkspaceWatchlist.tsx",
+      "apiCalls": [],
+      "hasLoadingState": false,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    },
+    {
+      "file": "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+      "apiCalls": [],
+      "hasLoadingState": true,
+      "hasErrorState": true,
+      "hasEmptyState": false
+    }
+  ],
+  "requiredScriptsPresent": true,
+  "requiredFilesPresent": true,
+  "evidenceOcrFlowPresent": true,
+  "geodataDiagnosticsPresent": true,
+  "mvp4dProofPresent": true,
+  "localEnvPresent": true,
+  "localEnvTracked": false,
+  "severityCounts": {
+    "BLOCKER": 0,
+    "HIGH": 0,
+    "MEDIUM": 27,
+    "LOW": 7,
+    "FUTURE": 0
+  },
+  "findings": [
+    {
+      "severity": "LOW",
+      "category": "local-env-present",
+      "file": ".env",
+      "detail": "Local .env exists but is not tracked by git and is excluded from commit/audit source scanning."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/auditMvpCompleteness.ts",
+      "detail": "Contains 19 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/verifyEmailProviderReadiness.ts",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/verifyPilotEnv.ts",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "detail": "Contains 12 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/components/admin/AdminPrimitives.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/components/map/ActiveLayerToolbar.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/lib/municipalitySourceRegistry.ts",
+      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminAnalyses.tsx",
+      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminAuditTimeline.tsx",
+      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminDealFlow.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminDealPool.tsx",
+      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminProperties.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/AdminUsers.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/ForgotPassword.tsx",
+      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/Login.tsx",
+      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "detail": "Contains 20 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/Organizations.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/PortfolioDashboard.tsx",
+      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "detail": "Contains 8 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "detail": "Contains 5 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/Register.tsx",
+      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/web/src/pages/ResetPassword.tsx",
+      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
+      "file": "apps/api/scripts/p21VerifyFullMvpAudit.ts",
+      "detail": "Contains 13 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "apps/api/src/testing/verifyAuth.ts",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "proof/p2-geo-2b-postgis-connection-check.json",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "proof/p2-geo-2b-postgis-connection-check.md",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "proof/platform-proof-bundle.json",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    },
+    {
+      "severity": "LOW",
+      "category": "secret-risk",
+      "file": "proof/platform-proof-bundle.md",
+      "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
+    }
+  ],
+  "noSourceFileCommitted": true,
+  "noFullTurkeyImport": true,
+  "noProductionSwap": true,
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noOfficialVerificationClaimAdded": true
+}
