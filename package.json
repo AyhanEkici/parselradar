@@ -135,7 +135,8 @@
                     "p2:1b:verify-audit-remediation":  "ts-node apps/api/scripts/p21bVerifyAuditRemediation.ts",
                     "p2:2a:verify-user-visible-completeness":  "ts-node apps/api/scripts/p22aVerifyUserVisibleCompleteness.ts",
                     "p2:2bc:verify-loading-error-empty-workflow":  "ts-node apps/api/scripts/p22bcVerifyLoadingErrorEmptyWorkflow.ts",
-                    "p2:2d:verify-analysis-runtime-smoke":  "ts-node apps/api/scripts/p22dVerifyAnalysisRuntimeSmoke.ts"
+                    "p2:2d:verify-analysis-runtime-smoke":  "ts-node apps/api/scripts/p22dVerifyAnalysisRuntimeSmoke.ts",
+                    "p2:2e0:verify-kayseri-ogc-analysis-preflight":  "ts-node apps/api/scripts/p22e0VerifyKayseriOgcAnalysisPreflight.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",
