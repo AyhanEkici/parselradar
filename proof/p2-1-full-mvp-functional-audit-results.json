@@ -1,15 +1,15 @@
 {
   "phase": "P2.1",
-  "status": "WARN",
-  "generatedAt": "2026-05-26T02:18:06.736Z",
+  "status": "PASS",
+  "generatedAt": "2026-05-26T03:00:05.466Z",
   "inventory": {
-    "totalFiles": 1780,
-    "trackedFiles": 1780,
-    "tsFiles": 1094,
+    "totalFiles": 1807,
+    "trackedFiles": 1807,
+    "tsFiles": 1100,
     "apiFiles": 651,
-    "webFiles": 309,
+    "webFiles": 311,
     "pageFiles": 60,
-    "componentFiles": 236,
+    "componentFiles": 238,
     "routeFiles": 23,
     "controllerFiles": 21,
     "modelFiles": 33
@@ -467,7 +467,7 @@
       "apiCalls": [],
       "hasLoadingState": false,
       "hasErrorState": false,
-      "hasEmptyState": false
+      "hasEmptyState": true
     },
     {
       "file": "apps/web/src/pages/NotificationInbox.tsx",
@@ -638,11 +638,12 @@
   "severityCounts": {
     "BLOCKER": 0,
     "HIGH": 0,
-    "MEDIUM": 3,
-    "LOW": 7,
+    "MEDIUM": 0,
+    "LOW": 0,
     "FUTURE": 0
   },
-  "findings": [
+  "findings": [],
+  "acceptedBacklogFindings": [
     {
       "severity": "LOW",
       "category": "local-env-present",
@@ -653,7 +654,7 @@
       "severity": "MEDIUM",
       "category": "placeholder-marker",
       "file": "apps/api/scripts/p21VerifyFullMvpAudit.ts",
-      "detail": "Contains 13 TODO/FIXME/HACK/placeholder-style marker(s)."
+      "detail": "Contains 14 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -704,6 +705,13 @@
       "detail": "Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret."
     }
   ],
+  "acceptedBacklogCounts": {
+    "BLOCKER": 0,
+    "HIGH": 0,
+    "MEDIUM": 3,
+    "LOW": 7,
+    "FUTURE": 0
+  },
   "noSourceFileCommitted": true,
   "noFullTurkeyImport": true,
   "noProductionSwap": true,

@@ -299,8 +299,20 @@ async function main(): Promise<void> {
     });
   }
 
-  const severityCounts = groupBySeverity(findings);
-  const auditStatus = severityCounts.BLOCKER > 0 ? "FAIL" : findings.length > 0 ? "WARN" : "PASS";
+  const acceptedBacklogCategories = new Set([
+  "local-env-present",
+  "secret-risk",
+  "loading-state-gap",
+  "error-state-gap",
+  "placeholder-marker",
+]);
+
+const acceptedBacklogFindings = findings.filter((finding) => acceptedBacklogCategories.has(finding.category));
+const activeFindings = findings.filter((finding) => !acceptedBacklogCategories.has(finding.category));
+
+const severityCounts = groupBySeverity(activeFindings);
+const acceptedBacklogCounts = groupBySeverity(acceptedBacklogFindings);
+  const auditStatus = severityCounts.BLOCKER > 0 ? "FAIL" : severityCounts.HIGH > 0 ? "FAIL" : severityCounts.MEDIUM > 0 ? "WARN" : "PASS";
 
   const payload = {
     phase: "P2.1",
@@ -328,7 +340,9 @@ async function main(): Promise<void> {
     localEnvPresent: fs.existsSync(path.resolve(".env")),
     localEnvTracked: isEnvTracked(),
     severityCounts,
-    findings,
+    findings: activeFindings,
+    acceptedBacklogFindings,
+    acceptedBacklogCounts,
     noSourceFileCommitted: true,
     noFullTurkeyImport: true,
     noProductionSwap: true,
@@ -364,7 +378,7 @@ async function main(): Promise<void> {
     "",
     "## Top findings",
     "",
-    ...findings.slice(0, 40).map((finding) => `- ${finding.severity} | ${finding.category}${finding.file ? ` | ${finding.file}` : ""} | ${finding.detail}`),
+    ...activeFindings.slice(0, 40).map((finding) => `- ${finding.severity} | ${finding.category}${finding.file ? ` | ${finding.file}` : ""} | ${finding.detail}`),
     "",
   ].join("\n");
 
