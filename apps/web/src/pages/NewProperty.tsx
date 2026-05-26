@@ -20,7 +20,8 @@ function normalizeString(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function validatePropertyForm(form: PropertyForm): { valid: boolean; fields: Record<string, string> } {
+// Task B: Listing URL optional, require at least one of URL, pasted text, or uploaded evidence
+function validatePropertyForm(form: PropertyForm, hasEvidence?: boolean): { valid: boolean; fields: Record<string, string> } {
   const errors: Record<string, string> = {};
   if (form.inputMethod === 'ADA_PARSEL') {
     if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
@@ -37,10 +38,19 @@ function validatePropertyForm(form: PropertyForm): { valid: boolean; fields: Rec
     if (!normalizeString(form.roadAccess)) errors.roadAccess = 'Yol durumu gerekli';
     if (!normalizeString(form.electricity)) errors.electricity = 'Elektrik durumu gerekli';
     if (!normalizeString(form.water)) errors.water = 'Su durumu gerekli';
-  } else if (form.inputMethod === 'ILAN_URL') {
+  } else if (form.inputMethod === 'ILAN_URL' || form.inputMethod === 'SCREENSHOT_UPLOAD' || form.inputMethod === 'MANUAL_ENTRY') {
     if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
     if (!normalizeString(form.inputMethod)) errors.inputMethod = 'Giriş yöntemi gerekli';
-    if (!isHttpUrl(form.ilanUrl)) errors.ilanUrl = 'İlan URL geçerli bir http/https adresi olmalı veya boş bırakılmalı';
+    const ilanUrl = normalizeString(form.ilanUrl);
+    const pastedText = normalizeString(form.pastedText);
+    // Accept if at least one: ilanUrl (valid), pastedText, or uploaded evidence
+    const hasValidUrl = ilanUrl ? isHttpUrl(ilanUrl) : false;
+    const hasText = Boolean(pastedText);
+    const hasFile = Boolean(hasEvidence);
+    if (!hasValidUrl && ilanUrl) errors.ilanUrl = "İlan URL geçerli bir http/https adresi olmalı veya boş bırakılmalı";
+    if (!hasValidUrl && !hasText && !hasFile) {
+      errors.ilanUrl = "Kaynak gerekli: ilan URL'si, yapistirilmis ilan metni veya yuklenmis ekran goruntusu/belge ekleyin.";
+    }
     if (!isPositiveNumber(form.askingPriceTRY)) errors.askingPriceTRY = 'Fiyat gerekli';
     if (!isPositiveNumber(form.areaM2)) errors.areaM2 = 'm² alanı gerekli';
     if (!normalizeString(form.tapuType)) errors.tapuType = 'Tapu tipi gerekli';
@@ -243,12 +253,24 @@ export default function NewProperty() {
     setForm(nextForm);
   };
 
+  // Task B: Check for uploaded evidence in localStorage (PropertyDocuments intake draft)
+  const hasUploadedEvidence = (() => {
+    try {
+      const draft = window.localStorage.getItem('parselradar:mvp4b-listing-intake:' + (form._id || ''));
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        return parsed && parsed.hasScreenshotOrDocument;
+      }
+    } catch {}
+    return false;
+  })();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setFieldErrors({});
 
-    const { valid, fields } = validatePropertyForm(form);
+    const { valid, fields } = validatePropertyForm(form, hasUploadedEvidence);
     if (!valid) {
       setFieldErrors(fields);
       setError('Lütfen gerekli alanları doldurun.');
@@ -354,44 +376,44 @@ export default function NewProperty() {
                 {fieldErrors.parsel && <div className="text-sm text-red-600">{fieldErrors.parsel}</div>}
               </>
             ) : (
-              <input className="w-full border p-2" name="ilanUrl" P2_1A_TRIAGED_BACKLOG="İlan URL" value={String(form.ilanUrl || '')} onChange={handleChange} />
+              <input className="w-full border p-2" name="ilanUrl" value={String(form.ilanUrl || '')} onChange={handleChange} />
             )}
 
             <label className="block text-sm font-medium">İl *</label>
-            <input className={inputClass('il')} name="il" P2_1A_TRIAGED_BACKLOG="İl" required value={String(form.il || '')} onChange={handleChange} />
+            <input className={inputClass('il')} name="il" required value={String(form.il || '')} onChange={handleChange} />
             {fieldErrors.il && <div className="text-sm text-red-600">{fieldErrors.il}</div>}
 
             <label className="block text-sm font-medium">İlçe *</label>
-            <input className={inputClass('ilce')} name="ilce" P2_1A_TRIAGED_BACKLOG="İlçe" required value={String(form.ilce || '')} onChange={handleChange} />
+            <input className={inputClass('ilce')} name="ilce" required value={String(form.ilce || '')} onChange={handleChange} />
             {fieldErrors.ilce && <div className="text-sm text-red-600">{fieldErrors.ilce}</div>}
 
             <label className="block text-sm font-medium">Mahalle/Köy *</label>
-            <input className={inputClass('mahalleOrKoy')} name="mahalleOrKoy" P2_1A_TRIAGED_BACKLOG="Mahalle/Köy" required value={String(form.mahalleOrKoy || '')} onChange={handleChange} />
+            <input className={inputClass('mahalleOrKoy')} name="mahalleOrKoy" required value={String(form.mahalleOrKoy || '')} onChange={handleChange} />
             {fieldErrors.mahalleOrKoy && <div className="text-sm text-red-600">{fieldErrors.mahalleOrKoy}</div>}
 
-            <input className="w-full border p-2" name="addressText" P2_1A_TRIAGED_BACKLOG="Adres" value={String(form.addressText || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="addressText" value={String(form.addressText || '')} onChange={handleChange} />
           </>
         )}
 
         {step === 2 && (
           <>
             <label className="block text-sm font-medium">Fiyat (TL) *</label>
-            <input className={inputClass('askingPriceTRY')} name="askingPriceTRY" P2_1A_TRIAGED_BACKLOG="Fiyat (TL)" type="number" required value={String(form.askingPriceTRY || '')} onChange={handleChange} />
+            <input className={inputClass('askingPriceTRY')} name="askingPriceTRY" type="number" required value={String(form.askingPriceTRY || '')} onChange={handleChange} />
             {fieldErrors.askingPriceTRY && <div className="text-sm text-red-600">{fieldErrors.askingPriceTRY}</div>}
 
             <label className="block text-sm font-medium">Alan (m²) *</label>
-            <input className={inputClass('areaM2')} name="areaM2" P2_1A_TRIAGED_BACKLOG="Alan (m²)" type="number" required value={String(form.areaM2 || '')} onChange={handleChange} />
+            <input className={inputClass('areaM2')} name="areaM2" type="number" required value={String(form.areaM2 || '')} onChange={handleChange} />
             {fieldErrors.areaM2 && <div className="text-sm text-red-600">{fieldErrors.areaM2}</div>}
 
             {/* Only show ada/parsel in Step 2 if inputMethod is not ADA_PARSEL (legacy/manual flows) */}
             {form.inputMethod !== 'ADA_PARSEL' && (
               <>
-                <input className="w-full border p-2" name="ada" P2_1A_TRIAGED_BACKLOG="Ada" value={String(form.ada || '')} onChange={handleChange} />
-                <input className="w-full border p-2" name="parsel" P2_1A_TRIAGED_BACKLOG="Parsel" value={String(form.parsel || '')} onChange={handleChange} />
+                <input className="w-full border p-2" name="ada" value={String(form.ada || '')} onChange={handleChange} />
+                <input className="w-full border p-2" name="parsel" value={String(form.parsel || '')} onChange={handleChange} />
               </>
             )}
-            <input className="w-full border p-2" name="pafta" P2_1A_TRIAGED_BACKLOG="Pafta" value={String(form.pafta || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="nitelik" P2_1A_TRIAGED_BACKLOG="Nitelik" value={String(form.nitelik || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="pafta" value={String(form.pafta || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="nitelik" value={String(form.nitelik || '')} onChange={handleChange} />
 
             <label className="block text-sm font-medium">Tapu Türü *</label>
             <select className={inputClass('tapuType')} name="tapuType" required value={String(form.tapuType || '')} onChange={handleChange}>
@@ -415,14 +437,14 @@ export default function NewProperty() {
 
         {step === 3 && (
           <>
-            <input className="w-full border p-2" name="taks" P2_1A_TRIAGED_BACKLOG="TAKS" value={String(form.taks || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="kaks" P2_1A_TRIAGED_BACKLOG="KAKS" value={String(form.kaks || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="emsal" P2_1A_TRIAGED_BACKLOG="Emsal" value={String(form.emsal || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="gabari" P2_1A_TRIAGED_BACKLOG="Gabari" value={String(form.gabari || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="hmax" P2_1A_TRIAGED_BACKLOG="Hmax" value={String(form.hmax || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="katAdedi" P2_1A_TRIAGED_BACKLOG="Kat Adedi" value={String(form.katAdedi || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="cekmeMesafeleri" P2_1A_TRIAGED_BACKLOG="Çekme Mesafeleri" value={String(form.cekmeMesafeleri || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="planNotlariText" P2_1A_TRIAGED_BACKLOG="Plan Notları" value={String(form.planNotlariText || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="taks" value={String(form.taks || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="kaks" value={String(form.kaks || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="emsal" value={String(form.emsal || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="gabari" value={String(form.gabari || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="hmax" value={String(form.hmax || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="katAdedi" value={String(form.katAdedi || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="cekmeMesafeleri" value={String(form.cekmeMesafeleri || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="planNotlariText" value={String(form.planNotlariText || '')} onChange={handleChange} />
 
             <label className="block text-sm font-medium">Yol Durumu *</label>
             <select className={inputClass('roadAccess')} name="roadAccess" required value={String(form.roadAccess || '')} onChange={handleChange}>
@@ -451,7 +473,7 @@ export default function NewProperty() {
             </select>
             {fieldErrors.water && <div className="text-sm text-red-600">{fieldErrors.water}</div>}
 
-            <input className="w-full border p-2" name="villageDistanceText" P2_1A_TRIAGED_BACKLOG="Köy Mesafesi" value={String(form.villageDistanceText || '')} onChange={handleChange} />
+            <input className="w-full border p-2" name="villageDistanceText" value={String(form.villageDistanceText || '')} onChange={handleChange} />
 
             <div className="mt-4 rounded border border-sky-200 bg-sky-50 p-3">
               <h3 className="text-sm font-semibold text-sky-900">Optional professional matching</h3>

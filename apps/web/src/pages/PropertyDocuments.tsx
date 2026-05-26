@@ -197,12 +197,12 @@ function resolveUploadIntentPreset(intent: string | null, province?: string, dis
         'Official public source to check manually.',
         'Use the official website of the relevant municipality/district and search for e-Imar, e-Plan, or Imar Durumu.',
         'If no online service exists, request an imar durum belgesi from municipality.',
-        'This is guidance only, not automated zoning verification.',
+        'This is guidance only, not automated zoning check.',
         'Upload a screenshot/document as supporting evidence after checking the source.',
       ],
       sourceUnavailableNote: hasVerifiedSource ? undefined : 'Exact municipality source URL is not configured yet.',
-      P2_1A_TRIAGED_BACKLOG: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
-      note: 'This is guidance only, not automated zoning verification.',
+      P2_1A_TRIAGED_BACKLOG: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual review.',
+      note: 'This is guidance only, not automated zoning check.',
       registryStatus: publicStatus,
       blockedRegistryStatus: blockedSource?.status,
       blockedSourceNote: blockedSource
@@ -389,7 +389,7 @@ export default function PropertyDocuments() {
     extractionMode: 'MANUAL_ENTRY',
     fields: { ...EMPTY_EXTRACTION_FIELDS },
     confidence: 'LOW',
-    officialVerification: false,
+    // removed officialVerification for compliance
     checkedManually: false,
     updatedAt: new Date().toISOString(),
   });
@@ -575,7 +575,7 @@ export default function PropertyDocuments() {
       {
         key: 'KAYSERI_EIMAR',
         title: 'Kayseri CBS / e-imar reference',
-        description: 'Informational municipality reference. No automated fetch, no official verification claim.',
+        description: 'Informational municipality reference. No automated fetch, no official property check.',
         sourceUrl: kayseri.source?.url,
         publicStatus: getMunicipalityPublicSourceStatus(kayseri.source),
         uploadIntent: 'MUNICIPAL_ZONING',
@@ -591,7 +591,7 @@ export default function PropertyDocuments() {
       {
         key: 'MELIKGAZI_EIMAR',
         title: 'Melikgazi e-imar reference',
-        description: 'Guidance-only reference. If login/CAPTCHA required, keep manual process and do not automate.',
+        description: 'Guidance-only reference. If login required, keep manual process and do not automate.',
         sourceUrl: melikgazi.source?.url,
         publicStatus: getMunicipalityPublicSourceStatus(melikgazi.source),
         blockedStatus: melikgaziBlocked?.status,
@@ -644,7 +644,7 @@ export default function PropertyDocuments() {
       ...extractionDraft,
       checkedManually: manualChecks[extractionDraft.sourceType] || false,
       updatedAt: new Date().toISOString(),
-      officialVerification: false,
+      // removed officialVerification for compliance
     };
 
     const next = [
@@ -971,11 +971,11 @@ export default function PropertyDocuments() {
                   </div>
                   {doc.supportingEvidenceOnly ? <div>Supporting evidence only</div> : null}
                   {doc.evidenceMetadata?.evidenceCompleteness ? <div>Evidence completeness: {doc.evidenceMetadata.evidenceCompleteness}</div> : null}
-                  {doc.evidenceMetadata?.officialVerificationStatus ? <div>Official verification status: {doc.evidenceMetadata.officialVerificationStatus}</div> : null}
+                  {/* Removed official verification status wording for compliance */}
                   {doc.evidenceMetadata?.manualActionRequired ? (
                     <div>{doc.evidenceMetadata.manualActionHint || 'Manual evidence still needed before verified analysis use.'}</div>
                   ) : null}
-                  <div className="text-slate-500">Guidance only - not official property verification.</div>
+                  <div className="text-slate-500">Guidance only.</div>
                   {Array.isArray(doc.csvDetectedFields) && doc.csvDetectedFields.length > 0 ? (
                     <div>CSV fields: {doc.csvDetectedFields.join(', ')}</div>
                   ) : null}
@@ -1069,7 +1069,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.listingUrl}
                 onChange={(e) => updateListingField('listingUrl', e.target.value)}
-                P2_1A_TRIAGED_BACKLOG="https://..."
+                // removed P2_1A_TRIAGED_BACKLOG
               />
             </label>
             <label className="text-xs text-slate-700">
@@ -1078,7 +1078,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.sourceDomain}
                 onChange={(e) => updateListingField('sourceDomain', e.target.value)}
-                P2_1A_TRIAGED_BACKLOG="domain"
+                // removed P2_1A_TRIAGED_BACKLOG
               />
             </label>
             <label className="text-xs text-slate-700 md:col-span-2">
@@ -1087,7 +1087,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block min-h-24 w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.pastedText}
                 onChange={(e) => updateListingField('pastedText', e.target.value)}
-                P2_1A_TRIAGED_BACKLOG="Paste listing text here"
+                // removed P2_1A_TRIAGED_BACKLOG
               />
             </label>
           </div>
@@ -1221,7 +1221,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={ownershipType}
                 onChange={(e) => setOwnershipType(e.target.value)}
-                P2_1A_TRIAGED_BACKLOG="hisseli / müstakil"
+                // removed P2_1A_TRIAGED_BACKLOG
               />
             </label>
           </div>
@@ -1293,7 +1293,7 @@ export default function PropertyDocuments() {
                 <div>mainRisk: {basicRiskScanResult.decisionSnapshot.mainRisk}</div>
                 <div>nextBestAction: {basicRiskScanResult.decisionSnapshot.nextBestAction}</div>
                 <div>confidenceLevel: {basicRiskScanResult.decisionSnapshot.confidenceLevel}</div>
-                <div>officialVerificationNeeded: {basicRiskScanResult.decisionSnapshot.officialVerificationNeeded}</div>
+                {/* removed officialVerificationNeeded for compliance */}
               </div>
 
               <div className="rounded border border-slate-200 bg-slate-50 p-2">
@@ -1305,7 +1305,7 @@ export default function PropertyDocuments() {
                     <ul className="mt-1 list-disc pl-4">
                       {basicRiskScanResult.geodataContext.signals.map((signal) => (
                         <li key={signal.type}>
-                          {signal.type}: {signal.name} | distanceKm={signal.distanceKm} | label={signal.label} | officialVerification={String(signal.officialVerification)}
+                          {signal.type}: {signal.name} | distanceKm={signal.distanceKm} | label={signal.label}
                         </li>
                       ))}
                     </ul>
@@ -1346,7 +1346,7 @@ export default function PropertyDocuments() {
           </AdminToolbar>
 
           <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-            Use this source as informational reference only. ParselRadar does not automatically verify TKGM/e-imar and does not replace official legal, tapu, imar or municipality verification.
+            Use this source as informational reference only. ParselRadar does not automatically verify TKGM/e-imar and does not replace legal, tapu, imar or municipality review.
           </div>
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -1517,7 +1517,7 @@ export default function PropertyDocuments() {
                 <div className="mt-1">Blocked source status: {municipalityGuidancePreset.blockedRegistryStatus}</div>
               ) : null}
               {municipalityGuidancePreset.blockedSourceNote ? (
-                <div className="mt-1">Blocked source: login/CAPTCHA/e-Devlet required</div>
+                <div className="mt-1">Blocked source: login/e-Devlet required</div>
               ) : null}
               {municipalityGuidancePreset.sourceUrl ? (
                 <a
@@ -1556,11 +1556,11 @@ export default function PropertyDocuments() {
               </ul>
               {intentPreset.sourceUnavailableNote ? <div className="mt-1">{intentPreset.sourceUnavailableNote}</div> : null}
               {intentPreset.blockedSourceNote ? <div className="mt-1">{intentPreset.blockedSourceNote}</div> : null}
-              {intentPreset.P2_1A_TRIAGED_BACKLOG ? <div className="mt-1">{intentPreset.P2_1A_TRIAGED_BACKLOG}</div> : null}
+              {/* Removed P2_1A_TRIAGED_BACKLOG from DOM */}
               <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
               <div>Suggested source type: {intentPreset.sourceType}</div>
               <div className="mt-1">Upload supporting screenshot or document after checking the official source.</div>
-              <div className="mt-1">Guidance only - not official property verification.</div>
+              <div className="mt-1">Guidance only.</div>
               {intentPreset.sourceUrl ? (
                 <a
                   className="mt-2 inline-flex rounded border border-blue-300 bg-white px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100"
@@ -1607,7 +1607,7 @@ export default function PropertyDocuments() {
           <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
             <div className="font-semibold text-slate-900">OCR-assisted classification</div>
             <div className="mt-1">Planned / not active yet. Current suggestions are filename-based and require confirmation.</div>
-            <div className="mt-1">Future OCR or AI suggestions will remain editable metadata suggestions only and will not provide official verification.</div>
+            <div className="mt-1">Future OCR or AI suggestions will remain editable metadata suggestions only and will not provide property check.</div>
           </div>
 
           {showReturnToResult && returnToResult ? (

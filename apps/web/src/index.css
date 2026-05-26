@@ -184,35 +184,59 @@ body {
 
 
 /* P2.2E-1 intake readability hardening */
+
 form input,
 form textarea,
 form select {
-  color: #0f172a;
-  background-color: #ffffff;
-  font-size: 16px;
-  line-height: 1.5;
+	color: #0f172a !important;
+	background-color: #fff !important;
+	font-size: 17px !important;
+	line-height: 1.6 !important;
+	border: 1.5px solid #22314c !important;
+	border-radius: 6px !important;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+	transition: border-color 0.2s;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+	border-color: #1da9f7 !important;
+	outline: none !important;
+	background: #f0f8ff !important;
+}
+
+form input:disabled,
+form textarea:disabled,
+form select:disabled {
+	background: #f1f5f9 !important;
+	color: #64748b !important;
+	opacity: 1 !important;
+	border-color: #cbd5e1 !important;
 }
 
 form label,
 form legend {
-  color: #0f172a;
-  font-weight: 650;
+	color: #0f172a !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.01em;
 }
 
 form input::placeholder,
 form textarea::placeholder {
-  color: #64748b;
-  opacity: 1;
+	color: #475569 !important;
+	opacity: 1 !important;
+	font-style: italic;
 }
 
 form .text-slate-400,
 form .text-slate-500 {
-  color: #334155;
+	color: #334155 !important;
 }
 
 form .text-red-500,
 form .text-orange-500 {
-  color: #b45309;
+	color: #b91c1c !important;
 }
 
 
@@ -226,36 +250,12 @@ form * {
   font-size: 16px;
 }
 
-form input,
-form textarea,
-form select {
-  color: #0f172a !important;
-  background-color: #ffffff !important;
-  line-height: 1.55 !important;
-}
+	/* already handled above for clarity and contrast */
 
-form label,
-form legend,
-form p,
-form span,
-form div {
-  color: #0f172a;
-}
+	color: #0f172a !important;
 
-form input::placeholder,
-form textarea::placeholder {
-  color: #475569 !important;
-  opacity: 1;
-}
+	/* already handled above for contrast and style */
 
-form .text-slate-400,
-form .text-slate-500,
-form .text-slate-600 {
-  color: #334155 !important;
-}
+	color: #334155 !important;
 
-form .text-orange-500,
-form .text-red-500,
-form .text-amber-600 {
-  color: #92400e !important;
-}
+	color: #b91c1c !important;

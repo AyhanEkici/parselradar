@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "taskAUploadClassification": {
+    "PropertyDocuments.tsx": "PASS",
+    "PropertyDetail.tsx": "PASS",
+    "PropertyResult.tsx": "NOT_APPLICABLE",
+    "NewProperty.tsx": "NOT_APPLICABLE",
+    "AdminPropertyDocuments.tsx": "PASS"
+  },
+  "taskBUrlOptionalSourceContract": "PASS",
+  "dashboardIntakeReplacement": "PASS",
+  "emptyFieldsRemoved": "PASS",
+  "sourceCheckFlowAvailableAfterCreate": "PASS",
+  "urlOptional": "PASS",
+  "locationDropdownPilotData": "PASS",
+  "readabilityImproved": "PASS",
+  "propLeakFixResult": "PASS",
+  "noOfficialVerificationClaimAdded": true,
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noFullTurkeyImportUnlessDatasetExists": true,
+  "noProductionSwap": true,
+  "pilotLocationDatasetNote": "Full Turkey mahalle dataset requires an approved/imported administrative dataset; this phase adds dropdown plumbing and pilot data only."
+}
