@@ -1,0 +1,51 @@
+{
+    "phase":  "P2.GEO-3C-REPAIR-2",
+    "generatedAt":  "2026-05-26T00:03:50.7791030Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-3c:import-small-osm",
+                               "status":  "FAIL"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3c:verify-small-osm",
+                               "status":  "STAGED_IMPORT_REQUIRED"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "importRunId":  null,
+    "featureCount":  null,
+    "validGeometryCount":  null,
+    "officialVerificationAllFalse":  null,
+    "publicSourceSignalAll":  null,
+    "sourceFeatureCount":  null,
+    "insertedFeatureCount":  null,
+    "skippedFeatureCount":  null,
+    "skippedReasons":  null,
+    "sourceFileCommitted":  false,
+    "rawSourcePathCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "officialVerificationClaimAdded":  false
+}

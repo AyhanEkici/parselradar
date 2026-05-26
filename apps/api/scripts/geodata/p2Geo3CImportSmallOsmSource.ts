@@ -2,6 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 
+type GeoJsonGeometry = {
+  type: string;
+  coordinates: unknown;
+};
+
 function ensureProofDir(): void {
   fs.mkdirSync(path.resolve("proof"), { recursive: true });
 }
@@ -18,11 +23,88 @@ function sha256File(filePath: string): string {
   return hash.digest("hex");
 }
 
+function isNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function isPosition(value: unknown): value is number[] {
+  return Array.isArray(value) && value.length >= 2 && isNumber(value[0]) && isNumber(value[1]);
+}
+
+function isLineStringCoordinates(value: unknown): value is number[][] {
+  return Array.isArray(value) && value.length >= 2 && value.every(isPosition);
+}
+
+function isPolygonCoordinates(value: unknown): value is number[][][] {
+  return Array.isArray(value) && value.length >= 1 && value.every(isLineStringCoordinates);
+}
+
+function closeRing(ring: number[][]): number[][] {
+  if (ring.length === 0) return ring;
+
+  const first = ring[0];
+  const last = ring[ring.length - 1];
+
+  if (first[0] === last[0] && first[1] === last[1]) {
+    return ring;
+  }
+
+  return [...ring, first];
+}
+
+function normalizeGeometry(geometry: unknown): GeoJsonGeometry | null {
+  if (!geometry || typeof geometry !== "object") {
+    return null;
+  }
+
+  const g = geometry as GeoJsonGeometry;
+  const type = String(g.type || "");
+  const coordinates = g.coordinates;
+
+  if (type === "Point" && isPosition(coordinates)) {
+    return {
+      type: "Point",
+      coordinates: [Number(coordinates[0]), Number(coordinates[1])],
+    };
+  }
+
+  if (type === "LineString" && isLineStringCoordinates(coordinates)) {
+    return {
+      type: "LineString",
+      coordinates: coordinates.map((position) => [Number(position[0]), Number(position[1])]),
+    };
+  }
+
+  if (type === "Polygon") {
+    if (isPolygonCoordinates(coordinates)) {
+      return {
+        type: "Polygon",
+        coordinates: coordinates.map((ring) =>
+          closeRing(ring.map((position) => [Number(position[0]), Number(position[1])])),
+        ),
+      };
+    }
+
+    // Repair common malformed polygon: coordinates were written as [[lon,lat], ...]
+    // instead of [[[lon,lat], ...]].
+    if (isLineStringCoordinates(coordinates)) {
+      const ring = closeRing(coordinates.map((position) => [Number(position[0]), Number(position[1])]));
+
+      if (ring.length >= 4) {
+        return {
+          type: "Polygon",
+          coordinates: [ring],
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 async function main(): Promise<void> {
   const sourcePathRaw = process.env.GEODATA_OSM_SOURCE_PATH?.trim() || "";
   const logicalScope = process.env.GEODATA_OSM_SCOPE?.trim() || "SMALL_REGION_ONLY";
-
-  // Schema-safe DB values. These preserve current staging-table contract until a later explicit schema migration.
   const dbScope = process.env.GEODATA_OSM_DB_SCOPE?.trim() || "KAYSERI_POC_ONLY";
   const dbImportMode = process.env.GEODATA_OSM_DB_IMPORT_MODE?.trim() || "DRY_RUN";
 
@@ -130,14 +212,16 @@ async function main(): Promise<void> {
 
     let inserted = 0;
     let skipped = 0;
+    const skippedReasons: Record<string, number> = {};
     const featureTypeCounts: Record<string, number> = {};
 
     for (const feature of features) {
       const properties = feature.properties ?? {};
-      const geometry = feature.geometry;
+      const normalizedGeometry = normalizeGeometry(feature.geometry);
 
-      if (!geometry) {
+      if (!normalizedGeometry) {
         skipped += 1;
+        skippedReasons.UNSUPPORTED_OR_MALFORMED_GEOMETRY = (skippedReasons.UNSUPPORTED_OR_MALFORMED_GEOMETRY ?? 0) + 1;
         continue;
       }
 
@@ -156,46 +240,59 @@ async function main(): Promise<void> {
         logicalScope,
         dbScope,
         dbImportMode,
+        normalizedGeometryType: normalizedGeometry.type,
         disclaimer:
           properties.disclaimer ??
           "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification.",
       };
 
-      await client.query(
-        `
-        WITH parsed AS (
-          SELECT ST_SetSRID(ST_GeomFromGeoJSON($9), 4326) AS geom
-        ),
-        safe AS (
+      try {
+        const insertResult = await client.query(
+          `
+          WITH parsed AS (
+            SELECT ST_SetSRID(ST_GeomFromGeoJSON($9), 4326) AS geom
+          ),
+          safe AS (
+            SELECT
+              CASE
+                WHEN ST_IsValid(geom) THEN geom
+                ELSE ST_MakeValid(geom)
+              END AS geom
+            FROM parsed
+          )
+          INSERT INTO public.geo_staging_features
+            (import_run_id, feature_type, source_layer, source_id, name, source_label, official_verification, properties, geom)
           SELECT
-            CASE
-              WHEN ST_IsValid(geom) THEN geom
-              ELSE ST_MakeValid(geom)
-            END AS geom
-          FROM parsed
-        )
-        INSERT INTO public.geo_staging_features
-          (import_run_id, feature_type, source_layer, source_id, name, source_label, official_verification, properties, geom)
-        SELECT
-          $1, $2, $3, $4, $5, $6, $7, $8::jsonb, geom
-        FROM safe
-        WHERE geom IS NOT NULL
-        `,
-        [
-          importRunId,
-          featureType,
-          sourceLayer,
-          sourceId,
-          name,
-          sourceLabel,
-          false,
-          JSON.stringify(safeProperties),
-          JSON.stringify(geometry),
-        ],
-      );
+            $1, $2, $3, $4, $5, $6, $7, $8::jsonb, geom
+          FROM safe
+          WHERE geom IS NOT NULL
+          RETURNING id
+          `,
+          [
+            importRunId,
+            featureType,
+            sourceLayer,
+            sourceId,
+            name,
+            sourceLabel,
+            false,
+            JSON.stringify(safeProperties),
+            JSON.stringify(normalizedGeometry),
+          ],
+        );
 
-      inserted += 1;
-      featureTypeCounts[featureType] = (featureTypeCounts[featureType] ?? 0) + 1;
+        if (insertResult.rowCount > 0) {
+          inserted += 1;
+          featureTypeCounts[featureType] = (featureTypeCounts[featureType] ?? 0) + 1;
+        } else {
+          skipped += 1;
+          skippedReasons.DB_RETURNED_ZERO_ROWS = (skippedReasons.DB_RETURNED_ZERO_ROWS ?? 0) + 1;
+        }
+      } catch (error) {
+        skipped += 1;
+        const key = error instanceof Error ? error.message.slice(0, 120) : "UNKNOWN_DB_INSERT_ERROR";
+        skippedReasons[key] = (skippedReasons[key] ?? 0) + 1;
+      }
     }
 
     if (inserted === 0) {
@@ -216,6 +313,7 @@ async function main(): Promise<void> {
       sourceFeatureCount: features.length,
       insertedFeatureCount: inserted,
       skippedFeatureCount: skipped,
+      skippedReasons,
       featureTypeCounts,
       sourceFileCommitted: false,
       rawSourcePathCommitted: false,
