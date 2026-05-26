@@ -6,7 +6,7 @@ export default function NotFound() {
       <PageStatePanel
         variant="empty"
         title="Page not found"
-        message="The page you requested does not exist or is no longer available. You can return to the public homepage or continue from your dashboard."
+        message="The page you requested does not exist or is no longer available. You can return to the public homepage or continue from your dashboard. You can recover from an invalid route using a safe navigation action."
         actionHref="/"
         actionLabel="Back to home"
         secondaryHref="/dashboard"

@@ -1,3 +1,5 @@
+import { RouteLoadingFallback, RouteStateBoundary } from "./components/ui/RouteStateBoundary";
+import { Suspense } from "react";
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
@@ -86,7 +88,9 @@ function AppRoutes() {
   );
 
   return (
-    <Routes>
+    <RouteStateBoundary>
+  <Suspense fallback={<RouteLoadingFallback />}>
+<Routes>
       <Route path="/" element={<RootRedirect />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -152,6 +156,8 @@ function AppRoutes() {
       <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
       <Route path="/admin/dev/staged-geo-signals" element={<AdminStagedGeoSignalsDiagnostics />} />
     </Routes>
+  </Suspense>
+</RouteStateBoundary>
   );
 }
 

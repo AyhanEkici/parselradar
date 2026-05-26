@@ -1,0 +1,19 @@
+{
+  "phase": "P2.2B/P2.2C",
+  "status": "PASS",
+  "appWrapped": true,
+  "boundaryReady": true,
+  "recoveryCopyReady": true,
+  "docsReady": true,
+  "p21dReady": true,
+  "p21dStatus": "PASS_WITH_ACCEPTED_BACKLOG",
+  "p21dBlockers": 0,
+  "p21dHigh": 0,
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noFullTurkeyImport": true,
+  "noProductionSwap": true,
+  "noFakeOcr": true,
+  "noOfficialVerificationClaimAdded": true,
+  "generatedAt": "2026-05-26T02:31:43.373Z"
+}
