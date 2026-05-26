@@ -18,19 +18,20 @@
 - ✅ P2.GEO-3C Small staged OSM-derived import
 - ✅ P2.GEO-3D Staged OSM signal adapter alignment
 - ✅ P2.GEO-3E Guarded UI verification against real staged OSM data
-- ➡️ P2.GEO-3F Staged signal freshness and duplicate-run cleanup policy
+- ✅ P2.GEO-3F Staged signal freshness and duplicate-run cleanup policy
+- ➡️ P2.GEO-3G Controlled larger Kayseri-area source expansion
 
 ## Remaining recommended sequence
-
-### P2.GEO-3F — staged signal freshness and duplicate-run cleanup policy
-
-Goal:
-Prevent repeated local imports from creating confusing stale/duplicate diagnostic run interpretation.
 
 ### P2.GEO-3G — controlled larger Kayseri-area source expansion
 
 Goal:
-Expand from tiny Kayseri sample to a controlled larger Kayseri-area source without full Turkey import.
+Create and validate a larger controlled Kayseri-area OSM source without DB import or full Turkey import.
+
+### P2.GEO-3H — controlled expanded source staged import
+
+Goal:
+Import the controlled expanded Kayseri source into staging only, then re-prove adapter/API/UI.
 
 ### MVP-4D — Evidence OCR implementation
 

@@ -1,0 +1,48 @@
+{
+  "phase": "P2.GEO-3G",
+  "status": "PASS",
+  "sourceBasename": "kayseri-osm-controlled-expanded.geojson",
+  "sourcePathHash": "6ddfe2404e0921ef74a64900486a266997c7945669c122aa0a9b501f580f620c",
+  "sourceChecksum": "37d8a0a337f91fa6622802493173b0edf3a29d45215e03d09fb31d7483e7104f",
+  "sourceChecksumVisible": true,
+  "sourceSizeBytes": 5280795,
+  "sourceOutsideRepo": true,
+  "featureCount": 900,
+  "expandedBeyondTinySample": true,
+  "featureTypeCounts": {
+    "SETTLEMENT": 292,
+    "MAIN_ROAD": 473,
+    "RAILWAY_SIGNAL": 111,
+    "WATER_FEATURE": 15,
+    "INDUSTRIAL_OSB_CANDIDATE": 9
+  },
+  "geometryTypeCounts": {
+    "Point": 292,
+    "LineString": 608
+  },
+  "hasSettlement": true,
+  "hasMainRoad": true,
+  "hasIndustrial": true,
+  "hasOptionalWaterOrRail": true,
+  "officialFalseCount": 900,
+  "publicSourceLabelCount": 900,
+  "disclaimerCount": 900,
+  "unsupportedGeometryCount": 0,
+  "bbox": [
+    35.2,
+    38.55,
+    35.85,
+    38.9
+  ],
+  "bboxValid": true,
+  "scope": "CONTROLLED_KAYSERI_AREA_ONLY",
+  "dbImportExecuted": false,
+  "fullTurkeyImportAllowed": false,
+  "productionSwapAllowed": false,
+  "sourceFileCommitted": false,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "schedulerAdded": false,
+  "officialVerificationClaimAdded": false,
+  "generatedAt": "2026-05-26T00:37:09.883Z"
+}

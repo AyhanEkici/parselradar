@@ -1,0 +1,21 @@
+{
+    "phase":  "P2.GEO-3G",
+    "capturedAt":  "2026-05-26T00:36:22.6161525Z",
+    "head":  "799c9c65",
+    "workingTreeCleanAtStart":  true,
+    "recentCommits":  [
+                          "799c9c65 feat: verify staged signal freshness policy",
+                          "1399d23a feat: verify guarded UI against staged OSM signals",
+                          "d831eb78 fix: restore staged geodata adapter route compatibility",
+                          "ced9a9db feat: align staged OSM signal adapter",
+                          "76435f32 fix: complete small OSM staged geodata import"
+                      ],
+    "controlledSourceCreated":  true,
+    "controlledSourceOutsideRepo":  true,
+    "dbImportExecuted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false
+}

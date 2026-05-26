@@ -1,0 +1,74 @@
+{
+    "phase":  "P2.GEO-3G",
+    "generatedAt":  "2026-05-26T00:37:34.2343550Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-3d:verify-staged-osm-adapter",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-9:verify-endpoint",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-10:verify-admin-diagnostic",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3e:verify-guarded-ui",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3f:verify-freshness-duplicates",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3g:verify-controlled-source",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "sourceBasename":  "kayseri-osm-controlled-expanded.geojson",
+    "sourceChecksumVisible":  true,
+    "featureCount":  900,
+    "expandedBeyondTinySample":  true,
+    "featureTypeCounts":  {
+                              "SETTLEMENT":  292,
+                              "MAIN_ROAD":  473,
+                              "RAILWAY_SIGNAL":  111,
+                              "WATER_FEATURE":  15,
+                              "INDUSTRIAL_OSB_CANDIDATE":  9
+                          },
+    "geometryTypeCounts":  {
+                               "Point":  292,
+                               "LineString":  608
+                           },
+    "bboxValid":  true,
+    "dbImportExecuted":  false,
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "officialVerificationClaimAdded":  false
+}

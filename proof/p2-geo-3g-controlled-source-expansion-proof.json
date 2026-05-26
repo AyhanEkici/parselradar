@@ -1,0 +1,37 @@
+{
+    "phase":  "P2.GEO-3G",
+    "generatedAt":  "2026-05-26T00:37:34.4218914Z",
+    "cleanStartCaptured":  true,
+    "docExists":  true,
+    "verifyScriptExists":  true,
+    "packageScriptExists":  true,
+    "todoLedgerUpdated":  true,
+    "status":  "PASS",
+    "sourceBasename":  "kayseri-osm-controlled-expanded.geojson",
+    "featureCount":  900,
+    "expandedBeyondTinySample":  true,
+    "featureTypeCounts":  {
+                              "SETTLEMENT":  292,
+                              "MAIN_ROAD":  473,
+                              "RAILWAY_SIGNAL":  111,
+                              "WATER_FEATURE":  15,
+                              "INDUSTRIAL_OSB_CANDIDATE":  9
+                          },
+    "geometryTypeCounts":  {
+                               "Point":  292,
+                               "LineString":  608
+                           },
+    "bboxValid":  true,
+    "dbImportExecuted":  false,
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "productionTablesQueried":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "platformChecksPass":  true
+}

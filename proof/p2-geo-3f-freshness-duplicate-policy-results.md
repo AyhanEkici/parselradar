@@ -8,7 +8,7 @@
 - Latest run id: 4
 - Adapter run id: 4
 - Adapter uses latest run: true
-- Run age minutes: 22
+- Run age minutes: 28
 - Feature count: 150
 - Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, SETTLEMENT
 - Canonical run count: 1

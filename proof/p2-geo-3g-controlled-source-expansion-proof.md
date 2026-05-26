@@ -1,0 +1,24 @@
+# P2.GEO-3G Controlled Source Expansion Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Verify script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Status: PASS
+- Source basename: kayseri-osm-controlled-expanded.geojson
+- Feature count: 900
+- Expanded beyond tiny sample: True
+- BBOX valid: True
+- DB import executed: false
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

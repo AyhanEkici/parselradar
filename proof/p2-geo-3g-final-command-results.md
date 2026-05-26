@@ -1,0 +1,21 @@
+# P2.GEO-3G Final Command Results
+
+- PASS | geo:p2-geo-3d:verify-staged-osm-adapter
+- PASS | geo:p2-geo-9:verify-endpoint
+- PASS | geo:p2-geo-10:verify-admin-diagnostic
+- PASS | geo:p2-geo-3e:verify-guarded-ui
+- PASS | geo:p2-geo-3f:verify-freshness-duplicates
+- PASS | geo:p2-geo-3g:verify-controlled-source
+- PASS | build api
+- PASS | build web
+- PASS | verify:connector-diagnostics-contract
+- PASS | verify:connector-diagnostics
+- PASS | verify:platform-integrity
+- Source basename: kayseri-osm-controlled-expanded.geojson
+- Feature count: 900
+- Expanded beyond tiny sample: True
+- BBOX valid: True
+- DB import executed: false
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false
