@@ -139,6 +139,12 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
     if (!file) return res.status(400).json({ error: 'Dosya gerekli', requestId });
 
     const requestBody = req.body as Record<string, unknown>;
+    // Source evidence metadata
+    const sourceKey = typeof requestBody.sourceKey === 'string' ? requestBody.sourceKey : undefined;
+    const sourceTitle = typeof requestBody.sourceTitle === 'string' ? requestBody.sourceTitle : undefined;
+    const uploadedFrom = typeof requestBody.uploadedFrom === 'string' ? requestBody.uploadedFrom : undefined;
+    const officialVerification = requestBody.officialVerification === false ? false : undefined;
+
     const documentType = String(requestBody.documentType || '').trim();
     if (!documentType || !String(documentType).trim()) {
       return res.status(400).json({ error: 'Belge türü gerekli', requestId });
@@ -214,6 +220,10 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
         metadataStatus,
         reviewStatus: resolvedReviewStatus,
         supportingEvidenceOnly,
+        sourceKey,
+        sourceTitle,
+        uploadedFrom,
+        officialVerification,
       },
     });
     await new Promise<void>((resolve, reject) => {
@@ -238,6 +248,10 @@ export const uploadDocument = async (req: AuthRequest, res: Response) => {
       gridFsFileId: uploadStream.id as mongoose.Types.ObjectId,
       mimeType: file.mimetype,
       sizeBytes: file.size,
+      sourceKey,
+      sourceTitle,
+      uploadedFrom,
+      officialVerification,
     });
     const { fileUrl, downloadUrl } = toGridFsUrls(String(property._id), String(doc._id));
     const payload = {

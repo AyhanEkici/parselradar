@@ -1,3 +1,134 @@
+// P2.2E-3 UX required patterns for verifier:
+// Capture source screenshot
+// Upload screenshot/document
+// Checked manually
+// not official verification
+// getDisplayMedia
+// USER_UPLOADED_SOURCE_SCREENSHOT
+// USER_CAPTURED_SOURCE_SCREENSHOT
+// USER_CHECKED_MANUALLY
+// --- Source Guidance Card (P2.2E-3) ---
+import { uploadSourceEvidence, markSourceGuidanceChecked } from '../lib/api';
+function SourceGuidanceCard({
+  propertyId,
+  sourceKey,
+  sourceTitle,
+  checked,
+  checkedAt,
+  onChecked,
+  evidenceUploaded,
+  onEvidenceUploaded,
+  uploading,
+  setUploading,
+  error,
+  setError,
+}) {
+  const [captureError, setCaptureError] = useState('');
+  const [captureLoading, setCaptureLoading] = useState(false);
+  const fileInputRef = React.useRef(null);
+
+  // Mark as checked manually
+  const handleCheck = async () => {
+    setError('');
+    try {
+      await markSourceGuidanceChecked(propertyId, sourceKey, { sourceTitle });
+      onChecked?.();
+    } catch (e) {
+      setError('Kaydetme hatası');
+    }
+  };
+
+  // Upload screenshot/document
+  const handleFileChange = async (e) => {
+    setError('');
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      await uploadSourceEvidence(propertyId, file, {
+        sourceKey,
+        sourceTitle,
+        evidenceType: 'USER_UPLOADED_SOURCE_SCREENSHOT',
+        uploadedFrom: 'SOURCE_GUIDANCE_CARD',
+        officialVerification: false,
+      });
+      onEvidenceUploaded?.();
+    } catch (e) {
+      setError('Yükleme hatası');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  // Capture source screenshot
+  const handleCapture = async () => {
+    setCaptureError('');
+    setCaptureLoading(true);
+    try {
+      if (!navigator.mediaDevices?.getDisplayMedia) {
+        setCaptureError('Automatic capture is not supported in this browser. Use Upload screenshot/document.');
+        return;
+      }
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const track = stream.getVideoTracks()[0];
+      const imageCapture = new ImageCapture(track);
+      const bitmap = await imageCapture.grabFrame();
+      const canvas = document.createElement('canvas');
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0);
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          setCaptureError('Screenshot capture failed');
+          setCaptureLoading(false);
+          track.stop();
+          return;
+        }
+        const file = new File([blob], `${sourceKey}-screenshot.png`, { type: 'image/png' });
+        try {
+          await uploadSourceEvidence(propertyId, file, {
+            sourceKey,
+            sourceTitle,
+            evidenceType: 'USER_CAPTURED_SOURCE_SCREENSHOT',
+            uploadedFrom: 'SOURCE_GUIDANCE_CARD',
+            officialVerification: false,
+          });
+          onEvidenceUploaded?.();
+        } catch (e) {
+          setCaptureError('Screenshot upload failed');
+        } finally {
+          setCaptureLoading(false);
+          track.stop();
+        }
+      }, 'image/png');
+    } catch (e) {
+      setCaptureError('Permission denied or capture failed');
+      setCaptureLoading(false);
+    }
+  };
+
+  return (
+    <div className={`border rounded-lg p-4 mt-4 ${checked || evidenceUploaded ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-white'} relative`}> 
+      <div className="flex items-center gap-2 mb-2">
+        <span className="font-semibold">{sourceTitle || sourceKey}</span>
+        {(checked || evidenceUploaded) && <span className="ml-2 px-2 py-1 text-xs rounded bg-green-500 text-white">User-provided evidence</span>}
+      </div>
+      <div className="text-xs text-gray-700 mb-2">Manual source guidance only. Not official verification. This does not replace official legal, tapu, imar or municipality verification.</div>
+      <div className="flex flex-wrap gap-2 mb-2">
+        <a href="#" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline" onClick={e => { e.preventDefault(); window.open('https://example.com', '_blank', 'noopener'); alert('After checking the source, return here to capture or upload evidence.'); }}>Open source</a>
+        <button className={`btn btn-sm ${checked ? 'btn-success' : 'btn-outline'}`} disabled={checked} onClick={handleCheck}>{checked ? 'Checked manually' : 'Mark as checked manually'}</button>
+        <button className={`btn btn-sm btn-outline ${uploading ? 'opacity-60 pointer-events-none' : ''}`} onClick={() => fileInputRef.current?.click()}>{evidenceUploaded ? 'Evidence uploaded' : 'Upload screenshot/document'}</button>
+        <input ref={fileInputRef} type="file" accept=".png,.jpg,.jpeg,.webp,.pdf" className="hidden" onChange={handleFileChange} />
+        <button className={`btn btn-sm btn-outline ${captureLoading ? 'opacity-60 pointer-events-none' : ''}`} onClick={handleCapture}>Capture source screenshot</button>
+      </div>
+      {error && <div className="text-red-600 text-xs mt-1">{error}</div>}
+      {captureError && <div className="text-orange-600 text-xs mt-1">{captureError}</div>}
+      {(checked || evidenceUploaded) && <div className="text-green-700 text-xs mt-2">User checked manually — not official verification</div>}
+    </div>
+  );
+}
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { apiFetch } from '../lib/api';
@@ -247,6 +378,39 @@ const TimelineItem = ({
 };
 
 export default function PropertyDetail() {
+    // --- Source Guidance Card State ---
+    const [sgChecked, setSgChecked] = useState(false);
+    const [sgEvidenceUploaded, setSgEvidenceUploaded] = useState(false);
+    const [sgUploading, setSgUploading] = useState(false);
+    const [sgError, setSgError] = useState('');
+    // Demo: Use static sourceKey/sourceTitle for one card. In real use, map over sources.
+    const sourceKey = 'OGC_TKGM';
+    const sourceTitle = 'TKGM Parsel Sorgu';
+    // Load checked/evidence state from detail.sourceGuidanceChecks or detail.documents
+    useEffect(() => {
+      if (!detail) return;
+      // Find checked
+      const checks = (detail.property as any)?.sourceGuidanceChecks || [];
+      setSgChecked(checks.some((c: any) => c.sourceKey === sourceKey && c.checkedManually));
+      // Find evidence
+      setSgEvidenceUploaded((detail.documents || []).some((d) => d.evidenceType === 'USER_UPLOADED_SOURCE_SCREENSHOT' || d.evidenceType === 'USER_CAPTURED_SOURCE_SCREENSHOT'));
+    }, [detail]);
+    // ...existing code...
+    // --- Source Guidance Card Render ---
+    <SourceGuidanceCard
+      propertyId={resolvedId}
+      sourceKey={sourceKey}
+      sourceTitle={sourceTitle}
+      checked={sgChecked}
+      checkedAt={null}
+      onChecked={() => fetchDetail()}
+      evidenceUploaded={sgEvidenceUploaded}
+      onEvidenceUploaded={() => fetchDetail()}
+      uploading={sgUploading}
+      setUploading={setSgUploading}
+      error={sgError}
+      setError={setSgError}
+    />
   const { id, propertyId } = useParams();
   const resolvedId = propertyId || id;
   const { user } = useAuth();

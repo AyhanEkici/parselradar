@@ -1,3 +1,42 @@
+// Upload source evidence (screenshot/document)
+export async function uploadSourceEvidence(propertyId: string, file: File, opts: {
+  sourceKey: string;
+  sourceTitle?: string;
+  evidenceType: 'USER_UPLOADED_SOURCE_SCREENSHOT' | 'USER_CAPTURED_SOURCE_SCREENSHOT';
+  uploadedFrom?: string;
+  officialVerification?: false;
+}) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('documentType', 'SOURCE_EVIDENCE');
+  form.append('evidenceType', opts.evidenceType);
+  form.append('sourceKey', opts.sourceKey);
+  if (opts.sourceTitle) form.append('sourceTitle', opts.sourceTitle);
+  if (opts.uploadedFrom) form.append('uploadedFrom', opts.uploadedFrom);
+  form.append('officialVerification', 'false');
+  return apiFetch(`/properties/${propertyId}/documents`, {
+    method: 'POST',
+    body: form,
+  });
+}
+
+// Mark source guidance checked manually
+export async function markSourceGuidanceChecked(propertyId: string, sourceKey: string, opts: {
+  sourceTitle?: string;
+  checkedAt?: string;
+}) {
+  return apiFetch(`/properties/${propertyId}/source-guidance/${encodeURIComponent(sourceKey)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sourceTitle: opts.sourceTitle,
+      checkedManually: true,
+      checkedAt: opts.checkedAt || new Date().toISOString(),
+      status: 'USER_CHECKED_MANUALLY',
+      officialVerification: false,
+    }),
+  });
+}
 import { getAuthToken, isAuthHydrating } from './authStorage';
 import { retryableFetch } from './RetryableFetch';
 import { validateFrontendEnv } from './envValidator';

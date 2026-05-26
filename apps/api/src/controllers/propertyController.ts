@@ -294,5 +294,59 @@ export const getPropertyById = async (req: AuthRequest, res: Response) => {
   });
 };
 
+// PATCH /properties/:propertyId/source-guidance/:sourceKey
+export const patchSourceGuidanceCheck = async (req: AuthRequest, res: Response) => {
+  const user = requireAuthUser(req);
+  const { propertyId, sourceKey } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+    return res.status(400).json({ error: 'Geçersiz propertyId' });
+  }
+  if (!sourceKey || typeof sourceKey !== 'string') {
+    return res.status(400).json({ error: 'Geçersiz sourceKey' });
+  }
+  const { sourceTitle, checkedManually, checkedAt, status, officialVerification } = req.body || {};
+  if (status !== 'USER_CHECKED_MANUALLY' || officialVerification !== false) {
+    return res.status(400).json({ error: 'Invalid status or officialVerification' });
+  }
+  if (typeof checkedManually !== 'boolean' || !checkedManually) {
+    return res.status(400).json({ error: 'checkedManually must be true' });
+  }
+  const property = await PropertySubmission.findById(propertyId);
+  if (!property) {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
+  }
+  try {
+    assertOwnerOrAdmin({ userId: property.userId }, user);
+  } catch {
+    return res.status(404).json({ error: 'Mülk bulunamadı' });
+  }
+  // Find or add entry
+  let checks = Array.isArray(property.sourceGuidanceChecks) ? property.sourceGuidanceChecks : [];
+  const idx = checks.findIndex((c: any) => c.sourceKey === sourceKey);
+  const newCheck: {
+    sourceKey: string;
+    sourceTitle?: string;
+    checkedManually: boolean;
+    checkedAt: Date;
+    status: "USER_CHECKED_MANUALLY";
+    officialVerification: false;
+  } = {
+    sourceKey,
+    sourceTitle,
+    checkedManually: true,
+    checkedAt: checkedAt ? new Date(checkedAt) : new Date(),
+    status: "USER_CHECKED_MANUALLY",
+    officialVerification: false,
+  };
+  if (idx >= 0) {
+    checks[idx] = { ...checks[idx], ...newCheck };
+  } else {
+    checks.push(newCheck);
+  }
+  property.sourceGuidanceChecks = checks;
+  await property.save();
+  res.json({ ok: true, sourceGuidanceChecks: property.sourceGuidanceChecks });
+};
+
 
 

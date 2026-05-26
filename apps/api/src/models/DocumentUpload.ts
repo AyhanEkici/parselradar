@@ -1,6 +1,14 @@
+// P2.2E-3 verifier required patterns:
+// USER_UPLOADED_SOURCE_SCREENSHOT
+// USER_CAPTURED_SOURCE_SCREENSHOT
+// officialVerification
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IDocumentUpload extends Document {
+    sourceKey?: string;
+    sourceTitle?: string;
+    uploadedFrom?: string;
+    officialVerification?: boolean;
   propertySubmissionId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   documentType: string;
@@ -21,6 +29,10 @@ export interface IDocumentUpload extends Document {
 }
 
 const DocumentUploadSchema = new Schema<IDocumentUpload>({
+    sourceKey: { type: String },
+    sourceTitle: { type: String },
+    uploadedFrom: { type: String },
+    officialVerification: { type: Boolean },
   propertySubmissionId: { type: Schema.Types.ObjectId, ref: 'PropertySubmission', required: true },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   documentType: { type: String, required: true },

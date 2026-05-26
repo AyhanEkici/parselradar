@@ -1,6 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IPropertySubmission extends Document {
+    sourceGuidanceChecks?: Array<{
+      sourceKey: string;
+      sourceTitle?: string;
+      checkedManually: boolean;
+      checkedAt?: Date | string;
+      status: "USER_CHECKED_MANUALLY";
+      officialVerification: false;
+    }>;
   userId: mongoose.Types.ObjectId;
   assetType: string;
   inputMethod: string;
@@ -51,6 +59,16 @@ export interface IPropertySubmission extends Document {
 }
 
 const PropertySubmissionSchema = new Schema<IPropertySubmission>({
+    sourceGuidanceChecks: [
+      {
+        sourceKey: { type: String, required: true },
+        sourceTitle: { type: String },
+        checkedManually: { type: Boolean, required: true },
+        checkedAt: { type: Date },
+        status: { type: String, enum: ["USER_CHECKED_MANUALLY"], required: true },
+        officialVerification: { type: Boolean, default: false, required: true },
+      },
+    ],
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   assetType: { type: String, required: true },
   inputMethod: { type: String, required: true },

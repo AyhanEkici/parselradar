@@ -2,6 +2,7 @@
   "name": "parselradar-monorepo",
   "private": true,
   "scripts": {
+      "p2:2e3:verify-source-evidence-ux": "ts-node apps/api/scripts/p22e3VerifySourceEvidenceUx.ts",
     "postinstall": "npm install --prefix packages/shared && npm install --prefix apps/api && npm install --prefix apps/web",
     "dev": "concurrently \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/web\"",
     "typecheck": "npm run typecheck --prefix packages/shared && npm run typecheck --prefix apps/api && npm run typecheck --prefix apps/web",
