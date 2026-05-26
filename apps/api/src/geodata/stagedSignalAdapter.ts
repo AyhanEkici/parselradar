@@ -212,7 +212,9 @@ export async function queryStagedSignalsFromPostgis(_options: { lat?: number; lo
     );
 
     const signals = nearestResult.rows.map(toSignal);
-    const bySignalType = new Map(signals.map((signal) => [signal.type, signal]));
+    const bySignalType = new Map<string, StagedSignal>(
+    signals.map((signal: StagedSignal) => [signal.type, signal] as [string, StagedSignal]),
+  );
 
     const allOfficialVerificationFalse = featureCount > 0 && officialFalseCount === featureCount;
     const labelsDisclaimersPresent = featureCount > 0 && publicSourceCount === featureCount;
@@ -263,6 +265,3 @@ export async function queryStagedSignalsFromPostgis(_options: { lat?: number; lo
     await client.end().catch(() => undefined);
   }
 }
-
-
-
