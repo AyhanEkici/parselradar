@@ -1,0 +1,41 @@
+{
+    "phase":  "P2.GEO-3F",
+    "generatedAt":  "2026-05-26T00:31:41.1340425Z",
+    "cleanStartCaptured":  true,
+    "docExists":  true,
+    "verifyScriptExists":  true,
+    "packageScriptExists":  true,
+    "todoLedgerUpdated":  true,
+    "status":  "PASS",
+    "readOnlyAudit":  true,
+    "cleanupExecuted":  false,
+    "newImportExecuted":  false,
+    "latestRunFound":  true,
+    "adapterUsesLatestRun":  true,
+    "featureCount":  150,
+    "featureTypes":  [
+                         "INDUSTRIAL_OSB_CANDIDATE",
+                         "MAIN_ROAD",
+                         "SETTLEMENT"
+                     ],
+    "canonicalRunCount":  1,
+    "redundantCandidateCount":  0,
+    "duplicatePolicy":  {
+                            "canonicalSelection":  "LATEST_SUCCESSFUL_P2_GEO_3C_PER_SOURCE_CHECKSUM",
+                            "duplicateDefinition":  "Same P2.GEO-3C source_checksum with STAGED_IMPORT_PASS",
+                            "cleanupMode":  "READ_ONLY_POLICY_ONLY",
+                            "cleanupExecuted":  false,
+                            "futureAllowedAction":  "manual/admin cleanup in separate explicit phase only"
+                        },
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapUsed":  false,
+    "productionTablesQueried":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "platformChecksPass":  true
+}

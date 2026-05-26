@@ -1,0 +1,79 @@
+{
+  "phase": "P2.GEO-3F",
+  "status": "PASS",
+  "readOnlyAudit": true,
+  "cleanupExecuted": false,
+  "newImportExecuted": false,
+  "latestRunFound": true,
+  "latestRun": {
+    "id": "4",
+    "phase": "P2.GEO-3C",
+    "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+    "sourceChecksumVisible": true,
+    "importScope": "KAYSERI_POC_ONLY",
+    "importMode": "DRY_RUN",
+    "status": "STAGED_IMPORT_PASS",
+    "startedAt": "2026-05-26T00:09:32.075Z",
+    "completedAt": "2026-05-26T00:09:32.075Z",
+    "runAgeMinutes": 22
+  },
+  "adapterStatus": "PASS",
+  "adapterLifecycleState": "STAGED_OSM_SIGNAL_READY",
+  "adapterRunId": "4",
+  "adapterUsesLatestRun": true,
+  "featureCount": 150,
+  "officialFalseCount": 150,
+  "publicSourceCount": 150,
+  "featureTypes": [
+    "INDUSTRIAL_OSB_CANDIDATE",
+    "MAIN_ROAD",
+    "SETTLEMENT"
+  ],
+  "allOfficialVerificationFalse": true,
+  "labelsDisclaimersPresent": true,
+  "recentRunCount": 1,
+  "recentRuns": [
+    {
+      "id": "4",
+      "phase": "P2.GEO-3C",
+      "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+      "sourceChecksumVisible": true,
+      "importScope": "KAYSERI_POC_ONLY",
+      "importMode": "DRY_RUN",
+      "status": "STAGED_IMPORT_PASS",
+      "completedAt": "2026-05-26T00:09:32.075Z"
+    }
+  ],
+  "duplicatePolicy": {
+    "canonicalSelection": "LATEST_SUCCESSFUL_P2_GEO_3C_PER_SOURCE_CHECKSUM",
+    "duplicateDefinition": "Same P2.GEO-3C source_checksum with STAGED_IMPORT_PASS",
+    "cleanupMode": "READ_ONLY_POLICY_ONLY",
+    "cleanupExecuted": false,
+    "futureAllowedAction": "manual/admin cleanup in separate explicit phase only"
+  },
+  "canonicalRunCount": 1,
+  "redundantCandidateCount": 0,
+  "duplicateRows": [
+    {
+      "id": "4",
+      "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+      "sourceChecksumVisible": true,
+      "importScope": "KAYSERI_POC_ONLY",
+      "importMode": "DRY_RUN",
+      "status": "STAGED_IMPORT_PASS",
+      "completedAt": "2026-05-26T00:09:32.075Z",
+      "rankWithinChecksum": 1,
+      "checksumRunCount": 1,
+      "policyAction": "CANONICAL_KEEP"
+    }
+  ],
+  "sourceFileCommitted": false,
+  "fullTurkeyImportAllowed": false,
+  "productionSwapUsed": false,
+  "productionTablesQueried": false,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "schedulerAdded": false,
+  "officialVerificationClaimAdded": false,
+  "generatedAt": "2026-05-26T00:31:14.183Z"
+}

@@ -1,0 +1,23 @@
+# P2.GEO-3F Final Command Results
+
+- PASS | geo:p2-geo-3d:verify-staged-osm-adapter
+- PASS | geo:p2-geo-9:verify-endpoint
+- PASS | geo:p2-geo-10:verify-admin-diagnostic
+- PASS | geo:p2-geo-3e:verify-guarded-ui
+- PASS | geo:p2-geo-3f:verify-freshness-duplicates
+- PASS | build api
+- PASS | build web
+- PASS | verify:connector-diagnostics-contract
+- PASS | verify:connector-diagnostics
+- PASS | verify:platform-integrity
+- Read-only audit: true
+- Cleanup executed: false
+- New import executed: false
+- Latest run found: True
+- Adapter uses latest run: True
+- Feature count: 150
+- Canonical run count: 1
+- Redundant candidate count: 0
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false

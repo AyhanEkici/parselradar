@@ -1,0 +1,20 @@
+{
+    "phase":  "P2.GEO-3F",
+    "capturedAt":  "2026-05-26T00:30:28.0487426Z",
+    "head":  "1399d23a",
+    "workingTreeCleanAtStart":  true,
+    "recentCommits":  [
+                          "1399d23a feat: verify guarded UI against staged OSM signals",
+                          "d831eb78 fix: restore staged geodata adapter route compatibility",
+                          "ced9a9db feat: align staged OSM signal adapter",
+                          "76435f32 fix: complete small OSM staged geodata import",
+                          "ff8fc278 fix: complete small OSM staged geodata import"
+                      ],
+    "readOnlyAudit":  true,
+    "cleanupExecuted":  false,
+    "newImportExecuted":  false,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}

@@ -1,0 +1,28 @@
+# P2.GEO-3F Freshness Duplicate Policy Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Verify script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Status: PASS
+- Read-only audit: true
+- Cleanup executed: false
+- New import executed: false
+- Latest run found: True
+- Adapter uses latest run: True
+- Feature count: 150
+- Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, SETTLEMENT
+- Canonical run count: 1
+- Redundant candidate count: 0
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true
