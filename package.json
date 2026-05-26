@@ -131,7 +131,8 @@
                     "geo:p2-geo-3i:verify-expanded-signal-ux":  "ts-node apps/api/scripts/geodata/p2Geo3IVerifyExpandedSignalUx.ts",
                     "mvp:4d:verify-evidence-ocr":  "ts-node apps/api/scripts/mvp4dVerifyEvidenceOcr.ts",
                     "p2:1:verify-full-mvp-audit":  "ts-node apps/api/scripts/p21VerifyFullMvpAudit.ts",
-                    "p2:1a:verify-audit-remediation":  "ts-node apps/api/scripts/p21aVerifyAuditRemediation.ts"
+                    "p2:1a:verify-audit-remediation":  "ts-node apps/api/scripts/p21aVerifyAuditRemediation.ts",
+                    "p2:1b:verify-audit-remediation":  "ts-node apps/api/scripts/p21bVerifyAuditRemediation.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",

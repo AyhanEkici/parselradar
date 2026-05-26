@@ -40,8 +40,8 @@ export default function ForgotPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 placeholder:text-slate-500 focus:border-cyan-400"
-            placeholder="E-mailadres"
+            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 P2_1B_TRIAGED_BACKLOG:text-slate-500 focus:border-cyan-400"
+            P2_1B_TRIAGED_BACKLOG="E-mailadres"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"

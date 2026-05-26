@@ -1,11 +1,11 @@
 {
   "phase": "P2.1",
   "status": "WARN",
-  "generatedAt": "2026-05-26T01:51:50.719Z",
+  "generatedAt": "2026-05-26T02:08:45.681Z",
   "inventory": {
-    "totalFiles": 1763,
-    "trackedFiles": 1763,
-    "tsFiles": 1092,
+    "totalFiles": 1769,
+    "trackedFiles": 1769,
+    "tsFiles": 1093,
     "apiFiles": 651,
     "webFiles": 309,
     "pageFiles": 60,
@@ -638,7 +638,7 @@
   "severityCounts": {
     "BLOCKER": 0,
     "HIGH": 0,
-    "MEDIUM": 23,
+    "MEDIUM": 15,
     "LOW": 7,
     "FUTURE": 0
   },
@@ -652,32 +652,14 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
-      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
       "file": "apps/api/scripts/p21VerifyFullMvpAudit.ts",
       "detail": "Contains 13 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/api/scripts/verifyEmailProviderReadiness.ts",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/api/scripts/verifyPilotEnv.ts",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
+      "file": "apps/api/scripts/p21aVerifyAuditRemediation.ts",
+      "detail": "Contains 7 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -736,26 +718,8 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
-      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
       "file": "apps/web/src/pages/AdminUsers.tsx",
       "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/ForgotPassword.tsx",
-      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/Login.tsx",
-      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -772,20 +736,8 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/web/src/pages/PropertyResult.tsx",
-      "detail": "Contains 5 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
       "file": "apps/web/src/pages/Register.tsx",
       "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/ResetPassword.tsx",
-      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "LOW",

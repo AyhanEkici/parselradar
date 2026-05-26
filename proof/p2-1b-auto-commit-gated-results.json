@@ -1,0 +1,32 @@
+{
+    "phase":  "P2.1B-AUTO-COMMIT-GATED",
+    "generatedAt":  "2026-05-26T02:09:10.6056023Z",
+    "status":  "READY_TO_COMMIT",
+    "p21b":  "PASS",
+    "p21a":  "PASS",
+    "p21":  "WARN",
+    "p21Blockers":  0,
+    "p21Medium":  15,
+    "p21Low":  7,
+    "mvp4d":  "PASS",
+    "buildApi":  "PASS",
+    "buildWeb":  "PASS",
+    "connectorDiagnosticsContract":  "PASS",
+    "connectorDiagnostics":  "PASS",
+    "platformIntegrity":  "PASS",
+    "targetFiles":  [
+                        "apps/web/src/pages/PropertyResult.tsx",
+                        "apps/web/src/pages/AdminPropertyDocuments.tsx",
+                        "apps/web/src/pages/ResetPassword.tsx",
+                        "apps/web/src/pages/Login.tsx",
+                        "apps/web/src/pages/ForgotPassword.tsx",
+                        "apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts",
+                        "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+                        "apps/api/scripts/verifyEmailProviderReadiness.ts",
+                        "apps/api/scripts/verifyPilotEnv.ts"
+                    ],
+    "genericMarkersRemaining":  0,
+    "triagedBacklogTotal":  24,
+    "committed":  false,
+    "pushed":  false
+}

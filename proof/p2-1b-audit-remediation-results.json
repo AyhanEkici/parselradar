@@ -1,0 +1,75 @@
+{
+  "phase": "P2.1B",
+  "status": "PASS",
+  "targetFiles": [
+    "apps/web/src/pages/PropertyResult.tsx",
+    "apps/web/src/pages/AdminPropertyDocuments.tsx",
+    "apps/web/src/pages/ResetPassword.tsx",
+    "apps/web/src/pages/Login.tsx",
+    "apps/web/src/pages/ForgotPassword.tsx",
+    "apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts",
+    "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+    "apps/api/scripts/verifyEmailProviderReadiness.ts",
+    "apps/api/scripts/verifyPilotEnv.ts"
+  ],
+  "targetResults": [
+    {
+      "file": "apps/web/src/pages/PropertyResult.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 5
+    },
+    {
+      "file": "apps/web/src/pages/AdminPropertyDocuments.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 4
+    },
+    {
+      "file": "apps/web/src/pages/ResetPassword.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 4
+    },
+    {
+      "file": "apps/web/src/pages/Login.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 2
+    },
+    {
+      "file": "apps/web/src/pages/ForgotPassword.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 2
+    },
+    {
+      "file": "apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 1
+    },
+    {
+      "file": "apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 4
+    },
+    {
+      "file": "apps/api/scripts/verifyEmailProviderReadiness.ts",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 1
+    },
+    {
+      "file": "apps/api/scripts/verifyPilotEnv.ts",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 1
+    }
+  ],
+  "genericMarkersRemaining": 0,
+  "triagedBacklogTotal": 24,
+  "docExists": true,
+  "p21AuditExists": true,
+  "p21aProofExists": true,
+  "mvp4dProofExists": true,
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noFullTurkeyImport": true,
+  "noProductionSwap": true,
+  "noFakeOcr": true,
+  "noOfficialVerificationClaimAdded": true,
+  "generatedAt": "2026-05-26T02:08:40.502Z"
+}

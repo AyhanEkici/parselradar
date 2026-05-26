@@ -31,7 +31,7 @@ function isPlaceholder(val: string) {
     lower.endsWith('xxx') ||
     lower === 'changeme' ||
     lower === 'test' ||
-    lower === 'placeholder'
+    lower === 'P2_1B_TRIAGED_BACKLOG'
   );
 }
 

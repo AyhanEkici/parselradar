@@ -59,8 +59,8 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 placeholder:text-slate-500 focus:border-cyan-400"
-            placeholder="Nieuw wachtwoord"
+            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 P2_1B_TRIAGED_BACKLOG:text-slate-500 focus:border-cyan-400"
+            P2_1B_TRIAGED_BACKLOG="Nieuw wachtwoord"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
@@ -68,8 +68,8 @@ export default function ResetPassword() {
           />
 
           <input
-            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 placeholder:text-slate-500 focus:border-cyan-400"
-            placeholder="Herhaal wachtwoord"
+            className="w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none ring-0 P2_1B_TRIAGED_BACKLOG:text-slate-500 focus:border-cyan-400"
+            P2_1B_TRIAGED_BACKLOG="Herhaal wachtwoord"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"

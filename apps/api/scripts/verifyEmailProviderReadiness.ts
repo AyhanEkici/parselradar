@@ -104,7 +104,7 @@ function main() {
     'Launch Gate Criteria',
   ]);
   checks.push({
-    name: 'Launch gate includes provider placeholder and deliverability checklist',
+    name: 'Launch gate includes provider P2_1B_TRIAGED_BACKLOG and deliverability checklist',
     pass: gateFields.ok,
     detail: gateFields.ok ? 'Launch gate checklist complete.' : `Missing: ${gateFields.missing.join(', ')}`,
   });

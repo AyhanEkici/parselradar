@@ -93,7 +93,7 @@ async function main(): Promise<void> {
       "- API endpoint used: /api/dev/staged-geo-signals",
       `- Disclaimer present: ${disclaimerPresent}`,
       `- Boundary claims present: ${boundaryClaimsPresent}`,
-      `- TODO ledger updated: ${todoLedgerUpdated}`,
+      `- P2_1B_TRIAGED_BACKLOG ledger updated: ${todoLedgerUpdated}`,
       "- Production swap used: false",
       "- Connector activated: false",
       "- Scraping added: false",
