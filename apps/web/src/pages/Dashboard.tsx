@@ -1,8 +1,15 @@
+
 import React, { useEffect, useState } from 'react';
 import { logout } from '../lib/auth';
 import { apiFetch } from '../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import {
+  getProvinceOptions,
+  getDistrictOptions,
+  getNeighborhoodOptions,
+  locationProviderMeta
+} from '../lib/locationOptions';
 
 function Dashboard() {
   const [credits, setCredits] = useState<number>(0);
@@ -108,84 +115,99 @@ function Dashboard() {
   };
 
   return (
-    <div className="mx-auto mt-10 flex w-full max-w-4xl flex-col gap-4 px-4 pb-8">
-      <div className="premium-dashboard premium-surface rounded shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Hoşgeldiniz, {user?.name}</h2>
-        <div className="mb-2 text-sm text-slate-600">Yeni Mülk kaydı ile başlayın, ardından kaynakları yükleyin ve rehber raporu inceleyin.</div>
-        <div className="mb-2">Kredi bakiyesi: <b>{loadingCredits ? '...' : credits}</b></div>
-        {creditsError ? <div className="text-red-600 text-sm mb-2">{creditsError}</div> : null}
-        <div className="space-x-2 mt-4">
-          <Link to="/reports" className="premium-outline px-4 py-2 rounded">Raporlarım</Link>
-          <Link to="/credits" className="premium-outline px-4 py-2 rounded">Kredi Yükle</Link>
+    <div className="mx-auto mt-10 flex w-full max-w-3xl md:max-w-5xl lg:max-w-6xl flex-col gap-6 px-2 md:px-8 pb-12">
+      <div className="premium-dashboard premium-surface rounded shadow p-8 md:p-10 lg:p-12">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center">Hoşgeldiniz, {user?.name}</h2>
+        <div className="mb-2 text-base md:text-lg text-slate-600 text-center">Yeni mülk analizi başlatın, ardından kaynakları yükleyin ve rehber raporu inceleyin.</div>
+        <div className="mb-2 text-base text-center">Kredi bakiyesi: <b>{loadingCredits ? '...' : credits}</b></div>
+        {creditsError ? <div className="text-red-600 text-base mb-2 text-center">{creditsError}</div> : null}
+        <div className="flex flex-wrap justify-center gap-2 mt-4">
+          <Link to="/reports" className="premium-outline px-4 py-2 rounded text-base">Raporlarım</Link>
+          <Link to="/credits" className="premium-outline px-4 py-2 rounded text-base">Kredi Yükle</Link>
         </div>
-        <button className="mt-8 text-red-600 underline" onClick={async () => { await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap</button>
+        <button className="mt-8 text-red-600 underline block mx-auto text-base" onClick={async () => { await logout(); navigate('/login', { replace: true }); }}>Çıkış Yap</button>
       </div>
 
       {/* New property intake card */}
-      <form className="premium-dashboard premium-surface rounded shadow p-6 mt-4" onSubmit={handleSubmit}>
-        <h3 className="text-lg font-semibold mb-2">Yeni Mülk Kaydı</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Location dropdown pilot: Kayseri > Melikgazi > Gesi Cumhuriyet */}
+      <form className="premium-dashboard premium-surface rounded shadow p-8 md:p-10 lg:p-12 mt-4 w-full" onSubmit={handleSubmit} style={{maxWidth:'900px',margin:'0 auto'}}>
+        <h3 className="text-2xl font-semibold mb-4 text-center">Yeni Mülk Kaydı</h3>
+        <div className="mb-4 text-base text-slate-700 text-center font-medium">Ada/parsel ve temel fiyat bilgileri girildikten sonra kaynak kontrol ekranına geçebilirsiniz.</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* İl */}
           <div>
-            <label className="block text-sm font-medium">İl *</label>
-            <select className={inputClass('il')} name="il" value={form.il} onChange={handleChange}>
-              <option value="">Seçiniz...</option>
-              <option value="Kayseri">Kayseri</option>
+            <label className="block text-[15px] font-bold mb-1">İl *</label>
+            <select className={inputClass('il') + ' h-[48px] text-[16px]'} name="il" value={form.il} onChange={handleChange}>
+              <option value="">İl seçiniz...</option>
+              {getProvinceOptions().map((il) => (
+                <option key={il} value={il}>{il}</option>
+              ))}
             </select>
-            {fieldErrors.il && <div className="text-sm text-red-600">{fieldErrors.il}</div>}
+            {fieldErrors.il && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.il}</div>}
           </div>
+          {/* İlçe */}
           <div>
-            <label className="block text-sm font-medium">İlçe *</label>
-            <select className={inputClass('ilce')} name="ilce" value={form.ilce} onChange={handleChange} disabled={!form.il}>
-              <option value="">Seçiniz...</option>
-              {form.il === 'Kayseri' && <option value="Melikgazi">Melikgazi</option>}
+            <label className="block text-[15px] font-bold mb-1">İlçe *</label>
+            <select className={inputClass('ilce') + ' h-[48px] text-[16px]'} name="ilce" value={form.ilce} onChange={handleChange} disabled={!form.il}>
+              <option value="">İlçe seçiniz...</option>
+              {getDistrictOptions(form.il).map((ilce) => (
+                <option key={ilce} value={ilce}>{ilce}</option>
+              ))}
             </select>
-            {fieldErrors.ilce && <div className="text-sm text-red-600">{fieldErrors.ilce}</div>}
+            {fieldErrors.ilce && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.ilce}</div>}
           </div>
+          {/* Mahalle/Köy */}
           <div>
-            <label className="block text-sm font-medium">Mahalle/Köy *</label>
-            <select className={inputClass('mahalleOrKoy')} name="mahalleOrKoy" value={form.mahalleOrKoy} onChange={handleChange} disabled={!form.ilce}>
-              <option value="">Seçiniz...</option>
-              {form.ilce === 'Melikgazi' && <option value="Gesi Cumhuriyet">Gesi Cumhuriyet</option>}
+            <label className="block text-[15px] font-bold mb-1">Mahalle/Köy *</label>
+            <select className={inputClass('mahalleOrKoy') + ' h-[48px] text-[16px]'} name="mahalleOrKoy" value={form.mahalleOrKoy} onChange={handleChange} disabled={!form.ilce || getNeighborhoodOptions(form.il, form.ilce).length === 0}>
+              <option value="">Mahalle/Köy seçiniz...</option>
+              {getNeighborhoodOptions(form.il, form.ilce).map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
             </select>
-            {fieldErrors.mahalleOrKoy && <div className="text-sm text-red-600">{fieldErrors.mahalleOrKoy}</div>}
+            {fieldErrors.mahalleOrKoy && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.mahalleOrKoy}</div>}
             {/* Manual fallback for other locations */}
-            <div className="mt-1 text-xs text-slate-500">Diğer il/ilçe/mahalle için elle yazın:</div>
-            <input className={inputClass('mahalleOrKoy')} name="mahalleOrKoy" placeholder="Manuel mahalle/köy" value={form.mahalleOrKoy} onChange={handleChange} />
+            <div className="mt-2 text-[14px] text-slate-600 font-medium">Mahalle/Köy manuel giriş</div>
+            <input className={inputClass('mahalleOrKoy') + ' h-[44px] text-[16px] mt-1'} name="mahalleOrKoy" placeholder="Mahalle/Köy manuel giriş" value={form.mahalleOrKoy} onChange={handleChange} />
           </div>
+          {/* Ada */}
           <div>
-            <label className="block text-sm font-medium">Ada *</label>
-            <input className={inputClass('ada')} name="ada" value={form.ada} onChange={handleChange} />
-            {fieldErrors.ada && <div className="text-sm text-red-600">{fieldErrors.ada}</div>}
+            <label className="block text-[15px] font-bold mb-1">Ada *</label>
+            <input className={inputClass('ada') + ' h-[44px] text-[16px]'} name="ada" value={form.ada} onChange={handleChange} />
+            {fieldErrors.ada && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.ada}</div>}
           </div>
+          {/* Parsel */}
           <div>
-            <label className="block text-sm font-medium">Parsel *</label>
-            <input className={inputClass('parsel')} name="parsel" value={form.parsel} onChange={handleChange} />
-            {fieldErrors.parsel && <div className="text-sm text-red-600">{fieldErrors.parsel}</div>}
+            <label className="block text-[15px] font-bold mb-1">Parsel *</label>
+            <input className={inputClass('parsel') + ' h-[44px] text-[16px]'} name="parsel" value={form.parsel} onChange={handleChange} />
+            {fieldErrors.parsel && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.parsel}</div>}
           </div>
+          {/* Alan (m²) */}
           <div>
-            <label className="block text-sm font-medium">Alan (m²) *</label>
-            <input className={inputClass('areaM2')} name="areaM2" value={form.areaM2} onChange={handleChange} />
-            {fieldErrors.areaM2 && <div className="text-sm text-red-600">{fieldErrors.areaM2}</div>}
+            <label className="block text-[15px] font-bold mb-1">Alan (m²) *</label>
+            <input className={inputClass('areaM2') + ' h-[44px] text-[16px]'} name="areaM2" value={form.areaM2} onChange={handleChange} />
+            {fieldErrors.areaM2 && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.areaM2}</div>}
           </div>
+          {/* Fiyat (TL) */}
           <div>
-            <label className="block text-sm font-medium">Fiyat (TL) *</label>
-            <input className={inputClass('askingPriceTRY')} name="askingPriceTRY" value={form.askingPriceTRY} onChange={handleChange} />
-            {fieldErrors.askingPriceTRY && <div className="text-sm text-red-600">{fieldErrors.askingPriceTRY}</div>}
+            <label className="block text-[15px] font-bold mb-1">Fiyat (TL) *</label>
+            <input className={inputClass('askingPriceTRY') + ' h-[44px] text-[16px]'} name="askingPriceTRY" value={form.askingPriceTRY} onChange={handleChange} />
+            {fieldErrors.askingPriceTRY && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.askingPriceTRY}</div>}
           </div>
+          {/* Başlık (opsiyonel) */}
           <div>
-            <label className="block text-sm font-medium">Başlık (opsiyonel)</label>
-            <input className={inputClass('baslik')} name="baslik" value={form.baslik} onChange={handleChange} />
+            <label className="block text-[15px] font-bold mb-1">Başlık (opsiyonel)</label>
+            <input className={inputClass('baslik') + ' h-[44px] text-[16px]'} name="baslik" value={form.baslik} onChange={handleChange} />
           </div>
+          {/* Kategori (opsiyonel) */}
           <div>
-            <label className="block text-sm font-medium">Kategori (opsiyonel)</label>
-            <input className={inputClass('kategori')} name="kategori" value={form.kategori} onChange={handleChange} />
+            <label className="block text-[15px] font-bold mb-1">Kategori (opsiyonel)</label>
+            <input className={inputClass('kategori') + ' h-[44px] text-[16px]'} name="kategori" value={form.kategori} onChange={handleChange} />
           </div>
         </div>
-        {submitError && <div className="text-red-600 mt-2">{submitError}</div>}
+        {submitError && <div className="text-red-600 text-[16px] mt-4 text-center font-semibold">{submitError}</div>}
         <button
           type="submit"
-          className="mt-4 bg-blue-700 text-white px-4 py-2 rounded font-medium disabled:bg-blue-300"
+          className="mt-6 bg-blue-700 text-white px-6 py-3 rounded font-bold text-lg w-full max-w-xs mx-auto block disabled:bg-blue-300 shadow-lg"
           disabled={submitting}
         >
           Mülkü kaydet ve kaynakları kontrol et

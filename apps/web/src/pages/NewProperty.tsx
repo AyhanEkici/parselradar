@@ -114,8 +114,15 @@ function buildPropertyCreatePayload(form: PropertyForm): PropertyForm {
   }
   return payload;
 }
+
 import { apiFetch } from '../lib/api';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  getProvinceOptions,
+  getDistrictOptions,
+  getNeighborhoodOptions,
+  locationProviderMeta
+} from '../lib/locationOptions';
 
 interface PropertyForm {
   [key: string]: string | number | boolean | string[] | undefined;
@@ -307,7 +314,7 @@ export default function NewProperty() {
   };
 
   const inputClass = (name: string) =>
-    `w-full border p-2 ${fieldErrors[name] ? 'border-red-500' : 'border-gray-300'}`;
+    `w-full border p-2 rounded ${fieldErrors[name] ? 'border-red-500' : 'border-gray-300'}`;
 
   const nextStep = () => {
     setError('');
@@ -318,34 +325,68 @@ export default function NewProperty() {
       return;
     }
     setFieldErrors({});
-    setStep((prev) => Math.min(TOTAL_STEPS, prev + 1));
+    setStep((s) => Math.min(s + 1, TOTAL_STEPS));
   };
 
-  const prevStep = () => {
-    setError('');
-    setStep((prev) => Math.max(1, prev - 1));
-  };
+  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Yeni Mülk</h2>
-      <div className="mb-3 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
-        Start with Yeni Mülk. After the property is created, documents, evidence, source guidance and report pages help you review it step by step.
-      </div>
-      <div className="mb-3 text-sm text-gray-600">Adım {step} / {TOTAL_STEPS}</div>
-      {hasDraft ? (
-        <div className="mb-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
-          <div className="font-medium mb-2">Kayıtlı taslağa devam etmek ister misiniz?</div>
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className="bg-amber-600 text-white px-3 py-1 rounded" onClick={continueDraft}>Taslağa devam et</button>
-            <button type="button" className="bg-white border border-amber-300 px-3 py-1 rounded" onClick={clearDraft}>Taslağı temizle</button>
-          </div>
-        </div>
-      ) : null}
-      {draftMessage ? <div className="mb-3 text-sm text-green-700">{draftMessage}</div> : null}
-      <form onSubmit={handleSubmit} className="space-y-2">
+    <div className="max-w-2xl mx-auto p-4 premium-dashboard premium-surface rounded shadow">
+      <form onSubmit={handleSubmit}>
+        {/* Step 1: Location and property info */}
         {step === 1 && (
           <>
+            {/* Location dropdowns and manual fallback */}
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">İl *</label>
+              <select
+                className={inputClass('il') + ' h-[44px] text-[16px]'}
+                name="il"
+                value={form.il || ''}
+                onChange={handleChange}
+              >
+                <option value="">İl seçiniz...</option>
+                {getProvinceOptions().map((il) => (
+                  <option key={il} value={il}>{il}</option>
+                ))}
+              </select>
+              {fieldErrors.il && <div className="text-red-600 text-sm mt-1">{fieldErrors.il}</div>}
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">İlçe *</label>
+              <select
+                className={inputClass('ilce') + ' h-[44px] text-[16px]'}
+                name="ilce"
+                value={form.ilce || ''}
+                onChange={handleChange}
+                disabled={!form.il}
+              >
+                <option value="">İlçe seçiniz...</option>
+                {getDistrictOptions(form.il).map((ilce) => (
+                  <option key={ilce} value={ilce}>{ilce}</option>
+                ))}
+              </select>
+              {fieldErrors.ilce && <div className="text-red-600 text-sm mt-1">{fieldErrors.ilce}</div>}
+            </div>
+            <div className="mb-4">
+              <label className="block font-semibold mb-1">Mahalle/Köy *</label>
+              <select
+                className={inputClass('mahalleOrKoy') + ' h-[44px] text-[16px]'}
+                name="mahalleOrKoy"
+                value={form.mahalleOrKoy || ''}
+                onChange={handleChange}
+                disabled={!form.ilce || getNeighborhoodOptions(form.il, form.ilce).length === 0}
+              >
+                <option value="">Mahalle/Köy seçiniz...</option>
+                {getNeighborhoodOptions(form.il, form.ilce).map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+              {fieldErrors.mahalleOrKoy && <div className="text-red-600 text-sm mt-1">{fieldErrors.mahalleOrKoy}</div>}
+              {/* Manual fallback for other locations */}
+              <div className="mt-2 text-[14px] text-slate-600 font-medium">Mahalle/Köy manuel giriş</div>
+              <input className={inputClass('mahalleOrKoy') + ' h-[44px] text-[16px] mt-1'} name="mahalleOrKoy" placeholder="Mahalle/Köy manuel giriş" value={form.mahalleOrKoy || ''} onChange={handleChange} />
+            </div>
             <label className="block text-sm font-medium">Varlık Türü *</label>
             <select className={inputClass('assetType')} name="assetType" required value={String(form.assetType || '')} onChange={handleChange}>
               <option value="">Seçiniz...</option>
@@ -378,23 +419,10 @@ export default function NewProperty() {
             ) : (
               <input className="w-full border p-2" name="ilanUrl" value={String(form.ilanUrl || '')} onChange={handleChange} />
             )}
-
-            <label className="block text-sm font-medium">İl *</label>
-            <input className={inputClass('il')} name="il" required value={String(form.il || '')} onChange={handleChange} />
-            {fieldErrors.il && <div className="text-sm text-red-600">{fieldErrors.il}</div>}
-
-            <label className="block text-sm font-medium">İlçe *</label>
-            <input className={inputClass('ilce')} name="ilce" required value={String(form.ilce || '')} onChange={handleChange} />
-            {fieldErrors.ilce && <div className="text-sm text-red-600">{fieldErrors.ilce}</div>}
-
-            <label className="block text-sm font-medium">Mahalle/Köy *</label>
-            <input className={inputClass('mahalleOrKoy')} name="mahalleOrKoy" required value={String(form.mahalleOrKoy || '')} onChange={handleChange} />
-            {fieldErrors.mahalleOrKoy && <div className="text-sm text-red-600">{fieldErrors.mahalleOrKoy}</div>}
-
-            <input className="w-full border p-2" name="addressText" value={String(form.addressText || '')} onChange={handleChange} />
           </>
         )}
 
+        {/* Step 2: Price, area, etc. */}
         {step === 2 && (
           <>
             <label className="block text-sm font-medium">Fiyat (TL) *</label>
@@ -435,6 +463,7 @@ export default function NewProperty() {
           </>
         )}
 
+        {/* Step 3: Details and consents */}
         {step === 3 && (
           <>
             <input className="w-full border p-2" name="taks" value={String(form.taks || '')} onChange={handleChange} />
