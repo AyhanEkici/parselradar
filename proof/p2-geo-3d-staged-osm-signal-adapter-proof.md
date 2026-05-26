@@ -1,0 +1,29 @@
+# P2.GEO-3D Staged OSM Signal Adapter Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Adapter exists: True
+- Verify script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Adapter status: PASS
+- Lifecycle state: STAGED_OSM_SIGNAL_READY
+- Run phase: P2.GEO-3C
+- Import run id: 4
+- Feature count: 150
+- Signal count: 3
+- Missing feature types: WATER_FEATURE, ADMIN_CENTER
+- Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
+- officialVerification all false: True
+- Labels/disclaimers present: True
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

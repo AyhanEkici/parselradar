@@ -1,0 +1,82 @@
+{
+  "phase": "P2.GEO-3D",
+  "status": "PASS",
+  "adapterStatus": "PASS",
+  "lifecycleState": "STAGED_OSM_SIGNAL_READY",
+  "latestRun": {
+    "id": "4",
+    "phase": "P2.GEO-3C",
+    "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+    "importScope": "KAYSERI_POC_ONLY",
+    "importMode": "DRY_RUN",
+    "status": "STAGED_IMPORT_PASS",
+    "completedAt": "Tue May 26 2026 03:09:32 GMT+0300 (Türkiye Standard Time)"
+  },
+  "importRunId": "4",
+  "runPhase": "P2.GEO-3C",
+  "signalCount": 3,
+  "featureCount": 150,
+  "featureTypes": [
+    "INDUSTRIAL_OSB_CANDIDATE",
+    "MAIN_ROAD",
+    "SETTLEMENT"
+  ],
+  "missingFeatureTypes": [
+    "WATER_FEATURE",
+    "ADMIN_CENTER"
+  ],
+  "coverageMode": "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
+  "hasP2Geo3CRun": true,
+  "hasSettlement": true,
+  "hasMainRoad": true,
+  "hasIndustrial": true,
+  "waterMissingHandled": true,
+  "adminCenterMissingHandled": true,
+  "allOfficialVerificationFalse": true,
+  "labelsDisclaimersPresent": true,
+  "productionSwapUsed": false,
+  "productionTablesQueried": false,
+  "stagingTablesQueried": true,
+  "signals": [
+    {
+      "type": "nearestStagedIndustrialOsbCandidate",
+      "featureType": "INDUSTRIAL_OSB_CANDIDATE",
+      "name": "Yeni Sanayi",
+      "distanceKm": 5.196,
+      "source": "POSTGIS_STAGING",
+      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceId": "osm-way-66427249",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "OSM_SMALL_SOURCE",
+      "officialVerification": false,
+      "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "nearestStagedMainRoad",
+      "featureType": "MAIN_ROAD",
+      "name": "Talas BulvarÄ±",
+      "distanceKm": 0.146,
+      "source": "POSTGIS_STAGING",
+      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceId": "osm-way-127098808",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "OSM_SMALL_SOURCE",
+      "officialVerification": false,
+      "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "nearestStagedSettlement",
+      "featureType": "SETTLEMENT",
+      "name": "Nurihas",
+      "distanceKm": 0.564,
+      "source": "POSTGIS_STAGING",
+      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceId": "osm-node-5241255670",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "OSM_SMALL_SOURCE",
+      "officialVerification": false,
+      "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    }
+  ],
+  "generatedAt": "2026-05-26T00:14:06.128Z"
+}

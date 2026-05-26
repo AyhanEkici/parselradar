@@ -15,19 +15,20 @@
 - ✅ P2.GEO-11 Staged signal lifecycle audit hardening
 - ✅ P2.GEO-3A Controlled OSM import pipeline scaffold
 - ✅ P2.GEO-3B Small real source configuration
-- ➡️ P2.GEO-3C Small staged OSM-derived import
+- ✅ P2.GEO-3C Small staged OSM-derived import
+- ➡️ P2.GEO-3D Staged OSM signal adapter alignment
 
 ## Remaining recommended sequence
-
-### P2.GEO-3C — small staged OSM-derived import
-
-Goal:
-Import only the validated small Kayseri OSM-derived source into staging tables.
 
 ### P2.GEO-3D — staged OSM signal adapter alignment
 
 Goal:
-Update staged signal adapter to prefer latest P2.GEO-3C run and handle OSM-derived feature coverage safely.
+Make the guarded signal adapter prefer the latest P2.GEO-3C staged OSM import and tolerate partial small-source coverage.
+
+### P2.GEO-3E — guarded UI verification against real staged OSM data
+
+Goal:
+Verify admin/dev diagnostics UI displays P2.GEO-3C-derived signals correctly.
 
 ### MVP-4D — Evidence OCR implementation
 

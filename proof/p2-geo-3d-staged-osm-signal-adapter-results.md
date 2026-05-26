@@ -1,0 +1,21 @@
+# P2.GEO-3D Staged OSM Signal Adapter Results
+
+- Status: PASS
+- Adapter status: PASS
+- Lifecycle state: STAGED_OSM_SIGNAL_READY
+- Run phase: P2.GEO-3C
+- Import run id: 4
+- Feature count: 150
+- Signal count: 3
+- Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, SETTLEMENT
+- Missing feature types: WATER_FEATURE, ADMIN_CENTER
+- Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
+- Has settlement: true
+- Has main road: true
+- Has industrial/OSB candidate: true
+- Water missing handled: true
+- Admin center missing handled: true
+- officialVerification all false: true
+- Labels/disclaimers present: true
+- Production swap used: false
+- Production tables queried: false

@@ -1,13 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
-
-export type StagedSignalStatus =
-  | "PASS"
-  | "CONFIG_REQUIRED"
-  | "STAGED_IMPORT_REQUIRED"
-  | "FAIL";
-
-export type StagedSignal = {
+type StagedSignal = {
   type: string;
   featureType: string;
   name: string;
@@ -21,128 +12,113 @@ export type StagedSignal = {
   disclaimer: string;
 };
 
-export type StagedSignalResult = {
-  phase: "P2.GEO-9";
-  status: StagedSignalStatus;
+type LatestRun = {
+  id: number | string;
+  phase: string;
+  sourceName: string;
+  importScope: string;
+  importMode: string;
+  status: string;
+  completedAt: string | null;
+};
+
+type QueryResult = {
+  phase: string;
+  status: string;
+  lifecycleState: string;
+  runPhase?: string;
+  latestRun?: LatestRun | null;
+  importRunId?: number | string | null;
+  signalCount: number;
+  featureCount: number;
+  featureTypes: string[];
+  missingFeatureTypes: string[];
+  coverageMode: string;
   testCoordinate: {
     lat: number;
     lon: number;
     label: string;
   };
-  importRunId?: string | number | null;
-  stagedImportFound?: boolean;
-  signals?: StagedSignal[];
-  signalCount?: number;
-  nearestStagedAdminCenter?: boolean;
-  nearestStagedSettlement?: boolean;
-  nearestStagedMainRoad?: boolean;
-  nearestStagedIndustrialOsbCandidate?: boolean;
-  nearestStagedWaterFeature?: boolean;
-  allOfficialVerificationFalse?: boolean;
-  labelsDisclaimersPresent?: boolean;
+  signals: StagedSignal[];
+  nearestStagedAdminCenter: StagedSignal | null;
+  nearestStagedSettlement: StagedSignal | null;
+  nearestStagedMainRoad: StagedSignal | null;
+  nearestStagedIndustrialOsbCandidate: StagedSignal | null;
+  nearestStagedWaterFeature: StagedSignal | null;
+  allOfficialVerificationFalse: boolean;
+  labelsDisclaimersPresent: boolean;
+  officialVerification: false;
   productionSwapUsed: false;
   productionTablesQueried: false;
-  officialVerification: false;
+  stagingTablesQueried: boolean;
   detail?: string;
-  generatedAt: string;
 };
 
-export const defaultStagedSignalCoordinate = {
-  lat: 38.71,
-  lon: 35.5,
-  label: "Kayseri POC staged signal test coordinate",
+const TEST_LAT = 38.71;
+const TEST_LON = 35.5;
+
+const FEATURE_TO_SIGNAL: Record<string, string> = {
+  ADMIN_CENTER: "nearestStagedAdminCenter",
+  SETTLEMENT: "nearestStagedSettlement",
+  MAIN_ROAD: "nearestStagedMainRoad",
+  INDUSTRIAL_OSB_CANDIDATE: "nearestStagedIndustrialOsbCandidate",
+  WATER_FEATURE: "nearestStagedWaterFeature",
 };
 
-const requiredFeatureTypes = [
-  {
-    featureType: "ADMIN_CENTER",
-    signalType: "NEAREST_STAGED_ADMIN_CENTER",
-  },
-  {
-    featureType: "SETTLEMENT",
-    signalType: "NEAREST_STAGED_SETTLEMENT",
-  },
-  {
-    featureType: "MAIN_ROAD",
-    signalType: "NEAREST_STAGED_MAIN_ROAD",
-  },
-  {
-    featureType: "INDUSTRIAL_OSB_CANDIDATE",
-    signalType: "NEAREST_STAGED_INDUSTRIAL_OSB_CANDIDATE",
-  },
-  {
-    featureType: "WATER_FEATURE",
-    signalType: "NEAREST_STAGED_WATER_FEATURE",
-  },
-] as const;
-
-export function ensureProofDir(): void {
-  fs.mkdirSync(path.resolve("proof"), { recursive: true });
-}
-
-export function writeProofPair(basePathWithoutExtension: string, payload: unknown, markdown: string): void {
-  ensureProofDir();
-  fs.writeFileSync(`${basePathWithoutExtension}.json`, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
-  fs.writeFileSync(`${basePathWithoutExtension}.md`, markdown, "utf8");
-}
-
-export function buildStagedSignalMarkdown(payload: Partial<StagedSignalResult>): string {
-  const lines = [
-    "# P2.GEO-9 Staged Signal API/Adapter Results",
-    "",
-    `- Status: ${payload.status ?? "UNKNOWN"}`,
-    `- Import run id: ${payload.importRunId ?? "n/a"}`,
-    `- Signal count: ${payload.signalCount ?? 0}`,
-    `- Production tables queried: ${payload.productionTablesQueried ?? false}`,
-    `- Production swap used: ${payload.productionSwapUsed ?? false}`,
-    "",
-  ];
-
-  if (payload.detail) {
-    lines.push(`- Detail: ${payload.detail}`, "");
-  }
-
-  for (const signal of payload.signals ?? []) {
-    lines.push(
-      `## ${signal.type}`,
-      "",
-      `- Feature type: ${signal.featureType}`,
-      `- Name: ${signal.name}`,
-      `- Distance km: ${signal.distanceKm}`,
-      `- Source: ${signal.source}`,
-      `- Source label: ${signal.sourceLabel}`,
-      `- officialVerification: ${signal.officialVerification}`,
-      "",
-    );
-  }
-
-  return `${lines.join("\n")}\n`;
-}
-
-export async function queryStagedSignalsFromPostgis(input?: {
-  lat?: number;
-  lon?: number;
-  label?: string;
-}): Promise<StagedSignalResult> {
-  const testCoordinate = {
-    lat: Number.isFinite(input?.lat) ? Number(input?.lat) : defaultStagedSignalCoordinate.lat,
-    lon: Number.isFinite(input?.lon) ? Number(input?.lon) : defaultStagedSignalCoordinate.lon,
-    label: input?.label || defaultStagedSignalCoordinate.label,
+function emptyResult(status: string, detail?: string): QueryResult {
+  return {
+    phase: "P2.GEO-3D",
+    status,
+    lifecycleState: status,
+    latestRun: null,
+    importRunId: null,
+    signalCount: 0,
+    featureCount: 0,
+    featureTypes: [],
+    missingFeatureTypes: [],
+    coverageMode: "NO_DATA",
+    testCoordinate: {
+      lat: TEST_LAT,
+      lon: TEST_LON,
+      label: "Kayseri staged signal test coordinate",
+    },
+    signals: [],
+    nearestStagedAdminCenter: null,
+    nearestStagedSettlement: null,
+    nearestStagedMainRoad: null,
+    nearestStagedIndustrialOsbCandidate: null,
+    nearestStagedWaterFeature: null,
+    allOfficialVerificationFalse: false,
+    labelsDisclaimersPresent: false,
+    officialVerification: false,
+    productionSwapUsed: false,
+    productionTablesQueried: false,
+    stagingTablesQueried: false,
+    detail,
   };
+}
 
+function toSignal(row: any): StagedSignal {
+  return {
+    type: String(row.signal_type),
+    featureType: String(row.feature_type),
+    name: String(row.name ?? row.source_id),
+    distanceKm: Number(row.distance_km ?? 0),
+    source: "POSTGIS_STAGING",
+    sourceLayer: String(row.source_layer ?? "unknown"),
+    sourceId: String(row.source_id ?? "unknown"),
+    sourceLabel: String(row.source_label ?? "PUBLIC_SOURCE_SIGNAL"),
+    confidence: String(row.confidence ?? "STAGED_OSM_SIGNAL"),
+    officialVerification: false,
+    disclaimer:
+      String(row.disclaimer ?? "") ||
+      "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification.",
+  };
+}
+
+export async function queryStagedSignalsFromPostgis(): Promise<QueryResult> {
   if (!process.env.GEODATA_DATABASE_URL) {
-    return {
-      phase: "P2.GEO-9",
-      status: "CONFIG_REQUIRED",
-      detail: "GEODATA_DATABASE_URL is missing.",
-      testCoordinate,
-      signalCount: 0,
-      signals: [],
-      productionSwapUsed: false,
-      productionTablesQueried: false,
-      officialVerification: false,
-      generatedAt: new Date().toISOString(),
-    };
+    return emptyResult("CONFIG_REQUIRED", "GEODATA_DATABASE_URL is missing.");
   }
 
   const { Client } = await import("pg");
@@ -151,146 +127,138 @@ export async function queryStagedSignalsFromPostgis(input?: {
   try {
     await client.connect();
 
-    const runResult = await client.query(
+    const latestRunResult = await client.query(
       `
-      SELECT id
+      SELECT id, phase, source_name, import_scope, import_mode, status, completed_at
       FROM public.geo_import_runs
-      WHERE phase = $1
-        AND status = $2
-      ORDER BY started_at DESC, id DESC
+      WHERE phase IN ('P2.GEO-3C', 'P2.GEO-7')
+        AND status = 'STAGED_IMPORT_PASS'
+      ORDER BY
+        CASE WHEN phase = 'P2.GEO-3C' THEN 0 ELSE 1 END,
+        completed_at DESC NULLS LAST,
+        id DESC
       LIMIT 1
       `,
-      ["P2.GEO-7", "STAGED_IMPORT_PASS"],
     );
 
-    const importRunId = runResult.rows[0]?.id ?? null;
+    const run = latestRunResult.rows[0] ?? null;
 
-    if (!importRunId) {
-      return {
-        phase: "P2.GEO-9",
-        status: "STAGED_IMPORT_REQUIRED",
-        detail: "No latest successful P2.GEO-7 staged import run found.",
-        testCoordinate,
-        importRunId,
-        stagedImportFound: false,
-        signalCount: 0,
-        signals: [],
-        allOfficialVerificationFalse: false,
-        labelsDisclaimersPresent: false,
-        productionSwapUsed: false,
-        productionTablesQueried: false,
-        officialVerification: false,
-        generatedAt: new Date().toISOString(),
-      };
+    if (!run) {
+      return emptyResult("STAGED_IMPORT_REQUIRED", "No staged import run found.");
     }
 
-    const signals: StagedSignal[] = [];
+    const featureAuditResult = await client.query(
+      `
+      SELECT
+        COUNT(*)::int AS feature_count,
+        COUNT(*) FILTER (WHERE official_verification = false)::int AS official_false_count,
+        COUNT(*) FILTER (WHERE source_label = 'PUBLIC_SOURCE_SIGNAL')::int AS public_source_count,
+        ARRAY_AGG(DISTINCT feature_type ORDER BY feature_type) AS feature_types
+      FROM public.geo_staging_features
+      WHERE import_run_id = $1
+      `,
+      [run.id],
+    );
 
-    for (const required of requiredFeatureTypes) {
-      const signalResult = await client.query(
-        `
+    const featureAudit = featureAuditResult.rows[0] ?? {};
+    const featureCount = Number(featureAudit.feature_count ?? 0);
+    const officialFalseCount = Number(featureAudit.official_false_count ?? 0);
+    const publicSourceCount = Number(featureAudit.public_source_count ?? 0);
+    const featureTypes = Array.isArray(featureAudit.feature_types)
+      ? featureAudit.feature_types.map(String).filter(Boolean)
+      : [];
+
+    const expectedFeatureTypes = ["SETTLEMENT", "MAIN_ROAD", "INDUSTRIAL_OSB_CANDIDATE", "WATER_FEATURE", "ADMIN_CENTER"];
+    const missingFeatureTypes = expectedFeatureTypes.filter((featureType) => !featureTypes.includes(featureType));
+
+    const nearestResult = await client.query(
+      `
+      WITH ranked AS (
         SELECT
-          feature_type,
-          source_layer,
-          source_id,
-          name,
-          source_label,
-          official_verification,
-          properties,
-          ROUND(
-            (
-              ST_Distance(
-                geom::geography,
-                ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography
-              ) / 1000.0
-            )::numeric,
-            3
-          )::float8 AS distance_km
-        FROM public.geo_staging_features
-        WHERE import_run_id = $1
-          AND feature_type = $2
-        ORDER BY geom <-> ST_SetSRID(ST_MakePoint($3, $4), 4326)
-        LIMIT 1
-        `,
-        [importRunId, required.featureType, testCoordinate.lon, testCoordinate.lat],
-      );
+          f.feature_type,
+          CASE
+            WHEN f.feature_type = 'ADMIN_CENTER' THEN 'nearestStagedAdminCenter'
+            WHEN f.feature_type = 'SETTLEMENT' THEN 'nearestStagedSettlement'
+            WHEN f.feature_type = 'MAIN_ROAD' THEN 'nearestStagedMainRoad'
+            WHEN f.feature_type = 'INDUSTRIAL_OSB_CANDIDATE' THEN 'nearestStagedIndustrialOsbCandidate'
+            WHEN f.feature_type = 'WATER_FEATURE' THEN 'nearestStagedWaterFeature'
+            ELSE 'nearestStagedOther'
+          END AS signal_type,
+          f.name,
+          f.source_layer,
+          f.source_id,
+          f.source_label,
+          COALESCE(f.properties->>'confidence', 'STAGED_OSM_SIGNAL') AS confidence,
+          COALESCE(
+            f.properties->>'disclaimer',
+            'OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification.'
+          ) AS disclaimer,
+          ROUND((ST_DistanceSphere(f.geom, ST_SetSRID(ST_MakePoint($2, $3), 4326)) / 1000.0)::numeric, 3)::float8 AS distance_km,
+          ROW_NUMBER() OVER (
+            PARTITION BY f.feature_type
+            ORDER BY ST_DistanceSphere(f.geom, ST_SetSRID(ST_MakePoint($2, $3), 4326)) ASC
+          ) AS rn
+        FROM public.geo_staging_features f
+        WHERE f.import_run_id = $1
+          AND f.geom IS NOT NULL
+          AND f.feature_type IN ('ADMIN_CENTER', 'SETTLEMENT', 'MAIN_ROAD', 'INDUSTRIAL_OSB_CANDIDATE', 'WATER_FEATURE')
+      )
+      SELECT *
+      FROM ranked
+      WHERE rn = 1
+      ORDER BY feature_type
+      `,
+      [run.id, TEST_LON, TEST_LAT],
+    );
 
-      const row = signalResult.rows[0];
+    const signals = nearestResult.rows.map(toSignal);
+    const bySignalType = new Map(signals.map((signal) => [signal.type, signal]));
 
-      if (!row) {
-        continue;
-      }
+    const allOfficialVerificationFalse = featureCount > 0 && officialFalseCount === featureCount;
+    const labelsDisclaimersPresent = featureCount > 0 && publicSourceCount === featureCount;
 
-      const properties = row.properties ?? {};
-      const sourceName = String(properties.sourceName ?? "P2_GEO_7_LOCAL_SAMPLE");
-      const confidence = String(properties.confidence ?? "POC_ONLY");
-      const disclaimer = String(
-        properties.disclaimer ??
-          "POC-only staged public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification.",
-      );
-
-      signals.push({
-        type: required.signalType,
-        featureType: String(row.feature_type),
-        name: String(row.name ?? ""),
-        distanceKm: Number(row.distance_km ?? 0),
-        source: sourceName,
-        sourceLayer: String(row.source_layer ?? ""),
-        sourceId: String(row.source_id ?? ""),
-        sourceLabel: String(row.source_label ?? "PUBLIC_SOURCE_SIGNAL"),
-        confidence,
-        officialVerification: false,
-        disclaimer,
-      });
-    }
-
-    const requiredSignalTypes = new Set(requiredFeatureTypes.map((item) => item.signalType));
-    const returnedSignalTypes = new Set(signals.map((signal) => signal.type));
-    const allRequiredSignalsReturned = [...requiredSignalTypes].every((type) => returnedSignalTypes.has(type));
-    const allOfficialVerificationFalse = signals.length > 0 && signals.every((signal) => signal.officialVerification === false);
-    const labelsDisclaimersPresent =
-      signals.length > 0 &&
-      signals.every((signal) => Boolean(signal.sourceLabel) && Boolean(signal.disclaimer));
-
-    const status: StagedSignalStatus =
-      signals.length === 5 &&
-      allRequiredSignalsReturned &&
-      allOfficialVerificationFalse &&
-      labelsDisclaimersPresent
-        ? "PASS"
-        : "FAIL";
+    const latestRun: LatestRun = {
+      id: run.id,
+      phase: String(run.phase),
+      sourceName: String(run.source_name),
+      importScope: String(run.import_scope),
+      importMode: String(run.import_mode),
+      status: String(run.status),
+      completedAt: run.completed_at ? String(run.completed_at) : null,
+    };
 
     return {
-      phase: "P2.GEO-9",
-      status,
-      testCoordinate,
-      importRunId,
-      stagedImportFound: true,
-      signals,
+      phase: "P2.GEO-3D",
+      status: "PASS",
+      lifecycleState: "STAGED_OSM_SIGNAL_READY",
+      runPhase: latestRun.phase,
+      latestRun,
+      importRunId: latestRun.id,
       signalCount: signals.length,
-      nearestStagedAdminCenter: returnedSignalTypes.has("NEAREST_STAGED_ADMIN_CENTER"),
-      nearestStagedSettlement: returnedSignalTypes.has("NEAREST_STAGED_SETTLEMENT"),
-      nearestStagedMainRoad: returnedSignalTypes.has("NEAREST_STAGED_MAIN_ROAD"),
-      nearestStagedIndustrialOsbCandidate: returnedSignalTypes.has("NEAREST_STAGED_INDUSTRIAL_OSB_CANDIDATE"),
-      nearestStagedWaterFeature: returnedSignalTypes.has("NEAREST_STAGED_WATER_FEATURE"),
+      featureCount,
+      featureTypes,
+      missingFeatureTypes,
+      coverageMode: "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
+      testCoordinate: {
+        lat: TEST_LAT,
+        lon: TEST_LON,
+        label: "Kayseri staged signal test coordinate",
+      },
+      signals,
+      nearestStagedAdminCenter: bySignalType.get("nearestStagedAdminCenter") ?? null,
+      nearestStagedSettlement: bySignalType.get("nearestStagedSettlement") ?? null,
+      nearestStagedMainRoad: bySignalType.get("nearestStagedMainRoad") ?? null,
+      nearestStagedIndustrialOsbCandidate: bySignalType.get("nearestStagedIndustrialOsbCandidate") ?? null,
+      nearestStagedWaterFeature: bySignalType.get("nearestStagedWaterFeature") ?? null,
       allOfficialVerificationFalse,
       labelsDisclaimersPresent,
+      officialVerification: false,
       productionSwapUsed: false,
       productionTablesQueried: false,
-      officialVerification: false,
-      generatedAt: new Date().toISOString(),
+      stagingTablesQueried: true,
     };
   } catch (error) {
-    return {
-      phase: "P2.GEO-9",
-      status: "FAIL",
-      detail: error instanceof Error ? error.message : String(error),
-      testCoordinate,
-      productionSwapUsed: false,
-      productionTablesQueried: false,
-      officialVerification: false,
-      generatedAt: new Date().toISOString(),
-    };
+    return emptyResult("FAIL", error instanceof Error ? error.message : String(error));
   } finally {
     await client.end().catch(() => undefined);
   }

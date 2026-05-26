@@ -121,7 +121,8 @@
                     "geo:p2-geo-3a:dry-run-small-region":  "ts-node apps/api/scripts/geodata/p2Geo3ASmallRegionDryRun.ts",
                     "geo:p2-geo-3b:configure-small-source":  "ts-node apps/api/scripts/geodata/p2Geo3BConfigureSmallSource.ts",
                     "geo:p2-geo-3c:import-small-osm":  "ts-node apps/api/scripts/geodata/p2Geo3CImportSmallOsmSource.ts",
-                    "geo:p2-geo-3c:verify-small-osm":  "ts-node apps/api/scripts/geodata/p2Geo3CVerifySmallOsmImport.ts"
+                    "geo:p2-geo-3c:verify-small-osm":  "ts-node apps/api/scripts/geodata/p2Geo3CVerifySmallOsmImport.ts",
+                    "geo:p2-geo-3d:verify-staged-osm-adapter":  "ts-node apps/api/scripts/geodata/p2Geo3DVerifyStagedOsmSignalAdapter.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",

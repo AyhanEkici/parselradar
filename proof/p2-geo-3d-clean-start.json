@@ -1,0 +1,18 @@
+{
+    "phase":  "P2.GEO-3D",
+    "capturedAt":  "2026-05-26T00:13:55.6619509Z",
+    "head":  "76435f32",
+    "workingTreeCleanAtStart":  true,
+    "recentCommits":  [
+                          "76435f32 fix: complete small OSM staged geodata import",
+                          "ff8fc278 fix: complete small OSM staged geodata import",
+                          "2ba68c22 fix: normalize small OSM geometry import",
+                          "7dae3a06 fix: repair small OSM staged geodata import",
+                          "efedf2f8 feat: import small OSM source into geodata staging"
+                      ],
+    "sourceFileExists":  true,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}
