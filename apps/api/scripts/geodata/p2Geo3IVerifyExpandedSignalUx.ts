@@ -44,6 +44,13 @@ async function main(): Promise<void> {
   const apiRouteContent = readIfExists("apps/api/src/routes/stagedGeoSignalsRoutes.ts");
   const freshnessProofContent = readIfExists("proof/p2-geo-3f-freshness-duplicate-policy-results.json");
 
+  let freshnessProof: any = null;
+  try {
+    freshnessProof = freshnessProofContent ? JSON.parse(freshnessProofContent) : null;
+  } catch {
+    freshnessProof = null;
+  }
+
   const requiredUiTokens = [
     "P2_GEO_3I_EXPANDED_UX_TRUTH_MARKERS",
     "Expanded staged signal diagnostics",
@@ -54,6 +61,7 @@ async function main(): Promise<void> {
     "Feature count",
     "Signal count",
     "Feature type counts",
+    "featureTypes",
     "Missing feature types",
     "Source age / freshness",
     "Duplicate / redundant run state",
@@ -96,18 +104,18 @@ async function main(): Promise<void> {
   const hasSettlement = Boolean(adapterResult.nearestStagedSettlement);
   const hasMainRoad = Boolean(adapterResult.nearestStagedMainRoad);
   const hasIndustrial = Boolean(adapterResult.nearestStagedIndustrialOsbCandidate);
+
   const optionalSignalHandled =
     Boolean(adapterResult.nearestStagedWaterFeature) ||
     Boolean(adapterResult.nearestStagedAdminCenter) ||
     adapterResult.missingFeatureTypes.includes("WATER_FEATURE") ||
     adapterResult.missingFeatureTypes.includes("ADMIN_CENTER");
 
-  let freshnessProof: any = null;
-  try {
-    freshnessProof = freshnessProofContent ? JSON.parse(freshnessProofContent) : null;
-  } catch {
-    freshnessProof = null;
-  }
+  const sourceAgePresent =
+    Boolean(adapterResult.latestRun?.completedAt) ||
+    freshnessProofContent.includes("runAgeMinutes") ||
+    freshnessProofContent.includes("completedAt") ||
+    uiContent.includes("Source age / freshness");
 
   const duplicateStatePresent =
     Boolean(freshnessProof?.duplicatePolicy) ||
@@ -117,13 +125,9 @@ async function main(): Promise<void> {
     freshnessProofContent.includes("canonicalRunCount") ||
     uiContent.includes("Duplicate / redundant run state");
 
-  const sourceAgePresent =
-    Boolean(adapterResult.latestRun?.completedAt) ||
-    freshnessProofContent.includes("runAgeMinutes") ||
-    freshnessProofContent.includes("completedAt") ||
-    uiContent.includes("Source age / freshness");
-
-  const featureTypeCountsPresent = adapterResult.featureTypes.length > 0 || uiContent.includes("Feature type counts");
+  const featureTypeCountsPresent =
+    adapterResult.featureTypes.length > 0 &&
+    (uiContent.includes("Feature type counts") || uiContent.includes("featureTypes"));
 
   const status =
     adapterResult.status === "PASS" &&
@@ -135,7 +139,8 @@ async function main(): Promise<void> {
     hasMainRoad &&
     hasIndustrial &&
     optionalSignalHandled &&
-    (sourceAgePresent || uiContent.includes("Source age / freshness")) &&`n    (duplicateStatePresent || uiContent.includes("Duplicate / redundant run state")) &&
+    sourceAgePresent &&
+    duplicateStatePresent &&
     adapterResult.allOfficialVerificationFalse &&
     adapterResult.labelsDisclaimersPresent &&
     adapterResult.productionSwapUsed === false &&
@@ -216,6 +221,7 @@ async function main(): Promise<void> {
       `- Optional signal handled: ${optionalSignalHandled}`,
       `- Source age present: ${sourceAgePresent}`,
       `- Duplicate state present: ${duplicateStatePresent}`,
+      `- Feature type counts present: ${featureTypeCountsPresent}`,
       `- Missing UI tokens: ${missingUiTokens.join(", ") || "none"}`,
       `- officialVerification all false: ${adapterResult.allOfficialVerificationFalse}`,
       `- Labels/disclaimers present: ${adapterResult.labelsDisclaimersPresent}`,
@@ -257,4 +263,3 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3i-expanded-signal-ux-results.json" }, null, 2));
   process.exitCode = 1;
 });
-

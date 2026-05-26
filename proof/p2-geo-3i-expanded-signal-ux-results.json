@@ -54,6 +54,7 @@
     "Feature count",
     "Signal count",
     "Feature type counts",
+    "featureTypes",
     "Missing feature types",
     "Source age / freshness",
     "Duplicate / redundant run state",
@@ -85,6 +86,7 @@
     "productionTablesQueried"
   ],
   "missingUiTokens": [
+    "featureTypes",
     "featureTypes"
   ],
   "sourceFileCommitted": false,
@@ -94,5 +96,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T01:15:16.695Z"
+  "generatedAt": "2026-05-26T01:21:35.194Z"
 }

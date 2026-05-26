@@ -1,6 +1,6 @@
 {
     "phase":  "P2.GEO-3I",
-    "generatedAt":  "2026-05-26T01:18:50.3615319Z",
+    "generatedAt":  "2026-05-26T01:21:59.0596905Z",
     "status":  "FAIL",
     "uiPath":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
     "latestPhase":  "P2.GEO-3H",
@@ -19,6 +19,7 @@
                             ],
     "sourceAgePresent":  true,
     "duplicateStatePresent":  true,
+    "featureTypeCountsPresent":  true,
     "allOfficialVerificationFalse":  true,
     "labelsDisclaimersPresent":  true,
     "dbImportExecuted":  false,

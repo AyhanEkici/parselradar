@@ -10,6 +10,7 @@
 - Missing feature types: ADMIN_CENTER
 - Source age present: True
 - Duplicate state present: True
+- Feature type counts present: True
 - officialVerification all false: True
 - Labels/disclaimers present: True
 - DB import executed: false
