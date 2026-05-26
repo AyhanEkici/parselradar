@@ -87,7 +87,7 @@ export default function AdminProperties() {
       const data = await apiFetch('/admin/properties');
       setProperties(Array.isArray(data) ? data : []);
     } catch (err) {
-      setError((err as { error?: string; message?: string }).error || (err as Error).message || 'Mülkler yüklenemedi');
+      setError((err as { error?: string; message?: string }).error || (err as Error).message || 'MÃ¼lkler yÃ¼klenemedi');
     } finally {
       setLoading(false);
     }
@@ -123,8 +123,8 @@ export default function AdminProperties() {
       <AdminPage className="p-0 sm:p-0">
         <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
-          title="Tüm Mülkler"
-          subtitle="Mülkleri durum, lokasyon ve temel metrikleriyle inceleyin"
+          title="TÃ¼m MÃ¼lkler"
+          subtitle="MÃ¼lkleri durum, lokasyon ve temel metrikleriyle inceleyin"
           actions={
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <Link to="/admin/cms" className="rounded border border-slate-300 bg-white px-3 py-1.5 text-slate-700 hover:bg-slate-50">
@@ -141,7 +141,7 @@ export default function AdminProperties() {
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
             <AdminInput
               className="w-full sm:w-80"
-              placeholder="Adres, şehir, ilçe, durum, kullanıcı ara"
+              P2_1C_TRIAGED_BACKLOG="Adres, ÅŸehir, ilÃ§e, durum, kullanÄ±cÄ± ara"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -150,7 +150,7 @@ export default function AdminProperties() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="">Tüm Durumlar</option>
+              <option value="">TÃ¼m Durumlar</option>
               <option value="DRAFT">DRAFT</option>
               <option value="PENDING">PENDING</option>
               <option value="APPROVED">APPROVED</option>
@@ -158,7 +158,7 @@ export default function AdminProperties() {
             </select>
           </div>
           <div className="flex w-full flex-wrap items-center justify-between gap-2 md:w-auto md:justify-end">
-            <span className="text-sm text-slate-600">{filtered.length} kayıt</span>
+            <span className="text-sm text-slate-600">{filtered.length} kayÄ±t</span>
             <AdminButton onClick={() => { setQuery(''); setStatusFilter(''); }} disabled={!query && !statusFilter}>
               Temizle
             </AdminButton>
@@ -169,11 +169,11 @@ export default function AdminProperties() {
           <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
         ) : null}
 
-        {loading ? <div className="text-sm text-slate-500">Mülkler yükleniyor...</div> : null}
+        {loading ? <div className="text-sm text-slate-500">MÃ¼lkler yÃ¼kleniyor...</div> : null}
 
         {!loading && filtered.length === 0 ? (
           <AdminEmptyState>
-            Görüntülenecek mülk bulunamadı. Filtreyi temizleyip tekrar deneyin.
+            GÃ¶rÃ¼ntÃ¼lenecek mÃ¼lk bulunamadÄ±. Filtreyi temizleyip tekrar deneyin.
           </AdminEmptyState>
         ) : (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -189,12 +189,12 @@ export default function AdminProperties() {
                 <li key={p._id}>
                   <div
                     className="block rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md hover:border-slate-300 transition"
-                    title={`Mülkü aç: ${p.addressText || p._id}`}
+                    title={`MÃ¼lkÃ¼ aÃ§: ${p.addressText || p._id}`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <div className="font-semibold text-slate-900 break-words">
-                          {p.addressText || 'Adres girilmemiş'}
+                          {p.addressText || 'Adres girilmemiÅŸ'}
                         </div>
                         <div className="text-sm text-slate-600 mt-1">
                           {p.il || '-'} / {p.ilce || '-'}
@@ -209,13 +209,13 @@ export default function AdminProperties() {
                         <div className="font-semibold text-slate-800">{formatMoney(price)}</div>
                       </div>
                       <div className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
-                        <div className="text-xs text-slate-500">Alan (m²)</div>
+                        <div className="text-xs text-slate-500">Alan (mÂ²)</div>
                         <div className="font-semibold text-slate-800">{typeof area === 'number' ? area : '-'}</div>
                       </div>
                     </div>
 
                     <div className="mt-3 text-sm text-slate-700">
-                      <span className="text-slate-500">Kullanıcı:</span> {resolveUserDisplay(p)}
+                      <span className="text-slate-500">KullanÄ±cÄ±:</span> {resolveUserDisplay(p)}
                     </div>
 
                     <div className="mt-2 text-xs text-slate-700 space-y-1">

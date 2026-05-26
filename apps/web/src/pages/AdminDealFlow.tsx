@@ -583,7 +583,7 @@ export default function AdminDealFlow() {
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600">City / location search</label>
               <AdminInput
-                placeholder="Search city, district, neighborhood, address"
+                P2_1C_TRIAGED_BACKLOG="Search city, district, neighborhood, address"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
               />

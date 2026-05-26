@@ -1,0 +1,21 @@
+# P2.1C Auto-Commit Gated Results
+
+- Status: READY_TO_COMMIT
+- PASS | P2.1C local remediation proof
+- PASS | p2:1a:verify-audit-remediation
+- PASS | p2:1b:verify-audit-remediation
+- P2.1 audit: WARN
+- P2.1 blockers: 0
+- P2.1 high findings: 0
+- P2.1 medium findings: 3
+- P2.1 low findings: 7
+- PASS | mvp:4d:verify-evidence-ocr
+- PASS | build api
+- PASS | build web
+- PASS | connector diagnostics contract
+- PASS | connector diagnostics
+- PASS | platform integrity
+- Generic markers before in P2.1C targets: 23
+- Generic markers remaining in P2.1C targets: 0
+- Triaged backlog markers: 23
+- Commit allowed: true

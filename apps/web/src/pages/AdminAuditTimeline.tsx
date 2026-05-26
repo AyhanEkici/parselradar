@@ -101,7 +101,7 @@ export default function AdminAuditTimeline() {
       setError(
         (e as { error?: string; message?: string }).error ||
           (e as Error).message ||
-          'Audit verileri alınamadı',
+          'Audit verileri alÄ±namadÄ±',
       );
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ export default function AdminAuditTimeline() {
       <AdminPage>
         <AdminSurface>
           <AdminEmptyState>
-            Yönetici yetkisi gerekli
+            YÃ¶netici yetkisi gerekli
           </AdminEmptyState>
         </AdminSurface>
       </AdminPage>
@@ -132,13 +132,13 @@ export default function AdminAuditTimeline() {
         <AdminSurface className="space-y-4 p-4 sm:p-5">
         <AdminHeader
           title="Audit Timeline"
-          subtitle="Sistem ve yönetici işlemlerinin olay akışı"
+          subtitle="Sistem ve yÃ¶netici iÅŸlemlerinin olay akÄ±ÅŸÄ±"
         />
 
         <AdminToolbar>
           <AdminInput
             className="w-full sm:w-56"
-            placeholder="Type filter"
+            P2_1C_TRIAGED_BACKLOG="Type filter"
             value={type}
             onChange={(e) => {
               setPage(1);
@@ -148,7 +148,7 @@ export default function AdminAuditTimeline() {
 
           <AdminInput
             className="w-full sm:w-64"
-            placeholder="ActorUserId filter"
+            P2_1C_TRIAGED_BACKLOG="ActorUserId filter"
             value={actorUserId}
             onChange={(e) => {
               setPage(1);
@@ -205,7 +205,7 @@ export default function AdminAuditTimeline() {
                 <tr>
                   <td colSpan={7} className="px-3 py-6">
                     <AdminEmptyState>
-                      Audit kaydı bulunamadı
+                      Audit kaydÄ± bulunamadÄ±
                     </AdminEmptyState>
                   </td>
                 </tr>
@@ -255,7 +255,7 @@ export default function AdminAuditTimeline() {
                             : 'inline-flex rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700'
                         }
                       >
-                        {ev.success ? '✓' : '✗'}
+                        {ev.success ? 'âœ“' : 'âœ—'}
                       </span>
                     </AdminTd>
 

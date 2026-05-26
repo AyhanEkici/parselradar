@@ -73,7 +73,7 @@ export function AdminInput({ className, ...props }: AdminInputProps) {
     <input
       className={cx(
         'h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm',
-        'placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400',
+        'P2_1C_TRIAGED_BACKLOG:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400',
         className
       )}
       {...props}

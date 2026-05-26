@@ -16,9 +16,9 @@ export default function AdminDealPool() {
     setStatus('');
     try {
       await apiFetch(`/admin/deal-pool/${propertyId.trim()}/accept`, { method: 'POST' });
-      setStatus('Deal pool accept başarılı.');
+      setStatus('Deal pool accept baÅŸarÄ±lÄ±.');
     } catch (err) {
-      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool accept başarısız.');
+      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool accept baÅŸarÄ±sÄ±z.');
     } finally {
       setLoading(false);
     }
@@ -38,9 +38,9 @@ export default function AdminDealPool() {
           sharedFields: ['addressText', 'il', 'ilce', 'status'],
         }),
       });
-      setStatus('Deal pool share başarılı.');
+      setStatus('Deal pool share baÅŸarÄ±lÄ±.');
     } catch (err) {
-      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool share başarısız.');
+      setStatus((err as { error?: string; message?: string }).error || (err as { message?: string }).message || 'Deal pool share baÅŸarÄ±sÄ±z.');
     } finally {
       setLoading(false);
     }
@@ -54,7 +54,7 @@ export default function AdminDealPool() {
         <div className="text-sm font-semibold">Accept by Property</div>
         <input
           className="w-full border rounded px-3 py-2"
-          placeholder="propertyId"
+          P2_1C_TRIAGED_BACKLOG="propertyId"
           value={propertyId}
           onChange={(e) => setPropertyId(e.target.value)}
         />
@@ -67,19 +67,19 @@ export default function AdminDealPool() {
         <div className="text-sm font-semibold">Share by Entry</div>
         <input
           className="w-full border rounded px-3 py-2"
-          placeholder="entryId"
+          P2_1C_TRIAGED_BACKLOG="entryId"
           value={entryId}
           onChange={(e) => setEntryId(e.target.value)}
         />
         <input
           className="w-full border rounded px-3 py-2"
-          placeholder="sharedWithName"
+          P2_1C_TRIAGED_BACKLOG="sharedWithName"
           value={sharedWithName}
           onChange={(e) => setSharedWithName(e.target.value)}
         />
         <input
           className="w-full border rounded px-3 py-2"
-          placeholder="sharedWithContact"
+          P2_1C_TRIAGED_BACKLOG="sharedWithContact"
           value={sharedWithContact}
           onChange={(e) => setSharedWithContact(e.target.value)}
         />

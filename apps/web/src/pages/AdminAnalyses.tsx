@@ -130,7 +130,7 @@ export default function AdminAnalyses() {
 
   useEffect(() => { fetchAnalyses(); /* eslint-disable-next-line */ }, [page, userIdFilter, propertyIdFilter, typeFilter]);
 
-  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') return <div>Yönetici yetkisi gerekli</div>;
+  if (!user || String(user.role || '').toUpperCase() !== 'ADMIN') return <div>YÃ¶netici yetkisi gerekli</div>;
   if (error) return <div>Hata: {error}</div>;
 
   return (
@@ -139,13 +139,13 @@ export default function AdminAnalyses() {
         <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
           title="Analizler"
-          subtitle="Skor, sinyal ve yeniden kullanım durumlarıyla analiz kayıtlarını izleyin"
+          subtitle="Skor, sinyal ve yeniden kullanÄ±m durumlarÄ±yla analiz kayÄ±tlarÄ±nÄ± izleyin"
         />
 
         <AdminToolbar>
           <AdminInput
             className="w-full sm:w-56"
-            placeholder="UserId"
+            P2_1C_TRIAGED_BACKLOG="UserId"
             value={userIdFilter}
             onChange={(e) => {
               setPage(1);
@@ -154,7 +154,7 @@ export default function AdminAnalyses() {
           />
           <AdminInput
             className="w-full sm:w-56"
-            placeholder="PropertyId"
+            P2_1C_TRIAGED_BACKLOG="PropertyId"
             value={propertyIdFilter}
             onChange={(e) => {
               setPage(1);
@@ -163,7 +163,7 @@ export default function AdminAnalyses() {
           />
           <AdminInput
             className="w-full sm:w-44"
-            placeholder="Type"
+            P2_1C_TRIAGED_BACKLOG="Type"
             value={typeFilter}
             onChange={(e) => {
               setPage(1);
@@ -195,7 +195,7 @@ export default function AdminAnalyses() {
                 <AdminTh>Operational</AdminTh>
                 <AdminTh>Property</AdminTh>
                 <AdminTh>User</AdminTh>
-                <AdminTh>Oluşturulma</AdminTh>
+                <AdminTh>OluÅŸturulma</AdminTh>
               </tr>
             </thead>
             <tbody>
@@ -211,7 +211,7 @@ export default function AdminAnalyses() {
                   </AdminTd>
                   <AdminTd>
                     <AdminStatusPill tone={a.reused ? 'success' : 'neutral'}>
-                      {a.reused ? 'Evet' : 'Hayır'}
+                      {a.reused ? 'Evet' : 'HayÄ±r'}
                     </AdminStatusPill>
                   </AdminTd>
                   <AdminTd>
@@ -251,7 +251,7 @@ export default function AdminAnalyses() {
                         className="text-blue-600 hover:underline"
                         to={`/admin/properties/${a.propertySubmissionId._id}`}
                       >
-                        {a.propertySubmissionId.addressText || 'Adres girilmemiş'}
+                        {a.propertySubmissionId.addressText || 'Adres girilmemiÅŸ'}
                         {a.propertySubmissionId.il || a.propertySubmissionId.ilce
                           ? ` (${a.propertySubmissionId.il || '-'} / ${a.propertySubmissionId.ilce || '-'})`
                           : ''}
@@ -268,10 +268,10 @@ export default function AdminAnalyses() {
           </AdminTable>
         </AdminTableWrap>
 
-        {loading ? <div className="text-sm text-slate-500">Yükleniyor...</div> : null}
+        {loading ? <div className="text-sm text-slate-500">YÃ¼kleniyor...</div> : null}
         {!loading && analyses.length === 0 ? (
           <AdminEmptyState>
-            Bu sayfada gösterilecek analiz kaydı bulunamadı.
+            Bu sayfada gÃ¶sterilecek analiz kaydÄ± bulunamadÄ±.
           </AdminEmptyState>
         ) : null}
 
@@ -279,7 +279,7 @@ export default function AdminAnalyses() {
           <div className="text-sm text-slate-600">Sayfa {page} / {totalPages}</div>
           <div className="flex items-center gap-2">
             <AdminButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              Önceki
+              Ã–nceki
             </AdminButton>
             <AdminButton disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
               Sonraki

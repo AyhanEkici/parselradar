@@ -1,11 +1,11 @@
 {
   "phase": "P2.1",
   "status": "WARN",
-  "generatedAt": "2026-05-26T02:08:45.681Z",
+  "generatedAt": "2026-05-26T02:14:39.121Z",
   "inventory": {
-    "totalFiles": 1769,
-    "trackedFiles": 1769,
-    "tsFiles": 1093,
+    "totalFiles": 1775,
+    "trackedFiles": 1775,
+    "tsFiles": 1094,
     "apiFiles": 651,
     "webFiles": 309,
     "pageFiles": 60,
@@ -638,7 +638,7 @@
   "severityCounts": {
     "BLOCKER": 0,
     "HIGH": 0,
-    "MEDIUM": 15,
+    "MEDIUM": 3,
     "LOW": 7,
     "FUTURE": 0
   },
@@ -664,80 +664,8 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/web/src/components/admin/AdminPrimitives.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/components/map/ActiveLayerToolbar.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/lib/municipalitySourceRegistry.ts",
-      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminAnalyses.tsx",
-      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminAuditTimeline.tsx",
-      "detail": "Contains 2 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminDealFlow.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminDealPool.tsx",
-      "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminProperties.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/AdminUsers.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/Organizations.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/PortfolioDashboard.tsx",
-      "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/Register.tsx",
-      "detail": "Contains 3 TODO/FIXME/HACK/placeholder-style marker(s)."
+      "file": "apps/api/scripts/p21bVerifyAuditRemediation.ts",
+      "detail": "Contains 7 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "LOW",

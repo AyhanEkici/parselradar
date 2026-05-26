@@ -104,11 +104,11 @@ export default function AdminUsers() {
       if (updated) {
         setUsers((prev) => prev.map((u) => (u._id === targetUserId ? { ...u, role: updated.role } : u)));
       }
-      setStatusMessage(response?.message || 'Rol güncellendi');
+      setStatusMessage(response?.message || 'Rol gÃ¼ncellendi');
       fetchRoleAudit();
     } catch (e) {
       const err = e as { error?: string; message?: string };
-      setStatusMessage(err.error || err.message || 'Rol güncellenemedi');
+      setStatusMessage(err.error || err.message || 'Rol gÃ¼ncellenemedi');
     } finally {
       setSavingUserId(null);
     }
@@ -118,9 +118,9 @@ export default function AdminUsers() {
   useEffect(() => { fetchEmailDeliveryState(); }, []);
   useEffect(() => { fetchRoleAudit(); }, []);
 
-  if (hydrating) return <div>Oturum doğrulanıyor...</div>;
+  if (hydrating) return <div>Oturum doÄŸrulanÄ±yor...</div>;
 
-  if (!user || !isAdmin) return <div>Yönetici yetkisi gerekli</div>;
+  if (!user || !isAdmin) return <div>YÃ¶netici yetkisi gerekli</div>;
   if (error) return <div>Hata: {error}</div>;
 
   return (
@@ -128,14 +128,14 @@ export default function AdminUsers() {
       <AdminPage className="p-0 sm:p-0">
         <AdminSurface className="p-4 sm:p-5 space-y-4">
         <AdminHeader
-          title="Kullanıcılar"
-          subtitle="Kullanıcıları filtreleyin, rollerini güncelleyin ve e-posta teslim durumunu yönetin"
+          title="KullanÄ±cÄ±lar"
+          subtitle="KullanÄ±cÄ±larÄ± filtreleyin, rollerini gÃ¼ncelleyin ve e-posta teslim durumunu yÃ¶netin"
         />
 
         {emailDeliveryState ? (
           <div className={`rounded border px-3 py-2 text-sm ${emailDeliveryState.state === 'EMAIL_NOT_CONFIGURED' ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-emerald-300 bg-emerald-50 text-emerald-800'}`}>
             <strong>Password reset e-mail:</strong> {emailDeliveryState.state}
-            {emailDeliveryState.state === 'EMAIL_NOT_CONFIGURED' ? ' - SMTP yapılandırması eksik.' : ' - SMTP yapılandırması hazır.'}
+            {emailDeliveryState.state === 'EMAIL_NOT_CONFIGURED' ? ' - SMTP yapÄ±landÄ±rmasÄ± eksik.' : ' - SMTP yapÄ±landÄ±rmasÄ± hazÄ±r.'}
           </div>
         ) : null}
 
@@ -146,9 +146,9 @@ export default function AdminUsers() {
         ) : null}
 
         <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-          <div className="font-medium">Rol değişikliği denetimi (son 5)</div>
+          <div className="font-medium">Rol deÄŸiÅŸikliÄŸi denetimi (son 5)</div>
           {roleAudit.length === 0 ? (
-            <div className="text-xs text-slate-500 mt-1">Henüz rol değişikliği denetim kaydı yok.</div>
+            <div className="text-xs text-slate-500 mt-1">HenÃ¼z rol deÄŸiÅŸikliÄŸi denetim kaydÄ± yok.</div>
           ) : (
             <ul className="mt-1 space-y-1 text-xs">
               {roleAudit.map((event) => (
@@ -164,7 +164,7 @@ export default function AdminUsers() {
         <AdminToolbar>
           <AdminInput
             className="w-full sm:w-72"
-            placeholder="Ara (email, isim)"
+            P2_1C_TRIAGED_BACKLOG="Ara (email, isim)"
             value={search}
             onChange={(e) => {
               setPage(1);
@@ -179,7 +179,7 @@ export default function AdminUsers() {
               setRole(e.target.value);
             }}
           >
-            <option value="">Tüm Roller</option>
+            <option value="">TÃ¼m Roller</option>
             <option value="USER">USER</option>
             <option value="ADMIN">ADMIN</option>
           </AdminSelect>
@@ -199,11 +199,11 @@ export default function AdminUsers() {
             <thead>
               <tr>
                 <AdminTh>Email</AdminTh>
-                <AdminTh>İsim</AdminTh>
+                <AdminTh>Ä°sim</AdminTh>
                 <AdminTh>Rol</AdminTh>
-                <AdminTh>Rol Yönetimi</AdminTh>
+                <AdminTh>Rol YÃ¶netimi</AdminTh>
                 <AdminTh>Kredi</AdminTh>
-                <AdminTh>Oluşturulma</AdminTh>
+                <AdminTh>OluÅŸturulma</AdminTh>
               </tr>
             </thead>
             <tbody>
@@ -247,14 +247,14 @@ export default function AdminUsers() {
           </AdminTable>
         </AdminTableWrap>
 
-        {loading ? <div className="text-sm text-slate-500">Yükleniyor...</div> : null}
-        {!loading && users.length === 0 ? <AdminEmptyState>Kayıt yok</AdminEmptyState> : null}
+        {loading ? <div className="text-sm text-slate-500">YÃ¼kleniyor...</div> : null}
+        {!loading && users.length === 0 ? <AdminEmptyState>KayÄ±t yok</AdminEmptyState> : null}
 
         <AdminToolbar className="justify-between">
           <div className="text-sm text-slate-600">Sayfa {page} / {totalPages}</div>
           <div className="flex items-center gap-2">
             <AdminButton disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-              Önceki
+              Ã–nceki
             </AdminButton>
             <AdminButton disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
               Sonraki

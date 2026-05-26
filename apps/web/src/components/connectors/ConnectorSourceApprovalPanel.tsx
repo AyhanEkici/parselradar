@@ -59,7 +59,7 @@ export default function ConnectorSourceApprovalPanel({
           type="text"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Add a note, e.g. 'Signed agreement 2026-05-18'"
+          P2_1C_TRIAGED_BACKLOG="Add a note, e.g. 'Signed agreement 2026-05-18'"
           className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-slate-500"
         />
       </div>

@@ -17,7 +17,7 @@ export default function Organizations() {
       const data = await apiFetch('organizations');
       setPayload(data);
     } catch (err: any) {
-      setError(err?.error || 'Organizations yüklenemedi');
+      setError(err?.error || 'Organizations yÃ¼klenemedi');
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ export default function Organizations() {
       setName('');
       await load();
     } catch (err: any) {
-      setError(err?.error || err?.message || 'Organization oluşturulamadı');
+      setError(err?.error || err?.message || 'Organization oluÅŸturulamadÄ±');
     } finally {
       setCreating(false);
     }
@@ -57,7 +57,7 @@ export default function Organizations() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Organization name"
+              P2_1C_TRIAGED_BACKLOG="Organization name"
               className="rounded-md border border-slate-300 px-3 py-2 text-sm"
             />
             <button onClick={createOrganization} disabled={creating} className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
@@ -75,7 +75,7 @@ export default function Organizations() {
         </div>
 
         {error ? <div className="text-sm text-red-600">{error}</div> : null}
-        {loading ? <div className="text-sm text-slate-600">Organizations yükleniyor...</div> : null}
+        {loading ? <div className="text-sm text-slate-600">Organizations yÃ¼kleniyor...</div> : null}
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {!loading && organizations.length === 0 ? (

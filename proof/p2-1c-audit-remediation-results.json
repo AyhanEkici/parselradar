@@ -1,0 +1,112 @@
+{
+    "phase":  "P2.1C",
+    "status":  "PASS",
+    "generatedAt":  "2026-05-26T02:14:32.1965241Z",
+    "targetFiles":  [
+                        "apps/web/src/components/admin/AdminPrimitives.tsx",
+                        "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
+                        "apps/web/src/components/map/ActiveLayerToolbar.tsx",
+                        "apps/web/src/lib/municipalitySourceRegistry.ts",
+                        "apps/web/src/pages/AdminAnalyses.tsx",
+                        "apps/web/src/pages/AdminAuditTimeline.tsx",
+                        "apps/web/src/pages/AdminDealFlow.tsx",
+                        "apps/web/src/pages/AdminDealPool.tsx",
+                        "apps/web/src/pages/AdminProperties.tsx",
+                        "apps/web/src/pages/AdminUsers.tsx",
+                        "apps/web/src/pages/Organizations.tsx",
+                        "apps/web/src/pages/PortfolioDashboard.tsx",
+                        "apps/web/src/pages/Register.tsx"
+                    ],
+    "targetResults":  [
+                          {
+                              "file":  "apps/web/src/components/admin/AdminPrimitives.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/components/map/ActiveLayerToolbar.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/lib/municipalitySourceRegistry.ts",
+                              "genericMarkerCountBefore":  3,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  3
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminAnalyses.tsx",
+                              "genericMarkerCountBefore":  3,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  3
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminAuditTimeline.tsx",
+                              "genericMarkerCountBefore":  2,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  2
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminDealFlow.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminDealPool.tsx",
+                              "genericMarkerCountBefore":  4,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  4
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminProperties.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/pages/AdminUsers.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/pages/Organizations.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/pages/PortfolioDashboard.tsx",
+                              "genericMarkerCountBefore":  1,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  1
+                          },
+                          {
+                              "file":  "apps/web/src/pages/Register.tsx",
+                              "genericMarkerCountBefore":  3,
+                              "genericMarkerCountAfter":  0,
+                              "triagedBacklogCount":  3
+                          }
+                      ],
+    "genericMarkersBefore":  23,
+    "genericMarkersRemaining":  0,
+    "triagedBacklogTotal":  23,
+    "docExists":  true,
+    "noConnectorActivation":  true,
+    "noScrapingAdded":  true,
+    "noFullTurkeyImport":  true,
+    "noProductionSwap":  true,
+    "noFakeOcr":  true,
+    "noOfficialVerificationClaimAdded":  true,
+    "committed":  false,
+    "pushed":  false
+}

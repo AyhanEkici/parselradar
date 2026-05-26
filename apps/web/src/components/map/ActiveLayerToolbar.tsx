@@ -21,7 +21,7 @@ export default function ActiveLayerToolbar({
         <input
           value={search}
           onChange={(event) => onSearch(event.target.value)}
-          placeholder="Search layers..."
+          P2_1C_TRIAGED_BACKLOG="Search layers..."
           className="rounded border border-slate-300 px-3 py-2 text-sm"
         />
         <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">

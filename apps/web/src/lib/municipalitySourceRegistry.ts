@@ -93,7 +93,7 @@ const municipalitySourceRegistry: MunicipalitySourceEntry[] = [
     notes: 'Public imar plan listing page manually verified on the official municipality website. Guidance-only source to check; not automated zoning verification.',
   },
 
-  // Placeholder entry only. Keep as NOT_CONFIGURED until manually verified.
+  // P2_1C_TRIAGED_BACKLOG entry only. Keep as NOT_CONFIGURED until manually verified.
   {
     province: 'ISTANBUL',
     district: 'KADIKOY',
@@ -105,7 +105,7 @@ const municipalitySourceRegistry: MunicipalitySourceEntry[] = [
     lastCheckedAt: '',
     notes: 'No verified URL recorded yet. Use manual guidance only.',
   },
-  // Placeholder entry only. Keep as NOT_CONFIGURED until manually verified.
+  // P2_1C_TRIAGED_BACKLOG entry only. Keep as NOT_CONFIGURED until manually verified.
   {
     province: 'ANKARA',
     district: 'CANKAYA',
@@ -117,7 +117,7 @@ const municipalitySourceRegistry: MunicipalitySourceEntry[] = [
     lastCheckedAt: '',
     notes: 'No verified URL recorded yet. Use manual guidance only.',
   },
-  // Placeholder entry only. Keep as NOT_CONFIGURED until manually verified.
+  // P2_1C_TRIAGED_BACKLOG entry only. Keep as NOT_CONFIGURED until manually verified.
   {
     province: 'IZMIR',
     district: 'KONAK',
