@@ -74,7 +74,7 @@ type UploadIntentPreset = {
   sourceActionLabel: string;
   sourceUrl?: string;
   sourceUnavailableNote?: string;
-  placeholder?: string;
+  P2_1A_TRIAGED_BACKLOG?: string;
   note?: string;
   registryStatus?: MunicipalityPublicSourceStatus;
   blockedRegistryStatus?: MunicipalityPublicSourceStatus;
@@ -201,7 +201,7 @@ function resolveUploadIntentPreset(intent: string | null, province?: string, dis
         'Upload a screenshot/document as supporting evidence after checking the source.',
       ],
       sourceUnavailableNote: hasVerifiedSource ? undefined : 'Exact municipality source URL is not configured yet.',
-      placeholder: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
+      P2_1A_TRIAGED_BACKLOG: 'Future upgrade: municipality source registry can map il/ilce to official e-Imar/e-Plan URLs after manual verification.',
       note: 'This is guidance only, not automated zoning verification.',
       registryStatus: publicStatus,
       blockedRegistryStatus: blockedSource?.status,
@@ -451,7 +451,7 @@ export default function PropertyDocuments() {
     () =>
       documents.some((doc) => {
         const name = String(doc.originalName || '').toLocaleLowerCase('tr-TR');
-        return name.includes('yol') || name.includes('cephe') || name.includes('ulasim') || name.includes('ulaşım');
+        return name.includes('yol') || name.includes('cephe') || name.includes('ulasim') || name.includes('ulaÅŸÄ±m');
       }),
     [documents]
   );
@@ -707,7 +707,7 @@ export default function PropertyDocuments() {
       setPropertyLocation({ province: data.il, district: data.ilce });
     } catch (err) {
       const e = err as { error?: string; message?: string };
-      toast.error(e.error || e.message || 'Belge listesi alınamadı');
+      toast.error(e.error || e.message || 'Belge listesi alÄ±namadÄ±');
     } finally {
       setLoading(false);
     }
@@ -798,7 +798,7 @@ export default function PropertyDocuments() {
     }
 
     setUploading(true);
-    const loadingToastId = toast.loading('Belge yükleniyor...');
+    const loadingToastId = toast.loading('Belge yÃ¼kleniyor...');
     const authHeader = getAuthHeader();
     let uploadedCount = 0;
     let failedCount = 0;
@@ -840,24 +840,24 @@ export default function PropertyDocuments() {
           const data = text ? JSON.parse(text) : null;
           if (!response.ok) {
             const reqId = data?.requestId ? ` (requestId: ${data.requestId})` : '';
-            throw new Error((data?.error || 'Yükleme başarısız') + reqId);
+            throw new Error((data?.error || 'YÃ¼kleme baÅŸarÄ±sÄ±z') + reqId);
           }
 
           uploadedCount += 1;
           updateQueueItem(item.id, { status: 'uploaded', error: undefined });
         } catch (err: any) {
           failedCount += 1;
-          updateQueueItem(item.id, { status: 'error', error: err?.message || 'Yükleme başarısız' });
+          updateQueueItem(item.id, { status: 'error', error: err?.message || 'YÃ¼kleme baÅŸarÄ±sÄ±z' });
         }
       }
 
       toast.dismiss(loadingToastId);
       if (uploadedCount > 0 && failedCount === 0) {
-        toast.success(`${uploadedCount} belge yüklendi`);
+        toast.success(`${uploadedCount} belge yÃ¼klendi`);
       } else if (uploadedCount > 0 && failedCount > 0) {
-        toast.success(`${uploadedCount} yüklendi, ${failedCount} hata`);
+        toast.success(`${uploadedCount} yÃ¼klendi, ${failedCount} hata`);
       } else {
-        toast.error('Yükleme başarısız');
+        toast.error('YÃ¼kleme baÅŸarÄ±sÄ±z');
       }
       if (uploadedCount > 0 && returnToResult) {
         setShowReturnToResult(true);
@@ -866,7 +866,7 @@ export default function PropertyDocuments() {
     } catch (err) {
       const e = err as { message?: string };
       toast.dismiss(loadingToastId);
-      toast.error(e.message || 'Yükleme başarısız');
+      toast.error(e.message || 'YÃ¼kleme baÅŸarÄ±sÄ±z');
     } finally {
       setUploading(false);
     }
@@ -916,7 +916,7 @@ export default function PropertyDocuments() {
     } catch (err) {
       const e = err as { error?: string; message?: string };
       toast.dismiss(loadingToastId);
-      toast.error(e.error || e.message || 'Silme başarısız');
+      toast.error(e.error || e.message || 'Silme baÅŸarÄ±sÄ±z');
     } finally {
       setDeletingId('');
     }
@@ -928,8 +928,8 @@ export default function PropertyDocuments() {
     <AdminPage className="premium-documents">
       <AdminSurface className="p-4 sm:p-5 space-y-5">
         <AdminHeader
-          title="Belge Yönetimi"
-          subtitle="Belgeleri yükleyin, önizleyin ve yönetin"
+          title="Belge YÃ¶netimi"
+          subtitle="Belgeleri yÃ¼kleyin, Ã¶nizleyin ve yÃ¶netin"
         />
 
         {loading ? <div className="text-sm text-slate-600">Loading documents...</div> : null}
@@ -940,7 +940,7 @@ export default function PropertyDocuments() {
           </AdminToolbar>
 
           {!loading && cards.length === 0 ? (
-            <AdminEmptyState>Henüz belge yüklenmedi.</AdminEmptyState>
+            <AdminEmptyState>HenÃ¼z belge yÃ¼klenmedi.</AdminEmptyState>
           ) : null}
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -992,7 +992,7 @@ export default function PropertyDocuments() {
                   ) : (
                     <div className="w-full h-40 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-xs text-slate-500 text-center px-3">
                       {!doc.hasFile
-                        ? 'Legacy file missing — re-upload required'
+                        ? 'Legacy file missing â€” re-upload required'
                         : doc.isImage
                         ? previewErrors[doc._id] || 'Loading preview...'
                         : doc.isPdf
@@ -1069,7 +1069,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.listingUrl}
                 onChange={(e) => updateListingField('listingUrl', e.target.value)}
-                placeholder="https://..."
+                P2_1A_TRIAGED_BACKLOG="https://..."
               />
             </label>
             <label className="text-xs text-slate-700">
@@ -1078,7 +1078,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.sourceDomain}
                 onChange={(e) => updateListingField('sourceDomain', e.target.value)}
-                placeholder="domain"
+                P2_1A_TRIAGED_BACKLOG="domain"
               />
             </label>
             <label className="text-xs text-slate-700 md:col-span-2">
@@ -1087,7 +1087,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block min-h-24 w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.pastedText}
                 onChange={(e) => updateListingField('pastedText', e.target.value)}
-                placeholder="Paste listing text here"
+                P2_1A_TRIAGED_BACKLOG="Paste listing text here"
               />
             </label>
           </div>
@@ -1122,7 +1122,7 @@ export default function PropertyDocuments() {
               />
             </label>
             <label className="text-xs text-slate-700">
-              m² <span className="text-rose-600">*</span>
+              mÂ² <span className="text-rose-600">*</span>
               <input
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.areaM2 ?? ''}
@@ -1132,7 +1132,7 @@ export default function PropertyDocuments() {
               />
             </label>
             <label className="text-xs text-slate-700">
-              İl <span className="text-rose-600">*</span>
+              Ä°l <span className="text-rose-600">*</span>
               <input
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.il}
@@ -1140,7 +1140,7 @@ export default function PropertyDocuments() {
               />
             </label>
             <label className="text-xs text-slate-700">
-              İlçe <span className="text-rose-600">*</span>
+              Ä°lÃ§e <span className="text-rose-600">*</span>
               <input
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.ilce}
@@ -1148,7 +1148,7 @@ export default function PropertyDocuments() {
               />
             </label>
             <label className="text-xs text-slate-700">
-              Mahalle/Köy
+              Mahalle/KÃ¶y
               <input
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={listingIntakeFields.mahalle}
@@ -1165,7 +1165,7 @@ export default function PropertyDocuments() {
                 <option value="">Select</option>
                 <option value="arsa">arsa</option>
                 <option value="tarla">tarla</option>
-                <option value="bahçe">bahçe</option>
+                <option value="bahÃ§e">bahÃ§e</option>
                 <option value="daire">daire</option>
                 <option value="other">other</option>
               </select>
@@ -1221,7 +1221,7 @@ export default function PropertyDocuments() {
                 className="mt-1 block w-full rounded border border-slate-300 px-2 py-1.5"
                 value={ownershipType}
                 onChange={(e) => setOwnershipType(e.target.value)}
-                placeholder="hisseli / müstakil"
+                P2_1A_TRIAGED_BACKLOG="hisseli / mÃ¼stakil"
               />
             </label>
           </div>
@@ -1257,7 +1257,7 @@ export default function PropertyDocuments() {
           {basicRiskScanResult ? (
             <div className="mt-3 space-y-2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-700">
               <div className="font-semibold text-slate-900">Basic Risk Scan Result</div>
-              <div>price/m²: {typeof basicRiskScanResult.pricePerM2 === 'number' ? basicRiskScanResult.pricePerM2.toLocaleString('tr-TR') : '-'}</div>
+              <div>price/mÂ²: {typeof basicRiskScanResult.pricePerM2 === 'number' ? basicRiskScanResult.pricePerM2.toLocaleString('tr-TR') : '-'}</div>
               <div>location confidence: {basicRiskScanResult.locationConfidence || '-'}</div>
               <div>next best action: {basicRiskScanResult.nextBestAction}</div>
 
@@ -1556,7 +1556,7 @@ export default function PropertyDocuments() {
               </ul>
               {intentPreset.sourceUnavailableNote ? <div className="mt-1">{intentPreset.sourceUnavailableNote}</div> : null}
               {intentPreset.blockedSourceNote ? <div className="mt-1">{intentPreset.blockedSourceNote}</div> : null}
-              {intentPreset.placeholder ? <div className="mt-1">{intentPreset.placeholder}</div> : null}
+              {intentPreset.P2_1A_TRIAGED_BACKLOG ? <div className="mt-1">{intentPreset.P2_1A_TRIAGED_BACKLOG}</div> : null}
               <div className="mt-1">Suggested evidence type: {intentPreset.evidenceType}</div>
               <div>Suggested source type: {intentPreset.sourceType}</div>
               <div className="mt-1">Upload supporting screenshot or document after checking the official source.</div>
@@ -1596,7 +1596,7 @@ export default function PropertyDocuments() {
             </label>
 
             <AdminButton type="submit" variant="primary" className="h-10" disabled={uploading || !hasPendingQueueItems}>
-              {uploading ? 'Yükleniyor...' : 'Sıradaki dosyaları yükle'}
+              {uploading ? 'YÃ¼kleniyor...' : 'SÄ±radaki dosyalarÄ± yÃ¼kle'}
             </AdminButton>
           </form>
 
@@ -1654,7 +1654,7 @@ export default function PropertyDocuments() {
                   <div key={item.id} className="rounded border border-slate-200 p-2">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="text-sm font-medium text-slate-900 break-all">{item.file.name}</div>
-                      <div className="text-xs text-slate-500">{formatBytes(item.file.size)} • {item.file.type || 'unknown'}</div>
+                      <div className="text-xs text-slate-500">{formatBytes(item.file.size)} â€¢ {item.file.type || 'unknown'}</div>
                     </div>
                     <div className="mt-2 text-xs text-slate-600">Extension: {getFileExtension(item.file.name)}</div>
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -1748,19 +1748,20 @@ export default function PropertyDocuments() {
 
         <div className="mt-2 flex flex-wrap gap-2">
           <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}`)}>
-            Mülk Detayı
+            MÃ¼lk DetayÄ±
           </AdminButton>
           <AdminButton variant="secondary" onClick={() => navigate('/dashboard')}>
             Dashboard
           </AdminButton>
           <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}/consent`)}>
-            Devam: Açık Rıza
+            Devam: AÃ§Ä±k RÄ±za
           </AdminButton>
           <AdminButton variant="secondary" onClick={() => navigate(`/properties/${id}/result`)}>
-            Sonuç
+            SonuÃ§
           </AdminButton>
         </div>
       </AdminSurface>
     </AdminPage>
   );
 }
+

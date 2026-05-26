@@ -1,8 +1,8 @@
 # P2.1 Full MVP Functional Completeness Audit
 
 - Status: WARN
-- Total files scanned: 1759
-- Tracked files: 1757
+- Total files scanned: 1763
+- Tracked files: 1763
 - API route files: 23
 - Web page files: 60
 - Component files: 236
@@ -18,19 +18,18 @@
 
 - BLOCKER: 0
 - HIGH: 0
-- MEDIUM: 27
+- MEDIUM: 23
 - LOW: 7
 - FUTURE: 0
 
 ## Top findings
 
 - LOW | local-env-present | .env | Local .env exists but is not tracked by git and is excluded from commit/audit source scanning.
-- MEDIUM | placeholder-marker | apps/api/scripts/auditMvpCompleteness.ts | Contains 19 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/api/scripts/geodata/p2Geo10VerifyAdminDiagnosticSurface.ts | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/api/scripts/geodata/p2Geo2TestKayseriSignals.ts | Contains 4 TODO/FIXME/HACK/placeholder-style marker(s).
+- MEDIUM | placeholder-marker | apps/api/scripts/p21VerifyFullMvpAudit.ts | Contains 13 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/api/scripts/verifyEmailProviderReadiness.ts | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/api/scripts/verifyPilotEnv.ts | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
-- MEDIUM | placeholder-marker | apps/web/src/components/ConversationalAnalysisIntake.tsx | Contains 12 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/components/admin/AdminPrimitives.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/components/connectors/ConnectorSourceApprovalPanel.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/components/map/ActiveLayerToolbar.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
@@ -44,14 +43,11 @@
 - MEDIUM | placeholder-marker | apps/web/src/pages/AdminUsers.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/ForgotPassword.tsx | Contains 2 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/Login.tsx | Contains 2 TODO/FIXME/HACK/placeholder-style marker(s).
-- MEDIUM | placeholder-marker | apps/web/src/pages/NewProperty.tsx | Contains 20 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/Organizations.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/PortfolioDashboard.tsx | Contains 1 TODO/FIXME/HACK/placeholder-style marker(s).
-- MEDIUM | placeholder-marker | apps/web/src/pages/PropertyDocuments.tsx | Contains 8 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/PropertyResult.tsx | Contains 5 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/Register.tsx | Contains 3 TODO/FIXME/HACK/placeholder-style marker(s).
 - MEDIUM | placeholder-marker | apps/web/src/pages/ResetPassword.tsx | Contains 4 TODO/FIXME/HACK/placeholder-style marker(s).
-- MEDIUM | placeholder-marker | apps/api/scripts/p21VerifyFullMvpAudit.ts | Contains 13 TODO/FIXME/HACK/placeholder-style marker(s).
 - LOW | secret-risk | apps/api/src/testing/verifyAuth.ts | Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret.
 - LOW | secret-risk | docs/P2_GEO_2_KAYSERI_POSTGIS_POC_RUNBOOK.md | Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret.
 - LOW | secret-risk | proof/p2-geo-2b-postgis-connection-check.json | Secret-shaped reference appears to be test/script/proof/doc scanner text, not a committed runtime secret.

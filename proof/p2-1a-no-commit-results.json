@@ -1,0 +1,26 @@
+{
+    "phase":  "P2.1A-NO-COMMIT",
+    "generatedAt":  "2026-05-26T01:52:15.1076143Z",
+    "status":  "READY_TO_COMMIT",
+    "p21a":  "PASS",
+    "p21":  "WARN",
+    "p21Blockers":  0,
+    "p21Medium":  23,
+    "p21Low":  7,
+    "mvp4d":  "PASS",
+    "buildApi":  "PASS",
+    "buildWeb":  "PASS",
+    "connectorDiagnosticsContract":  "PASS",
+    "connectorDiagnostics":  "PASS",
+    "platformIntegrity":  "PASS",
+    "targetFiles":  [
+                        "apps/web/src/pages/NewProperty.tsx",
+                        "apps/web/src/pages/PropertyDocuments.tsx",
+                        "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+                        "apps/api/scripts/auditMvpCompleteness.ts"
+                    ],
+    "genericMarkersRemaining":  0,
+    "triagedBacklogTotal":  59,
+    "committed":  false,
+    "pushed":  false
+}

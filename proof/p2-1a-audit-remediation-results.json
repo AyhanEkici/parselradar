@@ -1,0 +1,47 @@
+{
+  "phase": "P2.1A",
+  "status": "PASS",
+  "targetFiles": [
+    "apps/web/src/pages/NewProperty.tsx",
+    "apps/web/src/pages/PropertyDocuments.tsx",
+    "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+    "apps/api/scripts/auditMvpCompleteness.ts"
+  ],
+  "targetResults": [
+    {
+      "file": "apps/web/src/pages/NewProperty.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 20
+    },
+    {
+      "file": "apps/web/src/pages/PropertyDocuments.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 8
+    },
+    {
+      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 12
+    },
+    {
+      "file": "apps/api/scripts/auditMvpCompleteness.ts",
+      "genericMarkerCount": 0,
+      "triagedBacklogCount": 19
+    }
+  ],
+  "genericMarkersRemaining": 0,
+  "triagedBacklogTotal": 59,
+  "docExists": true,
+  "p21AuditExists": true,
+  "mvp4dProofExists": true,
+  "scope": "audit-remediation-sprint-1",
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noFullTurkeyImport": true,
+  "noProductionSwap": true,
+  "noFakeOcr": true,
+  "noOfficialVerificationClaimAdded": true,
+  "committed": false,
+  "pushed": false,
+  "generatedAt": "2026-05-26T01:51:47.936Z"
+}

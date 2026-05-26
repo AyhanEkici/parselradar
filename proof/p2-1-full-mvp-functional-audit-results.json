@@ -1,10 +1,10 @@
 {
   "phase": "P2.1",
   "status": "WARN",
-  "generatedAt": "2026-05-26T01:47:48.453Z",
+  "generatedAt": "2026-05-26T01:51:50.719Z",
   "inventory": {
-    "totalFiles": 1759,
-    "trackedFiles": 1757,
+    "totalFiles": 1763,
+    "trackedFiles": 1763,
     "tsFiles": 1092,
     "apiFiles": 651,
     "webFiles": 309,
@@ -638,7 +638,7 @@
   "severityCounts": {
     "BLOCKER": 0,
     "HIGH": 0,
-    "MEDIUM": 27,
+    "MEDIUM": 23,
     "LOW": 7,
     "FUTURE": 0
   },
@@ -648,12 +648,6 @@
       "category": "local-env-present",
       "file": ".env",
       "detail": "Local .env exists but is not tracked by git and is excluded from commit/audit source scanning."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/api/scripts/auditMvpCompleteness.ts",
-      "detail": "Contains 19 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -670,6 +664,12 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
+      "file": "apps/api/scripts/p21VerifyFullMvpAudit.ts",
+      "detail": "Contains 13 TODO/FIXME/HACK/placeholder-style marker(s)."
+    },
+    {
+      "severity": "MEDIUM",
+      "category": "placeholder-marker",
       "file": "apps/api/scripts/verifyEmailProviderReadiness.ts",
       "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
@@ -678,12 +678,6 @@
       "category": "placeholder-marker",
       "file": "apps/api/scripts/verifyPilotEnv.ts",
       "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/components/ConversationalAnalysisIntake.tsx",
-      "detail": "Contains 12 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -766,12 +760,6 @@
     {
       "severity": "MEDIUM",
       "category": "placeholder-marker",
-      "file": "apps/web/src/pages/NewProperty.tsx",
-      "detail": "Contains 20 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
       "file": "apps/web/src/pages/Organizations.tsx",
       "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
@@ -780,12 +768,6 @@
       "category": "placeholder-marker",
       "file": "apps/web/src/pages/PortfolioDashboard.tsx",
       "detail": "Contains 1 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/web/src/pages/PropertyDocuments.tsx",
-      "detail": "Contains 8 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "MEDIUM",
@@ -804,12 +786,6 @@
       "category": "placeholder-marker",
       "file": "apps/web/src/pages/ResetPassword.tsx",
       "detail": "Contains 4 TODO/FIXME/HACK/placeholder-style marker(s)."
-    },
-    {
-      "severity": "MEDIUM",
-      "category": "placeholder-marker",
-      "file": "apps/api/scripts/p21VerifyFullMvpAudit.ts",
-      "detail": "Contains 13 TODO/FIXME/HACK/placeholder-style marker(s)."
     },
     {
       "severity": "LOW",

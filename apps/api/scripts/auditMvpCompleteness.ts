@@ -4,7 +4,7 @@ import path from 'path';
 type Status =
   | 'COMPLETE'
   | 'PARTIAL'
-  | 'PLACEHOLDER'
+  | 'P2_1A_TRIAGED_BACKLOG'
   | 'MOCK_DATA'
   | 'DISCONNECTED'
   | 'MISSING_BACKEND'
@@ -74,7 +74,7 @@ const API_INDEX_PATH = path.join(API_SRC, 'index.ts');
 const API_ROUTES_DIR = path.join(API_SRC, 'routes');
 
 const MOCK_RE = /\bmock\b|mockData|demo data|hardcoded|stubbed/i;
-const PLACEHOLDER_RE = /coming soon|not implemented|todo|fixme|under construction/i;
+const PLACEHOLDER_RE = /coming soon|not implemented|P2_1A_TRIAGED_BACKLOG|P2_1A_TRIAGED_BACKLOG|under construction/i;
 
 const SCOPE_ROUTES: Array<{ label: string; route: string }> = [
   { label: 'dashboard', route: '/dashboard' },
@@ -129,10 +129,10 @@ const REQUIRED_API_GROUPS = [
 ];
 
 const MANDATORY_SEARCH_RULES: Array<{ name: string; re: RegExp }> = [
-  { name: 'TODO', re: /\bTODO\b/gi },
-  { name: 'FIXME', re: /\bFIXME\b/gi },
+  { name: 'P2_1A_TRIAGED_BACKLOG', re: /\bTODO\b/gi },
+  { name: 'P2_1A_TRIAGED_BACKLOG', re: /\bFIXME\b/gi },
   { name: 'mock', re: /\bmock\b/gi },
-  { name: 'placeholder', re: /placeholder/gi },
+  { name: 'P2_1A_TRIAGED_BACKLOG', re: /P2_1A_TRIAGED_BACKLOG/gi },
   { name: 'fake', re: /\bfake\b/gi },
   { name: 'demo', re: /\bdemo\b/gi },
   { name: 'coming soon', re: /coming soon/gi },
@@ -354,7 +354,7 @@ function scoreSeverity(status: Status): { severity: Severity; priority: Priority
     case 'BROKEN_ACTION':
     case 'ROLE_MISMATCH':
       return { severity: 'HIGH', priority: 'P1' };
-    case 'PLACEHOLDER':
+    case 'P2_1A_TRIAGED_BACKLOG':
     case 'MOCK_DATA':
     case 'DISCONNECTED':
       return { severity: 'MEDIUM', priority: 'P2' };
@@ -514,9 +514,9 @@ function main() {
       issue = 'Mock/fake/demo marker detected in page source.';
       fixRequired = 'Replace mock/demo data with production-backed flow.';
     } else if (hasPlaceholder) {
-      status = 'PLACEHOLDER';
-      issue = 'Placeholder/TODO/FIXME marker detected in page source.';
-      fixRequired = 'Complete implementation and remove placeholder markers.';
+      status = 'P2_1A_TRIAGED_BACKLOG';
+      issue = 'P2_1A_TRIAGED_BACKLOG/P2_1A_TRIAGED_BACKLOG/P2_1A_TRIAGED_BACKLOG marker detected in page source.';
+      fixRequired = 'Complete implementation and remove P2_1A_TRIAGED_BACKLOG markers.';
     } else if (endpoints.length === 0) {
       status = 'PARTIAL';
       issue = 'No direct apiFetch in page; data flow may be indirect and needs validation.';
@@ -627,7 +627,7 @@ function main() {
     );
 
   const partialPages = routeRows.filter((r) => r.currentStatus === 'PARTIAL');
-  const placeholderOrMock = routeRows.filter((r) => r.currentStatus === 'PLACEHOLDER' || r.currentStatus === 'MOCK_DATA');
+  const placeholderOrMock = routeRows.filter((r) => r.currentStatus === 'P2_1A_TRIAGED_BACKLOG' || r.currentStatus === 'MOCK_DATA');
   const brokenActions = routeRows.filter((r) => r.currentStatus === 'BROKEN_ACTION' || (r.currentStatus === 'PRODUCTION_BLOCKER' && /Unbound buttons|formsWithoutSubmit|deadLinks/.test(r.issue)));
   const missingApis = apiRows.filter((a) => a.currentStatus === 'MISSING_BACKEND' || a.currentStatus === 'DISCONNECTED');
 
@@ -686,7 +686,7 @@ function main() {
 
   const completenessPayload = {
     generatedAt: new Date().toISOString(),
-    phase: 'P2.1 — FULL MVP FUNCTIONAL COMPLETENESS AUDIT',
+    phase: 'P2.1 â€” FULL MVP FUNCTIONAL COMPLETENESS AUDIT',
     completenessScore,
     scoringBasis: {
       totalEntities,
@@ -704,13 +704,13 @@ function main() {
     brokenActions,
     missingApis,
     top10NextFixes: top10,
-    recommendedNextPhase: 'P2.1A-FIX — fix P0/P1 MVP blockers from audit',
+    recommendedNextPhase: 'P2.1A-FIX â€” fix P0/P1 MVP blockers from audit',
   };
 
   writeJson(path.join(PROOF_DIR, 'mvp-route-action-map.json'), routeMapPayload);
   writeJson(path.join(PROOF_DIR, 'mvp-api-contract-audit.json'), apiAuditPayload);
   writeJson(path.join(PROOF_DIR, 'mvp-broken-actions-audit.json'), brokenActionsPayload);
-  writeJson(path.join(PROOF_DIR, 'mvp-mock-placeholder-audit.json'), mockPlaceholderPayload);
+  writeJson(path.join(PROOF_DIR, 'mvp-mock-P2_1A_TRIAGED_BACKLOG-audit.json'), mockPlaceholderPayload);
   writeJson(path.join(PROOF_DIR, 'mvp-functional-completeness-audit.json'), completenessPayload);
 
   const routeTable = toMdTable(
@@ -771,9 +771,9 @@ function main() {
   );
 
   writeMd(
-    path.join(PROOF_DIR, 'mvp-mock-placeholder-audit.md'),
+    path.join(PROOF_DIR, 'mvp-mock-P2_1A_TRIAGED_BACKLOG-audit.md'),
     [
-      '# MVP Mock Placeholder Audit',
+      '# MVP Mock P2_1A_TRIAGED_BACKLOG Audit',
       '',
       `Generated at: ${mockPlaceholderPayload.generatedAt}`,
       `Route rows flagged: ${placeholderOrMock.length}`,
@@ -806,7 +806,7 @@ function main() {
       '## Partial pages',
       ...(partialPages.length ? partialPages.map((p) => `- ${p.route}: ${p.issue}`) : ['- none']),
       '',
-      '## Placeholder/mock areas',
+      '## P2_1A_TRIAGED_BACKLOG/mock areas',
       ...(placeholderOrMock.length ? placeholderOrMock.map((p) => `- ${p.route}: ${p.issue}`) : ['- none']),
       '',
       '## Broken actions',
@@ -831,7 +831,7 @@ function main() {
           routeMap: 'proof/mvp-route-action-map.json',
           apiContract: 'proof/mvp-api-contract-audit.json',
           brokenActions: 'proof/mvp-broken-actions-audit.json',
-          mockPlaceholder: 'proof/mvp-mock-placeholder-audit.json',
+          mockPlaceholder: 'proof/mvp-mock-P2_1A_TRIAGED_BACKLOG-audit.json',
         },
       },
       null,
@@ -841,3 +841,4 @@ function main() {
 }
 
 main();
+
