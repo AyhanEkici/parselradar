@@ -8,6 +8,7 @@
     "lint": "npm run lint --prefix packages/shared && npm run lint --prefix apps/api && npm run lint --prefix apps/web",
     "build": "npm run build --prefix packages/shared && npm run build --prefix apps/api && npm run build --prefix apps/web",
     "verify:platform": "ts-node scripts/verify-platform.ts",
+    "p2:2e2:verify-property-create-validation": "ts-node apps/api/scripts/p22e2VerifyPropertyCreateValidationAlignment.ts",
     "verify:rbac": "ts-node scripts/verify-rbac.ts",
     "verify:cors": "ts-node apps/api/scripts/verifyCorsConfig.ts",
     "verify:password-reset": "ts-node apps/api/scripts/verifyPasswordResetFlow.ts",

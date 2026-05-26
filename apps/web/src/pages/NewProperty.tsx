@@ -1,4 +1,109 @@
 import React, { useEffect, useState } from 'react';
+
+// --- P2.2E-2 helpers (do not export) ---
+function isHttpUrl(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function isPositiveNumber(value: unknown): boolean {
+  const n = Number(value);
+  return !isNaN(n) && n > 0;
+}
+
+function normalizeString(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function validatePropertyForm(form: PropertyForm): { valid: boolean; fields: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (form.inputMethod === 'ADA_PARSEL') {
+    if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
+    if (!normalizeString(form.inputMethod)) errors.inputMethod = 'Giriş yöntemi gerekli';
+    if (!normalizeString(form.il)) errors.il = 'İl gerekli';
+    if (!normalizeString(form.ilce)) errors.ilce = 'İlçe gerekli';
+    if (!normalizeString(form.mahalleOrKoy)) errors.mahalleOrKoy = 'Mahalle/Köy gerekli';
+    if (!normalizeString(form.ada)) errors.ada = 'Ada gerekli';
+    if (!normalizeString(form.parsel)) errors.parsel = 'Parsel gerekli';
+    if (!isPositiveNumber(form.askingPriceTRY)) errors.askingPriceTRY = 'Fiyat gerekli';
+    if (!isPositiveNumber(form.areaM2)) errors.areaM2 = 'm² alanı gerekli';
+    if (!normalizeString(form.tapuType)) errors.tapuType = 'Tapu tipi gerekli';
+    if (!normalizeString(form.zoningStatus)) errors.zoningStatus = 'İmar durumu gerekli';
+    if (!normalizeString(form.roadAccess)) errors.roadAccess = 'Yol durumu gerekli';
+    if (!normalizeString(form.electricity)) errors.electricity = 'Elektrik durumu gerekli';
+    if (!normalizeString(form.water)) errors.water = 'Su durumu gerekli';
+  } else if (form.inputMethod === 'ILAN_URL') {
+    if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
+    if (!normalizeString(form.inputMethod)) errors.inputMethod = 'Giriş yöntemi gerekli';
+    if (!isHttpUrl(form.ilanUrl)) errors.ilanUrl = 'İlan URL geçerli bir http/https adresi olmalı veya boş bırakılmalı';
+    if (!isPositiveNumber(form.askingPriceTRY)) errors.askingPriceTRY = 'Fiyat gerekli';
+    if (!isPositiveNumber(form.areaM2)) errors.areaM2 = 'm² alanı gerekli';
+    if (!normalizeString(form.tapuType)) errors.tapuType = 'Tapu tipi gerekli';
+    if (!normalizeString(form.zoningStatus)) errors.zoningStatus = 'İmar durumu gerekli';
+    if (!normalizeString(form.roadAccess)) errors.roadAccess = 'Yol durumu gerekli';
+    if (!normalizeString(form.electricity)) errors.electricity = 'Elektrik durumu gerekli';
+    if (!normalizeString(form.water)) errors.water = 'Su durumu gerekli';
+  }
+  return { valid: Object.keys(errors).length === 0, fields: errors };
+}
+
+function validateStep(step: number, form: PropertyForm): { valid: boolean; fields: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (step === 1) {
+    if (form.inputMethod === 'ADA_PARSEL') {
+      if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
+      if (!normalizeString(form.inputMethod)) errors.inputMethod = 'Giriş yöntemi gerekli';
+      if (!normalizeString(form.il)) errors.il = 'İl gerekli';
+      if (!normalizeString(form.ilce)) errors.ilce = 'İlçe gerekli';
+      if (!normalizeString(form.mahalleOrKoy)) errors.mahalleOrKoy = 'Mahalle/Köy gerekli';
+      if (!normalizeString(form.ada)) errors.ada = 'Ada gerekli';
+      if (!normalizeString(form.parsel)) errors.parsel = 'Parsel gerekli';
+    } else if (form.inputMethod === 'ILAN_URL') {
+      if (!normalizeString(form.assetType)) errors.assetType = 'Varlık türü gerekli';
+      if (!normalizeString(form.inputMethod)) errors.inputMethod = 'Giriş yöntemi gerekli';
+      if (!isHttpUrl(form.ilanUrl)) errors.ilanUrl = 'İlan URL geçerli bir http/https adresi olmalı veya boş bırakılmalı';
+    }
+  } else if (step === 2) {
+    if (!isPositiveNumber(form.askingPriceTRY)) errors.askingPriceTRY = 'Fiyat gerekli';
+    if (!isPositiveNumber(form.areaM2)) errors.areaM2 = 'm² alanı gerekli';
+    if (!normalizeString(form.tapuType)) errors.tapuType = 'Tapu tipi gerekli';
+    if (!normalizeString(form.zoningStatus)) errors.zoningStatus = 'İmar durumu gerekli';
+  } else if (step === 3) {
+    if (!normalizeString(form.roadAccess)) errors.roadAccess = 'Yol durumu gerekli';
+    if (!normalizeString(form.electricity)) errors.electricity = 'Elektrik durumu gerekli';
+    if (!normalizeString(form.water)) errors.water = 'Su durumu gerekli';
+  }
+  return { valid: Object.keys(errors).length === 0, fields: errors };
+}
+
+function buildPropertyCreatePayload(form: PropertyForm): PropertyForm {
+  const payload: PropertyForm = { ...form };
+  if (form.inputMethod === 'ADA_PARSEL') {
+    // Omit ilanUrl if blank, not a URL, or matches ada/parsel pattern
+    if (
+      !form.ilanUrl ||
+      typeof form.ilanUrl !== 'string' ||
+      /^\d+[\/\\]\d+$/.test(form.ilanUrl.trim()) ||
+      !isHttpUrl(form.ilanUrl)
+    ) {
+      delete payload.ilanUrl;
+    }
+    // Always include ada and parsel
+    payload.ada = normalizeString(form.ada);
+    payload.parsel = normalizeString(form.parsel);
+  } else if (form.inputMethod === 'ILAN_URL') {
+    // Only include ilanUrl if valid http/https
+    if (!isHttpUrl(form.ilanUrl)) {
+      delete payload.ilanUrl;
+    }
+  }
+  return payload;
+}
 import { apiFetch } from '../lib/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -143,58 +248,14 @@ export default function NewProperty() {
     setError('');
     setFieldErrors({});
 
-    // Required fields for validation
-    const requiredFields = [
-      { key: 'assetType', label: 'Varlık Türü', message: 'Varlık türü gereklidir.' },
-      { key: 'inputMethod', label: 'Giriş Yöntemi', message: 'Giriş yöntemi gereklidir.' },
-      { key: 'il', label: 'İl', message: 'İl gereklidir.' },
-      { key: 'ilce', label: 'İlçe', message: 'İlçe gereklidir.' },
-      { key: 'mahalleOrKoy', label: 'Mahalle/Köy', message: 'Mahalle veya köy gereklidir.' },
-      { key: 'askingPriceTRY', label: 'Fiyat (TL)', message: 'Fiyat gereklidir.' },
-      { key: 'areaM2', label: 'Alan (m²)', message: 'Alan gereklidir.' },
-      { key: 'tapuType', label: 'Tapu Türü', message: 'Tapu türü gereklidir.' },
-      { key: 'zoningStatus', label: 'İmar Durumu', message: 'İmar durumu gereklidir.' },
-      { key: 'roadAccess', label: 'Yol Durumu', message: 'Yol durumu gereklidir.' },
-      { key: 'electricity', label: 'Elektrik', message: 'Elektrik durumu gereklidir.' },
-      { key: 'water', label: 'Su', message: 'Su durumu gereklidir.' },
-    ];
-
-    const nextFieldErrors: Record<string, string> = {};
-    for (const field of requiredFields) {
-      if (!form[field.key] || String(form[field.key]).trim() === '') {
-        nextFieldErrors[field.key] = field.message;
-      }
+    const { valid, fields } = validatePropertyForm(form);
+    if (!valid) {
+      setFieldErrors(fields);
+      setError('Lütfen gerekli alanları doldurun.');
+      return;
     }
 
-    // Numeric validation for price and area
-    if (form.askingPriceTRY && Number(form.askingPriceTRY) <= 0) {
-      nextFieldErrors.askingPriceTRY = 'Fiyat 0 TL’den büyük olmalıdır.';
-    }
-    if (form.areaM2 && Number(form.areaM2) <= 0) {
-      nextFieldErrors.areaM2 = 'Alan 0 m²’den büyük olmalıdır.';
-    }
-
-    // ADA_PARSEL input: parse ilanUrl into ada/parsel, never send ilanUrl
-    let clientFields = { ...form };
-    if (form.inputMethod === 'ADA_PARSEL') {
-      // If ilanUrl is present and matches "ada/parsel" pattern, parse it
-      if (form.ilanUrl && typeof form.ilanUrl === 'string' && /^(\d+)[\/\\](\d+)$/.test(form.ilanUrl.trim())) {
-        const match = form.ilanUrl.trim().match(/^(\d+)[\/\\](\d+)$/);
-        if (match) {
-          clientFields.ada = match[1];
-          clientFields.parsel = match[2];
-        }
-      }
-      // Remove ilanUrl for ADA_PARSEL
-      delete clientFields.ilanUrl;
-      // Require ada and parsel for ADA_PARSEL
-      if (!clientFields.ada || String(clientFields.ada).trim() === '') {
-        nextFieldErrors.ada = 'Ada gereklidir.';
-      }
-      if (!clientFields.parsel || String(clientFields.parsel).trim() === '') {
-        nextFieldErrors.parsel = 'Parsel gereklidir.';
-      }
-    }
+    let clientFields = buildPropertyCreatePayload(form);
 
     // Remove forbidden fields if present
     delete clientFields.userId;
@@ -210,12 +271,6 @@ export default function NewProperty() {
     clientFields.dealFlowConsentAt = allowDealFlowMatching ? new Date().toISOString() : undefined;
     clientFields.dealFlowConsentScope = dealFlowConsentScope;
     clientFields.professionalContactAllowed = allowDealFlowMatching ? allowProfessionalContact : false;
-
-    if (Object.keys(nextFieldErrors).length > 0) {
-      setFieldErrors(nextFieldErrors);
-      setError('Lütfen gerekli alanları doldurun.');
-      return;
-    }
 
     try {
       const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(clientFields) });
@@ -234,6 +289,13 @@ export default function NewProperty() {
 
   const nextStep = () => {
     setError('');
+    const { valid, fields } = validateStep(step, form);
+    if (!valid) {
+      setFieldErrors(fields);
+      setError('Lütfen gerekli alanları doldurun.');
+      return;
+    }
+    setFieldErrors({});
     setStep((prev) => Math.min(TOTAL_STEPS, prev + 1));
   };
 
@@ -280,7 +342,20 @@ export default function NewProperty() {
             </select>
             {fieldErrors.inputMethod && <div className="text-sm text-red-600">{fieldErrors.inputMethod}</div>}
 
-            <input className="w-full border p-2" name="ilanUrl" P2_1A_TRIAGED_BACKLOG="İlan URL" value={String(form.ilanUrl || '')} onChange={handleChange} />
+            {/* ADA_PARSEL: show ada/parsel fields, hide ilanUrl. Otherwise, show ilanUrl. */}
+            {form.inputMethod === 'ADA_PARSEL' ? (
+              <>
+                <label className="block text-sm font-medium">Ada *</label>
+                <input className={inputClass('ada')} name="ada" required value={String(form.ada || '')} onChange={handleChange} />
+                {fieldErrors.ada && <div className="text-sm text-red-600">{fieldErrors.ada}</div>}
+
+                <label className="block text-sm font-medium">Parsel *</label>
+                <input className={inputClass('parsel')} name="parsel" required value={String(form.parsel || '')} onChange={handleChange} />
+                {fieldErrors.parsel && <div className="text-sm text-red-600">{fieldErrors.parsel}</div>}
+              </>
+            ) : (
+              <input className="w-full border p-2" name="ilanUrl" P2_1A_TRIAGED_BACKLOG="İlan URL" value={String(form.ilanUrl || '')} onChange={handleChange} />
+            )}
 
             <label className="block text-sm font-medium">İl *</label>
             <input className={inputClass('il')} name="il" P2_1A_TRIAGED_BACKLOG="İl" required value={String(form.il || '')} onChange={handleChange} />
@@ -308,8 +383,13 @@ export default function NewProperty() {
             <input className={inputClass('areaM2')} name="areaM2" P2_1A_TRIAGED_BACKLOG="Alan (m²)" type="number" required value={String(form.areaM2 || '')} onChange={handleChange} />
             {fieldErrors.areaM2 && <div className="text-sm text-red-600">{fieldErrors.areaM2}</div>}
 
-            <input className="w-full border p-2" name="ada" P2_1A_TRIAGED_BACKLOG="Ada" value={String(form.ada || '')} onChange={handleChange} />
-            <input className="w-full border p-2" name="parsel" P2_1A_TRIAGED_BACKLOG="Parsel" value={String(form.parsel || '')} onChange={handleChange} />
+            {/* Only show ada/parsel in Step 2 if inputMethod is not ADA_PARSEL (legacy/manual flows) */}
+            {form.inputMethod !== 'ADA_PARSEL' && (
+              <>
+                <input className="w-full border p-2" name="ada" P2_1A_TRIAGED_BACKLOG="Ada" value={String(form.ada || '')} onChange={handleChange} />
+                <input className="w-full border p-2" name="parsel" P2_1A_TRIAGED_BACKLOG="Parsel" value={String(form.parsel || '')} onChange={handleChange} />
+              </>
+            )}
             <input className="w-full border p-2" name="pafta" P2_1A_TRIAGED_BACKLOG="Pafta" value={String(form.pafta || '')} onChange={handleChange} />
             <input className="w-full border p-2" name="nitelik" P2_1A_TRIAGED_BACKLOG="Nitelik" value={String(form.nitelik || '')} onChange={handleChange} />
 

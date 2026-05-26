@@ -73,6 +73,7 @@ export default function Login() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           className="w-full border p-2"
+          data-testid="login-email"
           P2_1B_TRIAGED_BACKLOG="E-posta"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -81,6 +82,7 @@ export default function Login() {
 
         <input
           className="w-full border p-2"
+          data-testid="login-password"
           type="password"
           P2_1B_TRIAGED_BACKLOG="Şifre"
           value={password}
@@ -90,6 +92,7 @@ export default function Login() {
 
         <button
           className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-60"
+          data-testid="login-submit"
           type="submit"
           disabled={isSubmitting}
         >

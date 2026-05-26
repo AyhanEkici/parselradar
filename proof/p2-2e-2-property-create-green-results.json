@@ -1,0 +1,24 @@
+{
+  "phase": "P2.2E-2",
+  "status": "PASS",
+  "browserCreateFlow": "PASS",
+  "rawNetworkPayloadCaptured": true,
+  "postPropertiesStatus": 200,
+  "responseSummary": "{\"userId\":\"6a09018a44118543aaab28bd\",\"assetType\":\"ARSA\",\"inputMethod\":\"ADA_PARSEL\",\"il\":\"Kayseri\",\"ilce\":\"Melikgazi\",\"mahalleOrKoy\":\"Gesi Cumhuriyet\",\"askingPriceTRY\":1000000,\"areaM2\":500,\"pricePerM2\":2000,\"ada\":\"496\",\"parsel\":\"1\",\"tapuType\":\"MUSTAKIL\",\"zoningStatus\":\"IMARLI\",\"roadAccess\":\"FIILI_YOL\",\"electricity\":\"VAR\",\"water\":\"VAR\",\"dealFlowConsentStatus\":\"NOT_ASKED\",\"dealFlowConsentScope\":[],\"professionalContactAllowed\":false,\"_id\":\"6a15fa67c7eae8b2fd5bd46d\",\"createdAt\":\"2026-05-26T19:54:15.0",
+  "currentUrlAfterSubmit": "http://127.0.0.1:3001/properties/6a15fa67c7eae8b2fd5bd46d/documents",
+  "ilanUrlNotSentAs496Slash1": true,
+  "adaParselMappingVerified": true,
+  "ada": "496",
+  "parsel": "1",
+  "screenshots": [
+    "proof/p2-2e-2-before-property-create-submit.png",
+    "proof/p2-2e-2-after-property-create-success.png"
+  ],
+  "noFakeOgcLoadedClaim": true,
+  "noConnectorActivation": true,
+  "noScrapingAdded": true,
+  "noFullTurkeyImport": true,
+  "noProductionSwap": true,
+  "noOfficialVerificationClaimAdded": true,
+  "generatedAt": "2026-05-26T19:54:15.997Z"
+}
