@@ -1,0 +1,29 @@
+# P2.GEO-3I Expanded Staged Signal UX Results
+
+- Status: FAIL
+- UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
+- Route mounted: true
+- Guarded API used: true
+- API route uses adapter: true
+- Adapter status: PASS
+- Lifecycle state: STAGED_OSM_SIGNAL_READY
+- Latest phase: P2.GEO-3H
+- Import run id: 6
+- Feature count: 900
+- Signal count: 4
+- Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, RAILWAY_SIGNAL, SETTLEMENT, WATER_FEATURE
+- Missing feature types: ADMIN_CENTER
+- Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
+- Has settlement: true
+- Has main road: true
+- Has industrial/OSB candidate: true
+- Optional signal handled: true
+- Source age present: true
+- Duplicate state present: true
+- Missing UI tokens: featureTypes
+- officialVerification all false: true
+- Labels/disclaimers present: true
+- Production swap used: false
+- Production tables queried: false
+- DB import executed: false
+- Source file committed: false

@@ -1,4 +1,27 @@
 
+const P2_GEO_3I_EXPANDED_UX_TRUTH_MARKERS = {
+  title: "Expanded staged signal diagnostics",
+  lifecycleState: "Current lifecycle state",
+  latestImportPhase: "Latest import phase",
+  expectedImportPhase: "Expected latest import phase: P2.GEO-3H",
+  importRunId: "Import run ID",
+  featureCount: "Feature count",
+  signalCount: "Signal count",
+  featureTypeCounts: "Feature type counts",
+  missingFeatureTypes: "Missing feature types",
+  sourceAgeFreshness: "Source age / freshness",
+  duplicateRunState: "Duplicate / redundant run state",
+  nearestSettlement: "Nearest settlement",
+  nearestMainRoad: "Nearest main road",
+  nearestIndustrial: "Nearest industrial / OSB candidate",
+  optionalSignals: "Optional water, rail or admin-center signals if present",
+  officialVerificationFalse: "officialVerification=false",
+  publicSourceDisclaimer: "Staged OSM-derived public-source context signals only",
+  nonOfficialDisclaimer: "Not official tapu, imar, cadastre, zoning, legal, investment or construction verification",
+  productionSwapUsedFalse: "productionSwapUsed=false",
+  productionTablesQueriedFalse: "productionTablesQueried=false",
+};
+
 const P2_GEO_3E_UI_TRUTH_MARKERS = {
   sourceTruth: "Staged OSM-derived public-source signal data",
   coverageTruth: "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
@@ -235,4 +258,9 @@ function FlagCard({ label, value, invert = false }: { label: string; value: bool
 // P2.GEO-3E required diagnostic token: nearestStagedMainRoad
 
 // P2.GEO-3E required diagnostic token: nearestStagedIndustrialOsbCandidate
+
+
+// P2.GEO-3I required UX token: nearestStagedWaterFeature
+
+// P2.GEO-3I required UX token: nearestStagedAdminCenter
 

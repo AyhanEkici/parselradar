@@ -20,19 +20,15 @@
 - ✅ P2.GEO-3E Guarded UI verification against real staged OSM data
 - ✅ P2.GEO-3F Staged signal freshness and duplicate-run cleanup policy
 - ✅ P2.GEO-3G Controlled larger Kayseri-area source expansion
-- ➡️ P2.GEO-3H Controlled expanded source staged import
+- ✅ P2.GEO-3H Controlled expanded source staged import
+- ➡️ P2.GEO-3I Expanded staged signal UX polish
 
 ## Remaining recommended sequence
-
-### P2.GEO-3H — controlled expanded source staged import
-
-Goal:
-Import the controlled expanded Kayseri source into staging only, then re-prove adapter/API/UI.
 
 ### P2.GEO-3I — expanded staged signal UX polish
 
 Goal:
-Make admin/dev signal diagnostics easier to understand: counts, missing coverage, nearest signals, source age, duplicate state.
+Make admin/dev signal diagnostics easier to understand: counts, missing coverage, nearest signals, source age and duplicate state.
 
 ### MVP-4D — Evidence OCR implementation
 
@@ -42,4 +38,4 @@ OCR-assisted upload classification for listings, screenshots, registry/e-imar/TK
 ### P2.1 — Full MVP functional completeness audit
 
 Goal:
-Audit all routes/pages/APIs for placeholders, missing backend, broken actions, mock data, role mismatches, and production blockers.
+Audit all routes/pages/APIs for placeholders, missing backend, broken actions, mock data, role mismatches and production blockers.

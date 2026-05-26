@@ -1,0 +1,19 @@
+{
+    "phase":  "P2.GEO-3I",
+    "capturedAt":  "2026-05-26T01:14:32.7366044Z",
+    "head":  "a9157ba0",
+    "workingTreeCleanAtStart":  true,
+    "recentCommits":  [
+                          "a9157ba0 fix: complete expanded Kayseri staged geodata import",
+                          "d5e779d4 feat: import controlled expanded Kayseri geodata staging",
+                          "a2ff54cb feat: verify controlled larger Kayseri geodata source",
+                          "799c9c65 feat: verify staged signal freshness policy",
+                          "1399d23a feat: verify guarded UI against staged OSM signals"
+                      ],
+    "dbImportExecuted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapAllowed":  false,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false
+}

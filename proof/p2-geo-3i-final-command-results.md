@@ -1,0 +1,24 @@
+# P2.GEO-3I Final Command Results
+
+- PASS | geo:p2-geo-3d:verify-staged-osm-adapter
+- PASS | geo:p2-geo-9:verify-endpoint
+- PASS | geo:p2-geo-10:verify-admin-diagnostic
+- PASS | geo:p2-geo-3e:verify-guarded-ui
+- PASS | geo:p2-geo-3f:verify-freshness-duplicates
+- FAIL | geo:p2-geo-3i:verify-expanded-signal-ux
+- PASS | build api
+- PASS | build web
+- PASS | verify:connector-diagnostics-contract
+- PASS | verify:connector-diagnostics
+- PASS | verify:platform-integrity
+- UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
+- Latest phase: P2.GEO-3H
+- Import run id: 6
+- Feature count: 900
+- Signal count: 4
+- Source age present: True
+- Duplicate state present: True
+- DB import executed: false
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false

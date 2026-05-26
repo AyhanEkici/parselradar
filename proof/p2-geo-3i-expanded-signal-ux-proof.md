@@ -1,0 +1,31 @@
+# P2.GEO-3I Expanded Staged Signal UX Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Verify script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Status: FAIL
+- UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
+- Latest phase: P2.GEO-3H
+- Import run id: 6
+- Feature count: 900
+- Signal count: 4
+- Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, RAILWAY_SIGNAL, SETTLEMENT, WATER_FEATURE
+- Missing feature types: ADMIN_CENTER
+- Source age present: True
+- Duplicate state present: True
+- officialVerification all false: True
+- Labels/disclaimers present: True
+- DB import executed: false
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

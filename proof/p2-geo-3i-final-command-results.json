@@ -1,0 +1,78 @@
+{
+    "phase":  "P2.GEO-3I",
+    "generatedAt":  "2026-05-26T01:15:38.9530082Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-3d:verify-staged-osm-adapter",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-9:verify-endpoint",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-10:verify-admin-diagnostic",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3e:verify-guarded-ui",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3f:verify-freshness-duplicates",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3i:verify-expanded-signal-ux",
+                               "status":  "FAIL"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "uiPath":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+    "latestPhase":  "P2.GEO-3H",
+    "importRunId":  "6",
+    "featureCount":  900,
+    "signalCount":  4,
+    "featureTypes":  [
+                         "INDUSTRIAL_OSB_CANDIDATE",
+                         "MAIN_ROAD",
+                         "RAILWAY_SIGNAL",
+                         "SETTLEMENT",
+                         "WATER_FEATURE"
+                     ],
+    "missingFeatureTypes":  [
+                                "ADMIN_CENTER"
+                            ],
+    "sourceAgePresent":  true,
+    "duplicateStatePresent":  true,
+    "allOfficialVerificationFalse":  true,
+    "labelsDisclaimersPresent":  true,
+    "dbImportExecuted":  false,
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapUsed":  false,
+    "productionTablesQueried":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "officialVerificationClaimAdded":  false
+}
