@@ -281,7 +281,7 @@ async function main(): Promise<void> {
           ],
         );
 
-        if (insertResult.rowCount > 0) {
+        if ((insertResult.rowCount ?? 0) > 0) {
           inserted += 1;
           featureTypeCounts[featureType] = (featureTypeCounts[featureType] ?? 0) + 1;
         } else {
@@ -391,3 +391,4 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3c-small-staged-import-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
