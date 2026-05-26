@@ -20,7 +20,7 @@
 - Optional signal handled: true
 - Source age present: true
 - Duplicate state present: true
-- Feature type counts present: true
+- Feature type counts present: false
 - Missing UI tokens: featureTypes, featureTypes
 - officialVerification all false: true
 - Labels/disclaimers present: true

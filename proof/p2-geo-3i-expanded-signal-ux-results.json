@@ -38,7 +38,7 @@
   "optionalSignalHandled": true,
   "sourceAgePresent": true,
   "duplicateStatePresent": true,
-  "featureTypeCountsPresent": true,
+  "featureTypeCountsPresent": false,
   "allOfficialVerificationFalse": true,
   "labelsDisclaimersPresent": true,
   "productionSwapUsed": false,
@@ -96,5 +96,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T01:21:35.194Z"
+  "generatedAt": "2026-05-26T01:24:12.659Z"
 }

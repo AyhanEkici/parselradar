@@ -125,9 +125,7 @@ async function main(): Promise<void> {
     freshnessProofContent.includes("canonicalRunCount") ||
     uiContent.includes("Duplicate / redundant run state");
 
-  const featureTypeCountsPresent =
-    adapterResult.featureTypes.length > 0 &&
-    (uiContent.includes("Feature type counts") || uiContent.includes("featureTypes"));
+  const featureTypeCountsPresent = adapterResult.featureCount > 0 && uiContent.includes("Feature type counts") && uiContent.includes("featureTypes");
 
   const status =
     adapterResult.status === "PASS" &&
@@ -263,3 +261,4 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3i-expanded-signal-ux-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
