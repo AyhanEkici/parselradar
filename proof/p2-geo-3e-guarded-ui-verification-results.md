@@ -7,12 +7,12 @@
 - API route uses adapter: true
 - Adapter status: PASS
 - Lifecycle state: STAGED_OSM_SIGNAL_READY
-- Run phase: P2.GEO-3C
-- Import run id: 4
-- Feature count: 150
-- Signal count: 3
+- Run phase: P2.GEO-3H
+- Import run id: 6
+- Feature count: 900
+- Signal count: 4
 - Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
-- Missing feature types: WATER_FEATURE, ADMIN_CENTER
+- Missing feature types: ADMIN_CENTER
 - Missing UI tokens: none
 - officialVerification all false: true
 - Labels/disclaimers present: true

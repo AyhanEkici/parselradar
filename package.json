@@ -125,7 +125,9 @@
                     "geo:p2-geo-3d:verify-staged-osm-adapter":  "ts-node apps/api/scripts/geodata/p2Geo3DVerifyStagedOsmSignalAdapter.ts",
                     "geo:p2-geo-3e:verify-guarded-ui":  "ts-node apps/api/scripts/geodata/p2Geo3EVerifyGuardedUi.ts",
                     "geo:p2-geo-3f:verify-freshness-duplicates":  "ts-node apps/api/scripts/geodata/p2Geo3FVerifyFreshnessDuplicatePolicy.ts",
-                    "geo:p2-geo-3g:verify-controlled-source":  "ts-node apps/api/scripts/geodata/p2Geo3GVerifyControlledExpandedSource.ts"
+                    "geo:p2-geo-3g:verify-controlled-source":  "ts-node apps/api/scripts/geodata/p2Geo3GVerifyControlledExpandedSource.ts",
+                    "geo:p2-geo-3h:import-expanded-osm":  "ts-node apps/api/scripts/geodata/p2Geo3HImportControlledExpandedSource.ts",
+                    "geo:p2-geo-3h:verify-expanded-osm":  "ts-node apps/api/scripts/geodata/p2Geo3HVerifyControlledExpandedImport.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",

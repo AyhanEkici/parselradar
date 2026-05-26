@@ -8,25 +8,26 @@
   "guardedApiUsed": true,
   "apiRouteUsesAdapter": true,
   "latestRun": {
-    "id": "4",
-    "phase": "P2.GEO-3C",
-    "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+    "id": "6",
+    "phase": "P2.GEO-3H",
+    "sourceName": "OPENSTREETMAP_OVERPASS_CONTROLLED_EXPANDED_KAYSERI",
     "importScope": "KAYSERI_POC_ONLY",
     "importMode": "DRY_RUN",
     "status": "STAGED_IMPORT_PASS",
-    "completedAt": "Tue May 26 2026 03:09:32 GMT+0300 (Türkiye Standard Time)"
+    "completedAt": "Tue May 26 2026 03:48:54 GMT+0300 (Türkiye Standard Time)"
   },
-  "importRunId": "4",
-  "runPhase": "P2.GEO-3C",
-  "featureCount": 150,
-  "signalCount": 3,
+  "importRunId": "6",
+  "runPhase": "P2.GEO-3H",
+  "featureCount": 900,
+  "signalCount": 4,
   "featureTypes": [
     "INDUSTRIAL_OSB_CANDIDATE",
     "MAIN_ROAD",
-    "SETTLEMENT"
+    "RAILWAY_SIGNAL",
+    "SETTLEMENT",
+    "WATER_FEATURE"
   ],
   "missingFeatureTypes": [
-    "WATER_FEATURE",
     "ADMIN_CENTER"
   ],
   "coverageMode": "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
@@ -70,5 +71,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T00:36:50.160Z"
+  "generatedAt": "2026-05-26T00:54:34.654Z"
 }

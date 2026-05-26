@@ -61,7 +61,7 @@ async function main(): Promise<void> {
       `
       SELECT id, phase, source_name, source_checksum, import_scope, import_mode, status, started_at, completed_at, notes
       FROM public.geo_import_runs
-      WHERE phase = 'P2.GEO-3C'
+      WHERE phase IN ('P2.GEO-3H', 'P2.GEO-3C')
         AND status = 'STAGED_IMPORT_PASS'
       ORDER BY completed_at DESC NULLS LAST, id DESC
       LIMIT 1
@@ -84,7 +84,7 @@ async function main(): Promise<void> {
         completed_at,
         notes
       FROM public.geo_import_runs
-      WHERE phase = 'P2.GEO-3C'
+      WHERE phase IN ('P2.GEO-3H', 'P2.GEO-3C')
       ORDER BY completed_at DESC NULLS LAST, id DESC
       LIMIT 25
       `,
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
           ) AS rn,
           COUNT(*) OVER (PARTITION BY source_checksum) AS checksum_run_count
         FROM public.geo_import_runs
-        WHERE phase = 'P2.GEO-3C'
+        WHERE phase IN ('P2.GEO-3H', 'P2.GEO-3C')
           AND status = 'STAGED_IMPORT_PASS'
           AND source_checksum IS NOT NULL
       )
@@ -215,8 +215,8 @@ async function main(): Promise<void> {
         completedAt: row.completed_at,
       })),
       duplicatePolicy: {
-        canonicalSelection: "LATEST_SUCCESSFUL_P2_GEO_3C_PER_SOURCE_CHECKSUM",
-        duplicateDefinition: "Same P2.GEO-3C source_checksum with STAGED_IMPORT_PASS",
+        canonicalSelection: "LATEST_SUCCESSFUL_STAGED_GEO_RUN_PER_SOURCE_CHECKSUM",
+        duplicateDefinition: "Same staged source_checksum with STAGED_IMPORT_PASS",
         cleanupMode: "READ_ONLY_POLICY_ONLY",
         cleanupExecuted: false,
         futureAllowedAction: "manual/admin cleanup in separate explicit phase only",
@@ -332,3 +332,5 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3f-freshness-duplicate-policy-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
+

@@ -131,10 +131,10 @@ export async function queryStagedSignalsFromPostgis(_options: { lat?: number; lo
       `
       SELECT id, phase, source_name, import_scope, import_mode, status, completed_at
       FROM public.geo_import_runs
-      WHERE phase IN ('P2.GEO-3C', 'P2.GEO-7')
+      WHERE phase IN ('P2.GEO-3H', 'P2.GEO-3C', 'P2.GEO-7')
         AND status = 'STAGED_IMPORT_PASS'
       ORDER BY
-        CASE WHEN phase = 'P2.GEO-3C' THEN 0 ELSE 1 END,
+        CASE WHEN phase = 'P2.GEO-3H' THEN 0 WHEN phase = 'P2.GEO-3C' THEN 1 ELSE 2 END,
         completed_at DESC NULLS LAST,
         id DESC
       LIMIT 1
@@ -263,4 +263,6 @@ export async function queryStagedSignalsFromPostgis(_options: { lat?: number; lo
     await client.end().catch(() => undefined);
   }
 }
+
+
 

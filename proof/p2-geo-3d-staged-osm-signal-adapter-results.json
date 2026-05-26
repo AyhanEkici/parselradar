@@ -1,28 +1,29 @@
 {
   "phase": "P2.GEO-3D",
-  "status": "PASS",
+  "status": "FAIL",
   "adapterStatus": "PASS",
   "lifecycleState": "STAGED_OSM_SIGNAL_READY",
   "latestRun": {
-    "id": "4",
-    "phase": "P2.GEO-3C",
-    "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+    "id": "6",
+    "phase": "P2.GEO-3H",
+    "sourceName": "OPENSTREETMAP_OVERPASS_CONTROLLED_EXPANDED_KAYSERI",
     "importScope": "KAYSERI_POC_ONLY",
     "importMode": "DRY_RUN",
     "status": "STAGED_IMPORT_PASS",
-    "completedAt": "Tue May 26 2026 03:09:32 GMT+0300 (Türkiye Standard Time)"
+    "completedAt": "Tue May 26 2026 03:48:54 GMT+0300 (Türkiye Standard Time)"
   },
-  "importRunId": "4",
-  "runPhase": "P2.GEO-3C",
-  "signalCount": 3,
-  "featureCount": 150,
+  "importRunId": "6",
+  "runPhase": "P2.GEO-3H",
+  "signalCount": 4,
+  "featureCount": 900,
   "featureTypes": [
     "INDUSTRIAL_OSB_CANDIDATE",
     "MAIN_ROAD",
-    "SETTLEMENT"
+    "RAILWAY_SIGNAL",
+    "SETTLEMENT",
+    "WATER_FEATURE"
   ],
   "missingFeatureTypes": [
-    "WATER_FEATURE",
     "ADMIN_CENTER"
   ],
   "coverageMode": "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
@@ -30,7 +31,7 @@
   "hasSettlement": true,
   "hasMainRoad": true,
   "hasIndustrial": true,
-  "waterMissingHandled": true,
+  "waterMissingHandled": false,
   "adminCenterMissingHandled": true,
   "allOfficialVerificationFalse": true,
   "labelsDisclaimersPresent": true,
@@ -44,10 +45,10 @@
       "name": "Yeni Sanayi",
       "distanceKm": 5.196,
       "source": "POSTGIS_STAGING",
-      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceLayer": "osm_overpass_controlled_expanded_kayseri",
       "sourceId": "osm-way-66427249",
       "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
-      "confidence": "OSM_SMALL_SOURCE",
+      "confidence": "OSM_CONTROLLED_EXPANDED_SOURCE",
       "officialVerification": false,
       "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
     },
@@ -57,10 +58,10 @@
       "name": "Talas BulvarÄ±",
       "distanceKm": 0.146,
       "source": "POSTGIS_STAGING",
-      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceLayer": "osm_overpass_controlled_expanded_kayseri",
       "sourceId": "osm-way-127098808",
       "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
-      "confidence": "OSM_SMALL_SOURCE",
+      "confidence": "OSM_CONTROLLED_EXPANDED_SOURCE",
       "officialVerification": false,
       "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
     },
@@ -70,13 +71,26 @@
       "name": "Nurihas",
       "distanceKm": 0.564,
       "source": "POSTGIS_STAGING",
-      "sourceLayer": "osm_overpass_small_kayseri",
+      "sourceLayer": "osm_overpass_controlled_expanded_kayseri",
       "sourceId": "osm-node-5241255670",
       "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
-      "confidence": "OSM_SMALL_SOURCE",
+      "confidence": "OSM_CONTROLLED_EXPANDED_SOURCE",
+      "officialVerification": false,
+      "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
+    },
+    {
+      "type": "nearestStagedWaterFeature",
+      "featureType": "WATER_FEATURE",
+      "name": "way/255762870",
+      "distanceKm": 2.66,
+      "source": "POSTGIS_STAGING",
+      "sourceLayer": "osm_overpass_controlled_expanded_kayseri",
+      "sourceId": "osm-way-255762870",
+      "sourceLabel": "PUBLIC_SOURCE_SIGNAL",
+      "confidence": "OSM_CONTROLLED_EXPANDED_SOURCE",
       "officialVerification": false,
       "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
     }
   ],
-  "generatedAt": "2026-05-26T00:36:31.827Z"
+  "generatedAt": "2026-05-26T00:54:21.237Z"
 }

@@ -72,7 +72,7 @@ async function main(): Promise<void> {
   const guardedApiUsed = uiContent.includes("/api/dev/staged-geo-signals");
   const apiRouteUsesAdapter = apiRouteContent.includes("queryStagedSignalsFromPostgis");
 
-  const hasP2Geo3CRun = adapterResult.latestRun?.phase === "P2.GEO-3C";
+  const hasP2Geo3CRun = ["P2.GEO-3H", "P2.GEO-3C"].includes(String(adapterResult.latestRun?.phase ?? ""));
   const hasSettlement = Boolean(adapterResult.nearestStagedSettlement);
   const hasMainRoad = Boolean(adapterResult.nearestStagedMainRoad);
   const hasIndustrial = Boolean(adapterResult.nearestStagedIndustrialOsbCandidate);
@@ -201,3 +201,5 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3e-guarded-ui-verification-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
+

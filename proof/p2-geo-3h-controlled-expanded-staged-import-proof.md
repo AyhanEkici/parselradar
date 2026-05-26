@@ -1,0 +1,32 @@
+# P2.GEO-3H Controlled Expanded Staged Import Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Import script exists: True
+- Verify script exists: True
+- Package scripts exist: true
+- TODO ledger updated: True
+- Import status: STAGED_IMPORT_PASS
+- Verify status: PASS
+- Import run id: 6
+- Source feature count: 900
+- Inserted feature count: 900
+- Skipped feature count: 0
+- Verified feature count: 900
+- Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, RAILWAY_SIGNAL, SETTLEMENT, WATER_FEATURE
+- Adapter run phase: P2.GEO-3H
+- Adapter import run id: 6
+- Freshness adapter uses latest run: True
+- Staging tables written: true
+- Production tables written: false
+- Source file committed: false
+- Raw source path committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

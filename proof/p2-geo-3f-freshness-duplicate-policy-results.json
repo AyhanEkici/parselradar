@@ -6,33 +6,45 @@
   "newImportExecuted": false,
   "latestRunFound": true,
   "latestRun": {
-    "id": "4",
-    "phase": "P2.GEO-3C",
-    "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+    "id": "6",
+    "phase": "P2.GEO-3H",
+    "sourceName": "OPENSTREETMAP_OVERPASS_CONTROLLED_EXPANDED_KAYSERI",
     "sourceChecksumVisible": true,
     "importScope": "KAYSERI_POC_ONLY",
     "importMode": "DRY_RUN",
     "status": "STAGED_IMPORT_PASS",
-    "startedAt": "2026-05-26T00:09:32.075Z",
-    "completedAt": "2026-05-26T00:09:32.075Z",
-    "runAgeMinutes": 28
+    "startedAt": "2026-05-26T00:48:54.166Z",
+    "completedAt": "2026-05-26T00:48:54.166Z",
+    "runAgeMinutes": 6
   },
   "adapterStatus": "PASS",
   "adapterLifecycleState": "STAGED_OSM_SIGNAL_READY",
-  "adapterRunId": "4",
+  "adapterRunId": "6",
   "adapterUsesLatestRun": true,
-  "featureCount": 150,
-  "officialFalseCount": 150,
-  "publicSourceCount": 150,
+  "featureCount": 900,
+  "officialFalseCount": 900,
+  "publicSourceCount": 900,
   "featureTypes": [
     "INDUSTRIAL_OSB_CANDIDATE",
     "MAIN_ROAD",
-    "SETTLEMENT"
+    "RAILWAY_SIGNAL",
+    "SETTLEMENT",
+    "WATER_FEATURE"
   ],
   "allOfficialVerificationFalse": true,
   "labelsDisclaimersPresent": true,
-  "recentRunCount": 1,
+  "recentRunCount": 2,
   "recentRuns": [
+    {
+      "id": "6",
+      "phase": "P2.GEO-3H",
+      "sourceName": "OPENSTREETMAP_OVERPASS_CONTROLLED_EXPANDED_KAYSERI",
+      "sourceChecksumVisible": true,
+      "importScope": "KAYSERI_POC_ONLY",
+      "importMode": "DRY_RUN",
+      "status": "STAGED_IMPORT_PASS",
+      "completedAt": "2026-05-26T00:48:54.166Z"
+    },
     {
       "id": "4",
       "phase": "P2.GEO-3C",
@@ -45,15 +57,27 @@
     }
   ],
   "duplicatePolicy": {
-    "canonicalSelection": "LATEST_SUCCESSFUL_P2_GEO_3C_PER_SOURCE_CHECKSUM",
-    "duplicateDefinition": "Same P2.GEO-3C source_checksum with STAGED_IMPORT_PASS",
+    "canonicalSelection": "LATEST_SUCCESSFUL_STAGED_GEO_RUN_PER_SOURCE_CHECKSUM",
+    "duplicateDefinition": "Same staged source_checksum with STAGED_IMPORT_PASS",
     "cleanupMode": "READ_ONLY_POLICY_ONLY",
     "cleanupExecuted": false,
     "futureAllowedAction": "manual/admin cleanup in separate explicit phase only"
   },
-  "canonicalRunCount": 1,
+  "canonicalRunCount": 2,
   "redundantCandidateCount": 0,
   "duplicateRows": [
+    {
+      "id": "6",
+      "sourceName": "OPENSTREETMAP_OVERPASS_CONTROLLED_EXPANDED_KAYSERI",
+      "sourceChecksumVisible": true,
+      "importScope": "KAYSERI_POC_ONLY",
+      "importMode": "DRY_RUN",
+      "status": "STAGED_IMPORT_PASS",
+      "completedAt": "2026-05-26T00:48:54.166Z",
+      "rankWithinChecksum": 1,
+      "checksumRunCount": 1,
+      "policyAction": "CANONICAL_KEEP"
+    },
     {
       "id": "4",
       "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
@@ -75,5 +99,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T00:37:04.738Z"
+  "generatedAt": "2026-05-26T00:54:44.296Z"
 }

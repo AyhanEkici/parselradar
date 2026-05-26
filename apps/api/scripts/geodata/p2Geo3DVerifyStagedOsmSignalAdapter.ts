@@ -15,7 +15,7 @@ function writeProofPair(basePathWithoutExtension: string, payload: unknown, mark
 async function main(): Promise<void> {
   const result = await queryStagedSignalsFromPostgis();
 
-  const hasP2Geo3CRun = result.latestRun?.phase === "P2.GEO-3C";
+  const hasP2Geo3CRun = ["P2.GEO-3H", "P2.GEO-3C"].includes(String(result.latestRun?.phase ?? ""));
   const hasSettlement = Boolean(result.nearestStagedSettlement);
   const hasMainRoad = Boolean(result.nearestStagedMainRoad);
   const hasIndustrial = Boolean(result.nearestStagedIndustrialOsbCandidate);
@@ -123,3 +123,5 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3d-staged-osm-signal-adapter-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
+

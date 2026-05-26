@@ -3,7 +3,7 @@
 - Status: PASS
 - Endpoint mounted: true
 - Endpoint guard: DEV_ONLY
-- Signal count: 3
+- Signal count: 4
 - Production tables queried: false
 - Production swap used: false
 - officialVerification: false
@@ -29,6 +29,14 @@
 - Feature type: SETTLEMENT
 - Name: Nurihas
 - Distance km: 0.564
+- Source label: PUBLIC_SOURCE_SIGNAL
+- officialVerification: false
+
+## nearestStagedWaterFeature
+
+- Feature type: WATER_FEATURE
+- Name: way/255762870
+- Distance km: 2.66
 - Source label: PUBLIC_SOURCE_SIGNAL
 - officialVerification: false
 

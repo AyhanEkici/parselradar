@@ -1,0 +1,21 @@
+{
+    "phase":  "P2.GEO-3H",
+    "capturedAt":  "2026-05-26T00:48:45.7153466Z",
+    "head":  "a2ff54cb",
+    "workingTreeCleanAtStart":  false,
+    "recentCommits":  [
+                          "a2ff54cb feat: verify controlled larger Kayseri geodata source",
+                          "799c9c65 feat: verify staged signal freshness policy",
+                          "1399d23a feat: verify guarded UI against staged OSM signals",
+                          "d831eb78 fix: restore staged geodata adapter route compatibility",
+                          "ced9a9db feat: align staged OSM signal adapter"
+                      ],
+    "expandedSourceExists":  true,
+    "expandedSourceOutsideRepo":  true,
+    "stagingImportOnly":  true,
+    "productionSwapAllowed":  false,
+    "fullTurkeyImportAllowed":  false,
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false
+}

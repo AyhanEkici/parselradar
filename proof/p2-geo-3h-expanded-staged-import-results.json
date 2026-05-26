@@ -1,0 +1,31 @@
+{
+  "phase": "P2.GEO-3H",
+  "status": "STAGED_IMPORT_PASS",
+  "importRunId": "6",
+  "sourceBasename": "kayseri-osm-controlled-expanded.geojson",
+  "sourceChecksum": "37d8a0a337f91fa6622802493173b0edf3a29d45215e03d09fb31d7483e7104f",
+  "logicalScope": "CONTROLLED_KAYSERI_AREA_ONLY",
+  "dbScope": "KAYSERI_POC_ONLY",
+  "dbImportMode": "DRY_RUN",
+  "sourceFeatureCount": 900,
+  "insertedFeatureCount": 900,
+  "skippedFeatureCount": 0,
+  "skippedReasons": {},
+  "featureTypeCounts": {
+    "SETTLEMENT": 292,
+    "MAIN_ROAD": 473,
+    "RAILWAY_SIGNAL": 111,
+    "WATER_FEATURE": 15,
+    "INDUSTRIAL_OSB_CANDIDATE": 9
+  },
+  "sourceFileCommitted": false,
+  "rawSourcePathCommitted": false,
+  "fullTurkeyImportAllowed": false,
+  "productionSwapAllowed": false,
+  "productionTablesWritten": false,
+  "stagingTablesWritten": true,
+  "connectorActivated": false,
+  "scrapingAdded": false,
+  "officialVerification": false,
+  "generatedAt": "2026-05-26T00:54:09.404Z"
+}
