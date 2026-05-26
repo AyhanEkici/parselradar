@@ -1,14 +1,14 @@
 {
     "phase":  "P2.GEO-3C-REPAIR-3",
-    "generatedAt":  "2026-05-26T00:07:25.4680762Z",
+    "generatedAt":  "2026-05-26T00:10:59.6649744Z",
     "commandResults":  [
                            {
                                "name":  "geo:p2-geo-3c:import-small-osm",
-                               "status":  "FAIL"
+                               "status":  "STAGED_IMPORT_PASS"
                            },
                            {
                                "name":  "geo:p2-geo-3c:verify-small-osm",
-                               "status":  "STAGED_IMPORT_REQUIRED"
+                               "status":  "PASS"
                            },
                            {
                                "name":  "build api",
@@ -31,14 +31,14 @@
                                "status":  "PASS"
                            }
                        ],
-    "importRunId":  null,
-    "featureCount":  null,
-    "validGeometryCount":  null,
-    "officialVerificationAllFalse":  null,
-    "publicSourceSignalAll":  null,
-    "sourceFeatureCount":  null,
-    "insertedFeatureCount":  null,
-    "skippedFeatureCount":  null,
+    "importRunId":  "4",
+    "featureCount":  150,
+    "validGeometryCount":  150,
+    "officialVerificationAllFalse":  true,
+    "publicSourceSignalAll":  true,
+    "sourceFeatureCount":  150,
+    "insertedFeatureCount":  150,
+    "skippedFeatureCount":  0,
     "sourceFileCommitted":  false,
     "rawSourcePathCommitted":  false,
     "fullTurkeyImportAllowed":  false,

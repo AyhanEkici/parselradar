@@ -1,8 +1,33 @@
 {
   "phase": "P2.GEO-3C",
-  "status": "STAGED_IMPORT_REQUIRED",
-  "latestRunFound": false,
+  "status": "PASS",
+  "latestRunFound": true,
+  "importRunId": "4",
+  "sourceName": "OPENSTREETMAP_OVERPASS_SMALL_KAYSERI",
+  "sourceChecksumVisible": true,
+  "importScope": "KAYSERI_POC_ONLY",
+  "importMode": "DRY_RUN",
+  "featureCount": 150,
+  "validGeometryCount": 150,
+  "srid4326Count": 150,
+  "nonNullGeometryCount": 150,
+  "officialFalseCount": 150,
+  "publicSourceCount": 150,
+  "officialVerificationAllFalse": true,
+  "publicSourceSignalAll": true,
+  "featureTypes": [
+    "INDUSTRIAL_OSB_CANDIDATE",
+    "MAIN_ROAD",
+    "SETTLEMENT"
+  ],
+  "sourceFileCommitted": false,
+  "rawSourcePathCommitted": false,
+  "fullTurkeyImportAllowed": false,
   "productionSwapAllowed": false,
+  "productionTablesQueried": false,
+  "stagingTablesQueried": true,
+  "connectorActivated": false,
+  "scrapingAdded": false,
   "officialVerification": false,
-  "generatedAt": "2026-05-26T00:03:24.887Z"
+  "generatedAt": "2026-05-26T00:10:33.608Z"
 }
