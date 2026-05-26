@@ -1,13 +1,12 @@
 # P2.GEO-3H Controlled Expanded Staged Import Proof
 
-- Clean start captured: True
-- Doc exists: True
-- Import script exists: True
-- Verify script exists: True
-- Package scripts exist: true
-- TODO ledger updated: True
 - Import status: STAGED_IMPORT_PASS
 - Verify status: PASS
+- Adapter status: PASS
+- Endpoint status: PASS
+- Admin diagnostic status: PASS
+- UI status: PASS
+- Freshness status: PASS
 - Import run id: 6
 - Source feature count: 900
 - Inserted feature count: 900

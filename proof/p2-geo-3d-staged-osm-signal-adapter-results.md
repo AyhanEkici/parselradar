@@ -1,6 +1,6 @@
 # P2.GEO-3D Staged OSM Signal Adapter Results
 
-- Status: FAIL
+- Status: PASS
 - Adapter status: PASS
 - Lifecycle state: STAGED_OSM_SIGNAL_READY
 - Run phase: P2.GEO-3H
@@ -13,7 +13,7 @@
 - Has settlement: true
 - Has main road: true
 - Has industrial/OSB candidate: true
-- Water missing handled: false
+- Water missing handled: true
 - Admin center missing handled: true
 - officialVerification all false: true
 - Labels/disclaimers present: true

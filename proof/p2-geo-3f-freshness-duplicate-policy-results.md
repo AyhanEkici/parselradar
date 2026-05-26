@@ -8,7 +8,7 @@
 - Latest run id: 6
 - Adapter run id: 6
 - Adapter uses latest run: true
-- Run age minutes: 6
+- Run age minutes: 11
 - Feature count: 900
 - Feature types: INDUSTRIAL_OSB_CANDIDATE, MAIN_ROAD, RAILWAY_SIGNAL, SETTLEMENT, WATER_FEATURE
 - Canonical run count: 2

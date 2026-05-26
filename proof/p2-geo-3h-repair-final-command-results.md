@@ -1,0 +1,22 @@
+# P2.GEO-3H Repair Final Command Results
+
+- STAGED_IMPORT_PASS | geo:p2-geo-3h:import-expanded-osm
+- PASS | geo:p2-geo-3h:verify-expanded-osm
+- PASS | geo:p2-geo-3d:verify-staged-osm-adapter
+- PASS | geo:p2-geo-9:verify-endpoint
+- PASS | geo:p2-geo-10:verify-admin-diagnostic
+- PASS | geo:p2-geo-3e:verify-guarded-ui
+- PASS | geo:p2-geo-3f:verify-freshness-duplicates
+- PASS | build api
+- PASS | build web
+- PASS | verify:connector-diagnostics-contract
+- PASS | verify:connector-diagnostics
+- PASS | verify:platform-integrity
+- Import run id: 6
+- Source feature count: 900
+- Inserted feature count: 900
+- Skipped feature count: 0
+- Adapter run phase: P2.GEO-3H
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap allowed: false

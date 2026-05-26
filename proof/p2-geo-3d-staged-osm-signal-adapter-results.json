@@ -1,6 +1,6 @@
 {
   "phase": "P2.GEO-3D",
-  "status": "FAIL",
+  "status": "PASS",
   "adapterStatus": "PASS",
   "lifecycleState": "STAGED_OSM_SIGNAL_READY",
   "latestRun": {
@@ -31,7 +31,7 @@
   "hasSettlement": true,
   "hasMainRoad": true,
   "hasIndustrial": true,
-  "waterMissingHandled": false,
+  "waterMissingHandled": true,
   "adminCenterMissingHandled": true,
   "allOfficialVerificationFalse": true,
   "labelsDisclaimersPresent": true,
@@ -92,5 +92,5 @@
       "disclaimer": "OpenStreetMap-derived public-source signal. Not official tapu, imar, cadastre, zoning, legal, investment or construction verification."
     }
   ],
-  "generatedAt": "2026-05-26T00:54:21.237Z"
+  "generatedAt": "2026-05-26T00:59:13.034Z"
 }

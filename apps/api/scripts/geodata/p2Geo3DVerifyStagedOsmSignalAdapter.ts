@@ -19,8 +19,8 @@ async function main(): Promise<void> {
   const hasSettlement = Boolean(result.nearestStagedSettlement);
   const hasMainRoad = Boolean(result.nearestStagedMainRoad);
   const hasIndustrial = Boolean(result.nearestStagedIndustrialOsbCandidate);
-  const waterMissingHandled = result.missingFeatureTypes.includes("WATER_FEATURE") && result.nearestStagedWaterFeature === null;
-  const adminCenterMissingHandled = result.missingFeatureTypes.includes("ADMIN_CENTER") && result.nearestStagedAdminCenter === null;
+  const waterMissingHandled = Boolean(result.nearestStagedWaterFeature) || (result.missingFeatureTypes.includes("WATER_FEATURE") && result.nearestStagedWaterFeature === null);
+  const adminCenterMissingHandled = Boolean(result.nearestStagedAdminCenter) || (result.missingFeatureTypes.includes("ADMIN_CENTER") && result.nearestStagedAdminCenter === null);
 
   const status =
     result.status === "PASS" &&
@@ -123,5 +123,6 @@ main().catch((error) => {
   console.log(JSON.stringify({ status: "FAIL", proof: "proof/p2-geo-3d-staged-osm-signal-adapter-results.json" }, null, 2));
   process.exitCode = 1;
 });
+
 
 
