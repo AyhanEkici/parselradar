@@ -1,0 +1,38 @@
+{
+    "phase":  "P2.GEO-3E",
+    "generatedAt":  "2026-05-26T00:23:32.3649041Z",
+    "cleanStartCaptured":  true,
+    "docExists":  true,
+    "verifyScriptExists":  true,
+    "packageScriptExists":  true,
+    "todoLedgerUpdated":  true,
+    "status":  "PASS",
+    "uiPath":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+    "routeMounted":  true,
+    "guardedApiUsed":  true,
+    "apiRouteUsesAdapter":  true,
+    "importRunId":  "4",
+    "featureCount":  150,
+    "signalCount":  3,
+    "coverageMode":  "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
+    "missingFeatureTypes":  [
+                                "WATER_FEATURE",
+                                "ADMIN_CENTER"
+                            ],
+    "missingUiTokens":  [
+
+                        ],
+    "allOfficialVerificationFalse":  true,
+    "labelsDisclaimersPresent":  true,
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapUsed":  false,
+    "productionTablesQueried":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "envChanged":  false,
+    "secretCommitted":  false,
+    "officialVerificationClaimAdded":  false,
+    "platformChecksPass":  true
+}

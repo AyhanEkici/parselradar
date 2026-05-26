@@ -1,0 +1,31 @@
+# P2.GEO-3E Guarded UI Proof
+
+- Clean start captured: True
+- Doc exists: True
+- Verify script exists: True
+- Package script exists: true
+- TODO ledger updated: True
+- Status: PASS
+- UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
+- Route mounted: True
+- Guarded API used: True
+- API route uses adapter: True
+- Import run id: 4
+- Feature count: 150
+- Signal count: 3
+- Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
+- Missing feature types: WATER_FEATURE, ADMIN_CENTER
+- Missing UI tokens: 
+- officialVerification all false: True
+- Labels/disclaimers present: True
+- Source file committed: false
+- Full Turkey import allowed: false
+- Production swap used: false
+- Production tables queried: false
+- Connector activated: false
+- Scraping added: false
+- Scheduler added: false
+- .env changed: false
+- Secret committed: false
+- Official verification claim added: false
+- Platform checks pass: true

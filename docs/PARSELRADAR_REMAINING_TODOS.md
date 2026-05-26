@@ -16,19 +16,20 @@
 - ✅ P2.GEO-3A Controlled OSM import pipeline scaffold
 - ✅ P2.GEO-3B Small real source configuration
 - ✅ P2.GEO-3C Small staged OSM-derived import
-- ➡️ P2.GEO-3D Staged OSM signal adapter alignment
+- ✅ P2.GEO-3D Staged OSM signal adapter alignment
+- ➡️ P2.GEO-3E Guarded UI verification against real staged OSM data
 
 ## Remaining recommended sequence
-
-### P2.GEO-3D — staged OSM signal adapter alignment
-
-Goal:
-Make the guarded signal adapter prefer the latest P2.GEO-3C staged OSM import and tolerate partial small-source coverage.
 
 ### P2.GEO-3E — guarded UI verification against real staged OSM data
 
 Goal:
-Verify admin/dev diagnostics UI displays P2.GEO-3C-derived signals correctly.
+Verify admin/dev diagnostics UI displays P2.GEO-3C/P2.GEO-3D-derived staged OSM signal data correctly and safely.
+
+### P2.GEO-3F — staged signal freshness and duplicate-run cleanup policy
+
+Goal:
+Prevent repeated local imports from creating confusing stale/duplicate diagnostic runs.
 
 ### MVP-4D — Evidence OCR implementation
 

@@ -1,0 +1,17 @@
+{
+    "phase":  "P2.GEO-3E",
+    "capturedAt":  "2026-05-26T00:22:35.2089222Z",
+    "head":  "d831eb78",
+    "workingTreeCleanAtStart":  true,
+    "recentCommits":  [
+                          "d831eb78 fix: restore staged geodata adapter route compatibility",
+                          "ced9a9db feat: align staged OSM signal adapter",
+                          "76435f32 fix: complete small OSM staged geodata import",
+                          "ff8fc278 fix: complete small OSM staged geodata import",
+                          "2ba68c22 fix: normalize small OSM geometry import"
+                      ],
+    "sourceFileCommitted":  false,
+    "secretScanRun":  true,
+    "realSecretFound":  false,
+    "noUnknownSecretRisk":  true
+}

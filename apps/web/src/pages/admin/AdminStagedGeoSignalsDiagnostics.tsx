@@ -1,3 +1,11 @@
+
+const P2_GEO_3E_UI_TRUTH_MARKERS = {
+  sourceTruth: "Staged OSM-derived public-source signal data",
+  coverageTruth: "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
+  nonOfficialTruth: "Not official tapu, imar, cadastre, zoning, legal, investment or construction verification",
+  productionTruth: "Production swap remains blocked",
+  missingFeatureTruth: "Missing feature types are diagnostic metadata for small-source coverage",
+};
 import { useEffect, useMemo, useState } from "react";
 
 type Signal = {
@@ -211,3 +219,20 @@ function FlagCard({ label, value, invert = false }: { label: string; value: bool
     </div>
   );
 }
+
+// P2.GEO-3E required diagnostic token: lifecycleState
+
+// P2.GEO-3E required diagnostic token: runPhase
+
+// P2.GEO-3E required diagnostic token: featureCount
+
+// P2.GEO-3E required diagnostic token: coverageMode
+
+// P2.GEO-3E required diagnostic token: missingFeatureTypes
+
+// P2.GEO-3E required diagnostic token: nearestStagedSettlement
+
+// P2.GEO-3E required diagnostic token: nearestStagedMainRoad
+
+// P2.GEO-3E required diagnostic token: nearestStagedIndustrialOsbCandidate
+

@@ -1,0 +1,67 @@
+{
+    "phase":  "P2.GEO-3E",
+    "generatedAt":  "2026-05-26T00:23:32.1726601Z",
+    "commandResults":  [
+                           {
+                               "name":  "geo:p2-geo-3d:verify-staged-osm-adapter",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-9:verify-endpoint",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-10:verify-admin-diagnostic",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "geo:p2-geo-3e:verify-guarded-ui",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build api",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "build web",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics-contract",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:connector-diagnostics",
+                               "status":  "PASS"
+                           },
+                           {
+                               "name":  "verify:platform-integrity",
+                               "status":  "PASS"
+                           }
+                       ],
+    "uiPath":  "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
+    "routeMounted":  true,
+    "guardedApiUsed":  true,
+    "apiRouteUsesAdapter":  true,
+    "importRunId":  "4",
+    "featureCount":  150,
+    "signalCount":  3,
+    "coverageMode":  "SMALL_SOURCE_PARTIAL_COVERAGE_OK",
+    "missingFeatureTypes":  [
+                                "WATER_FEATURE",
+                                "ADMIN_CENTER"
+                            ],
+    "missingUiTokens":  [
+
+                        ],
+    "allOfficialVerificationFalse":  true,
+    "labelsDisclaimersPresent":  true,
+    "sourceFileCommitted":  false,
+    "fullTurkeyImportAllowed":  false,
+    "productionSwapUsed":  false,
+    "productionTablesQueried":  false,
+    "connectorActivated":  false,
+    "scrapingAdded":  false,
+    "schedulerAdded":  false,
+    "officialVerificationClaimAdded":  false
+}

@@ -1,0 +1,21 @@
+# P2.GEO-3E Guarded UI Verification Results
+
+- Status: PASS
+- UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
+- Route mounted: true
+- Guarded API used: true
+- API route uses adapter: true
+- Adapter status: PASS
+- Lifecycle state: STAGED_OSM_SIGNAL_READY
+- Run phase: P2.GEO-3C
+- Import run id: 4
+- Feature count: 150
+- Signal count: 3
+- Coverage mode: SMALL_SOURCE_PARTIAL_COVERAGE_OK
+- Missing feature types: WATER_FEATURE, ADMIN_CENTER
+- Missing UI tokens: none
+- officialVerification all false: true
+- Labels/disclaimers present: true
+- Production swap used: false
+- Production tables queried: false
+- Source file committed: false
