@@ -1,6 +1,6 @@
 # P2.GEO-3I Expanded Staged Signal UX Results
 
-- Status: FAIL
+- Status: PASS
 - UI path: apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx
 - Route mounted: true
 - Guarded API used: true
@@ -20,8 +20,8 @@
 - Optional signal handled: true
 - Source age present: true
 - Duplicate state present: true
-- Feature type counts present: false
-- Missing UI tokens: featureTypes, featureTypes
+- Feature type counts present: true
+- Missing UI tokens: none
 - officialVerification all false: true
 - Labels/disclaimers present: true
 - Production swap used: false

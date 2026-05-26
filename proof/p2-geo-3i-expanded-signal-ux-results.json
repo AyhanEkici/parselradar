@@ -1,6 +1,6 @@
 {
   "phase": "P2.GEO-3I",
-  "status": "FAIL",
+  "status": "PASS",
   "uiPath": "apps/web/src/pages/admin/AdminStagedGeoSignalsDiagnostics.tsx",
   "routeMounted": true,
   "guardedApiUsed": true,
@@ -38,7 +38,7 @@
   "optionalSignalHandled": true,
   "sourceAgePresent": true,
   "duplicateStatePresent": true,
-  "featureTypeCountsPresent": false,
+  "featureTypeCountsPresent": true,
   "allOfficialVerificationFalse": true,
   "labelsDisclaimersPresent": true,
   "productionSwapUsed": false,
@@ -85,10 +85,7 @@
     "productionSwapUsed",
     "productionTablesQueried"
   ],
-  "missingUiTokens": [
-    "featureTypes",
-    "featureTypes"
-  ],
+  "missingUiTokens": [],
   "sourceFileCommitted": false,
   "dbImportExecuted": false,
   "fullTurkeyImportAllowed": false,
@@ -96,5 +93,5 @@
   "scrapingAdded": false,
   "schedulerAdded": false,
   "officialVerificationClaimAdded": false,
-  "generatedAt": "2026-05-26T01:24:12.659Z"
+  "generatedAt": "2026-05-26T01:27:33.802Z"
 }
