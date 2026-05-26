@@ -1,0 +1,69 @@
+{
+  "phase": "MVP-4D",
+  "status": "PASS",
+  "componentExists": true,
+  "contractExists": true,
+  "docsExist": true,
+  "uiHasMissingDataCopy": true,
+  "uiHasAsterisk": true,
+  "uiHasDisclaimer": true,
+  "uiHasRiskReadiness": true,
+  "textExtractionHonest": true,
+  "imageOcrHonest": true,
+  "missingFieldsStable": true,
+  "riskReady": true,
+  "noOfficialClaim": true,
+  "listingEvidence": {
+    "id": "evidence_4fe08637",
+    "propertyId": "property-demo",
+    "sourceType": "LISTING",
+    "inputType": "TEXT",
+    "extractedText": "Kayseri Melikgazi 500 m2 arsa 1500000 TL",
+    "extractionStatus": "TEXT_EXTRACTED",
+    "extractionConfidence": 0.95,
+    "missingRequiredFields": [
+      "neighborhood"
+    ],
+    "officialVerification": false,
+    "disclaimer": "Evidence OCR/extraction is informational only. It is not official tapu, imar, cadastre, zoning, legal, investment, or construction verification.",
+    "createdAt": "2026-05-26T01:36:47.934Z"
+  },
+  "screenshotEvidence": {
+    "id": "evidence_bb4f5a18",
+    "propertyId": "property-demo",
+    "sourceType": "OTHER_PUBLIC_SOURCE",
+    "inputType": "SCREENSHOT",
+    "extractedText": "",
+    "extractionStatus": "OCR_ENGINE_NOT_CONFIGURED",
+    "extractionConfidence": 0,
+    "missingRequiredFields": [
+      "district",
+      "neighborhood",
+      "areaM2",
+      "askingPriceTry"
+    ],
+    "officialVerification": false,
+    "disclaimer": "Evidence OCR/extraction is informational only. It is not official tapu, imar, cadastre, zoning, legal, investment, or construction verification.",
+    "createdAt": "2026-05-26T01:36:47.935Z"
+  },
+  "completeReadiness": {
+    "ready": true,
+    "missingRequiredFields": [],
+    "label": "READY_FOR_BASIC_RISK_SCAN"
+  },
+  "incompleteReadiness": {
+    "ready": false,
+    "missingRequiredFields": [
+      "neighborhood",
+      "areaM2",
+      "askingPriceTry"
+    ],
+    "label": "VUL_ONTBREKENDE_DATA"
+  },
+  "fakeOcrAdded": false,
+  "realOcrEngineConfigured": false,
+  "officialVerificationClaimAdded": false,
+  "scrapingAdded": false,
+  "envChanged": false,
+  "generatedAt": "2026-05-26T01:36:47.936Z"
+}

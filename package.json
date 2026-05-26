@@ -128,7 +128,8 @@
                     "geo:p2-geo-3g:verify-controlled-source":  "ts-node apps/api/scripts/geodata/p2Geo3GVerifyControlledExpandedSource.ts",
                     "geo:p2-geo-3h:import-expanded-osm":  "ts-node apps/api/scripts/geodata/p2Geo3HImportControlledExpandedSource.ts",
                     "geo:p2-geo-3h:verify-expanded-osm":  "ts-node apps/api/scripts/geodata/p2Geo3HVerifyControlledExpandedImport.ts",
-                    "geo:p2-geo-3i:verify-expanded-signal-ux":  "ts-node apps/api/scripts/geodata/p2Geo3IVerifyExpandedSignalUx.ts"
+                    "geo:p2-geo-3i:verify-expanded-signal-ux":  "ts-node apps/api/scripts/geodata/p2Geo3IVerifyExpandedSignalUx.ts",
+                    "mvp:4d:verify-evidence-ocr":  "ts-node apps/api/scripts/mvp4dVerifyEvidenceOcr.ts"
                 },
     "devDependencies":  {
                             "concurrently":  "^8.2.2",

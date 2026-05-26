@@ -39,3 +39,8 @@ OCR-assisted upload classification for listings, screenshots, registry/e-imar/TK
 
 Goal:
 Audit all routes/pages/APIs for placeholders, missing backend, broken actions, mock data, role mismatches and production blockers.
+
+## MVP-4D Evidence OCR implementation
+
+- ?? MVP-4D Evidence OCR implementation
+- Next after MVP-4D: P2.1 Full MVP functional completeness audit
