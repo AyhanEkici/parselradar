@@ -8,8 +8,9 @@ import {
   getProvinceOptions,
   getDistrictOptions,
   getNeighborhoodOptions,
-  locationProviderMeta
+  getLocationCoverageStatus
 } from '../lib/locationOptions';
+  const locationStatus = getLocationCoverageStatus();
 
 function Dashboard() {
   const [credits, setCredits] = useState<number>(0);
@@ -131,6 +132,11 @@ function Dashboard() {
       {/* New property intake card */}
       <form className="premium-dashboard premium-surface rounded shadow p-8 md:p-10 lg:p-12 mt-4 w-full" onSubmit={handleSubmit} style={{maxWidth:'900px',margin:'0 auto'}}>
         <h3 className="text-2xl font-semibold mb-4 text-center">Yeni Mülk Kaydı</h3>
+        <div className="mb-2 text-base text-center font-semibold">
+          {locationStatus.source === 'CACHE'
+            ? 'Kayseri konum verisi yüklendi'
+            : 'Pilot konum verisi kullanılıyor; tam Kayseri veri importu bekleniyor'}
+        </div>
         <div className="mb-4 text-base text-slate-700 text-center font-medium">Ada/parsel ve temel fiyat bilgileri girildikten sonra kaynak kontrol ekranına geçebilirsiniz.</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* İl */}

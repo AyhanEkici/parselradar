@@ -121,8 +121,9 @@ import {
   getProvinceOptions,
   getDistrictOptions,
   getNeighborhoodOptions,
-  locationProviderMeta
+  getLocationCoverageStatus
 } from '../lib/locationOptions';
+  const locationStatus = getLocationCoverageStatus();
 
 interface PropertyForm {
   [key: string]: string | number | boolean | string[] | undefined;
@@ -336,6 +337,12 @@ export default function NewProperty() {
         {/* Step 1: Location and property info */}
         {step === 1 && (
           <>
+            {/* Location provider status */}
+            <div className="mb-2 text-base text-center font-semibold">
+              {locationStatus.source === 'CACHE'
+                ? 'Kayseri konum verisi yüklendi'
+                : 'Pilot konum verisi kullanılıyor; tam Kayseri veri importu bekleniyor'}
+            </div>
             {/* Location dropdowns and manual fallback */}
             <div className="mb-4">
               <label className="block font-semibold mb-1">İl *</label>
