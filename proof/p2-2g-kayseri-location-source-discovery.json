@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-05-27T00:00:00Z",
+  "candidates": [
+    {
+      "key": "kayseri_kent_rehberi",
+      "label": "Kayseri Buyuksehir Kent Rehberi",
+      "url": "https://cbs.kayseri.bel.tr/Kayseri-Kent-Rehberi",
+      "type": "OFFICIAL_MUNICIPALITY_MAP",
+      "queryable": false,
+      "hasAdminAttributes": false,
+      "reason": "Manual guidance only, not a queryable OGC/WFS/GeoJSON endpoint."
+    },
+    {
+      "key": "kocasinan_eimar",
+      "label": "Kocasinan Belediyesi e-Imar",
+      "url": "https://cbs.kocasinan.bel.tr/user/",
+      "type": "MUNICIPALITY_E_IMAR",
+      "queryable": false,
+      "hasAdminAttributes": false,
+      "reason": "Manual guidance only, not a queryable OGC/WFS/GeoJSON endpoint."
+    },
+    {
+      "key": "melikgazi_cbs_map",
+      "label": "Melikgazi CBS Map",
+      "url": "https://cbs.melikgazi.bel.tr/portal/apps/webappviewer/index.html?id=9999a7e224d24b0d96b93911530cb4d3",
+      "type": "OFFICIAL_MUNICIPALITY_MAP",
+      "queryable": false,
+      "hasAdminAttributes": false,
+      "reason": "Manual guidance only, not a queryable OGC/WFS/GeoJSON endpoint."
+    },
+    {
+      "key": "talas_imar_planlari",
+      "label": "Talas Uygulama Imar Planlari",
+      "url": "https://www.talas.bel.tr/uygulama-imar-planlari",
+      "type": "MUNICIPALITY_E_PLAN",
+      "queryable": false,
+      "hasAdminAttributes": false,
+      "reason": "Manual guidance only, not a queryable OGC/WFS/GeoJSON endpoint."
+    }
+  ],
+  "tucbsOgc": {
+    "wfs": false,
+    "wms": false,
+    "wmts": false,
+    "reason": "No Kayseri admin location layer, all endpoints missing."
+  },
+  "featureServer": false,
+  "geojson": false,
+  "importDecision": "NOT_CONFIGURED",
+  "queryableSourceFound": false,
+  "recordCount": 0,
+  "fallbackUsed": true,
+  "reason": "No queryable Kayseri location source found in repo/config/proof."
+}
