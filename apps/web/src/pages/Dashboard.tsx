@@ -10,7 +10,8 @@ import {
   getNeighborhoodOptions,
   getLocationCoverageStatus
 } from '../lib/locationOptions';
-  const locationStatus = getLocationCoverageStatus();
+
+const locationStatus = getLocationCoverageStatus();
 
 function Dashboard() {
   const [credits, setCredits] = useState<number>(0);
@@ -84,8 +85,8 @@ function Dashboard() {
     e.preventDefault();
     setSubmitError('');
     setFieldErrors({});
-    // Minimal required fields
-    const required = ['il', 'ilce', 'mahalleOrKoy', 'areaM2', 'askingPriceTRY', 'ada', 'parsel', 'assetType', 'inputMethod', 'tapuType', 'zoningStatus', 'roadAccess', 'electricity', 'water'];
+    // Canonical required fields for ADA_PARSEL
+    const required = ['il', 'ilce', 'mahalleOrKoy', 'ada', 'parsel', 'areaM2', 'askingPriceTRY', 'assetType', 'inputMethod', 'tapuType', 'zoningStatus', 'roadAccess', 'electricity', 'water'];
     const errors: Record<string, string> = {};
     required.forEach((key) => {
       if (!form[key] || !String(form[key]).trim()) {
@@ -99,19 +100,25 @@ function Dashboard() {
     }
     setSubmitting(true);
     try {
-      // Use safe property creation flow (minimal payload)
+      // Map category text to backend enum if needed
+      let assetType = form.assetType;
+      if (!assetType && form.kategori) {
+        const map: Record<string, string> = {
+          'Arsa': 'ARSA', 'Tarla': 'TARLA', 'Bahçe': 'BAHCE', 'Konut': 'KONUT', 'Ticari': 'TICARI', 'Proje': 'PROJE', 'Diğer': 'DIGER'
+        };
+        assetType = map[form.kategori] || 'ARSA';
+      }
       const payload = {
+        inputMethod: 'ADA_PARSEL',
+        assetType,
         il: form.il.trim(),
         ilce: form.ilce.trim(),
         mahalleOrKoy: form.mahalleOrKoy.trim(),
-        areaM2: Number(form.areaM2),
-        askingPriceTRY: Number(form.askingPriceTRY),
         ada: form.ada.trim(),
         parsel: form.parsel.trim(),
-        baslik: form.baslik.trim(),
-        kategori: form.kategori.trim(),
-        assetType: form.assetType,
-        inputMethod: form.inputMethod,
+        areaM2: Number(form.areaM2),
+        askingPriceTRY: Number(form.askingPriceTRY),
+        baslik: form.baslik?.trim() || undefined,
         tapuType: form.tapuType,
         zoningStatus: form.zoningStatus,
         roadAccess: form.roadAccess,
@@ -252,27 +259,38 @@ function Dashboard() {
           {/* İlçe */}
           <div>
             <label className="block text-[15px] font-bold mb-1">İlçe *</label>
-            <select className={inputClass('ilce') + ' h-[48px] text-[16px]'} name="ilce" value={form.ilce} onChange={handleChange} disabled={!form.il}>
-              <option value="">İlçe seçiniz...</option>
-              {getDistrictOptions(form.il).map((ilce) => (
-                <option key={ilce} value={ilce}>{ilce}</option>
-              ))}
-            </select>
+            {getDistrictOptions(form.il).length > 0 ? (
+              <select className={inputClass('ilce') + ' h-[48px] text-[16px]'} name="ilce" value={form.ilce} onChange={handleChange}>
+                <option value="">İlçe seçiniz...</option>
+                {getDistrictOptions(form.il).map((ilce) => (
+                  <option key={ilce} value={ilce}>{ilce}</option>
+                ))}
+              </select>
+            ) : (
+              <>
+                <input className={inputClass('ilce') + ' h-[44px] text-[16px]'} name="ilce" placeholder="İlçe manuel giriş" value={form.ilce} onChange={handleChange} />
+                <div className="mt-1 text-[14px] text-slate-600 font-medium">İlçe manuel giriş</div>
+              </>
+            )}
             {fieldErrors.ilce && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.ilce}</div>}
           </div>
           {/* Mahalle/Köy */}
           <div>
             <label className="block text-[15px] font-bold mb-1">Mahalle/Köy *</label>
-            <select className={inputClass('mahalleOrKoy') + ' h-[48px] text-[16px]'} name="mahalleOrKoy" value={form.mahalleOrKoy} onChange={handleChange} disabled={!form.ilce || getNeighborhoodOptions(form.il, form.ilce).length === 0}>
-              <option value="">Mahalle/Köy seçiniz...</option>
-              {getNeighborhoodOptions(form.il, form.ilce).map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
+            {getNeighborhoodOptions(form.il, form.ilce).length > 0 ? (
+              <select className={inputClass('mahalleOrKoy') + ' h-[48px] text-[16px]'} name="mahalleOrKoy" value={form.mahalleOrKoy} onChange={handleChange}>
+                <option value="">Mahalle/Köy seçiniz...</option>
+                {getNeighborhoodOptions(form.il, form.ilce).map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+            ) : (
+              <>
+                <input className={inputClass('mahalleOrKoy') + ' h-[44px] text-[16px]'} name="mahalleOrKoy" placeholder="Mahalle/Köy manuel giriş" value={form.mahalleOrKoy} onChange={handleChange} />
+                <div className="mt-1 text-[14px] text-slate-600 font-medium">Mahalle/Köy manuel giriş</div>
+              </>
+            )}
             {fieldErrors.mahalleOrKoy && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.mahalleOrKoy}</div>}
-            {/* Manual fallback for other locations */}
-            <div className="mt-2 text-[14px] text-slate-600 font-medium">Mahalle/Köy manuel giriş</div>
-            <input className={inputClass('mahalleOrKoy') + ' h-[44px] text-[16px] mt-1'} name="mahalleOrKoy" placeholder="Mahalle/Köy manuel giriş" value={form.mahalleOrKoy} onChange={handleChange} />
           </div>
           {/* Ada */}
           <div>

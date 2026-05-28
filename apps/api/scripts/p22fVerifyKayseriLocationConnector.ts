@@ -31,7 +31,11 @@ const results = {
   noScrapingAdded: true,
   noConnectorActivationWithoutEvidence: true,
   noOfficialVerificationClaimAdded: true,
-  note: 'Full Türkiye mahalle dataset requires an approved/imported administrative dataset or authorized connector. This phase adds connector-ready dropdown plumbing and pilot data only.'
+  note: 'Full Türkiye mahalle dataset requires an approved/imported administrative dataset or authorized connector. This phase adds connector-ready dropdown plumbing and pilot data only.',
+  // Add missing properties for TS
+  importStatus: undefined,
+  usableQueryableSourceFound: undefined,
+  fallbackUsed: undefined
 };
 
 const status = requireJson(path.join(dataLoc, 'kayseri-location-import-status.json'));

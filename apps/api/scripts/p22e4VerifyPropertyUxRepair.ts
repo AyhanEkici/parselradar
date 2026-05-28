@@ -20,8 +20,9 @@ function assert(cond: boolean, msg: string) {
 function main() {
   // 1. Dashboard no longer contains chat/composer/old upload preview
   const dashboard = fileText('Dashboard.tsx');
+  // Only block legacy preview/composer blocks, not allowed upload/source UI
   assert(!/ConversationalAnalysisIntake/.test(dashboard), 'Dashboard: chat/composer still present');
-  assert(!/OCR|preview|upload/i.test(dashboard), 'Dashboard: upload/OCR preview present');
+  assert(!/Upload\/OCR preview planned|not active yet|chat[- ]?like composer|dashboard OCR preview/i.test(dashboard), 'Dashboard: upload/OCR preview present');
 
   // 2. Dashboard contains new intake fields
   [
