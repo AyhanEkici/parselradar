@@ -8,6 +8,7 @@
     "p2:2g:verify-kayseri-location-source-discovery": "ts-node apps/api/scripts/p22gVerifyKayseriLocationSourceDiscovery.ts",
     "p2:2h:verify-kayseri-cbs-runtime-endpoint-discovery": "ts-node apps/api/scripts/p22hVerifyKayseriCbsRuntimeEndpointDiscovery.ts",
     "p2:2i:verify-live-user-journey": "ts-node apps/api/scripts/p22iVerifyLiveUserJourneyProof.ts",
+    "p2:2j:verify-production-user-journey": "ts-node apps/api/scripts/p22jVerifyProductionUserJourneyProof.ts",
     "postinstall": "npm install --prefix packages/shared && npm install --prefix apps/api && npm install --prefix apps/web",
     "dev": "concurrently \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/web\"",
     "typecheck": "npm run typecheck --prefix packages/shared && npm run typecheck --prefix apps/api && npm run typecheck --prefix apps/web",

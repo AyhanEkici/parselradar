@@ -1,0 +1,38 @@
+{
+  "status": "BLOCKED_WITH_EVIDENCE",
+  "productionUrl": "https://parselradar.vercel.app",
+  "loginResult": false,
+  "dashboardIntakeResult": false,
+  "propertyCreated": false,
+  "sourceGuidanceVisible": false,
+  "evidenceUploadOrPickerVisible": false,
+  "manualCheckVisible": false,
+  "reportOrAdminVisibilityResult": false,
+  "noOfficialVerificationClaimAdded": true,
+  "noFakeKayseriCoverageClaim": true,
+  "noScrapingAdded": true,
+  "noProductionSwap": true,
+  "blockerEvidence": [
+    {
+      "url": "https://parselradar.vercel.app/",
+      "step": "initial",
+      "msg": "Loaded production homepage"
+    },
+    {
+      "url": "https://parselradar.vercel.app/",
+      "step": "login-entry",
+      "msg": "Login entry not found on production homepage"
+    },
+    {
+      "error": "Login entry not found on production homepage",
+      "stack": "Error: Login entry not found on production homepage\n    at C:\\parselradar\\tests\\e2e\\p22j-production-user-journey.spec.ts:103:13\n    at C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:3045:9\n    at C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:2537:11\n    at TimeoutManager.withRunnable (C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:1816:14)\n    at TestInfoImpl._runWithTimeout (C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:2535:7)\n    at C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:3043:7\n    at WorkerMain._runTest (C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:3016:5)\n    at WorkerMain.runTestGroup (C:\\parselradar\\node_modules\\playwright\\lib\\worker\\workerProcessEntry.js:2911:9)\n    at process.<anonymous> (C:\\parselradar\\node_modules\\playwright\\lib\\common\\index.js:1955:25)",
+      "url": "https://parselradar.vercel.app/"
+    }
+  ],
+  "screenshots": [
+    "proof/p2-2j-screenshots/initial-page.png",
+    "proof/p2-2j-screenshots/failure.png"
+  ],
+  "consoleErrors": [],
+  "networkErrors": []
+}
