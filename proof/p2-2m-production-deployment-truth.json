@@ -1,0 +1,15 @@
+{
+  "localHead": "dcfa7d2a578f3a59ee179dce957a51ffc910d278",
+  "originHead": null,
+  "expectedCommit": "dcfa7d2a",
+  "repoMarkersFound": true,
+  "vercelCliAvailable": false,
+  "vercelInspectResult": "VERCEL_CLI_NOT_AVAILABLE",
+  "productionHtmlStatus": 200,
+  "productionHtmlMarkersFound": false,
+  "productionJsMarkersFound": true,
+  "staticHtmlMissingMarkersExpectedForSpa": true,
+  "noCodeChanged": true,
+  "gitStatusCleanAtStart": true,
+  "rootCauseClassification": "PRODUCTION_DEPLOYED_RUNTIME_LOGIN_ENTRY_PRESENT"
+}

@@ -1,0 +1,12 @@
+{
+  "productionUrl": "https://parselradar.vercel.app",
+  "domLoaded": true,
+  "runtimeLoginMarkerFound": true,
+  "runtimeStartMarkerFound": true,
+  "loginHrefFound": true,
+  "currentUrl": "https://parselradar.vercel.app/",
+  "screenshotPath": "proof/p2-2m-runtime-homepage.png",
+  "consoleErrors": [],
+  "networkErrors": [],
+  "checkedAt": "2026-05-28T05:44:51.416Z"
+}
