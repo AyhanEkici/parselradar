@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "loginResult": "PASS",
+  "propertyCreated": true,
+  "sourceGuidanceVisible": true,
+  "listingUrlRequired": false,
+  "locationFallbackAccepted": true,
+  "noOfficialVerificationClaimAdded": true,
+  "noFakeKayseriCoverageClaim": true,
+  "noScrapingAdded": true,
+  "evidenceUploadPickerResult": true,
+  "manualCheckResult": true,
+  "dashboardError": null,
+  "uiEvidence": "Property created, redirected to documents page. All required dashboard elements present: source guidance, upload, manual check. No official verification claim, no fake full Kayseri coverage claim.",
+  "gates": {
+    "p2:2h:verify-kayseri-cbs-runtime-endpoint-discovery": "PASS",
+    "p2:2g:verify-kayseri-location-source-discovery": "PASS",
+    "p2:2f:verify-kayseri-location-connector": "PASS",
+    "p2:2e4:verify-property-ux-repair": "PASS",
+    "p2:2e2:verify-property-create-validation": "PASS",
+    "build:web": "PASS",
+    "build:api": "PASS",
+    "verify:platform-integrity": "PASS"
+  },
+  "commit": "232f28e5",
+  "resolved": true
+}

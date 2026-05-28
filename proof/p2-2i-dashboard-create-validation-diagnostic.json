@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "result": "Dashboard form allows property creation with fallback/pilot Kayseri > Melikgazi > Gesi Cumhuriyet data. All required fields are accepted, and property is created successfully. Redirected to property detail/source guidance page.",
+  "uiEvidence": "Form accepts all required fields. Property created, redirected to documents page. Source guidance, upload, and manual check options are visible. No official verification claim, no fake full Kayseri coverage claim.",
+  "route": "/dashboard → /properties/[id]/documents",
+  "fields": ["il", "ilce", "mahalle", "ada", "parsel", "alan", "fiyat", "kategori", "baslik"],
+  "listingUrlRequired": false,
+  "locationFallbackAccepted": true,
+  "noOfficialVerificationClaimAdded": true,
+  "noFakeKayseriCoverageClaim": true,
+  "noScrapingAdded": true,
+  "resolved": true
+}
