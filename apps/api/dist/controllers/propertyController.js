@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPropertyById = exports.getMyProperties = exports.createProperty = void 0;
+exports.patchSourceGuidanceCheck = exports.getPropertyById = exports.getMyProperties = exports.createProperty = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const auditLog_1 = require("../utils/auditLog");
 const authUser_1 = require("../utils/authUser");
@@ -15,6 +15,7 @@ const User_1 = __importDefault(require("../models/User"));
 const propertySchemas_1 = require("../validation/propertySchemas");
 const ownership_1 = require("../utils/ownership");
 const scopeFilters_1 = require("../utils/scopeFilters");
+const evidenceMetadata_1 = require("../utils/evidenceMetadata");
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
     downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
@@ -142,7 +143,7 @@ const getPropertyById = async (req, res) => {
         User_1.default.findById(property.userId).select('email name role').lean(),
         DocumentUpload_1.default.find({ propertySubmissionId: property._id })
             .sort({ uploadedAt: -1 })
-            .select('documentType originalName storedName storedPath gridFsFileId uploadedAt mimeType sizeBytes')
+            .select('documentType originalName storedName storedPath gridFsFileId uploadedAt mimeType sizeBytes evidenceType sourceType reviewStatus metadataStatus supportingEvidenceOnly')
             .lean(),
         AnalysisRun_1.default.find({ propertySubmissionId: property._id })
             .sort({ createdAt: -1 })
@@ -254,6 +255,14 @@ const getPropertyById = async (req, res) => {
         storedName: doc.storedName || null,
         ...(doc.gridFsFileId ? toGridFsUrls(String(property._id), String(doc._id)) : { fileUrl: null, downloadUrl: null }),
         fileMissing: !doc.gridFsFileId,
+        evidenceMetadata: (0, evidenceMetadata_1.buildEvidenceMetadataContract)({
+            sourceType: doc.sourceType,
+            reviewStatus: doc.reviewStatus,
+            metadataStatus: doc.metadataStatus,
+            evidenceType: doc.evidenceType,
+            supportingEvidenceOnly: doc.supportingEvidenceOnly,
+            uploadedAt: doc.uploadedAt,
+        }),
     }));
     const titleFields = {
         ownerName: owner?.name || '-',
@@ -281,3 +290,52 @@ const getPropertyById = async (req, res) => {
     });
 };
 exports.getPropertyById = getPropertyById;
+// PATCH /properties/:propertyId/source-guidance/:sourceKey
+const patchSourceGuidanceCheck = async (req, res) => {
+    const user = (0, authUser_1.requireAuthUser)(req);
+    const { propertyId, sourceKey } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(propertyId)) {
+        return res.status(400).json({ error: 'Geçersiz propertyId' });
+    }
+    if (!sourceKey || typeof sourceKey !== 'string') {
+        return res.status(400).json({ error: 'Geçersiz sourceKey' });
+    }
+    const { sourceTitle, checkedManually, checkedAt, status, officialVerification } = req.body || {};
+    if (status !== 'USER_CHECKED_MANUALLY' || officialVerification !== false) {
+        return res.status(400).json({ error: 'Invalid status or officialVerification' });
+    }
+    if (typeof checkedManually !== 'boolean' || !checkedManually) {
+        return res.status(400).json({ error: 'checkedManually must be true' });
+    }
+    const property = await PropertySubmission_1.default.findById(propertyId);
+    if (!property) {
+        return res.status(404).json({ error: 'Mülk bulunamadı' });
+    }
+    try {
+        (0, ownership_1.assertOwnerOrAdmin)({ userId: property.userId }, user);
+    }
+    catch {
+        return res.status(404).json({ error: 'Mülk bulunamadı' });
+    }
+    // Find or add entry
+    let checks = Array.isArray(property.sourceGuidanceChecks) ? property.sourceGuidanceChecks : [];
+    const idx = checks.findIndex((c) => c.sourceKey === sourceKey);
+    const newCheck = {
+        sourceKey,
+        sourceTitle,
+        checkedManually: true,
+        checkedAt: checkedAt ? new Date(checkedAt) : new Date(),
+        status: "USER_CHECKED_MANUALLY",
+        officialVerification: false,
+    };
+    if (idx >= 0) {
+        checks[idx] = { ...checks[idx], ...newCheck };
+    }
+    else {
+        checks.push(newCheck);
+    }
+    property.sourceGuidanceChecks = checks;
+    await property.save();
+    res.json({ ok: true, sourceGuidanceChecks: property.sourceGuidanceChecks });
+};
+exports.patchSourceGuidanceCheck = patchSourceGuidanceCheck;

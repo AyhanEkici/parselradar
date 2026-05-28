@@ -14,6 +14,7 @@ const scopeFilters_1 = require("../utils/scopeFilters");
 const uploadGovernanceEngine_1 = require("../security/uploadGovernanceEngine");
 const maliciousUploadDetector_1 = require("../security/maliciousUploadDetector");
 const downloadAccessAudit_1 = require("../security/downloadAccessAudit");
+const evidenceMetadata_1 = require("../utils/evidenceMetadata");
 const toGridFsUrls = (propertyId, documentId) => ({
     fileUrl: `/properties/${propertyId}/documents/${documentId}/view`,
     downloadUrl: `/properties/${propertyId}/documents/${documentId}/download`,
@@ -29,6 +30,98 @@ const canAccessProperty = async (user, propertyId) => {
         return null;
     return PropertySubmission_1.default.findOne((0, scopeFilters_1.propertyOwnerScope)(user, { _id: propertyId }));
 };
+const evidenceTypeAllowlist = new Set([
+    'LISTING_SCREENSHOT',
+    'TKGM_PARCEL_SCREENSHOT',
+    'TKGM_ANALYSIS_SCREENSHOT',
+    'TKGM_PRICE_HISTORY_SCREENSHOT',
+    'TKGM_EXPORT_PDF',
+    'TKGM_EXPORT_KML',
+    'TKGM_EXPORT_GEOJSON',
+    'TKGM_SCREENSHOT',
+    'TKGM_EXPORT',
+    'MUNICIPALITY_IMAR_DOCUMENT',
+    'E_PLAN_DOCUMENT',
+    'UCBP_TUCBS_EXPORT',
+    'UCBP_TUCBS_SCREENSHOT',
+    'MAP_LOCATION_CSV',
+    'PHOTO',
+    'OTHER',
+]);
+const sourceTypeAllowlist = new Set([
+    'USER_SUBMITTED',
+    'USER_PROVIDED_OFFICIAL_SOURCE_EVIDENCE',
+    'TKGM_MANUAL_EVIDENCE',
+    'TKGM_PUBLIC_PARCEL_SORGU_EVIDENCE',
+    'TKGM_ANALYSIS_MARKET_SIGNAL',
+    'MUNICIPALITY_IMAR_EVIDENCE',
+    'E_PLAN_EVIDENCE',
+    'UCBP_TUCBS_INFORMATIONAL_EVIDENCE',
+    'LISTING_SOURCE',
+    'ADMIN_MANUAL_OBSERVATION',
+    'UNKNOWN',
+]);
+const statusAllowlist = new Set([
+    'PREVIEW_ONLY',
+    'NEEDS_REVIEW',
+    'CONFIRMED_BY_USER',
+    'CONFIRMED_BY_ADMIN',
+    'MANUAL_REVIEW_REQUIRED',
+    'REJECTED',
+]);
+const previewFieldAllowlist = new Set(['title', 'longitude', 'latitude', '_id_', 'province', 'district', 'neighborhood', 'ada', 'parsel', 'price', 'm2']);
+function normalizeAllowed(value, allowlist) {
+    const normalized = String(value || '').trim();
+    return allowlist.has(normalized) ? normalized : undefined;
+}
+function parseBoolean(value) {
+    if (typeof value === 'boolean')
+        return value;
+    const normalized = String(value || '').toLowerCase().trim();
+    if (normalized === 'true')
+        return true;
+    if (normalized === 'false')
+        return false;
+    return undefined;
+}
+function parseJsonValue(value) {
+    if (value == null)
+        return { parsed: undefined, parseFailed: false };
+    if (typeof value === 'object')
+        return { parsed: value, parseFailed: false };
+    if (typeof value !== 'string' || !value.trim())
+        return { parsed: undefined, parseFailed: false };
+    try {
+        return { parsed: JSON.parse(value), parseFailed: false };
+    }
+    catch {
+        return { parsed: undefined, parseFailed: true };
+    }
+}
+function sanitizeParsedPreview(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value))
+        return undefined;
+    const source = value;
+    const cleaned = {};
+    for (const [key, raw] of Object.entries(source)) {
+        if (!previewFieldAllowlist.has(key))
+            continue;
+        const normalized = String(raw == null ? '' : raw).trim();
+        if (!normalized)
+            continue;
+        cleaned[key] = normalized.slice(0, 240);
+    }
+    return Object.keys(cleaned).length > 0 ? cleaned : undefined;
+}
+function sanitizeCsvDetectedFields(value) {
+    const parsed = parseJsonValue(value);
+    if (parsed.parseFailed)
+        return { csvDetectedFields: undefined, parseFailed: true };
+    if (!Array.isArray(parsed.parsed))
+        return { csvDetectedFields: undefined, parseFailed: false };
+    const unique = Array.from(new Set(parsed.parsed.map((entry) => String(entry || '').trim()).filter((entry) => previewFieldAllowlist.has(entry))));
+    return { csvDetectedFields: unique.length > 0 ? unique : undefined, parseFailed: false };
+}
 const uploadDocument = async (req, res) => {
     const requestId = req.requestId || '';
     try {
@@ -43,10 +136,29 @@ const uploadDocument = async (req, res) => {
         const file = req.file;
         if (!file)
             return res.status(400).json({ error: 'Dosya gerekli', requestId });
-        const { documentType } = req.body;
+        const requestBody = req.body;
+        // Source evidence metadata
+        const sourceKey = typeof requestBody.sourceKey === 'string' ? requestBody.sourceKey : undefined;
+        const sourceTitle = typeof requestBody.sourceTitle === 'string' ? requestBody.sourceTitle : undefined;
+        const uploadedFrom = typeof requestBody.uploadedFrom === 'string' ? requestBody.uploadedFrom : undefined;
+        const officialVerification = requestBody.officialVerification === false ? false : undefined;
+        const documentType = String(requestBody.documentType || '').trim();
         if (!documentType || !String(documentType).trim()) {
             return res.status(400).json({ error: 'Belge türü gerekli', requestId });
         }
+        const evidenceType = normalizeAllowed(requestBody.evidenceType, evidenceTypeAllowlist);
+        const sourceType = normalizeAllowed(requestBody.sourceType, sourceTypeAllowlist);
+        const supportingEvidenceOnly = parseBoolean(requestBody.supportingEvidenceOnly);
+        const reviewStatus = normalizeAllowed(requestBody.reviewStatus, statusAllowlist);
+        const metadataStatusRaw = normalizeAllowed(requestBody.metadataStatus, statusAllowlist);
+        const parsedPreviewResult = parseJsonValue(requestBody.parsedPreview);
+        const parsedPreview = sanitizeParsedPreview(parsedPreviewResult.parsed);
+        const csvFieldsResult = sanitizeCsvDetectedFields(requestBody.csvDetectedFields);
+        let metadataStatus = metadataStatusRaw || (parsedPreview ? 'PREVIEW_ONLY' : 'NEEDS_REVIEW');
+        if (parsedPreviewResult.parseFailed || csvFieldsResult.parseFailed) {
+            metadataStatus = 'MANUAL_REVIEW_REQUIRED';
+        }
+        const resolvedReviewStatus = reviewStatus || metadataStatus;
         const signature = file.buffer?.subarray(0, 4)?.toString('hex') || '';
         const malicious = (0, maliciousUploadDetector_1.maliciousUploadDetector)({
             filename: file.originalname,
@@ -94,6 +206,15 @@ const uploadDocument = async (req, res) => {
                 propertySubmissionId: String(property._id),
                 userId: String(user._id),
                 documentType,
+                evidenceType,
+                sourceType,
+                metadataStatus,
+                reviewStatus: resolvedReviewStatus,
+                supportingEvidenceOnly,
+                sourceKey,
+                sourceTitle,
+                uploadedFrom,
+                officialVerification,
             },
         });
         await new Promise((resolve, reject) => {
@@ -105,11 +226,22 @@ const uploadDocument = async (req, res) => {
             propertySubmissionId: property._id,
             userId: user._id,
             documentType,
+            evidenceType,
+            sourceType,
+            reviewStatus: resolvedReviewStatus,
+            metadataStatus,
+            supportingEvidenceOnly,
+            parsedPreview,
+            csvDetectedFields: csvFieldsResult.csvDetectedFields,
             originalName: file.originalname,
             storedName: String(uploadStream.filename || file.originalname),
             gridFsFileId: uploadStream.id,
             mimeType: file.mimetype,
             sizeBytes: file.size,
+            sourceKey,
+            sourceTitle,
+            uploadedFrom,
+            officialVerification,
         });
         const { fileUrl, downloadUrl } = toGridFsUrls(String(property._id), String(doc._id));
         const payload = {
@@ -119,6 +251,14 @@ const uploadDocument = async (req, res) => {
             fileUrl,
             downloadUrl,
             fileMissing: false,
+            evidenceMetadata: (0, evidenceMetadata_1.buildEvidenceMetadataContract)({
+                sourceType: doc.sourceType,
+                reviewStatus: doc.reviewStatus,
+                metadataStatus: doc.metadataStatus,
+                evidenceType: doc.evidenceType,
+                supportingEvidenceOnly: doc.supportingEvidenceOnly,
+                uploadedAt: doc.uploadedAt,
+            }),
         };
         res.json(payload);
     }
@@ -144,6 +284,14 @@ const getDocuments = async (req, res) => {
             ...urls,
             fileMissing: !hasGridFs,
             createdAt: doc.uploadedAt,
+            evidenceMetadata: (0, evidenceMetadata_1.buildEvidenceMetadataContract)({
+                sourceType: doc.sourceType,
+                reviewStatus: doc.reviewStatus,
+                metadataStatus: doc.metadataStatus,
+                evidenceType: doc.evidenceType,
+                supportingEvidenceOnly: doc.supportingEvidenceOnly,
+                uploadedAt: doc.uploadedAt,
+            }),
         };
     }));
 };

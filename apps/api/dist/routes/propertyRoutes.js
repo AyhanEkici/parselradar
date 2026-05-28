@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const propertyController_1 = require("../controllers/propertyController");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
+// PATCH source guidance check (manual check persistence)
+router.patch('/:propertyId/source-guidance/:sourceKey', auth_1.auth, propertyController_1.patchSourceGuidanceCheck);
 router.post('/', auth_1.auth, propertyController_1.createProperty);
 router.get('/', auth_1.auth, propertyController_1.getMyProperties);
 router.get('/:propertyId', auth_1.auth, propertyController_1.getPropertyById);

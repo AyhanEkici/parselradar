@@ -30,6 +30,13 @@ function Dashboard() {
     parsel: '',
     baslik: '',
     kategori: '',
+    assetType: 'ARSA',
+    inputMethod: 'ADA_PARSEL',
+    tapuType: 'MUSTAKIL',
+    zoningStatus: 'IMARLI',
+    roadAccess: 'KADASTRO_YOLU',
+    electricity: 'VAR',
+    water: 'VAR',
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState('');
@@ -78,7 +85,7 @@ function Dashboard() {
     setSubmitError('');
     setFieldErrors({});
     // Minimal required fields
-    const required = ['il', 'ilce', 'mahalleOrKoy', 'areaM2', 'askingPriceTRY', 'ada', 'parsel'];
+    const required = ['il', 'ilce', 'mahalleOrKoy', 'areaM2', 'askingPriceTRY', 'ada', 'parsel', 'assetType', 'inputMethod', 'tapuType', 'zoningStatus', 'roadAccess', 'electricity', 'water'];
     const errors: Record<string, string> = {};
     required.forEach((key) => {
       if (!form[key] || !String(form[key]).trim()) {
@@ -97,12 +104,19 @@ function Dashboard() {
         il: form.il.trim(),
         ilce: form.ilce.trim(),
         mahalleOrKoy: form.mahalleOrKoy.trim(),
-        areaM2: form.areaM2.trim(),
-        askingPriceTRY: form.askingPriceTRY.trim(),
+        areaM2: Number(form.areaM2),
+        askingPriceTRY: Number(form.askingPriceTRY),
         ada: form.ada.trim(),
         parsel: form.parsel.trim(),
         baslik: form.baslik.trim(),
         kategori: form.kategori.trim(),
+        assetType: form.assetType,
+        inputMethod: form.inputMethod,
+        tapuType: form.tapuType,
+        zoningStatus: form.zoningStatus,
+        roadAccess: form.roadAccess,
+        electricity: form.electricity,
+        water: form.water,
       };
       const property = await apiFetch('properties', { method: 'POST', body: JSON.stringify(payload) });
       navigate(`/properties/${property._id}/documents`);
@@ -139,6 +153,91 @@ function Dashboard() {
         </div>
         <div className="mb-4 text-base text-slate-700 text-center font-medium">Ada/parsel ve temel fiyat bilgileri girildikten sonra kaynak kontrol ekranına geçebilirsiniz.</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Varlık Türü (assetType) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Varlık Türü *</label>
+                      <select className={inputClass('assetType') + ' h-[44px] text-[16px]'} name="assetType" value={form.assetType} onChange={handleChange}>
+                        <option value="ARSA">Arsa</option>
+                        <option value="TARLA">Tarla</option>
+                        <option value="BAHCE">Bahçe</option>
+                        <option value="KONUT">Konut</option>
+                        <option value="TICARI">Ticari</option>
+                        <option value="PROJE">Proje</option>
+                        <option value="DIGER">Diğer</option>
+                      </select>
+                      {fieldErrors.assetType && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.assetType}</div>}
+                    </div>
+                    {/* Giriş Yöntemi (inputMethod) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Giriş Yöntemi *</label>
+                      <select className={inputClass('inputMethod') + ' h-[44px] text-[16px]'} name="inputMethod" value={form.inputMethod} onChange={handleChange}>
+                        <option value="ADA_PARSEL">Ada/Parsel</option>
+                        <option value="ILAN_URL">İlan URL</option>
+                        <option value="SCREENSHOT_UPLOAD">Ekran görüntüsü yükleme</option>
+                        <option value="MANUAL_ENTRY">Manuel giriş</option>
+                      </select>
+                      {fieldErrors.inputMethod && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.inputMethod}</div>}
+                    </div>
+                    {/* Tapu Türü (tapuType) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Tapu Türü *</label>
+                      <select className={inputClass('tapuType') + ' h-[44px] text-[16px]'} name="tapuType" value={form.tapuType} onChange={handleChange}>
+                        <option value="MUSTAKIL">Müstakil</option>
+                        <option value="HISSELI">Hisseli</option>
+                        <option value="KAT_IRTIFAKI">Kat irtifakı</option>
+                        <option value="KAT_MULKIYETI">Kat mülkiyeti</option>
+                        <option value="UNKNOWN">Emin değilim</option>
+                      </select>
+                      {fieldErrors.tapuType && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.tapuType}</div>}
+                    </div>
+                    {/* İmar Durumu (zoningStatus) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">İmar Durumu *</label>
+                      <select className={inputClass('zoningStatus') + ' h-[44px] text-[16px]'} name="zoningStatus" value={form.zoningStatus} onChange={handleChange}>
+                        <option value="IMARLI">İmarlı</option>
+                        <option value="IMARSIZ">İmarsız</option>
+                        <option value="KOY_YERLESIK_ALANI">Köy yerleşik alanı</option>
+                        <option value="TARIMSAL">Tarımsal</option>
+                        <option value="BAG_BAHCE">Bağ/Bahçe</option>
+                        <option value="TICARI">Ticari</option>
+                        <option value="KONUT">Konut</option>
+                        <option value="UNKNOWN">Emin değilim</option>
+                      </select>
+                      {fieldErrors.zoningStatus && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.zoningStatus}</div>}
+                    </div>
+                    {/* Yol Durumu (roadAccess) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Yol Durumu *</label>
+                      <select className={inputClass('roadAccess') + ' h-[44px] text-[16px]'} name="roadAccess" value={form.roadAccess} onChange={handleChange}>
+                        <option value="KADASTRO_YOLU">Kadastro yolu</option>
+                        <option value="FIILI_YOL">Fiili yol</option>
+                        <option value="YOL_YOK">Yol yok</option>
+                        <option value="UNKNOWN">Emin değilim</option>
+                      </select>
+                      {fieldErrors.roadAccess && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.roadAccess}</div>}
+                    </div>
+                    {/* Elektrik (electricity) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Elektrik *</label>
+                      <select className={inputClass('electricity') + ' h-[44px] text-[16px]'} name="electricity" value={form.electricity} onChange={handleChange}>
+                        <option value="VAR">Var</option>
+                        <option value="YAKIN">Yakın</option>
+                        <option value="YOK">Yok</option>
+                        <option value="UNKNOWN">Emin değilim</option>
+                      </select>
+                      {fieldErrors.electricity && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.electricity}</div>}
+                    </div>
+                    {/* Su (water) */}
+                    <div>
+                      <label className="block text-[15px] font-bold mb-1">Su *</label>
+                      <select className={inputClass('water') + ' h-[44px] text-[16px]'} name="water" value={form.water} onChange={handleChange}>
+                        <option value="VAR">Var</option>
+                        <option value="YAKIN">Yakın</option>
+                        <option value="YOK">Yok</option>
+                        <option value="UNKNOWN">Emin değilim</option>
+                      </select>
+                      {fieldErrors.water && <div className="text-red-600 text-[15px] mt-1">{fieldErrors.water}</div>}
+                    </div>
           {/* İl */}
           <div>
             <label className="block text-[15px] font-bold mb-1">İl *</label>

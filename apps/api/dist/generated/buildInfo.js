@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BUILD_INFO = void 0;
 exports.BUILD_INFO = Object.freeze({
-    gitSha: "f8307b5665003cc4b3b3d8fe39c2666ac68d3003",
-    buildTime: "2026-05-21T21:47:42.577Z",
+    gitSha: "257217f4c1caa81fe925ca2e68b3c2377e613863",
+    buildTime: "2026-05-28T04:07:57.604Z",
     platformVersion: "ParselRadar",
     routeVersion: "autonomous_intelligence_v28",
 });

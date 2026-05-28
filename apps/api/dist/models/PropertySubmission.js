@@ -35,6 +35,16 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const PropertySubmissionSchema = new mongoose_1.Schema({
+    sourceGuidanceChecks: [
+        {
+            sourceKey: { type: String, required: true },
+            sourceTitle: { type: String },
+            checkedManually: { type: Boolean, required: true },
+            checkedAt: { type: Date },
+            status: { type: String, enum: ["USER_CHECKED_MANUALLY"], required: true },
+            officialVerification: { type: Boolean, default: false, required: true },
+        },
+    ],
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     assetType: { type: String, required: true },
     inputMethod: { type: String, required: true },
@@ -68,6 +78,10 @@ const PropertySubmissionSchema = new mongoose_1.Schema({
     electricity: { type: String, required: true },
     water: { type: String, required: true },
     villageDistanceText: { type: String },
+    dealFlowConsentStatus: { type: String, enum: ['NOT_ASKED', 'DECLINED', 'OPTED_IN'], default: 'NOT_ASKED' },
+    dealFlowConsentAt: { type: Date },
+    dealFlowConsentScope: { type: [String], default: [] },
+    professionalContactAllowed: { type: Boolean, default: false },
     lastSpatialRefresh: { type: Date },
     lastMarketRefresh: { type: Date },
     lastTrendRefresh: { type: Date },

@@ -18,6 +18,7 @@ const sensitiveDataScanner_1 = require("../security/sensitiveDataScanner");
 const exportGovernanceEngine_1 = require("../security/exportGovernanceEngine");
 const exportAuditEngine_1 = require("../audit/exportAuditEngine");
 const auditLog_1 = require("../utils/auditLog");
+const ConnectorSyncRun_1 = __importDefault(require("../models/ConnectorSyncRun"));
 const PDF_COST = 5;
 const purchasePDF = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
@@ -85,6 +86,11 @@ exports.purchasePDF = purchasePDF;
 const getReports = async (req, res) => {
     const user = (0, authUser_1.requireAuthUser)(req);
     const reports = await Report_1.default.find((0, scopeFilters_1.reportOwnerScope)(user, {})).lean();
+    const latestSafeSync = await ConnectorSyncRun_1.default.findOne({
+        status: 'SUCCESS',
+    })
+        .sort({ finishedAt: -1 })
+        .lean();
     const fieldScan = (0, sensitiveDataScanner_1.sensitiveDataScanner)({
         fields: reports.length > 0 ? Object.keys(reports[0] || {}) : [],
     });
@@ -158,6 +164,13 @@ const getReports = async (req, res) => {
             reviewQueueDepth: full.autonomyIntelligence?.operations?.reviewQueue?.queueDepth,
             suppressionActiveRules: full.autonomyIntelligence?.operations?.suppression?.activeCount,
             cadenceMinutes: full.autonomyIntelligence?.autonomy?.cadence?.cadenceMinutes,
+            reportEvidencePolicy: {
+                usesOnlyProvenSyncedMetadataAndSupportingEvidence: true,
+                fakeOfficialResultClaimsAllowed: false,
+                automatedOfficialZoningVerification: false,
+                lastSafeMetadataSyncAt: latestSafeSync?.finishedAt || null,
+                note: 'Report enrichment uses synced metadata/supporting evidence only; no fake official result claims.',
+            },
             executionReadiness: full.executionOperatingSystem?.executionReadiness,
             executionDeterministic: full.executionOperatingSystem?.deterministic,
             executionGovernanceState: full.executionOperatingSystem?.governanceState,

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGeoDiagnostics = exports.getGeoLayers = exports.getAdminGeoDiagnostics = exports.getAdminLayerHealth = exports.patchAdminLayerVisibility = exports.getAdminLayers = exports.postAdminTucbsSync = exports.getAdminOgcConnectors = exports.getAdminTucbsConnector = exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.getAdminConnectors = void 0;
+exports.getGeoDiagnostics = exports.getGeoLayers = exports.getAdminGeoDiagnostics = exports.getAdminLayerHealth = exports.patchAdminLayerVisibility = exports.getAdminLayers = exports.postAdminTucbsSync = exports.getAdminOgcConnectors = exports.getAdminTucbsConnector = exports.patchAdminConnectorSourceApproval = exports.getAdminConnectorAuditByKey = exports.postAdminConnectorDeactivate = exports.postAdminConnectorActivate = exports.postAdminConnectorTestV19 = exports.getAdminConnectorActivationState = exports.postAdminConnectorCredentials = exports.getAdminConnectorAuditTrail = exports.getAdminConnectorActivationPlan = exports.postAdminConnectorTest = exports.getAdminConnectorByKey = exports.postAdminConnectorScheduledSync = exports.postAdminConnectorSyncNow = exports.getAdminConnectorCenter = exports.getAdminConnectorCatalog = exports.getAdminSourceRegistry = exports.getAdminConnectors = void 0;
 const connectorRegistry_1 = require("../connectors/connectorRegistry");
 const connectorExecutionRegistry_1 = require("../connectors/connectorExecutionRegistry");
 const buildConnectorReadiness_1 = require("../services/connectorActivation/buildConnectorReadiness");
@@ -23,6 +23,8 @@ const buildConnectorActivationAudit_1 = require("../services/connectorActivation
 const ConnectorSourceApproval_1 = __importDefault(require("../models/ConnectorSourceApproval"));
 const auditLog_1 = require("../utils/auditLog");
 const tucbsLayerCatalog_1 = require("../connectors/tucbs/tucbsLayerCatalog");
+const sourceRegistryCatalog_1 = require("../config/connectors/sourceRegistryCatalog");
+const connectorSyncEngine_1 = require("../services/connectorActivation/connectorSyncEngine");
 const getAdminConnectors = async (_req, res) => {
     const readiness = (0, buildConnectorReadiness_1.buildConnectorReadiness)();
     const legalRegistry = (0, buildLegalSourceRegistry_1.buildLegalSourceRegistry)();
@@ -34,6 +36,106 @@ const getAdminConnectors = async (_req, res) => {
     });
 };
 exports.getAdminConnectors = getAdminConnectors;
+const getAdminSourceRegistry = async (_req, res) => {
+    return res.json({
+        generatedAt: new Date().toISOString(),
+        sources: sourceRegistryCatalog_1.CONNECTOR_SOURCE_REGISTRY,
+    });
+};
+exports.getAdminSourceRegistry = getAdminSourceRegistry;
+const getAdminConnectorCatalog = async (_req, res) => {
+    const entries = sourceRegistryCatalog_1.CONNECTOR_SOURCE_REGISTRY.map((source) => ({
+        connectorKey: source.connectorKey,
+        sourceName: source.sourceName,
+        provider: source.provider,
+        municipality: source.municipality || null,
+        province: source.province || null,
+        district: source.district || null,
+        sourceType: source.sourceType,
+        services: source.services,
+        mode: source.legalMode,
+        sourceStatus: source.status,
+        accessStatus: source.accessStatus,
+        activationState: source.activationState,
+        legalClassification: source.legalClassification,
+        blockedReason: source.blockedReason,
+    }));
+    return res.json({
+        generatedAt: new Date().toISOString(),
+        entries,
+    });
+};
+exports.getAdminConnectorCatalog = getAdminConnectorCatalog;
+const getAdminConnectorCenter = async (_req, res) => {
+    const center = await (0, connectorSyncEngine_1.buildAdminConnectorCenter)();
+    return res.json(center);
+};
+exports.getAdminConnectorCenter = getAdminConnectorCenter;
+const postAdminConnectorSyncNow = async (req, res) => {
+    const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
+    const sourceRegistry = (0, sourceRegistryCatalog_1.findConnectorSourceRegistry)(req.params.connectorKey);
+    if (!connector && !sourceRegistry)
+        return res.status(404).json({ error: 'Connector not found' });
+    const run = await (0, connectorSyncEngine_1.runConnectorSyncNow)(req.params.connectorKey, req.user?._id?.toString(), 'MANUAL');
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'connector_sync_run',
+        actorUserId: req.user._id.toString(),
+        actorRole: req.user.role,
+        targetType: 'Connector',
+        targetId: req.params.connectorKey,
+        message: `Connector sync now executed for ${req.params.connectorKey}`,
+        metadata: {
+            source: sourceRegistry?.sourceName,
+            sourceUrl: sourceRegistry?.officialUrl,
+            status: run.status,
+            triggerMode: run.triggerMode,
+            responseSummary: run.responseSummary,
+            error: run.error,
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: run.status === 'SUCCESS',
+    });
+    return res.json({
+        connectorKey: req.params.connectorKey,
+        run: {
+            status: run.status,
+            startedAt: run.startedAt,
+            finishedAt: run.finishedAt,
+            error: run.error || null,
+            responseSummary: run.responseSummary || null,
+        },
+    });
+};
+exports.postAdminConnectorSyncNow = postAdminConnectorSyncNow;
+const postAdminConnectorScheduledSync = async (req, res) => {
+    const actorUserId = req.user?._id?.toString();
+    const actorRole = req.user?.role || 'SYSTEM';
+    const result = await (0, connectorSyncEngine_1.runScheduledMetadataSync)(actorUserId);
+    await (0, auditLog_1.logAuditEvent)({
+        type: 'connector_scheduled_sync_run',
+        actorUserId: actorUserId || 'system_cron',
+        actorRole,
+        targetType: 'Connector',
+        targetId: 'scheduled_metadata_sync',
+        message: 'Scheduled metadata sync endpoint executed',
+        metadata: {
+            summary: {
+                totalSources: result.totalSources,
+                eligible: result.eligible,
+                skipped: result.skipped,
+                passed: result.passed,
+                failed: result.failed,
+                noPropertyLevelVerification: true,
+            },
+        },
+        ip: req.ip,
+        userAgent: req.get('user-agent'),
+        success: result.failed === 0,
+    });
+    return res.json(result);
+};
+exports.postAdminConnectorScheduledSync = postAdminConnectorScheduledSync;
 const getAdminConnectorByKey = async (req, res) => {
     const connector = (0, connectorRegistry_1.findConnectorByKey)(req.params.connectorKey);
     if (!connector)

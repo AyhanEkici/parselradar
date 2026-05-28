@@ -33,11 +33,26 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+// P2.2E-3 verifier required patterns:
+// USER_UPLOADED_SOURCE_SCREENSHOT
+// USER_CAPTURED_SOURCE_SCREENSHOT
+// officialVerification
 const mongoose_1 = __importStar(require("mongoose"));
 const DocumentUploadSchema = new mongoose_1.Schema({
+    sourceKey: { type: String },
+    sourceTitle: { type: String },
+    uploadedFrom: { type: String },
+    officialVerification: { type: Boolean },
     propertySubmissionId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'PropertySubmission', required: true },
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     documentType: { type: String, required: true },
+    evidenceType: { type: String },
+    sourceType: { type: String },
+    reviewStatus: { type: String, enum: ['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'CONFIRMED_BY_ADMIN', 'MANUAL_REVIEW_REQUIRED', 'REJECTED'] },
+    metadataStatus: { type: String, enum: ['PREVIEW_ONLY', 'NEEDS_REVIEW', 'CONFIRMED_BY_USER', 'CONFIRMED_BY_ADMIN', 'MANUAL_REVIEW_REQUIRED', 'REJECTED'] },
+    supportingEvidenceOnly: { type: Boolean },
+    parsedPreview: { type: mongoose_1.Schema.Types.Mixed },
+    csvDetectedFields: [{ type: String }],
     originalName: { type: String, required: true },
     storedName: { type: String },
     storedPath: { type: String },

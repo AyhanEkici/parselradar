@@ -45,6 +45,7 @@ const redisClient_1 = require("./redis/redisClient");
 const buildInfo_1 = require("./generated/buildInfo");
 const degradedRuntime_1 = require("./runtime/degradedRuntime");
 const envValidator_1 = require("./config/envValidator");
+const stagedGeoSignalsRoutes_1 = __importDefault(require("./routes/stagedGeoSignalsRoutes"));
 const app = (0, express_1.default)();
 (0, degradedRuntime_1.installRuntimeProcessGuards)();
 (0, degradedRuntime_1.recordStartupPhase)('express_initialized', 'Express application created.');
@@ -217,6 +218,7 @@ app.use((req, res) => {
     });
 });
 app.use(errorHandler_1.errorHandler);
+app.use("/api/dev/staged-geo-signals", stagedGeoSignalsRoutes_1.default);
 const server = app.listen(Number(env_1.ENV.PORT), () => {
     (0, degradedRuntime_1.recordStartupPhase)('server_listening', `API listening on port ${env_1.ENV.PORT}.`);
     (0, logger_1.logStartup)();

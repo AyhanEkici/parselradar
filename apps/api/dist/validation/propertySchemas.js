@@ -37,5 +37,9 @@ exports.PropertySubmissionCreateInputSchema = zod_1.z.object({
     electricity: zod_1.z.nativeEnum(shared_1.UtilityStatus),
     water: zod_1.z.nativeEnum(shared_1.UtilityStatus),
     villageDistanceText: zod_1.z.string().optional(),
+    dealFlowConsentStatus: zod_1.z.enum(['NOT_ASKED', 'DECLINED', 'OPTED_IN']).optional(),
+    dealFlowConsentAt: zod_1.z.coerce.date().optional(),
+    dealFlowConsentScope: zod_1.z.array(zod_1.z.string()).optional(),
+    professionalContactAllowed: zod_1.z.boolean().optional(),
     status: zod_1.z.string().optional(),
 });
