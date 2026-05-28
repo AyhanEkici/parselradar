@@ -223,20 +223,22 @@ export default function PublicHomepage() {
             <Link
               to="/register"
               className="inline-flex items-center justify-center rounded-xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+              data-testid="home-start-property-check"
             >
-              Start Property Check
+              Başla
             </Link>
             <Link
               to="/login"
               className="inline-flex items-center justify-center rounded-xl border border-cyan-100/50 px-5 py-3 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-200/10"
+              data-testid="home-login-link"
             >
-              Login
+              Giriş Yap
             </Link>
             <a
               href="#for-professionals"
               className="inline-flex items-center justify-center rounded-xl border border-cyan-100/50 px-5 py-3 text-sm font-semibold text-cyan-50 transition hover:bg-cyan-200/10"
             >
-              Learn for Professionals
+              Profesyoneller için
             </a>
           </div>
         </section>
